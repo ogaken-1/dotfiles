@@ -1,6 +1,6 @@
 if !exists('*s:gd')
   function! s:gd(word) abort
-    " autoload function/variable
+    " autoload function
     if a:word =~# '^\%(\w\+#\)\+'
       const fname = a:word
             \ ->matchstr('^\%(\w\+#\)\+')
