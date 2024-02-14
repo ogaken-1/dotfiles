@@ -45,7 +45,7 @@ const priority: LspKind[] = [
 ];
 
 export async function main(denops: Denops) {
-  const ui = Deno.env.get("NVIM_DDC_UI") ?? "native";
+  const ui = Deno.env.get("NVIM_DDC_UI");
   if (!(ui === "native" || ui === "pum")) {
     throw new Error(`Invalid ddc ui name: ${ui}`);
   }

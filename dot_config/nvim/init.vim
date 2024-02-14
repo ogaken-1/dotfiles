@@ -18,6 +18,7 @@ lua require('rc.nvim-lsp').setup()
 
 let g:dein#inline_vimrcs = [
       \ s:here .. '/startup.vim',
+      \ s:here .. '/defaults.vim',
       \ s:here .. '/global.lua',
       \ s:here .. '/commands.vim',
       \ s:here .. '/options.vim',
