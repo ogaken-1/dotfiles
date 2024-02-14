@@ -49,20 +49,16 @@ const bufferSource: SourceConfig = {
   },
 };
 
-const generalSources: SourceConfig[] = [
-  skkSource,
-  bufferSource,
-  {
-    name: "ultisnips",
-    options: {
-      matchers: ["matcher_fuzzy"],
-      mark: "US",
-    },
-    params: {
-      expandSnippets: true,
-    },
+const ultisnipsSource: SourceConfig = {
+  name: "ultisnips",
+  options: {
+    ...basicSourceOptions,
+    mark: "[ultisnips]",
   },
-];
+  params: {
+    expandSnippets: true,
+  },
+};
 
 const lspSource = (denops: Denops): SourceConfig => {
   return {
@@ -108,8 +104,10 @@ export class Config extends BaseConfig {
     contextBuilder.patchGlobal({
       ui: "native" satisfies "native" | "pum",
       sources: [
+        ultisnipsSource,
         lspSource(denops),
-        ...generalSources,
+        skkSource,
+        bufferSource,
       ],
       sourceOptions: {
         _: {
@@ -130,8 +128,10 @@ export class Config extends BaseConfig {
     });
     contextBuilder.patchFiletype("vim", {
       sources: [
+        ultisnipsSource,
         vimSource,
-        ...generalSources,
+        skkSource,
+        bufferSource,
       ],
     });
 
