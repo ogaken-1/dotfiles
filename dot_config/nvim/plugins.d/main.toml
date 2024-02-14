@@ -381,12 +381,6 @@ hook_add = '''
   nnoremap <space>p "+p
 '''
 
-# vimでプレゼンテーション
-# markdownを開いて:ShowtimeStart
-[[plugins]]
-repo = 'thinca/vim-showtime'
-on_cmd = 'ShowtimeStart'
-
 # :terminalでnvim実行したときに新しいタブで開いてくれる
 # TODO: 遅延読み込み
 # plugin/あるから遅延したいけど遅延設定むずいすこれ
