@@ -43,6 +43,10 @@ function fish_prompt
 
   set -a components (path_shortn "$PWD")
 
+  if [ -n "$PGHOST" ]
+    set -a components "$(sgr color:blue "PGHOST"):$PGHOST"
+  end
+
   if [ "$previous_command_status" != '0' ]
     set -a components (sgr color:red "[$previous_command_status]")
   end
