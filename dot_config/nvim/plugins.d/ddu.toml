@@ -45,7 +45,6 @@ repo = 'matsui54/ddu-source-help'
 
 [[plugins]]
 repo = 'shun/ddu-source-rg'
-build = 'rm ./plugin/ddu_rg.vim'
 
 [[plugins]]
 repo = 'Shougo/ddu-source-line'
