@@ -121,6 +121,43 @@ call s:add_rules(
 " input: >>, effect: `if (\%#)condition` -> `if (condition)`
 call lexima#add_rule(#{ char: '>', at: '(>\%#)', input: '<BS><DEL><End>)' })
 
+lua << EOF
+local snippetTrigger = '<Plug>(expand-bracket)'
+
+local function addLeximaRules()
+  local rules = {
+    { except = [[\%#(]],    input = '(',  input_after = ')' },
+    { input = '',           priority = -1 },
+    { filetype = 'haskell', input = '' },
+  }
+  for _, rule in ipairs(rules) do
+    vim.fn['lexima#add_rule'](vim.tbl_deep_extend('error', rule, { char = snippetTrigger }))
+  end
+end
+addLeximaRules()
+
+local function expandBrackets()
+  local leximaExpand = require 'rc.utils'.leximaExpand
+  feedkeys(leximaExpand('i', snippetTrigger))
+end
+
+vim.api.nvim_create_autocmd('CompleteDone', {
+  group = 'VimRc',
+  callback = function()
+    vim.schedule(function()
+      if vim.fn.mode() ~= 'i' then
+        return
+      end
+      local item = vim.v.completed_item
+      --NOTE: ddc-source-nvim-lspが渡してくるkind文字列に依存している
+      if (item.kind == 'Function') or (item.kind == 'Method') then
+        expandBrackets()
+      end
+    end)
+  end,
+})
+EOF
+
 " cmdline rules
 " `:g<space>` -> `:vimgrep \%# %`
 AlterCmd g vimgrep <Space>%
