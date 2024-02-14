@@ -13,6 +13,7 @@ local space2 = {
   'xml',
   'sh',
   'zsh',
+  'fish',
 }
 
 local space4 = {
