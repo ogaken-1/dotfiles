@@ -278,10 +278,9 @@ hook_add = '''
 '''
 lua_source = '''
   require('pasta').setup {
-    converters = {
-      require('pasta.converters').indentation,
-    },
-    paste_mode = true,
+    paste_mode = false,
+    fix_cursor = true,
+    fix_indent = true,
     prevent_diagnostics = false,
     next_key = vim.keycode '<C-p>',
     prev_key = vim.keycode '<C-n>',

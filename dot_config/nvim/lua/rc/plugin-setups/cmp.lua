@@ -3,7 +3,7 @@ local cmp = require 'cmp'
 ---@param keys string
 ---@param flags nil|string
 local function feedkeys(keys, flags)
-  vim.fn.feedkeys(vim.keycode(keys), flags or 'nt')
+  vim.api.nvim_feedkeys(vim.keycode(keys), flags or 'nit', false)
 end
 
 local function getCurrentDisplayedBuffers()
@@ -101,7 +101,7 @@ cmp.setup {
           '<NL>',
           ''
         )
-        vim.api.nvim_feedkeys(vim.keycode(chars), 'nit', false)
+        feedkeys(vim.keycode(chars))
       else
         fallback()
       end
