@@ -20,7 +20,7 @@ export async function main(denops: Denops) {
     ui: "native",
     sources: [
       ultisnipsSource,
-      lspSource(denops),
+      await lspSource(denops),
       bufferSource,
     ],
     sourceOptions: {
@@ -55,6 +55,7 @@ export async function main(denops: Denops) {
 
 async function addSkkSource(denops: Denops) {
   denops.dispatcher = {
+    ...denops.dispatcher,
     enableSkkAutoComplete: async () => {
       setContext(denops, {
         sources: (await getCurrent(denops)).sources,

@@ -1,4 +1,5 @@
 import { Denops } from "../../deps.ts";
+import { denopsCallback } from "../callback.ts";
 import { SourceConfig, SourceOptions } from "./types.ts";
 
 const basicSourceOptions: Partial<SourceOptions> = {
@@ -41,14 +42,16 @@ export const ultisnipsSource: SourceConfig = {
   },
 };
 
-export const lspSource = (denops: Denops): SourceConfig => {
+export const lspSource = async (denops: Denops): Promise<SourceConfig> => {
   return {
     name: "nvim-lsp",
     params: {
-      snippetEngine: async (body: unknown) => {
-        await denops.call("vsnip#anonymous", body);
-        return await Promise.resolve();
-      },
+      snippetEngine: await denopsCallback(
+        denops,
+        async ([body]: unknown[]) => {
+          await denops.call("vsnip#anonymous", body);
+        },
+      ),
       enableResolveItem: true,
       enableAdditionalTextEdit: true,
       confirmBehavior: "replace",
