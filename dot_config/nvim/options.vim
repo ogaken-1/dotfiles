@@ -26,6 +26,7 @@ let &wildoptions = ['fuzzy','pum','tagfile']->join(',')
 set nomore
 set shada='100,<20,s10,h,r/tmp/,rterm:
 set scrolloff=5
+set isfname+=@-@,:
 
 set matchpairs+=「:」,『:』,【:】
 
