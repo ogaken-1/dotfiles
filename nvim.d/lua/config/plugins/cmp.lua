@@ -9,6 +9,9 @@ return {
   config = function()
     local cmp = require 'cmp'
     cmp.setup {
+      enabled = function ()
+        return vim.fn['skkeleton#mode']() == ''
+      end,
       snippet = {
         expand = function(args)
           vim.snippet.expand(args.body)
