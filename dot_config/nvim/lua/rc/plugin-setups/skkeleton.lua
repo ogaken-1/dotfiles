@@ -33,12 +33,9 @@ local function setup()
   }
 end
 
--- -- DenopsPluginPost:skkeletonの実行中にskkeleton#config()を呼ぶことができない
-
--- vim.api.nvim_create_autocmd('User', {
---   group = 'VimRc',
---   once = true,
---   pattern = 'DenopsPluginPost:skkeleton',
---   callback = setup,
--- })
-vim.fn['denops#plugin#wait_async']('skkeleton', setup)
+vim.api.nvim_create_autocmd('User', {
+  group = 'VimRc',
+  once = true,
+  pattern = 'DenopsPluginPost:skkeleton',
+  callback = setup,
+})
