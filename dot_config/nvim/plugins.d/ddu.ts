@@ -24,8 +24,8 @@ export class Config extends BaseConfig {
           previewFloatingBorder: "single",
           previewFloatingTitle: "Preview",
           highlights: {
-            floating: "Normal",
-            floatingBorder: "Normal",
+            floating: "NormalFloat",
+            floatingBorder: "FloatBorder",
           },
           autoAction: {
             name: "preview",
