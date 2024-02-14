@@ -6,5 +6,11 @@ export async function currentWorktree(denops: Denops) {
     "gin",
     "util:worktree",
     await fn.bufname(denops),
-  ).catch(() => undefined);
+  ).catch((e) => {
+    if (typeof e === "string" && e.includes("No git repository found")) {
+      return undefined;
+    } else {
+      throw e;
+    }
+  });
 }
