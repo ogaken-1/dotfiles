@@ -63,6 +63,7 @@ const uiActions: Record<string, string> = {
   ["p"]: "toggleAutoAction",
   ["l"]: "expandItem",
   ["h"]: "collapseItem",
+  ["a"]: "chooseAction",
 };
 
 async function doUiMaps(denops: Denops) {
