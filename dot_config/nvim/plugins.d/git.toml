@@ -57,7 +57,11 @@ lua_add = '''
   }
 '''
 lua_source = '''
-  require('neogit').setup {}
+  require('neogit').setup {
+    integrations = {
+      fzf_lua = true,
+    }
+  }
 '''
 
 [[plugins]]
