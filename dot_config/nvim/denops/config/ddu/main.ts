@@ -71,7 +71,7 @@ async function doUiMaps(denops: Denops) {
       denops,
       keys,
       `<Cmd>call ddu#ui#do_action('${uiActions[keys]}')<CR>`,
-      { mode: "n", buffer: true },
+      { mode: "n", buffer: true, nowait: true },
     );
   }
 }
@@ -87,19 +87,19 @@ async function defineFinderKeymaps(denops: Denops) {
         denops,
         "<CR>",
         "<Esc><Cmd>call ddu#ui#do_action('closeFilterWindow')<CR>",
-        { mode: "i", buffer: true },
+        { mode: "i", buffer: true, nowait: true },
       );
       await map(
         denops,
         "<CR>",
         "<Cmd>call ddu#ui#do_action('closeFilterWindow')<CR>",
-        { mode: "n", buffer: true },
+        { mode: "n", buffer: true, nowait: true },
       );
       await map(
         denops,
         "q",
         "<Cmd>call ddu#ui#do_action('quit')<CR>",
-        { mode: "n", buffer: true },
+        { mode: "n", buffer: true, nowait: true },
       );
     },
   };

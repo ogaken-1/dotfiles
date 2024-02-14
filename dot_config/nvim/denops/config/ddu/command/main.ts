@@ -108,7 +108,7 @@ export function addDispatcher(denops: Denops, command: Command) {
       denops,
       keys,
       `<Cmd>call ddu#ui#do_action('itemAction', #{ name: '${itemAction}' })<CR>`,
-      { mode: "n", buffer: true },
+      { mode: "n", buffer: true, nowait: true },
     );
   };
 
