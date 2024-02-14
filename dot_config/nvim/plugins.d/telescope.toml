@@ -2,3 +2,32 @@
 repo = 'nvim-telescope/telescope.nvim'
 on_lua = 'telescope'
 on_cmd = 'Telescope'
+hook_add = '''
+  AlterCmd t Telescope
+'''
+lua_source = '''
+  require('telescope').setup {
+    defaults = {
+      layout_strategy = 'flex',
+      layout_config = {
+        prompt_position = 'top',
+      },
+      sorting_strategy = 'ascending',
+      border = true,
+      borderchars = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
+    },
+    extensions = {
+      fzf = {
+        fuzzy = true,
+        override_generic_sorter = true,
+        override_file_sorter = true,
+        case_mode = 'smart_case',
+      }
+    }
+  }
+  require('telescope').load_extension 'fzf'
+'''
+
+[[plugins]]
+repo = 'nvim-telescope/telescope-fzf-native.nvim'
+build = 'make'
