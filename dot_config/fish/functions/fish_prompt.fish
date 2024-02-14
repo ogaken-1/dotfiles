@@ -1,6 +1,14 @@
 function fish_prompt
   set components
 
+  if [ "$DEVBOX_SHELL_ENABLED" = "1" ]
+    set -a components '(devbox)'
+  end
+
+  if [ "$CHEZMOI" = '1' ]
+    set -a components '(chezmoi)'
+  end
+
   set -a components (sgr color:yellow "$USER")
 
   # User can find that if he is in a git repository
