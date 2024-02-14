@@ -892,6 +892,7 @@ lua_source = '''
         ['ctrl-y'] = function(selected)
           print(selected[1])
         end,
+        ['ctrl-g'] = false,
       },
     },
     git = {
