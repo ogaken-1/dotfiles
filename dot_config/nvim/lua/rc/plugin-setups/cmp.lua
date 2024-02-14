@@ -159,6 +159,8 @@ cmp.setup.cmdline(':', {
           cmp.select_next_item { behavior = cmp.SelectBehavior.Insert }
         elseif safeCall 'pum#visible' then
           vim.fn['pum#map#insert_relative'](1)
+        elseif safeCall 'wilder#in_context' == 1 then
+          vim.fn['wilder#next']()
         else
           feedkeys '<Tab>'
         end
@@ -170,6 +172,8 @@ cmp.setup.cmdline(':', {
           cmp.select_prev_item { behavior = cmp.SelectBehavior.Insert }
         elseif safeCall 'pum#visible' then
           vim.fn['pum#map#insert_relative'](-1)
+        elseif safeCall 'wilder#in_context' == 1 then
+          vim.fn['wilder#previous']()
         else
           feedkeys '<S-Tab>'
         end
@@ -217,6 +221,8 @@ cmp.setup.cmdline('/', {
         elseif safeCall 'pum#visible' then
           vim.fn['pum#map#insert_relative'](1)
           vim.cmd.redraw { bang = true }
+        elseif safeCall 'wilder#in_context' == 1 then
+          vim.fn['wilder#next']()
         end
       end,
     },
@@ -226,6 +232,8 @@ cmp.setup.cmdline('/', {
           cmp.select_prev_item { behavior = cmp.SelectBehavior.Insert }
         elseif safeCall 'pum#visible' then
           vim.fn['pum#map#insert_relative'](-1)
+        elseif safeCall 'wilder#in_context' == 1 then
+          vim.fn['wilder#previous']()
         end
       end,
     },

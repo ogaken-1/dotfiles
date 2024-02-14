@@ -591,4 +591,62 @@ on_cmd = 'TableModeEnable'
 [[plugins]]
 repo = 'KentoOgata/vim-vimscript-gd'
 
+[[plugins]]
+repo = 'gelguy/wilder.nvim'
+on_event = 'CmdlineEnter'
+hook_source = '''
+  call wilder#set_option('pipeline', [
+        \ wilder#branch(
+        \   wilder#python_file_finder_pipeline({
+        \     'file_command': {_, arg -> stridx(arg, '.') != -1 ? ['fd', '-tf', '-H', '--strip-cwd-prefix'] : ['fd', '-tf', '--strip-cwd-prefix']},
+        \     'dir_command': ['fd', '-td'],
+        \   }),
+        \   wilder#cmdline_pipeline({
+        \     'fuzzy': 2,
+        \     'fuzzy_filter': wilder#vim_fuzzy_filter(),
+        \   }),
+        \   [
+        \     wilder#check({_, x -> empty(x)}),
+        \     wilder#history(),
+        \   ],
+        \   wilder#python_search_pipeline({
+        \     'pattern': wilder#python_fuzzy_pattern({
+        \       'start_at_boundary': 0,
+        \     }),
+        \   }),
+        \ ),
+        \ ])
+
+  let wilder_cmd_line_renderer = wilder#popupmenu_renderer(wilder#popupmenu_border_theme({
+        \ 'winblend': 20,
+        \ 'highlighter': wilder#basic_highlighter(),
+        \ 'highlights': {
+        \   'accent': wilder#make_hl('WilderAccent', 'Pmenu', [{}, {}, {'foreground': '#e27878', 'bold': v:true, 'underline': v:true}]),
+        \   'selected_accent': wilder#make_hl('WilderSelectedAccent', 'PmenuSel', [{}, {}, {'foreground': '#e27878', 'bold': v:true, 'underline': v:true}]),
+        \ },
+        \ 'left': [wilder#popupmenu_devicons({'min_width': 2}), wilder#popupmenu_buffer_flags({'flags': ' '})],
+        \ }))
+
+  let wilder_search_renderer = wilder#wildmenu_renderer({
+        \ 'highlighter': wilder#basic_highlighter(),
+        \ 'separator': '  ',
+        \ 'left': [' '],
+        \ 'right': [' ', wilder#wildmenu_index()],
+        \ })
+
+  call wilder#setup({
+        \ 'modes': [':', '/', '?'],
+        \ 'accept_key': '<C-e>',
+        \ })
+
+  call wilder#set_option(
+        \ 'renderer',
+        \ wilder#renderer_mux({
+        \   ':': wilder_cmd_line_renderer,
+        \   '/': wilder_search_renderer,
+        \   '?': wilder_search_renderer,
+        \ })
+        \ )
+'''
+
 # vim:ft=toml expandtab tabstop=2 shiftwidth=2
