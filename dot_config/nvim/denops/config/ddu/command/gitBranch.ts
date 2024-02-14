@@ -13,6 +13,9 @@ export const command: Command = {
           options: {
             path: await getcwd(denops),
           },
+          params: {
+            remote: true,
+          },
         },
       ],
       uiParams: {
