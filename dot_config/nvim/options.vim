@@ -25,6 +25,7 @@ let &completeopt = ['menu', 'menuone', 'longest', 'noinsert']->join(',')
 let &wildoptions = ['fuzzy','pum','tagfile']->join(',')
 set nomore
 set shada=
+set scrolloff=5
 
 set matchpairs+=「:」,『:』,【:】
 
