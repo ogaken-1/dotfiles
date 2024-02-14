@@ -1,3 +1,16 @@
+---@param types string[]
+---@return string[]
+local function get_dictionaries(types)
+  local files = vim.system({ 'fd', 'SKK-JISYO' }, { cwd = '/usr/share/skk' }):wait()
+  local dictionaries = vim
+    .iter(files)
+    :filter(function(path)
+      return vim.list_contains(types, vim.fn.fnamemodify(path, ':e'))
+    end)
+    :totable()
+  return dictionaries
+end
+
 vim.api.nvim_create_autocmd('User', {
   group = 'VimRc',
   once = true,
@@ -13,7 +26,7 @@ vim.api.nvim_create_autocmd('User', {
     vim.fn['skkeleton#register_keymap']('henkan', 'p', 'purgeCandidate')
     vim.fn['skkeleton#config'] {
       eggLikeNewline = true,
-      globalDictionaries = vim.fn['GetDictPath'] { 'L', 'geo', 'jinmei', 'emoji' },
+      globalDictionaries = get_dictionaries { 'L', 'geo', 'jinmei', 'emoji' },
       userJisyo = vim.fs.joinpath(skkDataDir, 'user-jisyo'),
       completionRankFile = vim.fs.joinpath(skkDataDir, 'rank.json'),
       kanaTable = 'azik',
