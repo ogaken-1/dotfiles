@@ -28,9 +28,7 @@ local setup = function()
       end,
     },
     {
-      enabled = function()
-        return 1 == vim.fn.pumvisible()
-      end,
+      enabled = pum_visible,
       action = function(ctx)
         if -1 == vim.fn.complete_info().selected then
           ctx.send '<C-n><C-y>'
@@ -50,9 +48,7 @@ local setup = function()
 
   insx.add('<C-n>', insx.compose {
     {
-      enabled = function()
-        return 1 == vim.fn.pumvisible()
-      end,
+      enabled = pum_visible,
       action = function(ctx)
         ctx.send '<C-n>'
       end,
@@ -73,9 +69,7 @@ local setup = function()
 
   insx.add('<C-p>', insx.compose {
     {
-      enabled = function()
-        return 1 == vim.fn.pumvisible()
-      end,
+      enabled = pum_visible,
       action = function(ctx) ctx.send '<C-p>' end,
     },
     {
@@ -92,9 +86,7 @@ local setup = function()
 
   insx.add('<C-g>', insx.compose {
     {
-      enabled = function()
-        return 1 == vim.fn.pumvisible()
-      end,
+      enabled = pum_visible,
       action = function(ctx)
         ctx.send '<C-e>'
       end,
@@ -206,9 +198,7 @@ local setup = function()
       end
     },
     {
-      enabled = function()
-        return 1 == vim.fn.pumvisible()
-      end,
+      enabled = pum_visible,
       action = function(ctx)
         ctx.send '<S-Tab>'
       end,
