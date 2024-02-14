@@ -27,6 +27,21 @@ hook_add = '''
   autocmd VimRc FileType gin* setl nobuflisted
 '''
 [plugins.ftplugin]
+gin = '''
+  lua << EOF
+  if package.loaded['nvim-treesitter'] ~= nil then
+    vim.treesitter.start(vim.api.nvim_get_current_buf(), 'unifieddiff')
+  end
+EOF
+'''
+gin-diff = '''
+  lua << EOF
+  if package.loaded['nvim-treesitter'] ~= nil then
+    vim.treesitter.start(vim.api.nvim_get_current_buf(), 'unifieddiff')
+  end
+EOF
+'''
+'''
 gin-branch = '''
   nnoremap <buffer> N <Plug>(gin-action-new)
 '''
