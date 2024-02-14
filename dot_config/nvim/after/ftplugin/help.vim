@@ -2,6 +2,7 @@ if &modifiable
   " vimdocは78で改行すると良いらしい
   setl textwidth=78
   let &l:colorcolumn=&l:textwidth
+  setl conceallevel=0
 endif
 
 setl tabstop=8
