@@ -304,7 +304,6 @@ hooks_file = '$DEIN_CONFIG_DIR/chowcho.lua'
 
 [[plugins]]
 repo = 'nvim-tree/nvim-web-devicons'
-lazy = true
 
 [[plugins]]
 repo = 'MunifTanjim/nui.nvim'
@@ -316,7 +315,6 @@ repo = 'onsails/lspkind-nvim'
 # tabline/winbar/statusline を格好よくする
 [[plugins]]
 repo = 'rebelot/heirline.nvim'
-depends = 'nvim-web-devicons'
 on_event = ['FileType', 'WinNew']
 hooks_file = '$DEIN_CONFIG_DIR/heirline.lua'
 
