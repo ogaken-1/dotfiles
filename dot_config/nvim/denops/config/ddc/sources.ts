@@ -75,6 +75,7 @@ export const cmdlineSource: SourceConfig = {
   name: "cmdline",
   options: {
     ...basicSourceOptions,
+    minAutoCompleteLength: 1,
   },
 };
 
