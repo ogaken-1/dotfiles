@@ -1,0 +1,10 @@
+[autocmd]
+prefix = 'autocmd'
+body = """
+vim.api.nvim_create_autocmd('$1', {
+\tgroup = $2,
+\tcallback = function($3)
+\t\t$0
+\tend,
+}
+"""
