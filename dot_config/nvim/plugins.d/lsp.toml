@@ -32,7 +32,6 @@ lua_source = '''
     'dockerfile-language-server',
     'eslint-lsp',
     'markdownlint',
-    'stylua',
     'shellcheck',
     'taplo',
   }
