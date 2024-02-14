@@ -19,9 +19,9 @@ hook_add = '''
 
   AlterCmd gs GinStatus
   AlterCmd gb GinBranch
-  lua vim.cmd.AlterCmd { 'gp', 'Gin push' }
-  lua vim.cmd.AlterCmd { 'gpf', 'Gin push --force-with-lease --force-if-include' }
-  lua vim.cmd.AlterCmd { 'gpu', [[exec 'Gin' 'push' '--set-upstream' 'origin' system('git branch --show-current')]] }
+  AlterCmd gp Gin\ push
+  AlterCmd gpf Gin\ push\ --force-with-lease\ --force-if-include
+  AlterCmd gpu exec\ 'Gin'\ 'push'\ '--set-upstream'\ 'origin'\ system('git\ branch\ --show-current')
 
   " bufferlineするときにリストにあるとだいたいパースできなくて死ぬので
   autocmd VimRc FileType gin* setl nobuflisted
