@@ -1,79 +1,79 @@
 [[plugins]]
 repo = 'Shougo/shougo-s-github'
 name = 'Shougo'
-lazy = true
+if = false
 
 [[plugins]]
 repo = 'thinca/config'
 name = 'thinca'
-lazy = true
+if = false
 
 [[plugins]]
 repo = 'monaqa/dotfiles'
 name = 'monaqa'
-lazy = true
+if = false
 
 [[plugins]]
 repo = 'kuuote/dotvim'
 name = 'kuuote'
-lazy = true
+if = false
 
 [[plugins]]
 repo = 'yutkat/dotfiles'
 name = 'yutkat'
-lazy = true
+if = false
 
 [[plugins]]
 repo = 'yuki-yano/dotfiles'
 name = 'yuki-yano'
-lazy = true
+if = false
 
 [[plugins]]
 repo = '4513ECHO/dotfiles'
 name = '4513ECHO'
-lazy = true
+if = false
 
 [[plugins]]
 repo = 'kyoh86/dotfiles'
 name = 'kyoh86'
-lazy = true
+if = false
 
 [[plugins]]
 repo = 'rebelot/dotfiles'
 name = 'rebelot'
-lazy = true
+if = false
 
 [[plugins]]
 repo = 'lambdalisue/dotfiles'
 name = 'lambdalisue'
-lazy = true
+if = false
 
 [[plugins]]
 repo = 'L3MON4D3/Dotfiles'
 name = 'L3MON4D3'
-lazy = true
+if = false
 
 [[plugins]]
 repo = 'eihigh/dotfiles'
 name = 'eihigh'
-lazy = true
+if = false
 
 [[plugins]]
 repo = 'cohama/.vim'
 name = 'cohama'
-lazy = true
+if = false
 
 [[plugins]]
 repo = 'uga-rosa/dotfiles'
 name = 'uga-rosa'
-lazy = true
+if = false
 
 [[plugins]]
 repo = 'folke/dot'
 name = 'folke'
-lazy = true
+if = false
 
 [[plugins]]
 repo = 'yasunori0418/dotfiles'
 name = 'yasunori0418'
-lazy = true
+if = false
