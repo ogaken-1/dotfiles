@@ -12,7 +12,7 @@ function fish_prompt
 
   set -a components (path_shortn "$PWD")
 
-  printf '\033]133;A\007'
+  osc_133 'A'
   printf '\n%s\n> ' (string join ' ' $components)
-  printf '\033]133;B\007'
+  osc_133 'B'
 end

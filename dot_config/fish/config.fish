@@ -36,10 +36,10 @@ if status --is-interactive
   abbr -a gf 'git fetch'
 
   function _fishprompt_preexec --on-event fish_preexec
-    printf '\033]133;C\007'
+    osc_133 'C'
   end
 
   function _fishprompt_postexec --on-event fish_postexec
-    printf '\033]133;D;%d\007' $status
+    osc_133 (printf 'D;%d' $status)
   end
 end
