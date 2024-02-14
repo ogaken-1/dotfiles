@@ -110,6 +110,11 @@ export class Config extends BaseConfig {
         lspSource(denops),
         ...generalSources,
       ],
+      sourceOptions: {
+        _: {
+          dup: "keep",
+        },
+      },
       autoCompleteEvents: [
         "TextChangedI",
         "TextChangedP",
