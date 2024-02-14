@@ -10,7 +10,8 @@ if !exists('*s:gd')
       const files = nvim_get_runtime_file(fname, v:true)
       if files->len() ==# 1
         exe 'edit' files[0]
-        call search(a:word->printf('\V\<%s\>'))
+        call search(a:word->printf('\Vfunction!\?\s\zs\<%s\>'))
+        let @/ = a:word->printf('\V\<%s\>')
         return
       endif
     endif
