@@ -54,3 +54,7 @@ hook_add = '''
         \ typescriptreact: ['typescript'],
         \ }
 '''
+
+[[plugins]]
+repo = 'SirVer/ultisnips'
+on_event = 'InsertEnter'
