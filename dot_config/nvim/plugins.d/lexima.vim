@@ -148,4 +148,6 @@ for altercmd in g:_alterCommands
 endfor
 unlet g:_alterCommands
 
+doa User LeximaSetupDone
+
 " }}}

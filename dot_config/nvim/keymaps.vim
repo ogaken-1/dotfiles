@@ -49,3 +49,7 @@ nnoremap <Space>E <Plug>(filer-worktree)
 " <C-[pn]>による履歴の補完でも現在の入力をリスペクトしてほしい
 cnoremap <C-p> <Up>
 cnoremap <C-n> <Down>
+
+inoremap <expr> <C-w> (pumvisible() ? "\<C-e>" : '') .. "\<C-w>"
+inoremap <expr> <C-u> (pumvisible() ? "\<C-e>" : '') .. "\<C-u>"
+autocmd User LeximaSetupDone ++once inoremap <expr> <BS> (pumvisible() ? "\<C-e>" : '') .. lexima#expand('<LT>BS>', 'i')
