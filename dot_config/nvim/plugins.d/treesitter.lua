@@ -3,7 +3,7 @@ local parser_dir = ('%s/treesitter'):format(vim.fn.stdpath 'data')
 vim.opt.runtimepath:append(parser_dir)
 
 -- Add ex parsers
-local parser_config = require('nvim-treesitter.parsers').get_parser_configs()
+local parser_config = require 'nvim-treesitter.parsers'.get_parser_configs()
 parser_config.xml = {
   install_info = {
     url = 'https://github.com/dorgnarg/tree-sitter-xml.git',
@@ -35,34 +35,21 @@ parser_config.unifieddiff = {
 --   filetype = 'ps1',
 -- }
 
-require('nvim-treesitter.configs').setup {
+require 'nvim-treesitter.configs'.setup {
   ensure_installed = {},
   auto_install = true,
   parser_install_dir = parser_dir,
   highlight = {
     enable = true,
-    disable = { 'sql' },
+    disable = {
+      'sql',
+      'vimdoc',
+    },
   },
   indent = {
     enable = true,
     disable = {
       'yaml',
-    },
-  },
-  rainbow = {
-    enable = false,
-    query = {
-      'rainbow-parens',
-    },
-    strategy = require('ts-rainbow').strategy.global,
-    hlgroups = {
-      'TSRainbowRed',
-      'TSRainbowYellow',
-      'TSRainbowBlue',
-      'TSRainbowOrange',
-      'TSRainbowGreen',
-      'TSRainbowViolet',
-      'TSRainbowCyan',
     },
   },
 }
