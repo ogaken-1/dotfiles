@@ -132,11 +132,7 @@ export async function globalConfig(
                 return ActionFlags.Persist;
               }
               const tasks: Promise<Deno.CommandStatus>[] = [];
-              for (const worktree of files.keys()) {
-                const paths = files.get(worktree);
-                if (paths == null) {
-                  continue;
-                }
+              for (const [worktree, paths] of files.entries()) {
                 const { status } = new Deno.Command("git", {
                   args: [
                     "-C",
