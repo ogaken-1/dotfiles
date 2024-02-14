@@ -59,3 +59,10 @@ function! s:OpenRazor(command, fname, bang) abort
 endfunction
 command EditRazor call s:OpenRazor('edit', expand('%:p'), '<bang>' ==# '!')
 AlterCmd er EditRazor
+
+function! s:Csharpier(fname = v:null) abort
+  call system(['dotnet', 'csharpier', a:fname ?? winnr()->getcwd()])
+  edit!
+  call v:lua.vim.lsp.semantic_tokens.force_refresh(a:fname->bufnr())
+endfunction
+autocmd VimRc FileType cs command! -bang -buffer Csharpier call s:Csharpier('<bang>' ==# '!' ? s:findRoot(bufname(), '.git') : bufname())
