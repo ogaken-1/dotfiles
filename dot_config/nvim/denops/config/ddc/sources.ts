@@ -61,7 +61,7 @@ export const lspSource = async (denops: Denops): Promise<SourceConfig> => {
     },
     options: {
       matchers: ["matcher_fuzzy"],
-      sorters: ["sorter_lsp-kind", "sorter_fuzzy"],
+      sorters: ["sorter_fuzzy", "sorter_lsp-kind"],
       ignoreCase: true,
       mark: "[LS]",
       converters: ["converter_fuzzy", "converter_kind_labels"],
