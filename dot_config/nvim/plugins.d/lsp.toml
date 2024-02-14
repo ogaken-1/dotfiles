@@ -40,11 +40,9 @@ lua_source = '''
   local registry = require 'mason-registry'
   registry.refresh(function()
     for _, name in ipairs(ensure_installed) do
-      local ok, pkg = pcall(registry.get_package, name)
-      if ok then
-        if not pkg:is_installed() then
-          pkg:install()
-        end
+      local pkg = registry.get_package(name)
+      if not pkg:is_installed() then
+        pkg:install()
       end
     end
   end)
