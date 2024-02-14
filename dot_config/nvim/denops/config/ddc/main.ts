@@ -1,5 +1,6 @@
-import { Denops } from "../../deps.ts";
-import { patchFiletype, patchGlobal } from "./call.ts";
+import { autocmd, Denops } from "../../deps.ts";
+import { getContext, setContext } from "../context.ts";
+import { getCurrent, patchBuffer, patchFiletype, patchGlobal } from "./call.ts";
 import {
   bufferSource,
   cmdlineSource,
@@ -15,7 +16,6 @@ export async function main(denops: Denops) {
     sources: [
       ultisnipsSource,
       lspSource(denops),
-      skkSource,
       bufferSource,
     ],
     sourceOptions: {
@@ -39,9 +39,48 @@ export async function main(denops: Denops) {
     sources: [
       ultisnipsSource,
       vimSource,
-      skkSource,
       bufferSource,
     ],
   });
+
+  await addSkkSource(denops);
+
   await denops.batch(["ddc#enable"]);
+}
+
+async function addSkkSource(denops: Denops) {
+  denops.dispatcher = {
+    enableSkkAutoComplete: async () => {
+      setContext(denops, {
+        sources: (await getCurrent(denops)).sources,
+      });
+      await patchBuffer(denops, {
+        sources: [
+          skkSource,
+        ],
+      });
+    },
+    disableSkkAutoComplete: async () => {
+      const x = getContext(denops);
+      if (x?.sources == null) {
+        return;
+      }
+      await patchBuffer(denops, {
+        sources: x.sources,
+      });
+    },
+  };
+
+  await autocmd.group(denops, "VimRc", (helper) => {
+    helper.define(
+      "User",
+      "skkeleton-enable-post",
+      `call denops#notify('${denops.name}', 'enableSkkAutoComplete', [])`,
+    );
+    helper.define(
+      "User",
+      "skkeleton-disable-post",
+      `call denops#notify('${denops.name}', 'disableSkkAutoComplete', [])`,
+    );
+  });
 }

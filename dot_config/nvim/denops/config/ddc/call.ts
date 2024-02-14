@@ -12,3 +12,12 @@ export async function patchFiletype(
 ) {
   await denops.batch(["ddc#custom#patch_filetype", filetype, opts]);
 }
+
+export async function patchBuffer(denops: Denops, opts: Partial<DdcOptions>) {
+  await denops.batch(["ddc#custom#patch_buffer", opts]);
+}
+
+export function getCurrent(denops: Denops): Promise<DdcOptions>;
+export async function getCurrent(denops: Denops) {
+  return await denops.call("ddc#custom#get_current");
+}
