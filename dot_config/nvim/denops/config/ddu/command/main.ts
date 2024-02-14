@@ -102,7 +102,7 @@ async function defCommand(denops: Denops, commands: Command[]) {
   }
 }
 
-export function addDispatcher(denops: Denops, command: Command) {
+function addDispatcher(denops: Denops, command: Command) {
   const nmap = async (keys: string, itemAction: string) => {
     await map(
       denops,
