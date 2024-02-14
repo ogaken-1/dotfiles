@@ -1,4 +1,6 @@
 function fish_prompt
+  set -l previous_command_status $status
+
   set components
 
   if [ "$DEVBOX_SHELL_ENABLED" = "1" ]
@@ -40,6 +42,10 @@ function fish_prompt
   end
 
   set -a components (path_shortn "$PWD")
+
+  if [ "$previous_command_status" != '0' ]
+    set -a components (sgr color:red "[$previous_command_status]")
+  end
 
   osc_133 'A'
   printf '\n%s\n> ' (string join ' ' $components)
