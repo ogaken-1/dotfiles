@@ -6,7 +6,8 @@ function fish_prompt
   # User can find that if he is in a git repository
   set -l git_repo $(git rev-parse --show-toplevel 2> /dev/null)
   if [ $status -eq 0 ]
-    set -a components "($(basename "$git_repo"))"
+    set -l git_branch $(git branch --show-current)
+    set -a components "($(basename "$git_repo"):$git_branch)"
   end
 
   set -a components (path_shortn "$PWD")
