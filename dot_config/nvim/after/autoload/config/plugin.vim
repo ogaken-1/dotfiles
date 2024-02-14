@@ -7,6 +7,7 @@ function! config#plugin#wilder() abort
 
   call wilder#set_option('pipeline', [
         \ wilder#branch(
+        \   wilder#substitute_pipeline(#{ hide_in_replace: 0 }),
         \   wilder#python_file_finder_pipeline(#{
         \     file_command: {_, arg -> stridx(arg, '.') != -1 ? ['fd', '-tf', '-H', '--strip-cwd-prefix'] : ['fd', '-tf', '--strip-cwd-prefix']},
         \     dir_command: ['fd', '-td'],
