@@ -1,8 +1,8 @@
 import {
   BaseSource,
   GatherArguments,
-} from "https://deno.land/x/ddu_vim@v3.2.7/base/source.ts";
-import { Item } from "https://deno.land/x/ddu_vim@v3.2.7/types.ts";
+} from "https://deno.land/x/ddu_vim@v3.4.6/base/source.ts";
+import { Item } from "https://deno.land/x/ddu_vim@v3.4.6/types.ts";
 import { CompletionItems } from "https://deno.land/x/apiland@1.7.0/types.d.ts";
 import { CompletionContext } from "../@ddu-kinds/deno_module.ts";
 

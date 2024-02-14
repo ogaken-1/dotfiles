@@ -3,7 +3,7 @@ import {
   ActionFlags,
   Actions,
   BaseKind,
-} from "https://deno.land/x/ddu_vim@v3.2.7/types.ts";
+} from "https://deno.land/x/ddu_vim@v3.4.6/types.ts";
 
 type ActionParams = Record<string, unknown>;
 

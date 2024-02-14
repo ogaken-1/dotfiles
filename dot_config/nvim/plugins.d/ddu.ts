@@ -1,9 +1,9 @@
-import { ConfigArguments } from "https://deno.land/x/ddu_vim@v3.2.7/base/config.ts";
+import { ConfigArguments } from "https://deno.land/x/ddu_vim@v3.4.6/base/config.ts";
 import {
   ActionFlags,
   BaseConfig,
-} from "https://deno.land/x/ddu_vim@v3.2.7/types.ts";
-import { Params as FfParams } from "https://deno.land/x/ddu_ui_ff@v1.0.2/ff.ts";
+} from "https://deno.land/x/ddu_vim@v3.4.6/types.ts";
+import { Params as FfParams } from "https://deno.land/x/ddu_ui_ff@v1.1.0/ff.ts";
 import { ActionData as GitStatusActionData } from "https://raw.githubusercontent.com/kuuote/ddu-source-git_status/b7e491760203d390404166af52d84939b68f51f9/denops/%40ddu-kinds/git_status.ts";
 
 export class Config extends BaseConfig {
