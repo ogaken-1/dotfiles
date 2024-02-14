@@ -33,7 +33,7 @@ export type Command = {
   itemActions?: Record<string, string>;
 };
 
-export async function addCommand(denops: Denops) {
+export function addCommand(denops: Denops) {
   const commands = [
     file,
     buffer,
@@ -54,10 +54,10 @@ export async function addCommand(denops: Denops) {
     gitLog,
   ];
 
-  await defCommand(denops, commands);
+  defCommand(denops, commands);
 }
 
-async function defCommand(denops: Denops, commands: Command[]) {
+function defCommand(denops: Denops, commands: Command[]) {
   denops.dispatcher = {
     ...denops.dispatcher,
     ["ddu:exec"]: async (command: unknown) => {
@@ -80,24 +80,6 @@ async function defCommand(denops: Denops, commands: Command[]) {
       return commands.map((c) => (c.name)).join("\n");
     },
   };
-
-  await denops.cmd(
-    [
-      "function! DduCmdlineComplete(...) abort",
-      `return denops#request('${denops.name}', 'ddu:complete', [])`,
-      "endfunction",
-    ].join("\n"),
-  );
-
-  await denops.cmd(
-    [
-      "command",
-      "-nargs=1",
-      "-complete=custom,DduCmdlineComplete",
-      "Ddu",
-      `call denops#notify('${denops.name}', 'ddu:exec', [<f-args>])`,
-    ].join(" "),
-  );
 
   for (const command of commands) {
     addDispatcher(denops, command);
@@ -124,6 +106,9 @@ function addDispatcher(denops: Denops, command: Command) {
         `call denops#request('${denops.name}', 'ddu:${command.name}:mapKeys', [])`,
         { once: true },
       );
+      if (await denops.call("denops#plugin#wait", "ddu") !== 0) {
+        return;
+      }
       await denops.dispatch("ddu", "start", await command.exec(denops));
     },
     [`ddu:${command.name}:mapKeys`]: async () => {
