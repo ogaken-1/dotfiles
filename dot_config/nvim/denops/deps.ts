@@ -32,3 +32,6 @@ export type {
   SourceOptions as PublicSourceOptions,
   UserSource,
 } from "https://deno.land/x/ddc_vim@v4.0.4/types.ts";
+export type {
+  CompletionItem,
+} from "https://raw.githubusercontent.com/Shougo/ddc-source-nvim-lsp/a5620bcf08ad8f694c64c1659ce6e895aa88e8ce/denops/ddc-source-nvim-lsp/completion_item.ts";

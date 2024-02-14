@@ -1,4 +1,4 @@
-import { autocmd, DdcOptions, Denops } from "../../deps.ts";
+import { autocmd, CompletionItem, DdcOptions, Denops } from "../../deps.ts";
 import { getContext, setContext } from "../context.ts";
 import { getCurrent, patchBuffer, patchFiletype, patchGlobal } from "./call.ts";
 import {
@@ -14,6 +14,36 @@ type MyDdc = DdcOptions & {
   ui: "native" | "pum";
 };
 
+type LspKind = typeof CompletionItem.Kind[keyof typeof CompletionItem.Kind];
+
+const priority: LspKind[] = [
+  "Keyword",
+  "Snippet",
+  "Variable",
+  "Field",
+  "Property",
+  "Method",
+  "Function",
+  "Constructor",
+  "Class",
+  "Interface",
+  "Module",
+  "Unit",
+  "Value",
+  "Enum",
+  "Color",
+  "File",
+  "Reference",
+  "Folder",
+  "EnumMember",
+  "Constant",
+  "Struct",
+  "Event",
+  "Operator",
+  "TypeParameter",
+  "Text",
+];
+
 export async function main(denops: Denops) {
   await patchGlobal<MyDdc>(denops, {
     specialBufferCompletion: false,
@@ -26,6 +56,11 @@ export async function main(denops: Denops) {
     sourceOptions: {
       _: {
         dup: "keep",
+      },
+    },
+    filterParams: {
+      ["sorter_lsp-kind"]: {
+        priority,
       },
     },
     autoCompleteEvents: [

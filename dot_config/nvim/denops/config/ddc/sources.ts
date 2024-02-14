@@ -60,7 +60,9 @@ export const lspSource = async (denops: Denops): Promise<SourceConfig> => {
       confirmBehavior: "replace",
     },
     options: {
-      ...basicSourceOptions,
+      matchers: ["matcher_fuzzy"],
+      sorters: ["sorter_lsp-kind", "sorter_fuzzy"],
+      ignoreCase: true,
       mark: "[LS]",
       converters: ["converter_fuzzy", "converter_kind_labels"],
       minAutoCompleteLength: 1,
