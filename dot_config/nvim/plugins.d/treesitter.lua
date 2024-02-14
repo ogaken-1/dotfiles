@@ -1,6 +1,6 @@
 -- lua_source {{{
 local parser_dir = ('%s/treesitter'):format(vim.fn.stdpath 'data')
-vim.opt.runtimepath:append(parser_dir)
+vim.opt.runtimepath:prepend(parser_dir)
 
 -- Add ex parsers
 local parser_config = require 'nvim-treesitter.parsers'.get_parser_configs()
@@ -43,7 +43,6 @@ require 'nvim-treesitter.configs'.setup {
     enable = true,
     disable = {
       'sql',
-      'vimdoc',
     },
   },
   indent = {
