@@ -51,7 +51,8 @@ export function addCommand(denops: Denops) {
     plugin,
     gitBranch,
     resume,
-    gitLog,
+    gitLog({ showAll: true }),
+    gitLog({ showAll: false }),
   ];
 
   defCommand(denops, commands);
