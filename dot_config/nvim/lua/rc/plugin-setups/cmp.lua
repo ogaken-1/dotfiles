@@ -1,6 +1,9 @@
 local cmp = require 'cmp'
 local util = require 'rc.utils'
 local feedkeys = util.feedkeys
+local safeCall = function(name, ...)
+  return vim.fn.exists(('*%s'):format(name)) == 1 and vim.fn[name](...)
+end
 
 cmp.setup {
   enabled = function()
@@ -70,7 +73,7 @@ cmp.setup {
           select = true,
           behavior = cmp.ConfirmBehavior.Replace,
         }
-      elseif vim.fn['pum#visible']() then
+      elseif safeCall 'pum#visible' then
         vim.fn['pum#map#confirm']()
       elseif 1 == vim.fn.pumvisible() then
         if -1 == vim.fn.complete_info().selected then
@@ -78,7 +81,7 @@ cmp.setup {
         else
           feedkeys '<C-y>'
         end
-      elseif vim.fn['skkeleton#mode']() ~= '' then
+      elseif safeCall 'skkeleton#mode' ~= '' then
         -- NOTE:
         -- skkeletonはhenkan中のnewlineを<NL>で返してくるので、input(direct)の際の<CR>は壊れない
         local chars = string.gsub(
@@ -94,7 +97,7 @@ cmp.setup {
     ['<C-n>'] = function()
       if cmp.visible() then
         cmp.select_next_item { behavior = cmp.SelectBehavior.Insert }
-      elseif vim.fn['pum#visible']() then
+      elseif safeCall 'pum#visible' then
         vim.fn['pum#map#insert_relative'](1)
       elseif 1 == vim.fn.pumvisible() then
         feedkeys '<C-n>'
@@ -106,7 +109,7 @@ cmp.setup {
     ['<C-p>'] = function()
       if cmp.visible() then
         cmp.select_prev_item { behavior = cmp.SelectBehavior.Insert }
-      elseif vim.fn['pum#visible']() then
+      elseif safeCall 'pum#visible' then
         vim.fn['pum#map#insert_relative'](-1)
       elseif 1 == vim.fn.pumvisible() then
         feedkeys '<C-p>'
@@ -119,25 +122,25 @@ cmp.setup {
         feedkeys '<C-e>'
       elseif cmp.visible() then
         cmp.abort()
-      elseif vim.fn['pum#visible']() then
+      elseif safeCall 'pum#visible' then
         vim.fn['pum#map#cancel']()
       else
         fallback()
       end
     end,
     ['<Tab>'] = function(fallback)
-      if vim.fn['vsnip#jumpable'](1) == 1 then
+      if safeCall('vsnip#jumpable', 1) == 1 then
         feedkeys '<Plug>(vsnip-jump-next)'
-      elseif vim.fn['UltiSnips#CanJumpForwards']() == 1 then
+      elseif safeCall 'UltiSnips#CanJumpForwards' == 1 then
         feedkeys '<Plug>(ultisnips-jump-next)'
       else
         fallback()
       end
     end,
     ['<S-Tab>'] = function(fallback)
-      if vim.fn['vsnip#jumpable'](-1) == 1 then
+      if safeCall('vsnip#jumpable', -1) == 1 then
         feedkeys '<Plug>(vsnip-jump-prev)'
-      elseif vim.fn['UltiSnips#CanJumpBackwards']() == 1 then
+      elseif safeCall 'UltiSnips#CanJumpBackwards' == 1 then
         feedkeys '<Plug>(ultisnips-jump-previous)'
       else
         fallback()
@@ -152,7 +155,7 @@ cmp.setup.cmdline(':', {
       c = function()
         if cmp.visible() then
           cmp.select_next_item { behavior = cmp.SelectBehavior.Insert }
-        elseif vim.fn['pum#visible']() then
+        elseif safeCall 'pum#visible' then
           vim.fn['pum#map#insert_relative'](1)
         else
           feedkeys '<Tab>'
@@ -163,7 +166,7 @@ cmp.setup.cmdline(':', {
       c = function()
         if cmp.visible() then
           cmp.select_prev_item { behavior = cmp.SelectBehavior.Insert }
-        elseif vim.fn['pum#visible']() then
+        elseif safeCall 'pum#visible' then
           vim.fn['pum#map#insert_relative'](-1)
         else
           feedkeys '<S-Tab>'
@@ -174,7 +177,7 @@ cmp.setup.cmdline(':', {
       c = function(fallback)
         if cmp.visible() then
           cmp.close()
-        elseif vim.fn['pum#visible']() then
+        elseif safeCall 'pum#visible' then
           vim.fn['pum#map#cancel']()
         else
           fallback()
@@ -185,7 +188,7 @@ cmp.setup.cmdline(':', {
       c = function()
         if cmp.visible() then
           cmp.close()
-        elseif vim.fn['pum#visible']() then
+        elseif safeCall 'pum#visible' then
           vim.fn['pum#map#cancel']()
         end
         feedkeys '<C-f>'
@@ -209,7 +212,7 @@ cmp.setup.cmdline('/', {
       c = function()
         if cmp.visible() then
           cmp.select_next_item { behavior = cmp.SelectBehavior.Insert }
-        elseif vim.fn['pum#visible']() then
+        elseif safeCall 'pum#visible' then
           vim.fn['pum#map#insert_relative'](1)
           vim.cmd.redraw { bang = true }
         end
@@ -219,14 +222,14 @@ cmp.setup.cmdline('/', {
       c = function()
         if cmp.visible() then
           cmp.select_prev_item { behavior = cmp.SelectBehavior.Insert }
-        elseif vim.fn['pum#visible']() then
+        elseif safeCall 'pum#visible' then
           vim.fn['pum#map#insert_relative'](-1)
         end
       end,
     },
   },
   ['<C-f>'] = function()
-    if vim.fn['pum#visible']() then
+    if safeCall 'pum#visible' then
       vim.fn['pum#map#cancel']()
     end
     feedkeys '<C-f>'
