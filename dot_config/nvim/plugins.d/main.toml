@@ -79,6 +79,16 @@ hook_add = '''
   Keymap xo ib <Plug>(textobj-sandwich-auto-i)
   Keymap xo ab <Plug>(textobj-sandwich-auto-a)
 '''
+hook_source = '''
+  let g:sandwich#magicchar#f#patterns = [
+        \ #{
+        \   header: '\<\%(\h\k*\.\)*\h\k*',
+        \   bra: '(',
+        \   ket: ')',
+        \   footer: '',
+        \ },
+        \ ]
+'''
 
 # [ae]. によるomapを定義するのを楽にしてくれるやつ？
 # 依存してるプラグインがいくつかあるから入れてる
