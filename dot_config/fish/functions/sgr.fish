@@ -1,6 +1,6 @@
 function sgr -a command -a content
   if [ -z "$command" ]
-    echo 'sgr: command is required.'
+    echoerr 'sgr: command is required.'
     return 1
   end
 
@@ -11,11 +11,11 @@ function sgr -a command -a content
       if set -l idx (contains -i "$color" $colors)
         printf '\033[3%dm' (echo "$idx - 1" | bc)
       else
-        echo "color: '$color' is invalid."
+        echoerr "color: '$color' is invalid."
         return 1
       end
     case '*'
-      echo "sgr: command '$command' is not supported."
+      echoerr "sgr: command '$command' is not supported."
       return 1
   end
 
