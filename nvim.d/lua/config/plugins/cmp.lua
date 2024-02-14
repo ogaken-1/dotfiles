@@ -9,7 +9,7 @@ return {
   config = function()
     local cmp = require 'cmp'
     cmp.setup {
-      enabled = function ()
+      enabled = function()
         return vim.fn['skkeleton#mode']() == ''
       end,
       snippet = {
