@@ -16,7 +16,6 @@ hook_add = '''
         \ '--max-count=100',
         \ ]
 
-  AlterCmd gs GinStatus
   AlterCmd gb GinBranch
   lua vim.cmd.AlterCmd { 'gp', 'Gin push' }
   lua vim.cmd.AlterCmd { 'gpf', 'Gin push --force-with-lease --force-if-include' }
@@ -46,3 +45,18 @@ on_path = ['COMMIT_EDITMSG', 'MERGE_MSG']
 hook_add = '''
   let g:committia_open_only_vim_starting = 0
 '''
+
+[[plugins]]
+repo = 'NeogitOrg/neogit'
+on_cmd = 'Neogit'
+depends = 'plenary.nvim'
+hook_add = '''
+  AlterCmd gs Neogit
+'''
+lua_source = '''
+  require('neogit').setup {}
+'''
+
+[[plugins]]
+repo = 'sindrets/diffview.nvim'
+on_cmd = 'DiffviewOpen'
