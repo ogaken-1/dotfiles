@@ -64,6 +64,7 @@ export const lspSource = async (denops: Denops): Promise<SourceConfig> => {
       mark: "[LS]",
       converters: ["converter_fuzzy", "converter_kind_labels"],
       minAutoCompleteLength: 1,
+      forceCompletionPattern: "\\.",
     },
   };
 };

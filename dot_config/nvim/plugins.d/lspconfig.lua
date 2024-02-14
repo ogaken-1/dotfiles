@@ -6,11 +6,6 @@ if vim.env.NO_LSP then
   return
 end
 
-local ok, ddc_lsp = pcall(require, 'ddc_nvim_lsp_setup')
-if ok then
-  ddc_lsp.setup {}
-end
-
 local lspconfig = require 'lspconfig'
 
 if 1 == vim.fn.executable 'haskell-language-server-wrapper' then
