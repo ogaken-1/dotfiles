@@ -93,6 +93,15 @@ cmp.setup {
         else
           feedkeys '<C-y>'
         end
+      elseif vim.fn['skkeleton#mode']() ~= '' then
+        -- NOTE:
+        -- skkeletonはhenkan中のnewlineを<NL>で返してくるので、input(direct)の際の<CR>は壊れない
+        local chars = string.gsub(
+          vim.fn.keytrans(vim.fn['skkeleton#handle']('handleKey', { key = vim.keycode '<CR>', expr = true })),
+          '<NL>',
+          ''
+        )
+        vim.api.nvim_feedkeys(vim.keycode(chars), 'nit', false)
       else
         fallback()
       end
@@ -272,3 +281,21 @@ cmp.event:on('confirm_done', function(event)
     feedkeys(leximaExpand('i', snippetTrigger))
   end
 end)
+
+vim.api.nvim_create_autocmd('User', {
+  pattern = 'skkeleton-enable-pre',
+  group = 'VimRc',
+  desc = 'Retake <CR> handle from skkeleton',
+  callback = function(ctx)
+    ---@diagnostic disable-next-line: param-type-mismatch, undefined-field
+    local rhs = vim.fn.maparg('<CR>', 'i', nil, true).callback
+    vim.api.nvim_create_autocmd('User', {
+      group = 'VimRc',
+      once = true,
+      pattern = 'skkeleton-enable-post',
+      callback = function()
+        vim.keymap.set('i', '<CR>', rhs, { buffer = ctx.buf })
+      end,
+    })
+  end,
+})
