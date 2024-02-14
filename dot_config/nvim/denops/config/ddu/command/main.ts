@@ -52,10 +52,10 @@ export async function main(denops: Denops) {
     resume,
   ];
 
-  for (const command of commands) {
-    addDispatcher(denops, command);
-  }
+  await defCommand(denops, commands);
+}
 
+async function defCommand(denops: Denops, commands: Command[]) {
   denops.dispatcher = {
     ...denops.dispatcher,
     ["ddu:exec"]: async (command: unknown) => {
@@ -96,6 +96,10 @@ export async function main(denops: Denops) {
       `call denops#notify('${denops.name}', 'ddu:exec', [<f-args>])`,
     ].join(" "),
   );
+
+  for (const command of commands) {
+    addDispatcher(denops, command);
+  }
 }
 
 export function addDispatcher(denops: Denops, command: Command) {
