@@ -1,0 +1,4 @@
+[[plugins]]
+repo = 'nvim-telescope/telescope.nvim'
+on_lua = 'telescope'
+on_cmd = 'Telescope'

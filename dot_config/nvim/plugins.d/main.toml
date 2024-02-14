@@ -683,11 +683,6 @@ hook_add = '''
 '''
 
 [[plugins]]
-repo = 'nvim-telescope/telescope.nvim'
-if = false
-on_lua = 'telescope'
-
-[[plugins]]
 repo = 'ibhagwan/fzf-lua'
 on_lua = 'fzf-lua'
 on_cmd = 'FzfLua'
