@@ -105,38 +105,6 @@ end
 
 local ddu = {}
 
-function ddu.notify_window_size()
-  local lines = vim.opt.lines:get()
-  local height, row = math.floor(lines * 0.8), math.floor(lines * 0.1)
-  local columns = vim.opt.columns:get()
-  local width, col = math.floor(columns * 0.8), math.floor(columns * 0.1)
-
-  local previewSplit, previewHeight, previewWidth
-  if columns < 200 then
-    previewSplit = 'horizontal'
-    previewHeight = math.floor(height / 2)
-    previewWidth = width
-  else
-    previewSplit = 'vertical'
-    previewHeight = height
-    previewWidth = math.floor(width / 2)
-  end
-
-  vim.fn['ddu#custom#patch_global'] {
-    uiParams = {
-      ff = {
-        winHeight = height,
-        winRow = row,
-        winWidth = width,
-        winCol = col,
-        previewWidth = previewWidth,
-        previewHeight = previewHeight,
-        previewSplit = previewSplit,
-      },
-    },
-  }
-end
-
 ---@param config string|table
 function ddu.start(config)
   vim.fn['ddu#start'](normalize_config(config))
@@ -156,13 +124,6 @@ function ddu.add_custom_action(def)
 end
 
 function ddu.setup()
-  vim.api.nvim_create_autocmd('VimResized', {
-    group = 'VimRc',
-    callback = ddu.notify_window_size,
-  })
-
-  ddu.notify_window_size()
-
   nmap('<Plug>(ddu-buffers)', ddu.get_start_func 'buffer')
   nmap('<Plug>(ddu-files)', '<Plug>(ddu-files:buf)')
   nmap('<Plug>(ddu-files:buf)', ddu.get_start_func 'file_external')
