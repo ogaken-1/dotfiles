@@ -208,7 +208,7 @@
     :ensure t
     :custom (catppuccin-flavor . 'frappe))
 
-  (load-theme 'solarized-gruvbox-dark t))
+  (load-theme 'wombat t))
   
 (leaf rainbow-delimiters
   :doc "Highlight brackets according to theier depth"
