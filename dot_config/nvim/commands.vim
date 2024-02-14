@@ -66,3 +66,5 @@ function! s:Csharpier(fname = v:null) abort
   call v:lua.vim.lsp.semantic_tokens.force_refresh(a:fname->bufnr())
 endfunction
 autocmd VimRc FileType cs command! -bang -buffer Csharpier call s:Csharpier('<bang>' ==# '!' ? s:findRoot(bufname(), '.git') : bufname())
+
+command RefreshSemanticTokens lua vim.lsp.semantic_tokens.force_refresh(vim.api.nvim_get_current_buf())
