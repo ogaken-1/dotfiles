@@ -1,14 +1,17 @@
 import { Denops, is, uuid1 } from "../deps.ts";
 
+/**
+ * callbackはSerialize/Deserialize可能な引数しか受けとれないので注意
+ */
 export async function denopsCallback(
   denops: Denops,
-  f: (args: unknown[]) => unknown,
+  callback: (args: unknown[]) => unknown,
 ) {
   const method = `callback:${uuid1.generate()}`;
   denops.dispatcher = {
     ...denops.dispatcher,
     [method]: async (...args: unknown[]) => {
-      await f(args);
+      await callback(args);
     },
   };
 
