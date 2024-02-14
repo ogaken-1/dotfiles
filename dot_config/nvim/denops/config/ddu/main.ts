@@ -5,10 +5,10 @@ import { DduOptions } from "https://deno.land/x/ddu_vim@v3.5.1/types.ts";
 
 export async function main(denops: Denops) {
   await denops.batch(["ddu#custom#patch_global", globalConfig()]);
-  await watchVimSize(denops);
+  await watchVimSize(denops, "VimRc");
 }
 
-async function watchVimSize(denops: Denops) {
+async function watchVimSize(denops: Denops, augroup: string) {
   const fn = "notifyVimSize";
   denops.dispatcher = {
     ...denops.dispatcher,
@@ -51,6 +51,6 @@ async function watchVimSize(denops: Denops) {
   await denops.dispatcher[fn]();
 
   await denops.cmd(
-    `au VimRc VimResized * call denops#notify('${denops.name}', '${fn}', [])`,
+    `au ${augroup} VimResized * call denops#notify('${denops.name}', '${fn}', [])`,
   );
 }
