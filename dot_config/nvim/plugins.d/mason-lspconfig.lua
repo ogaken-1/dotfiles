@@ -21,7 +21,7 @@ require('mason-lspconfig').setup_handlers {
       organize_imports_on_format = false,
       enable_import_completion = false,
       analyze_open_documents_only = true,
-      root_dir = require('lspconfig.util').root_pattern '*.sln',
+      root_dir = require('lspconfig.util').root_pattern { '*.sln', '*.csproj' },
     }
   end,
   ['vtsls'] = function()
