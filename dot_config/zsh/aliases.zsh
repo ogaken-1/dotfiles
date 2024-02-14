@@ -1,6 +1,6 @@
 # exaが入ってるときはlsでexaを使う
-if which exa &> /dev/null; then
-  alias ls="exa --icons"
+if which eza &> /dev/null; then
+  alias ls="eza --icons"
 fi
 
 # シェルからEmacsを起動するときはTUIを起動する
