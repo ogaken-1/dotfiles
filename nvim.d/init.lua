@@ -27,7 +27,29 @@ do
   for _, key in ipairs { 'f', 'F', 't', 'T' } do
     vim.keymap.set({ 'n', 'x' }, key, jump_and_enter_submode(key), { expr = true })
   end
+
+  vim.keymap.set('n', ']q', '<Cmd>cnext<CR>')
+  vim.keymap.set('n', '[q', '<Cmd>cprevious<CR>')
+  vim.keymap.set('n', '<A-,>', '<Cmd>edit $MYVIMRC<CR>')
+
+  vim.api.nvim_create_autocmd('LspAttach', {
+    group = vim.api.nvim_create_augroup('config-lsp', { clear = true }),
+    callback = function(ctx)
+      local opts = { buffer = ctx.buf }
+      vim.keymap.set('n', 'ma', '<Cmd>FzfLua lsp_code_actions<CR>', opts)
+      vim.keymap.set('n', 'mr', '<Cmd>lua vim.lsp.buf.rename()<CR>', opts)
+      vim.keymap.set('n', 'gr', '<Cmd>FzfLua lsp_references<CR>', opts)
+      vim.keymap.set('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+      vim.keymap.set('n', ']d', '<Cmd>lua vim.diagnostic.goto_next()<CR>', opts)
+      vim.keymap.set('n', '[d', '<Cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
+    end,
+  })
 end
+
+vim.opt.helplang = { 'ja', 'en' }
+vim.opt.incsearch = true
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
 
 do
   vim.cmd.colorscheme 'habamax'

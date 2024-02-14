@@ -19,6 +19,14 @@ return {
         ctx.send '<Plug>(denippet-jump-next)'
       end,
     })
+    insx.add('<Tab>', {
+      enabled = function()
+        return vim.snippet.jumpable(1)
+      end,
+      action = function()
+        vim.snippet.jump(1)
+      end,
+    })
     insx.add('<C-n>', {
       enabled = function()
         return require('cmp').visible()

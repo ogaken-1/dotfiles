@@ -10,7 +10,10 @@ return {
         vim.keymap.set('n', ']c', '<Cmd>Gitsigns next_hunk<CR>', { buffer = bufnr })
         vim.keymap.set('n', '[c', '<Cmd>Gitsigns prev_hunk<CR>', { buffer = bufnr })
         vim.keymap.set('n', '<Space>hs', '<Cmd>Gitsigns stage_hunk<CR>', { buffer = bufnr })
+        vim.keymap.set('x', '<Space>hs', ':Gitsigns stage_hunk<CR>', { buffer = bufnr })
         vim.keymap.set('n', '<Space>hp', '<Cmd>Gitsigns preview_hunk<CR>', { buffer = bufnr })
+        vim.keymap.set('n', '<Space>hb', '<Cmd>Gitsigns blame_line<CR>', { buffer = bufnr })
+        vim.keymap.set('n', '<Space>hu', '<Cmd>Gitsigns reset_hunk<CR>', { buffer = bufnr })
       end,
     }
   end,
