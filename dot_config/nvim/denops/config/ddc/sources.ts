@@ -47,6 +47,7 @@ export const lspSource = (denops: Denops): SourceConfig => {
     params: {
       snippetEngine: async (body: unknown) => {
         await denops.call("vsnip#anonymous", body);
+        return await Promise.resolve();
       },
       enableResolveItem: true,
       enableAdditionalTextEdit: true,
