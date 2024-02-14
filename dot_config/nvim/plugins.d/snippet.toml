@@ -58,3 +58,5 @@ hook_add = '''
 [[plugins]]
 repo = 'SirVer/ultisnips'
 on_event = 'InsertEnter'
+merge_ftdetect = true
+on_ft = 'snippets'
