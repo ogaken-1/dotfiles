@@ -456,6 +456,7 @@ lua_source = '''
       'Method',
       'Struct',
       'Field',
+      'Property',
     },
   }
 '''
