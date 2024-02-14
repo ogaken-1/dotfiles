@@ -2,9 +2,6 @@
 [[plugins]]
 repo = 'Shougo/ddc.vim'
 depends = 'denops.vim'
-hook_add = '''
-  lua require 'rc.plugin-setups.ddc'
-'''
 
 # ddc.vimの補完メニューとしてpum.vimを使うためのやつ
 [[plugins]]
@@ -41,6 +38,27 @@ repo = 'Shougo/neco-vim'
 
 [[plugins]]
 repo = 'uga-rosa/ddc-preview.nvim'
+lua_add = '''
+  vim.api.nvim_create_autocmd('InsertEnter', {
+    group = 'VimRc',
+    once = true,
+    callback = function()
+      local preview = require 'ddc_previewer_floating'
+      preview.setup {
+        ui = 'native',
+        window_options = {
+          wrap = false,
+          number = false,
+          relativenumber = false,
+          signcolumn = 'no',
+          foldenable = false,
+          foldcolumn = '0',
+        },
+      }
+      preview.enable()
+    end,
+  })
+'''
 
 [[plugins]]
 repo = 'uga-rosa/ddc-nvim-lsp-setup'
