@@ -58,15 +58,7 @@ lua_add = '''
           foldcolumn = '0',
         },
       }
-      if vim.bo[e.buf].filetype == 'typescript' then
-        preview.enable()
-      else
-        vim.api.nvim_create_autocmd('FileType', {
-          once = true,
-          pattern = 'typescript',
-          callback = preview.enable,
-        })
-      end
+      preview.enable()
     end,
   })
 '''
