@@ -1,8 +1,9 @@
-import { DduOptions, Denops, opt } from "../../deps.ts";
+import { Denops, opt } from "../../deps.ts";
 import { globalConfig } from "./ff/global.ts";
+import { patchGlobal } from "./fn.ts";
 
 export async function main(denops: Denops) {
-  await denops.batch(["ddu#custom#patch_global", globalConfig()]);
+  await patchGlobal(denops, globalConfig());
   await watchVimSize(denops, "VimRc");
 }
 
@@ -27,22 +28,19 @@ async function watchVimSize(denops: Denops, augroup: string) {
         ? ["horizontal", Math.floor(winHeight / 2), winWidth]
         : ["vertical", winHeight, Math.floor(winWidth / 2)];
 
-      await denops.batch([
-        "ddu#custom#patch_global",
-        {
-          uiParams: {
-            ff: {
-              winHeight,
-              winRow,
-              winWidth,
-              winCol,
-              previewWidth,
-              previewHeight,
-              previewSplit,
-            },
+      await patchGlobal(denops, {
+        uiParams: {
+          ff: {
+            winHeight,
+            winRow,
+            winWidth,
+            winCol,
+            previewWidth,
+            previewHeight,
+            previewSplit,
           },
-        } satisfies Partial<DduOptions>,
-      ]);
+        },
+      });
     },
   };
 
