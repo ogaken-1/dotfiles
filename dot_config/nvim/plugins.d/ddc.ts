@@ -1,8 +1,16 @@
 import { ConfigArguments } from "https://deno.land/x/ddc_vim@v4.0.4/base/config.ts";
 import {
   BaseConfig,
+  SourceOptions,
   UserSource,
 } from "https://deno.land/x/ddc_vim@v4.0.4/types.ts";
+
+const basicSourceOptions: Partial<SourceOptions> = {
+  matchers: ["matcher_fuzzy"],
+  sorters: ["sorter_fuzzy"],
+  converters: ["converter_fuzzy"],
+  ignoreCase: true,
+};
 
 const generalSources: UserSource[] = [
   {
@@ -16,10 +24,8 @@ const generalSources: UserSource[] = [
   {
     name: "buffer",
     options: {
+      ...basicSourceOptions,
       mark: "[Buffer]",
-      matchers: ["matcher_fuzzy"],
-      sorters: ["sorter_fuzzy"],
-      converters: ["converter_fuzzy"],
       keywordPattern: "[a-zA-Z0-9-\_]+",
     },
     params: {
@@ -46,11 +52,9 @@ export class Config extends BaseConfig {
             confirmBehavior: "replace",
           },
           options: {
+            ...basicSourceOptions,
             mark: "[LS]",
-            matchers: ["matcher_fuzzy"],
-            sorters: ["sorter_fuzzy"],
             converters: ["converter_fuzzy", "converter_kind_labels"],
-            ignoreCase: true,
             minAutoCompleteLength: 1,
           },
         },
@@ -67,9 +71,7 @@ export class Config extends BaseConfig {
           {
             name: "cmdline",
             options: {
-              matchers: ["matcher_fuzzy"],
-              sorters: ["sorter_fuzzy"],
-              converters: ["converter_fuzzy"],
+              ...basicSourceOptions,
             },
           },
         ],
@@ -80,10 +82,8 @@ export class Config extends BaseConfig {
         {
           name: "necovim",
           options: {
+            ...basicSourceOptions,
             mark: "[Vim]",
-            matchers: ["matcher_fuzzy"],
-            sorters: ["sorter_fuzzy"],
-            converters: ["converter_fuzzy"],
           },
         },
         ...generalSources,
