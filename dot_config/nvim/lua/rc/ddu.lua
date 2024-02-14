@@ -33,36 +33,36 @@ local function multiActions(actions)
   end
 end
 
-local function notifyWindowSizeToDdu()
-  local lines = vim.opt.lines:get()
-  local height, row = math.floor(lines * 0.8), math.floor(lines * 0.1)
-  local columns = vim.opt.columns:get()
-  local width, col = math.floor(columns * 0.8), math.floor(columns * 0.1)
-
-  local previewSplit, previewHeight, previewWidth
-  if columns < 200 then
-    previewSplit = 'horizontal'
-    previewHeight = math.floor(height / 2)
-    previewWidth = width
+---@param bufnr integer
+---@param pattern? string
+---@return string|nil
+local function find_root(bufnr, pattern)
+  pattern = pattern or '.git'
+  local path
+  if vim.api.nvim_get_option_value('buftype', { buf = bufnr }) == '' then
+    local root = vim.fs.find(pattern, {
+      upward = true,
+      type = 'directory',
+      path = vim.api.nvim_buf_get_name(bufnr),
+      stop = vim.uv.os_homedir(),
+    })
+    if #root == 0 then
+      path = nil
+    else
+      path = vim.fs.dirname(root[1])
+    end
   else
-    previewSplit = 'vertical'
-    previewHeight = height
-    previewWidth = math.floor(width / 2)
+    path = nil
   end
+  return path
+end
 
-  vim.fn['ddu#custom#patch_global'] {
-    uiParams = {
-      ff = {
-        winHeight = height,
-        winRow = row,
-        winWidth = width,
-        winCol = col,
-        previewWidth = previewWidth,
-        previewHeight = previewHeight,
-        previewSplit = previewSplit,
-      },
-    },
-  }
+---A wrapper of vim.keymap.set()
+---@param lhs string
+---@param rhs string|function
+---@param opts? table
+local function nmap(lhs, rhs, opts)
+  vim.keymap.set('n', lhs, rhs, opts)
 end
 
 ---@enum DduActionFlags
@@ -82,7 +82,7 @@ local actionFlags = {
 
 ---@param config string|table
 ---@return table
-local function normalizeConfig(config)
+local function normalize_config(config)
   -- config is source name
   if type(config) == 'string' then
     return {
@@ -118,13 +118,45 @@ end
 
 local ddu = {}
 
----@param config string|table
-function ddu.start(config)
-  vim.fn['ddu#start'](normalizeConfig(config))
+function ddu.notify_window_size()
+  local lines = vim.opt.lines:get()
+  local height, row = math.floor(lines * 0.8), math.floor(lines * 0.1)
+  local columns = vim.opt.columns:get()
+  local width, col = math.floor(columns * 0.8), math.floor(columns * 0.1)
+
+  local previewSplit, previewHeight, previewWidth
+  if columns < 200 then
+    previewSplit = 'horizontal'
+    previewHeight = math.floor(height / 2)
+    previewWidth = width
+  else
+    previewSplit = 'vertical'
+    previewHeight = height
+    previewWidth = math.floor(width / 2)
+  end
+
+  vim.fn['ddu#custom#patch_global'] {
+    uiParams = {
+      ff = {
+        winHeight = height,
+        winRow = row,
+        winWidth = width,
+        winCol = col,
+        previewWidth = previewWidth,
+        previewHeight = previewHeight,
+        previewSplit = previewSplit,
+      },
+    },
+  }
 end
 
 ---@param config string|table
-function ddu.getStartFunc(config)
+function ddu.start(config)
+  vim.fn['ddu#start'](normalize_config(config))
+end
+
+---@param config string|table
+function ddu.get_start_func(config)
   return function()
     ddu.start(config)
   end
@@ -132,12 +164,12 @@ end
 
 ---@param def DduCustomActionDefinition
 ---@return nil
-function ddu.addCustomAction(def)
+function ddu.add_custom_action(def)
   vim.fn['ddu#custom#action'](def.type, def.name, def.actionName, def.func)
 end
 
 function ddu.setup()
-  ddu.addCustomAction {
+  ddu.add_custom_action {
     type = 'kind',
     name = 'file',
     actionName = 'openProject',
@@ -169,16 +201,12 @@ function ddu.setup()
         sources = {
           {
             name = 'file_external',
-          },
-        },
-        sourceParams = {
-          file_external = {
-            cmd = { 'git', 'ls-files', '-co', '--exclude-standard' },
-          },
-        },
-        sourceOptions = {
-          file_external = {
-            path = item.action.path,
+            params = {
+              cmd = { 'git', 'ls-files', '-co', '--exclude-standard' },
+            },
+            options = {
+              path = item.action.path,
+            },
           },
         },
       }
@@ -190,39 +218,14 @@ function ddu.setup()
 
   vim.api.nvim_create_autocmd('VimResized', {
     group = 'VimRc',
-    callback = notifyWindowSizeToDdu,
+    callback = ddu.notify_window_size,
   })
 
-  notifyWindowSizeToDdu()
+  ddu.notify_window_size()
 
-  ---A wrapper of vim.keymap.set()
-  ---@param lhs string
-  ---@param rhs string|function
-  ---@param opts? table
-  local function nmap(lhs, rhs, opts)
-    vim.keymap.set('n', lhs, rhs, opts)
-  end
-
-  nmap('<Plug>(ddu-buffers)', ddu.getStartFunc 'buffer')
+  nmap('<Plug>(ddu-buffers)', ddu.get_start_func 'buffer')
   nmap('<Plug>(ddu-files)', '<Plug>(ddu-files:buf)')
   nmap('<Plug>(ddu-files:buf)', function()
-    local bufnr = vim.api.nvim_get_current_buf()
-    local path
-    if vim.api.nvim_get_option_value('buftype', { buf = bufnr }) == '' then
-      local root = vim.fs.find('.git', {
-        upward = true,
-        type = 'directory',
-        path = vim.api.nvim_buf_get_name(bufnr),
-        stop = vim.uv.os_homedir(),
-      })
-      if #root == 0 then
-        path = nil
-      else
-        path = vim.fs.dirname(root[1])
-      end
-    else
-      path = nil
-    end
     vim.fn['ddu#start'] {
       name = 'default',
       resume = false,
@@ -230,20 +233,29 @@ function ddu.setup()
         {
           name = 'file_external',
           options = {
-            -- pathがnilである場合はlua的にはundefinedみたいになるので
-            -- デフォルトのcwdが使われる
-            path = path,
+            path = find_root(vim.api.nvim_get_current_buf()),
           },
         },
       },
     }
   end, { desc = 'バッファのあるプロジェクトのルートディレクトリからfdした結果をddu' })
-  nmap('<Plug>(ddu-files:cwd)', ddu.getStartFunc 'file_external')
-  nmap('<Plug>(ddu-rg)', ddu.getStartFunc 'rg')
-  nmap('<Plug>(ddu-lines)', ddu.getStartFunc 'line')
+  nmap('<Plug>(ddu-files:cwd)', ddu.get_start_func 'file_external')
+  nmap('<Plug>(ddu-rg)', function()
+    vim.fn['ddu#start'] {
+      sources = {
+        {
+          name = 'rg',
+          options = {
+            path = find_root(vim.api.nvim_get_current_buf()),
+          },
+        },
+      },
+    }
+  end)
+  nmap('<Plug>(ddu-lines)', ddu.get_start_func 'line')
   nmap(
     '<Plug>(ddu-mrw)',
-    ddu.getStartFunc {
+    ddu.get_start_func {
       uiParams = {
         ff = {
           startFilter = false,
@@ -261,11 +273,11 @@ function ddu.setup()
     }
   )
 
-  nmap('<Plug>(ddu-help_tags)', ddu.getStartFunc 'help')
+  nmap('<Plug>(ddu-help_tags)', ddu.get_start_func 'help')
 
   nmap(
     '<Plug>(ddu-lsp_implementations)',
-    ddu.getStartFunc {
+    ddu.get_start_func {
       uiParams = {
         ff = {
           startAutoAction = true,
@@ -285,7 +297,7 @@ function ddu.setup()
 
   nmap(
     '<Plug>(ddu-lsp_references)',
-    ddu.getStartFunc {
+    ddu.get_start_func {
       'lsp_references',
       uiParams = {
         ff = {
@@ -298,7 +310,7 @@ function ddu.setup()
 
   nmap(
     '<Plug>(ddu-resume)',
-    ddu.getStartFunc {
+    ddu.get_start_func {
       resume = true,
       name = 'default',
       uiParams = {
@@ -311,7 +323,7 @@ function ddu.setup()
 
   nmap(
     '<Plug>(ddu-config_files)',
-    ddu.getStartFunc {
+    ddu.get_start_func {
       'file_external',
       sourceOptions = {
         file_external = {
@@ -321,9 +333,9 @@ function ddu.setup()
     }
   )
 
-  vim.api.nvim_create_user_command('DduPlugins', ddu.getStartFunc 'dein', {})
-  vim.api.nvim_create_user_command('DduGhq', ddu.getStartFunc 'ghq', {})
-  vim.api.nvim_create_user_command('DduDenoModules', ddu.getStartFunc 'deno_module', {})
+  vim.api.nvim_create_user_command('DduPlugins', ddu.get_start_func 'dein', {})
+  vim.api.nvim_create_user_command('DduGhq', ddu.get_start_func 'ghq', {})
+  vim.api.nvim_create_user_command('DduDenoModules', ddu.get_start_func 'deno_module', {})
 
   vim.api.nvim_create_autocmd('FileType', {
     group = 'VimRc',
@@ -373,7 +385,7 @@ function ddu.setup()
   vim.keymap.set(
     'n',
     '<Plug>(lsp-codeAction)',
-    ddu.getStartFunc {
+    ddu.get_start_func {
       'lsp_codeAction',
       name = '_',
       uiParams = {
