@@ -264,7 +264,6 @@ function ddu.setup()
 
   vim.api.nvim_create_user_command('DduPlugins', ddu.get_start_func 'plugin', {})
   vim.api.nvim_create_user_command('DduGhq', ddu.get_start_func 'ghq', {})
-  vim.api.nvim_create_user_command('DduDenoModules', ddu.get_start_func 'deno_module', {})
 
   vim.api.nvim_create_autocmd('FileType', {
     group = 'VimRc',
