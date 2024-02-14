@@ -6,6 +6,11 @@ if vim.env.NO_LSP then
   return
 end
 
+local ok, ddc_lsp = pcall(require, 'ddc_nvim_lsp_setup')
+if ok then
+  ddc_lsp.setup()
+end
+
 local lspconfig = require 'lspconfig'
 
 local capabilities = require('rc.lsp.capabilities').get()

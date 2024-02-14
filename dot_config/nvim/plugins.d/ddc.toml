@@ -41,3 +41,6 @@ repo = 'Shougo/neco-vim'
 
 [[plugins]]
 repo = 'uga-rosa/ddc-preview.nvim'
+
+[[plugins]]
+repo = 'uga-rosa/ddc-nvim-lsp-setup'

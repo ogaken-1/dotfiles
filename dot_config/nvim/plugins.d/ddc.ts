@@ -20,6 +20,7 @@ const generalSources: UserSource[] = [
       matchers: ["matcher_fuzzy"],
       sorters: ["sorter_fuzzy"],
       converters: ["converter_fuzzy"],
+      keywordPattern: "[a-zA-Z0-9-\_]+",
     },
     params: {
       fromAltBuf: true,
@@ -50,7 +51,6 @@ export class Config extends BaseConfig {
             sorters: ["sorter_fuzzy"],
             converters: ["converter_fuzzy", "converter_kind_labels"],
             ignoreCase: true,
-            forceCompletionPattern: "\\.",
             minAutoCompleteLength: 1,
           },
         },
