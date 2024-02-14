@@ -660,6 +660,13 @@ hook_source = '''
         \   '?': wilder_search_renderer,
         \ })
         \ )
+
+  call dein#source(
+        \ dein#get()
+        \ ->filter({ _, p -> !p->get('is_sourced', 0) && p->has_key('on_cmd') })
+        \ ->values()
+        \ ->map({ _, p -> p.name })
+        \ )
 '''
 
 [[plugins]]
