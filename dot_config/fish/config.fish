@@ -34,4 +34,12 @@ if status --is-interactive
   abbr -a gpu 'git push -u origin "$(git branch --show-current)"'
   abbr -a gpf 'git push --force-if-includes --force-with-lease'
   abbr -a gf 'git fetch'
+
+  function _fishprompt_preexec --on-event fish_preexec
+    printf '\033]133;C\007'
+  end
+
+  function _fishprompt_postexec --on-event fish_postexec
+    printf '\033]133;D;%d\007' $status
+  end
 end
