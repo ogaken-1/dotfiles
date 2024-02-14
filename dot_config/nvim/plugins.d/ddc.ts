@@ -51,6 +51,16 @@ const bufferSource: SourceConfig = {
 const generalSources: SourceConfig[] = [
   skkSource,
   bufferSource,
+  {
+    name: "ultisnips",
+    options: {
+      matchers: ["matcher_fuzzy"],
+      mark: "US",
+    },
+    params: {
+      expandSnippets: true,
+    },
+  },
 ];
 
 const lspSource = (denops: Denops): SourceConfig => {

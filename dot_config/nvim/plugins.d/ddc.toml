@@ -44,3 +44,7 @@ repo = 'uga-rosa/ddc-preview.nvim'
 
 [[plugins]]
 repo = 'uga-rosa/ddc-nvim-lsp-setup'
+
+[[plugins]]
+repo = 'KentoOgata/ddc-source-ultisnips'
+rev = 'add-param-expandSnippets'
