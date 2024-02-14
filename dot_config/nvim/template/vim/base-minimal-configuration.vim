@@ -1,3 +1,4 @@
+let &rtp = $VIMRUNTIME
 const s:packpath = expand('<script>:p:h')
 let &packpath = s:packpath
 const s:ToPackPath = { name -> s:packpath .. '/pack/github.com/opt/' .. name }
