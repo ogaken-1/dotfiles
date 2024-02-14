@@ -4,10 +4,8 @@
 repo = 'lambdalisue/gin.vim'
 depends = 'denops.vim'
 hook_add = '''
-  " nnoremap <Plug>(git-status) <Cmd>GinStatus<CR>
   nnoremap <Plug>(git-commit) <Cmd>Gin commit -v<CR>
   nnoremap <Plug>(git-commit:amend) <Cmd>Gin commit -v --amend<CR>
-  " nnoremap <Plug>(git-branch) <Cmd>GinBranch<CR>
   nnoremap <Plug>(git-log:all) <Cmd>GinLog --all<CR>
   nnoremap <Plug>(git-log:current) <Cmd>GinLog -- %:p<CR>
 
@@ -42,3 +40,10 @@ hook_add = '''
   set signcolumn=yes
 '''
 hooks_file = '$DEIN_CONFIG_DIR/gitsigns.lua'
+
+[[plugins]]
+repo = 'rhysd/committia.vim'
+on_path = ['COMMIT_EDITMSG', 'MERGE_MSG']
+hook_add = '''
+  let g:committia_open_only_vim_starting = 0
+'''
