@@ -1,10 +1,10 @@
 import { Denops } from "https://deno.land/x/denops_std@v5.0.1/mod.ts";
 import * as opt from "https://deno.land/x/denops_std@v5.0.1/option/mod.ts";
-import { global } from "./ff/global.ts";
+import { globalConfig } from "./ff/global.ts";
 import { DduOptions } from "https://deno.land/x/ddu_vim@v3.5.1/types.ts";
 
 export async function main(denops: Denops) {
-  await denops.batch(["ddu#custom#patch_global", global()]);
+  await denops.batch(["ddu#custom#patch_global", globalConfig()]);
   await watchVimSize(denops);
 }
 

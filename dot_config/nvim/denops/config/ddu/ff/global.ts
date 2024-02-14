@@ -7,7 +7,7 @@ import {
   ActionData as GitStatusActionData,
 } from "https://raw.githubusercontent.com/kuuote/ddu-source-git_status/v1.0.0/denops/@ddu-kinds/git_status.ts";
 
-export function global(): Partial<DduOptions> {
+export function globalConfig(): Partial<DduOptions> {
   return {
     ui: "ff",
     uiParams: {
