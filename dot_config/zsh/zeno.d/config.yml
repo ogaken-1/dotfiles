@@ -1,7 +1,7 @@
 snippets:
   - name: git status
     keyword: gs
-    snippet: git status --short --branch
+    snippet: git status --short --branch -uall
   - name: git commit
     keyword: gci
     snippet: git commit
@@ -67,7 +67,7 @@ snippets:
     snippet: git push
   - name: git push --set-upstream
     keyword: gpu
-    snippet: git push --set-upstream origin {{branch}}
+    snippet: git push --set-upstream origin "$(git branch --show-current)"
   - name: git push force
     keyword: gpf
     snippet: git push --force-if-includes --force-with-lease
@@ -76,7 +76,7 @@ snippets:
     snippet: dotnet build --nologo --no-restore
   - name: ghq cd
     keyword: gcd
-    snippet: cd "$(ghq list --full-path '{{query}}'| fzf)"
+    snippet: cd "$(ghq list --full-path | fzf)"
   - name: dotnet test
     keyword: dt
     snippet: dotnet test --nologo --no-restore
