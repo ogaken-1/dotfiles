@@ -229,7 +229,7 @@ local setup = function()
     {
       priority = -1,
       action = function(ctx)
-        ctx.send '<Tab>'
+        ctx.send '<C-z>'
       end
     }
   })
@@ -256,9 +256,17 @@ local setup = function()
       end
     },
     {
-      priority = -1,
+      enabled = function()
+        return 1 == vim.fn.pumvisible()
+      end,
       action = function(ctx)
         ctx.send '<S-Tab>'
+      end,
+    },
+    {
+      priority = -1,
+      action = function(ctx)
+        ctx.send '<C-z>'
       end
     }
   })
