@@ -25,5 +25,5 @@ gcd () {
 }
 
 attach () {
-  tmux a -t "$(tmux ls | fzf | sed -E 's/\s.\+///')"
+  tmux a -t "$(tmux ls -F '#{session_name}' | fzf)"
 }
