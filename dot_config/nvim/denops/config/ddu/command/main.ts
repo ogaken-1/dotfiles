@@ -23,6 +23,7 @@ import { command as plugin } from "./plugin.ts";
 import { command as gitBranch } from "./gitBranch.ts";
 import { command as resume } from "./resume.ts";
 import { command as gitLog } from "./gitLog.ts";
+import { command as gitDiff } from "./gitDiff.ts";
 
 export type Command = {
   name: string;
@@ -53,6 +54,7 @@ export function addCommand(denops: Denops) {
     resume,
     gitLog({ showAll: true }),
     gitLog({ showAll: false }),
+    gitDiff,
   ];
 
   defCommand(denops, commands);
