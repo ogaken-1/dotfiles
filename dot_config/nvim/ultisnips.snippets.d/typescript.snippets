@@ -5,3 +5,9 @@ endsnippet
 snippet import "import { foo } from source"
 import { ${5:imports} } from "${1:source}";
 endsnippet
+snippet unpack-object "const { foo } = bar;"
+const { $0 } = $1;
+endsnippet
+snippet unpack-list "const [foo] = bar;"
+const [$0] = $1;
+endsnippet
