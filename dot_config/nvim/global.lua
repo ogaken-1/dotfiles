@@ -3,7 +3,7 @@
 vim.bool_fn = setmetatable({}, {
   __index = function(_, key)
     return function(...)
-      return not vim.fn.empty(vim.fn[key](...))
+      return vim.fn.empty(vim.fn[key](...)) == 0
     end
   end,
 })
