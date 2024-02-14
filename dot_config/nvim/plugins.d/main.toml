@@ -630,6 +630,36 @@ hook_add = '''
 repo = 'ibhagwan/fzf-lua'
 on_lua = 'fzf-lua'
 on_cmd = 'FzfLua'
+hook_add = '''
+  function! s:FzfInWorktree(action) abort
+    exec 'FzfLua' a:action 'cwd='..gin#util#worktree(bufname())
+  endfunction
+
+  function! g:MapFzfLua() abort
+    nnoremap <Plug>(ff-files) <Cmd>call <SID>FzfInWorktree('files')<CR>
+    nnoremap <Plug>(ff-config_files) <Cmd>exec 'FzfLua' 'files' 'cwd='..systemlist('chezmoi source-path')[0]<CR>
+    nnoremap <Plug>(ff-grep) <Cmd>call <SID>FzfInWorktree('live_grep')<CR>
+    nnoremap <Plug>(ff-help_tags) <Cmd>FzfLua help_tags<CR>
+    nnoremap <Plug>(ff-grep_help) <Cmd>echoerr "not supoprted."<CR>
+    nnoremap <Plug>(ff-lines) <Cmd>FzfLua blines<CR>
+    nnoremap <Plug>(ff-buffers) <Cmd>FzfLua buffers<CR>
+    nnoremap <Plug>(ff-resume) <Cmd>FzfLua resume<CR>
+    nnoremap <Plug>(ff-mrw) <Cmd>FzfLua oldfiles<CR>
+    nnoremap <Plug>(ff-lsp_implementations) <Cmd>FzfLua lsp_implementations<CR>
+    nnoremap <Plug>(ff-lsp_references) <Cmd>FzfLua lsp_references<CR>
+    nnoremap <Plug>(lsp-codeAction) <Cmd>FzfLua lsp_code_actions<CR>
+    lua << EOF
+    vim.ui.select = function(...)
+      vim.cmd.FzfLua 'register_ui_select'
+      vim.ui.select(...)
+    end
+EOF
+    nnoremap <Plug>(git-status) <Cmd>call <SID>FzfInWorktree('git_status')<CR>
+  endfunction
+  if $NVIM_FF ==# 'fzf-lua'
+    call MapFzfLua()
+  endif
+'''
 lua_source = '''
   local actions = require 'fzf-lua.actions'
   require('fzf-lua').setup {
