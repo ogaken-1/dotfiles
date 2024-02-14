@@ -1,12 +1,12 @@
 import { autocmd, Denops, map, opt } from "../../deps.ts";
 import { globalConfig } from "./global.ts";
 import { patchGlobal } from "./call.ts";
-import { main as commandMain } from "./command/main.ts";
+import { addCommand } from "./command/main.ts";
 
 export async function main(denops: Denops) {
   await patchGlobal(denops, globalConfig());
   await watchVimSize(denops, "VimRc");
-  await commandMain(denops);
+  await addCommand(denops);
   await defineFinderKeymaps(denops);
 }
 

@@ -32,7 +32,7 @@ export type Command = {
   itemActions?: Record<string, string>;
 };
 
-export async function main(denops: Denops) {
+export async function addCommand(denops: Denops) {
   const commands = [
     file,
     buffer,
