@@ -1,6 +1,10 @@
 import { ConfigArguments } from "https://deno.land/x/ddu_vim@v3.2.7/base/config.ts";
-import { BaseConfig } from "https://deno.land/x/ddu_vim@v3.2.7/types.ts";
+import {
+  ActionFlags,
+  BaseConfig,
+} from "https://deno.land/x/ddu_vim@v3.2.7/types.ts";
 import { Params as FfParams } from "https://deno.land/x/ddu_ui_ff@v1.0.2/ff.ts";
+import { ActionData as GitStatusActionData } from "https://raw.githubusercontent.com/kuuote/ddu-source-git_status/b7e491760203d390404166af52d84939b68f51f9/denops/%40ddu-kinds/git_status.ts";
 
 export class Config extends BaseConfig {
   override config(args: ConfigArguments): Promise<void> {
@@ -53,7 +57,7 @@ export class Config extends BaseConfig {
           defaultAction: "openProject",
         },
         file_external: {
-          converters: ["converter_hl_dir"],
+          converters: ["converter_hl_dir", "converter_devicon"],
         },
         deno_module: {
           volatile: true,
@@ -91,6 +95,24 @@ export class Config extends BaseConfig {
         },
         git_status: {
           defaultAction: "open",
+          actions: {
+            chaperon: async (args) => {
+              const { denops, items } = args;
+              for (const item of items) {
+                const action = item.action as GitStatusActionData;
+                await denops.cmd(`GinChaperon ${action.path}`);
+              }
+              return ActionFlags.None;
+            },
+            patch: async (args) => {
+              const { denops, items } = args;
+              for (const item of items) {
+                const action = item.action as GitStatusActionData;
+                await denops.cmd(`GinPatch ${action.path}`);
+              }
+              return ActionFlags.None;
+            },
+          },
         },
       },
       kindParams: {

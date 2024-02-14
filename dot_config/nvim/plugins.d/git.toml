@@ -3,18 +3,14 @@
 [[plugins]]
 repo = 'lambdalisue/gin.vim'
 depends = 'denops.vim'
-on_cmd = [
-  'GinStatus',
-  'GinBranch',
-  'Gin',
-]
+on_cmd = ['GinStatus', 'GinBranch', 'Gin', 'GinPatch', 'GinChaperon']
 hook_add = '''
-  nnoremap <space>aa <Cmd>GinStatus<CR>
-  nnoremap <space>ac <Cmd>Gin commit -v<CR>
-  nnoremap <space>aC <Cmd>Gin commit -v --amend<CR>
-  nnoremap <space>ab <Cmd>GinBranch<CR>
-  nnoremap <Space>ah <Cmd>GinLog --all<CR>
-  nnoremap <Space>aH <Cmd>GinLog -- %:p<CR>
+  " nnoremap <Plug>(git-status) <Cmd>GinStatus<CR>
+  nnoremap <Plug>(git-commit) <Cmd>Gin commit -v<CR>
+  nnoremap <Plug>(git-commit:amend) <Cmd>Gin commit -v --amend<CR>
+  nnoremap <Plug>(git-branch) <Cmd>GinBranch<CR>
+  nnoremap <Plug>(git-log:all) <Cmd>GinLog --all<CR>
+  nnoremap <Plug>(git-log:current) <Cmd>GinLog -- %:p<CR>
 
   let g:gin_log_default_args = [
         \ '--graph',

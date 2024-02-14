@@ -4,23 +4,6 @@ repo = 'neovim/nvim-lspconfig'
 on_event = 'FileType'
 hooks_file = '$DEIN_CONFIG_DIR/lspconfig.lua'
 
-# lua language serverにneovimのlua apiの情報を渡してくれる
-[[plugins]]
-repo = 'folke/neodev.nvim'
-on_source = 'nvim-lspconfig'
-lua_source = '''
-  require('neodev').setup {
-    library = {
-      enabled = true,
-      runtime = true,
-      types = true,
-      plugins = true,
-    },
-    setup_jsonls = true,
-    lspconfig = true,
-  }
-'''
-
 # neovimで使う関連ツール(LS/formatter/linter)をインストールする
 [[plugins]]
 repo = 'williamboman/mason.nvim'
@@ -100,7 +83,7 @@ lua_source = '''
         end,
         extra_filetypes = { 'PKGBUILD' }
       },
-      null_ls.builtins.diagnostics.markdownlint,
+      -- null_ls.builtins.diagnostics.markdownlint,
     },
   }
 '''

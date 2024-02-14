@@ -60,7 +60,17 @@ local function on_attach(context)
     group = 'VimRc',
     callback = function()
       if vim.g.FormatOnSaveEnabled then
-        vim.lsp.buf.format { async = false }
+        vim.lsp.buf.format {
+          async = false,
+          filter = function(client)
+            local servers = {
+              'tsserver',
+              'lua_ls',
+              'omnisharp',
+            }
+            return not vim.list_contains(servers, client.name)
+          end,
+        }
       end
     end,
   })

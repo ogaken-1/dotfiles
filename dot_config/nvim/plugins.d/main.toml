@@ -390,8 +390,8 @@ on_cmd = 'ShowtimeStart'
 # :terminalでnvim実行したときに新しいタブで開いてくれる
 # TODO: 遅延読み込み
 # plugin/あるから遅延したいけど遅延設定むずいすこれ
-[[plugins]]
-repo = 'lambdalisue/guise.vim'
+# [[plugins]]
+# repo = 'lambdalisue/guise.vim'
 
 # `:ReadmeOpen {plugin}`を実行するとREADME.mdが見れる
 [[plugins]]
@@ -451,7 +451,18 @@ lua_source = '''
         conf.row = 0
         return conf
       end,
-    }
+    },
+    filter_kind = {
+      'Class',
+      'Constructor',
+      'Enum',
+      'Function',
+      'Interface',
+      'Module',
+      'Method',
+      'Struct',
+      'Field',
+    },
   }
 '''
 

@@ -33,6 +33,15 @@ nnoremap <Space>fz <Plug>(ff-mrw)
 " <Space>f<Esc>の場合に<Space>が実行されるのを回避
 nnoremap <Space>f <Nop>
 
+" Git integrations
+nnoremap <Space>aa <Plug>(git-status)
+nnoremap <Space>ac <Plug>(git-commit)
+nnoremap <Space>aC <Plug>(git-commit:amend)
+nnoremap <Space>ah <Plug>(git-log)
+nnoremap <Plug>(git-log) <Plug>(git-log:all)
+nnoremap <Space>aH <Plug>(git-log:current)
+nnoremap <Space>ab <Plug>(git-branch)
+
 " ファイルに紐付いているバッファならその親ディレクトリを指定する
 " そうでない場合はcwd
 nnoremap <space>e <Cmd>execute 'edit' (&l:buftype->empty() ? '%:p:h' : '.')<CR>

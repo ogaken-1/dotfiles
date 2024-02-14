@@ -114,27 +114,27 @@ local function normalizeConfig(config)
   return {}
 end
 
+local ddu = {}
+
 ---@param config string|table
-local function dduStart(config)
+function ddu.start(config)
   vim.fn['ddu#start'](normalizeConfig(config))
 end
 
-local ddu = {
-  ---@param def DduCustomActionDefinition
-  ---@return nil
-  addCustomAction = function(def)
-    vim.fn['ddu#custom#action'](def.type, def.name, def.actionName, def.func)
-  end,
-  ---@param config string|table
-  getStartFunc = function(config)
-    return function()
-      dduStart(config)
-    end
-  end,
-  start = dduStart,
-}
+---@param config string|table
+function ddu.getStartFunc(config)
+  return function()
+    ddu.start(config)
+  end
+end
 
-local function setup()
+---@param def DduCustomActionDefinition
+---@return nil
+function ddu.addCustomAction(def)
+  vim.fn['ddu#custom#action'](def.type, def.name, def.actionName, def.func)
+end
+
+function ddu.setup()
   ddu.addCustomAction {
     type = 'kind',
     name = 'file',
@@ -381,7 +381,7 @@ local function setup()
     }
   )
 
-  vim.keymap.set('n', '<Space>aa', function()
+  vim.keymap.set('n', '<Plug>(git-status)', function()
     vim.fn['ddu#start'] {
       sources = {
         {
@@ -400,12 +400,4 @@ local function setup()
   end)
 end
 
-return setmetatable(ddu, {
-  __index = function(t, k)
-    if k == 'setup' then
-      return setup
-    else
-      return t[k]
-    end
-  end,
-})
+return ddu

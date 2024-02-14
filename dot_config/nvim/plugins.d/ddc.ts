@@ -1,5 +1,8 @@
 import { ConfigArguments } from "https://deno.land/x/ddc_vim@v3.9.0/base/config.ts";
-import { BaseConfig, UserSource } from "https://deno.land/x/ddc_vim@v3.9.0/types.ts";
+import {
+  BaseConfig,
+  UserSource,
+} from "https://deno.land/x/ddc_vim@v3.9.0/types.ts";
 
 const generalSources: UserSource[] = [
   {

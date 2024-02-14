@@ -15,9 +15,14 @@ select-word-style bash
 
 zinit load zdharma-continuum/fast-syntax-highlighting
 
+if which dotnet &> /dev/null; then
+  zinit load memark/zsh-dotnet-completion
+fi
+
 if which starship &> /dev/null; then
   eval "$(starship init zsh)"
 fi
-if which neofetch &> /dev/null; then
-  neofetch
-fi
+
+# if which neofetch &> /dev/null; then
+#   neofetch
+# fi
