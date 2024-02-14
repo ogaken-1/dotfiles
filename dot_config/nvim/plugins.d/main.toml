@@ -251,7 +251,7 @@ lazy = true
 # サイズがでかいのとスクリプトを実行するわけではないのでマージしない
 merged = false
 hook_add = '''
-set helplang=ja,en
+  set helplang=en,ja
 '''
 
 # 選択範囲をChatGPTに投げつける
