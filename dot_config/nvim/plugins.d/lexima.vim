@@ -70,6 +70,12 @@ call s:add_rules(
       \   ]
       \ )
 
+call lexima#add_rule(#{ filetype: ['javascript', 'typescript'], char: '*', at: '\/\%#', input_after: '*/' })
+call lexima#add_rule(#{ filetype: ['javascript', 'typescript'], char: '<Space>', at: '\/\*\{1,2}\%#\*\/', input_after: '<Space>' })
+call lexima#add_rule(#{ filetype: ['javascript', 'typescript'], char: '<BS>', at: '\/\*\{1,2}\s\%#\s\*\/', input: '<BS><DEL>' })
+call lexima#add_rule(#{ filetype: ['javascript', 'typescript'], char: '<BS>', at: '\/\*\%#\*\/', input_after: '<BS><BS><DEL><DEL>' })
+call lexima#add_rule(#{ filetype: ['javascript', 'typescript'], char: '<BS>', at: '\/\*\*\%#\*\/', input_after: '<BS><BS><BS><DEL><DEL>' })
+
 call s:add_rules(
       \ #{ filetype: 'razor' },
       \ [
