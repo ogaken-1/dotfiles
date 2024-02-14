@@ -1288,4 +1288,13 @@ lua_source = '''
   }
 '''
 
+[[plugins]]
+repo = 'rcarriga/nvim-notify'
+lua_add = '''
+vim.notify = function(...)
+  vim.notify = require('notify')
+  vim.notify(...)
+end
+'''
+
 # vim:ft=toml expandtab tabstop=2 shiftwidth=2
