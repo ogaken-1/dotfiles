@@ -13,6 +13,10 @@ local function vsnip_jumpable(count)
       1 == vim.fn['vsnip#jumpable'](count)
 end
 
+local function lexima_installed()
+  return 1 == vim.fn.exists '*lexima#expand'
+end
+
 local setup = function()
   local insx = require 'insx'
 
@@ -37,10 +41,7 @@ local setup = function()
     },
     {
       priority = -1,
-      enabled = function()
-        return 1 ==
-            vim.fn.exists '*lexima#expand'
-      end,
+      enabled = lexima_installed,
       action = function(ctx)
         ctx.send(vim.fn.keytrans(vim.fn['lexima#expand']('<CR>', 'i')))
       end,
@@ -131,9 +132,7 @@ local setup = function()
     },
     {
       priority = -1,
-      enabled = function()
-        return 1 == vim.fn.exists '*lexima#expand'
-      end,
+      enabled = lexima_installed,
       action = function(ctx)
         ctx.send(vim.fn.keytrans(vim.fn['lexima#expand']('<TAB>', 'i')))
       end,
@@ -159,9 +158,7 @@ local setup = function()
     },
     {
       priority = -1,
-      enabled = function()
-        return 1 == vim.fn.exists '*lexima#expand'
-      end,
+      enabled = lexima_installed,
       action = function(ctx)
         ctx.send(vim.fn.keytrans(vim.fn['lexima#expand']('<S-TAB>', 'i')))
       end,
