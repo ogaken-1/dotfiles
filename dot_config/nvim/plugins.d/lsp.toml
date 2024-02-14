@@ -67,20 +67,7 @@ repo = 'nvimtools/none-ls.nvim'
 depends = 'plenary.nvim'
 on_event = ['BufReadPost', 'BufNewFile']
 lua_source = '''
-  local null_ls = require 'null-ls'
-  local null_ls_utils = require('null-ls.utils').make_conditional_utils()
-  null_ls.setup {
-    sources = {
-      null_ls.builtins.formatting.stylua,
-      null_ls.builtins.diagnostics.shellcheck.with {
-        extra_args = function(params)
-          return { '--exclude', 'SC2148' }
-        end,
-        extra_filetypes = { 'zsh' },
-      },
-      -- null_ls.builtins.diagnostics.markdownlint,
-    },
-  }
+  require('config.plugins.null-ls').config()
 '''
 
 # 使ってない変数を暗くハイライトしてくれる
