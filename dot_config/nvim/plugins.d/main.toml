@@ -547,6 +547,33 @@ repo = 'tani/vim-artemis'
 [[plugins]]
 repo = 'nvim-neorg/neorg'
 merged = false
+hook_post_update = 'Neorg sync-parsers'
+lua_add = '''
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'norg',
+  once = true,
+  group = 'VimRc',
+  callback = function()
+    require("neorg").setup {
+      load = {
+        ["core.defaults"] = {},
+        ["core.concealer"] = {},
+        ["core.dirman"] = {
+          config = {
+            workspaces = {
+              notes = "~/notes",
+            },
+            default_workspace = "notes",
+          },
+        },
+      },
+    }
+
+    vim.wo.foldlevel = 99
+    vim.wo.conceallevel = 2
+  end,
+})
+'''
 
 [[plugins]]
 repo = 'KentoOgata/vim-colorcolumn'
