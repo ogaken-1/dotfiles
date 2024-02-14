@@ -52,12 +52,6 @@ export class Config extends BaseConfig {
           sorters: [],
           converters: [],
         },
-        dein: {
-          defaultAction: "openProject",
-        },
-        ghq: {
-          defaultAction: "openProject",
-        },
         file_external: {
           converters: ["converter_hl_dir", "converter_devicon"],
         },
@@ -128,6 +122,9 @@ export class Config extends BaseConfig {
         },
         git_branch: {
           defaultAction: "switch",
+        },
+        git_repo: {
+          defaultAction: "find",
         },
       },
       kindParams: {

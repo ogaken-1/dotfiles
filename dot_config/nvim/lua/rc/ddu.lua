@@ -156,51 +156,6 @@ function ddu.add_custom_action(def)
 end
 
 function ddu.setup()
-  ddu.add_custom_action {
-    type = 'kind',
-    name = 'file',
-    actionName = 'openProject',
-    func = function(args)
-      if #args.items == 0 then
-        return actionFlags.None
-      end
-      local item = args.items[1]
-      vim.api.nvim_create_autocmd('FileType', {
-        pattern = 'ddu-ff',
-        once = true,
-        callback = function(ctx)
-          local wins = vim
-            .iter(vim.api.nvim_tabpage_list_wins(0))
-            :filter(function(win)
-              return vim.api.nvim_win_get_buf(win) == ctx.buf
-            end)
-            :totable()
-
-          if #wins == 0 then
-            return
-          end
-          local win = wins[1]
-
-          vim.wo[win].winbar = item.action.path
-        end,
-      })
-      vim.fn['ddu#start'] {
-        sources = {
-          {
-            name = 'file_external',
-            params = {
-              cmd = { 'git', 'ls-files', '-co', '--exclude-standard' },
-            },
-            options = {
-              path = item.action.path,
-            },
-          },
-        },
-      }
-      return actionFlags.None
-    end,
-  }
-
   vim.fn['ddu#custom#load_config'](vim.fs.joinpath(vim.env.DEIN_CONFIG_DIR, 'ddu.ts'))
 
   vim.api.nvim_create_autocmd('VimResized', {
@@ -327,7 +282,7 @@ function ddu.setup()
     }
   )
 
-  vim.api.nvim_create_user_command('DduPlugins', ddu.get_start_func 'dein', {})
+  vim.api.nvim_create_user_command('DduPlugins', ddu.get_start_func 'plugin', {})
   vim.api.nvim_create_user_command('DduGhq', ddu.get_start_func 'ghq', {})
   vim.api.nvim_create_user_command('DduDenoModules', ddu.get_start_func 'deno_module', {})
 

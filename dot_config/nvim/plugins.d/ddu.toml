@@ -70,9 +70,6 @@ lua_add = '''
 repo = 'kuuote/ddu-source-mr'
 
 [[plugins]]
-repo = '4513ECHO/ddu-source-ghq'
-
-[[plugins]]
 repo = 'Shougo/ddu-source-action'
 
 [[plugins]]
@@ -86,3 +83,6 @@ repo = 'kuuote/ddu-source-git_status'
 
 [[plugins]]
 repo = 'kyoh86/ddu-source-git_branch'
+
+[[plugins]]
+repo = 'KentoOgata/ddu-kind-git_repo'
