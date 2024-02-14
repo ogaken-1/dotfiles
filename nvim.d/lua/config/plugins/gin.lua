@@ -27,5 +27,15 @@ return {
         end
       end,
     })
+    vim.g.gin_patch_disable_default_mappings = true
+    vim.g.gin_chaperon_disable_default_mappings = true
+    vim.api.nvim_create_autocmd('BufReadCmd', {
+      group = gid,
+      pattern = 'ginedit://*',
+      callback = function(ctx)
+        vim.keymap.set('n', 'dor', '<Plug>(gin-diffget-r)', { buffer = ctx.buf })
+        vim.keymap.set('n', 'dol', '<Plug>(gin-diffget-l)', { buffer = ctx.buf })
+      end,
+    })
   end,
 }
