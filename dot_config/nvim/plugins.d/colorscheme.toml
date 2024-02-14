@@ -168,3 +168,9 @@ repo = 'kyoh86/momiji'
 hook_add = '''
   call add(g:Themes, 'momiji')
 '''
+
+[[plugins]]
+repo = 'aereal/vim-colors-japanesque'
+hook_add = '''
+  call add(g:Themes, 'japanesque')
+'''
