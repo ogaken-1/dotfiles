@@ -168,3 +168,9 @@ repo = 'aereal/vim-colors-japanesque'
 hook_add = '''
   call add(g:Themes, 'japanesque')
 '''
+
+[[plugins]]
+repo = 'sigmavim/kyotonight'
+hook_add = '''
+  call add(g:Themes, 'kyotonight')
+'''
