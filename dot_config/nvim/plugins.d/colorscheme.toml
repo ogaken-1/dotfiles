@@ -112,12 +112,6 @@ hook_add = '''
 '''
 
 [[plugins]]
-repo = 'Julpikar/night-owl.nvim'
-hook_add = '''
-  call add(g:Themes, 'night-owl')
-'''
-
-[[plugins]]
 repo = 'catppuccin/nvim'
 name = 'catppuccin'
 hook_add = '''
