@@ -6,9 +6,30 @@ depends = 'plenary.nvim'
 hook_add = '''
   AlterCmd t Telescope
 
+  function! s:TelescopeInWorktree(action) abort
+    exec 'Telescope' a:action 'cwd='..gin#util#worktree(bufname())
+  endfunction
+
   function! g:MapTelescope() abort
-    nnoremap <Plug>(ff-files) <Cmd>Telescope find_files<CR>
-    nnoremap <Plug>(ff-config_files) <Cmd>exec 'Telescope' 'find_files' 'cwd='..system('chezmoi source-path')<CR>
+    nnoremap <Plug>(ff-files) <Cmd>call <SID>TelescopeInWorktree('find_files')<CR>
+    nnoremap <Plug>(ff-config_files) <Cmd>exec 'Telescope' 'find_files' 'cwd='..systemlist('chezmoi source-path')[0]<CR>
+    nnoremap <Plug>(ff-grep) <Cmd>call <SID>TelescopeInWorktree('live_grep')<CR>
+    nnoremap <Plug>(ff-help_tags) <Cmd>Telescope help_tags<CR>
+    nnoremap <Plug>(ff-grep_help) <Cmd>echoerr "not supoprted."<CR>
+    nnoremap <Plug>(ff-lines) <Cmd>Telescope current_buffer_fuzzy_find<CR>
+    nnoremap <Plug>(ff-buffers) <Cmd>Telescope buffers<CR>
+    nnoremap <Plug>(ff-resume) <Cmd>Telescope resume<CR>
+    nnoremap <Plug>(ff-mrw) <Cmd>Telescope oldfiles<CR>
+    nnoremap <Plug>(ff-lsp_implementations) <Cmd>Telescope lsp_implementations<CR>
+    nnoremap <Plug>(ff-lsp_references) <Cmd>Telescope lsp_references<CR>
+    nnoremap <Plug>(lsp-codeAction) <Cmd>lua vim.lsp.buf.code_action()<CR>
+    lua << EOF
+    vim.ui.select = function(...)
+      require('telescope').load_extension 'ui-select'
+      vim.ui.select(...)
+    end
+EOF
+    nnoremap <Plug>(git-status) <Cmd>call <SID>TelescopeInWorktree('git_status')<CR>
   endfunction
   if $NVIM_FF ==# 'telescope'
     call MapTelescope()
@@ -40,3 +61,6 @@ lua_source = '''
 [[plugins]]
 repo = 'nvim-telescope/telescope-fzf-native.nvim'
 build = 'make'
+
+[[plugins]]
+repo = 'nvim-telescope/telescope-ui-select.nvim'
