@@ -252,6 +252,36 @@ function ddu.setup()
       },
     }
   end)
+  -- ORIGINAL: https://github.com/yuki-yano/fzf-preview.vim/blob/main/src/connector/vim-help.ts
+  -- LICENSE: https://github.com/yuki-yano/fzf-preview.vim/blob/main/LICENSE
+  -- Copyright (c) 2018 Yuki Yano
+  nmap('<Plug>(ddu-grep_help)', function()
+    local runtime_help_dir = vim.fs.joinpath(vim.env.VIMRUNTIME, 'doc')
+    local plugin_help_dirs = vim
+      .iter(vim.fn['dein#get']())
+      :filter(function(plugin)
+        return nil ~= plugin.path
+      end)
+      :map(function(plugin)
+        return vim.fs.joinpath(plugin.path, 'doc')
+      end)
+      :filter(function(dir)
+        return 1 == vim.fn.isdirectory(dir)
+      end)
+      :totable()
+    local help_dirs = plugin_help_dirs
+    table.insert(help_dirs, runtime_help_dir)
+    vim.fn['ddu#start'] {
+      sources = {
+        {
+          name = 'rg',
+          params = {
+            paths = help_dirs,
+          },
+        },
+      },
+    }
+  end)
   nmap('<Plug>(ddu-lines)', ddu.get_start_func 'line')
   nmap(
     '<Plug>(ddu-mrw)',

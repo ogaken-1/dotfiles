@@ -6,6 +6,7 @@ hook_add = '''
   nnoremap <Plug>(ff-resume)              <Plug>(ddu-resume)
   nnoremap <Plug>(ff-config_files)        <Plug>(ddu-config_files)
   nnoremap <Plug>(ff-help_tags)           <Plug>(ddu-help_tags)
+  nnoremap <Plug>(ff-grep_help)           <Plug>(ddu-grep_help)
   nnoremap <Plug>(ff-grep)                <Plug>(ddu-rg)
   nnoremap <Plug>(ff-lines)               <Plug>(ddu-lines)
   nnoremap <Plug>(ff-lsp_implementations) <Plug>(ddu-lsp_implementations)
