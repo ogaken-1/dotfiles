@@ -321,7 +321,6 @@ function ddu.setup()
       name = '_',
       uiParams = {
         ff = {
-          startAutoAction = true,
           startFilter = false,
         },
       },
