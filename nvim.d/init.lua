@@ -35,6 +35,8 @@ do
   -- <Up>/<Down>はカーソル前の入力をリスペクトするのでそちらを使う。
   vim.keymap.set('c', '<C-p>', '<Up>')
   vim.keymap.set('c', '<C-n>', '<Down>')
+  vim.keymap.set({ 'n', 'x' }, '<Space>y', '"+y')
+  vim.keymap.set({ 'n', 'x' }, '<Space>p', '"+p')
 
   vim.api.nvim_create_autocmd('LspAttach', {
     group = vim.api.nvim_create_augroup('config-lsp', { clear = true }),
