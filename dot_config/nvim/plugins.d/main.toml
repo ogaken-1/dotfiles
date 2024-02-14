@@ -590,7 +590,7 @@ hook_add = '''
     autocmd!
     autocmd CmdlineEnter *
       \ :if $NVIM_CMDLINE ==# 'wilder'
-      \ | call config#plugin#wilder()
+      \ | call config#plugins#wilder#()
       \ | autocmd! LoadWilder
       \ |endif
   augroup END

@@ -1,4 +1,4 @@
-function! config#plugin#wilder() abort
+function! config#plugins#wilder#() abort
   function! s:fzf_filter(ctx, candidates, query) abort
     return ['fzf', '-f', a:query]
         \ ->systemlist(a:candidates->map({ _, word -> word->printf("'%s'") }))
