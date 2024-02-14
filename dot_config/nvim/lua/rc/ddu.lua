@@ -61,6 +61,7 @@ local actionFlags = {
 ---@param config string|table
 ---@return table
 local function normalize_config(config)
+  local current_worktree_path = worktree_path(vim.api.nvim_get_current_buf())
   -- config is source name
   if type(config) == 'string' then
     return {
@@ -69,6 +70,9 @@ local function normalize_config(config)
       sources = {
         {
           name = config,
+          options = {
+            path = current_worktree_path,
+          },
         },
       },
     }
@@ -79,7 +83,12 @@ local function normalize_config(config)
     for k, v in pairs(config) do
       if type(k) == 'number' then
         normalizedConfig.sources = normalizedConfig.sources or {}
-        table.insert(normalizedConfig.sources, { name = v })
+        table.insert(normalizedConfig.sources, {
+          name = v,
+          options = {
+            path = current_worktree_path,
+          },
+        })
       else
         normalizedConfig[k] = v
       end
@@ -203,33 +212,8 @@ function ddu.setup()
 
   nmap('<Plug>(ddu-buffers)', ddu.get_start_func 'buffer')
   nmap('<Plug>(ddu-files)', '<Plug>(ddu-files:buf)')
-  nmap('<Plug>(ddu-files:buf)', function()
-    vim.fn['ddu#start'] {
-      name = 'default',
-      resume = false,
-      sources = {
-        {
-          name = 'file_external',
-          options = {
-            path = worktree_path(vim.api.nvim_get_current_buf()),
-          },
-        },
-      },
-    }
-  end, { desc = 'バッファのあるプロジェクトのルートディレクトリからfdした結果をddu' })
-  nmap('<Plug>(ddu-files:cwd)', ddu.get_start_func 'file_external')
-  nmap('<Plug>(ddu-rg)', function()
-    vim.fn['ddu#start'] {
-      sources = {
-        {
-          name = 'rg',
-          options = {
-            path = worktree_path(vim.api.nvim_get_current_buf()),
-          },
-        },
-      },
-    }
-  end)
+  nmap('<Plug>(ddu-files:buf)', ddu.get_start_func 'file_external')
+  nmap('<Plug>(ddu-rg)', ddu.get_start_func 'rg')
   -- ORIGINAL: https://github.com/yuki-yano/fzf-preview.vim/blob/main/src/connector/vim-help.ts
   -- LICENSE: https://github.com/yuki-yano/fzf-preview.vim/blob/main/LICENSE
   -- Copyright (c) 2018 Yuki Yano
@@ -332,10 +316,12 @@ function ddu.setup()
   nmap(
     '<Plug>(ddu-config_files)',
     ddu.get_start_func {
-      'file_external',
-      sourceOptions = {
-        file_external = {
-          path = vim.fs.joinpath(vim.env.XDG_DATA_HOME, 'chezmoi'),
+      sources = {
+        {
+          name = 'file_external',
+          options = {
+            path = vim.fs.joinpath(vim.env.XDG_DATA_HOME, 'chezmoi'),
+          },
         },
       },
     }
@@ -405,43 +391,31 @@ function ddu.setup()
     }
   )
 
-  vim.keymap.set('n', '<Plug>(ddu-git_status)', function()
-    vim.fn['ddu#start'] {
-      sources = {
-        {
-          name = 'git_status',
-          options = {
-            path = vim.fn.expand '%',
-          },
-        },
-      },
+  vim.keymap.set(
+    'n',
+    '<Plug>(ddu-git_status)',
+    ddu.get_start_func {
+      'git_status',
       uiParams = {
         ff = {
           startAutoAction = true,
         },
       },
     }
-  end)
+  )
 
-  vim.keymap.set('n', '<Plug>(ddu-git_branch)', function()
-    local path = worktree_path(vim.api.nvim_get_current_buf())
-    vim.print(('path!: %s'):format(path))
-    vim.fn['ddu#start'] {
+  vim.keymap.set(
+    'n',
+    '<Plug>(ddu-git_branch)',
+    ddu.get_start_func {
+      'git_branch',
       uiParams = {
         ff = {
           startAutoAction = true,
         },
       },
-      sources = {
-        {
-          name = 'git_branch',
-          options = {
-            path = path,
-          },
-        },
-      },
     }
-  end)
+  )
 end
 
 return ddu
