@@ -4,6 +4,7 @@ import {
   SourceOptions,
   UserSource,
 } from "https://deno.land/x/ddc_vim@v4.0.4/types.ts";
+import { Denops } from "https://deno.land/x/denops_core@v5.0.0/mod.ts";
 
 const basicSourceOptions: Partial<SourceOptions> = {
   matchers: ["matcher_fuzzy"],
@@ -12,27 +13,67 @@ const basicSourceOptions: Partial<SourceOptions> = {
   ignoreCase: true,
 };
 
-const generalSources: UserSource[] = [
-  {
-    name: "skkeleton",
-    options: {
-      mark: "[SKK]",
-      matchers: ["skkeleton"],
-      isVolatile: true,
-    },
+const skkSource: UserSource = {
+  name: "skkeleton",
+  options: {
+    mark: "[SKK]",
+    matchers: ["skkeleton"],
+    isVolatile: true,
   },
-  {
-    name: "buffer",
+};
+
+const bufferSource: UserSource = {
+  name: "buffer",
+  options: {
+    ...basicSourceOptions,
+    mark: "[Buffer]",
+    keywordPattern: "[a-zA-Z0-9-\_]+",
+  },
+  params: {
+    fromAltBuf: true,
+  },
+};
+
+const generalSources: UserSource[] = [
+  skkSource,
+  bufferSource,
+];
+
+const lspSource = (denops: Denops): UserSource => {
+  return {
+    name: "nvim-lsp",
+    params: {
+      snippetEngine: async (body: unknown) => {
+        await denops.call("vsnip#anonymous", body);
+        return await Promise.resolve();
+      },
+      enableResolveItem: true,
+      enableAdditionalTextEdit: true,
+      confirmBehavior: "replace",
+    },
     options: {
       ...basicSourceOptions,
-      mark: "[Buffer]",
-      keywordPattern: "[a-zA-Z0-9-\_]+",
+      mark: "[LS]",
+      converters: ["converter_fuzzy", "converter_kind_labels"],
+      minAutoCompleteLength: 1,
     },
-    params: {
-      fromAltBuf: true,
-    },
+  };
+};
+
+const cmdlineSource: UserSource = {
+  name: "cmdline",
+  options: {
+    ...basicSourceOptions,
   },
-];
+};
+
+const vimSource: UserSource = {
+  name: "necovim",
+  options: {
+    ...basicSourceOptions,
+    mark: "[Vim]",
+  },
+};
 
 export class Config extends BaseConfig {
   async config(_args: ConfigArguments): Promise<void> {
@@ -40,24 +81,7 @@ export class Config extends BaseConfig {
     contextBuilder.patchGlobal({
       ui: "native" satisfies "native" | "pum",
       sources: [
-        {
-          name: "nvim-lsp",
-          params: {
-            snippetEngine: async (body: unknown) => {
-              await denops.call("vsnip#anonymous", body);
-              return await Promise.resolve();
-            },
-            enableResolveItem: true,
-            enableAdditionalTextEdit: true,
-            confirmBehavior: "replace",
-          },
-          options: {
-            ...basicSourceOptions,
-            mark: "[LS]",
-            converters: ["converter_fuzzy", "converter_kind_labels"],
-            minAutoCompleteLength: 1,
-          },
-        },
+        lspSource(denops),
         ...generalSources,
       ],
       autoCompleteEvents: [
@@ -68,24 +92,13 @@ export class Config extends BaseConfig {
       backspaceCompletion: true,
       cmdlineSources: {
         ":": [
-          {
-            name: "cmdline",
-            options: {
-              ...basicSourceOptions,
-            },
-          },
+          cmdlineSource,
         ],
       },
     });
     contextBuilder.patchFiletype("vim", {
       sources: [
-        {
-          name: "necovim",
-          options: {
-            ...basicSourceOptions,
-            mark: "[Vim]",
-          },
-        },
+        vimSource,
         ...generalSources,
       ],
     });
