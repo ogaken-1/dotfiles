@@ -112,7 +112,8 @@ call s:add_rules(
 call s:add_rules(
       \ #{ filetype: 'fish' },
       \ [
-      \   #{ char: '<CR>', at: '^function\s\+\w\+\%#$', input_after: '<CR>end' },
+      \   #{ char: '<CR>', at: '^\s*function\s\+.\+\%#$', input_after: '<CR>end' },
+      \   #{ char: '<CR>', at: '^\s*if\s\+.\+\%#$', input_after: '<CR>end' },
       \ ]
       \ )
 
