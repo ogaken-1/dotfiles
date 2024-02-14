@@ -137,6 +137,7 @@ hook_add = '''
 repo = 'marko-cerovac/material.nvim'
 hook_add = '''
   call add(g:Themes, 'material')
+  call add(g:Themes, 'material-darker')
 '''
 
 [[plugins]]
