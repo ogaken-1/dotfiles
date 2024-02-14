@@ -1,5 +1,5 @@
 import { autocmd, Denops, map, opt } from "../../deps.ts";
-import { globalConfig } from "./ff/global.ts";
+import { globalConfig } from "./global.ts";
 import { patchGlobal } from "./call.ts";
 import { main as commandMain } from "./command/main.ts";
 
