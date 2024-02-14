@@ -42,7 +42,7 @@ lua_add = '''
   vim.api.nvim_create_autocmd('CompleteChanged', {
     group = 'VimRc',
     once = true,
-    callback = function()
+    callback = function(e)
       local preview = require 'ddc_previewer_floating'
       preview.setup {
         ui = 'native',
@@ -55,7 +55,15 @@ lua_add = '''
           foldcolumn = '0',
         },
       }
-      preview.enable()
+      if vim.bo[e.buf].filetype == 'typescript' then
+        preview.enable()
+      else
+        vim.api.nvim_create_autocmd('FileType', {
+          once = true,
+          pattern = 'typescript',
+          callback = preview.enable,
+        })
+      end
     end,
   })
 '''
