@@ -370,16 +370,6 @@ hook_add = '''
   let $PATH = [[$THEMIS_HOME, 'bin']->join('/'), $PATH]->join(':')
 '''
 
-# yankした内容を端末の仕様を使ってクリップボードに入れてくれる
-[[plugins]]
-repo = 'ojroques/vim-oscyank'
-on_map = '<Plug>OSCYank'
-hook_add = '''
-  xnoremap <space>y <Plug>OSCYankVisual
-  nnoremap <space>y <Plug>OSCYankOperator
-  nnoremap <space>p "+p
-'''
-
 # :terminalでnvim実行したときに新しいタブで開いてくれる
 # TODO: 遅延読み込み
 # plugin/あるから遅延したいけど遅延設定むずいすこれ
