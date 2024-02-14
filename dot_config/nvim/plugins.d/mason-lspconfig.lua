@@ -39,7 +39,11 @@ require('mason-lspconfig').setup_handlers {
           },
           workspace = {
             checkThirdParty = 'Disable',
-            library = vim.api.nvim_get_runtime_file('', true),
+            library = {
+              vim.fs.joinpath(vim.env.VIMRUNTIME, 'lua'),
+              '${3rd}/luv',
+              '${3rd}/busted',
+            },
           },
           telemetry = {
             enable = false,
