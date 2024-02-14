@@ -1,21 +1,26 @@
 [[plugins]]
 repo = 'Shougo/ddu.vim'
 hook_add = '''
-  nnoremap <Plug>(ff-buffers)             <Cmd>Ddu buffer<CR>
-  nnoremap <Plug>(ff-files)               <Cmd>Ddu files<CR>
-  nnoremap <Plug>(ff-resume)              <Cmd>Ddu resume<CR>
-  nnoremap <Plug>(ff-config_files)        <Cmd>Ddu config_file<CR>
-  nnoremap <Plug>(ff-help_tags)           <Cmd>Ddu help_tag<CR>
-  nnoremap <Plug>(ff-grep_help)           <Cmd>Ddu grep_help<CR>
-  nnoremap <Plug>(ff-grep)                <Cmd>Ddu rg<CR>
-  nnoremap <Plug>(ff-lines)               <Cmd>Ddu line<CR>
-  nnoremap <Plug>(ff-lsp_implementations) <Cmd>Ddu lsp_implementation<CR>
-  nnoremap <Plug>(ff-lsp_references)      <Cmd>Ddu lsp_reference<CR>
-  nnoremap <Plug>(lsp-codeAction)         <Cmd>Ddu lsp_codeAction<CR>
-  nnoremap <Plug>(ff-mrw)                 <Cmd>Ddu mrw<CR>
+  function! g:MapDdu() abort
+    nnoremap <Plug>(ff-buffers)             <Cmd>Ddu buffer<CR>
+    nnoremap <Plug>(ff-files)               <Cmd>Ddu files<CR>
+    nnoremap <Plug>(ff-resume)              <Cmd>Ddu resume<CR>
+    nnoremap <Plug>(ff-config_files)        <Cmd>Ddu config_file<CR>
+    nnoremap <Plug>(ff-help_tags)           <Cmd>Ddu help_tag<CR>
+    nnoremap <Plug>(ff-grep_help)           <Cmd>Ddu grep_help<CR>
+    nnoremap <Plug>(ff-grep)                <Cmd>Ddu rg<CR>
+    nnoremap <Plug>(ff-lines)               <Cmd>Ddu line<CR>
+    nnoremap <Plug>(ff-lsp_implementations) <Cmd>Ddu lsp_implementation<CR>
+    nnoremap <Plug>(ff-lsp_references)      <Cmd>Ddu lsp_reference<CR>
+    nnoremap <Plug>(lsp-codeAction)         <Cmd>Ddu lsp_codeAction<CR>
+    nnoremap <Plug>(ff-mrw)                 <Cmd>Ddu mrw<CR>
 
-  nnoremap <Plug>(git-status)             <Cmd>Ddu git_status<CR>
-  nnoremap <Plug>(git-branch)             <Cmd>Ddu git_branch<CR>
+    nnoremap <Plug>(git-status)             <Cmd>Ddu git_status<CR>
+    nnoremap <Plug>(git-branch)             <Cmd>Ddu git_branch<CR>
+  endfunction
+  if $NVIM_FF ==# 'ddu'
+    call MapDdu()
+  endif
 
   AlterCmd fp Ddu<Space>plugin
   AlterCmd fq Ddu<Space>ghq
@@ -57,6 +62,7 @@ repo = 'Shougo/ddu-filter-matcher_substring'
 
 [[plugins]]
 repo = 'matsui54/ddu-vim-ui-select'
+if = false
 lazy = true
 lua_add = '''
   vim.ui.select = function(...)

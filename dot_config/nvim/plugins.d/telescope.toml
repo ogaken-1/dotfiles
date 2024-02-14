@@ -4,6 +4,14 @@ on_lua = 'telescope'
 on_cmd = 'Telescope'
 hook_add = '''
   AlterCmd t Telescope
+
+  function! g:MapTelescope() abort
+    nnoremap <Plug>(ff-files) <Cmd>Telescope find_files<CR>
+    nnoremap <Plug>(ff-config_files) <Cmd>exec 'Telescope' 'find_files' 'cwd='..gin#util#worktree(bufname())<CR>
+  endfunction
+  if $NVIM_FF ==# 'telescope'
+    call MapTelescope()
+  endif
 '''
 lua_source = '''
   require('telescope').setup {

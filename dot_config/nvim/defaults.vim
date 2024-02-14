@@ -5,3 +5,7 @@ endif
 if $NVIM_CMDLINE->empty()
   let $NVIM_CMDLINE = 'wilder'
 endif
+
+if $NVIM_FF->empty()
+  let $NVIM_FF = 'ddu'
+endif
