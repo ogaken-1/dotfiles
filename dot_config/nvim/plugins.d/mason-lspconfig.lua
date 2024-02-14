@@ -70,7 +70,7 @@ require('mason-lspconfig').setup_handlers {
             autoRequire = false,
           },
           format = {
-            enable = vim.bool_fn.executable 'stylua',
+            enable = not vim.bool_fn.executable 'stylua',
           },
         },
       },
