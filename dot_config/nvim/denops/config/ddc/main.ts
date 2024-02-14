@@ -1,10 +1,8 @@
-import { ConfigArguments } from "https://deno.land/x/ddc_vim@v4.0.4/base/config.ts";
+import { Denops } from "https://deno.land/x/denops_std@v5.0.1/mod.ts";
 import {
-  BaseConfig,
   SourceOptions as PublicSourceOptions,
   UserSource,
 } from "https://deno.land/x/ddc_vim@v4.0.4/types.ts";
-import { Denops } from "https://deno.land/x/denops_core@v5.0.0/mod.ts";
 
 type Converter = "converter_fuzzy" | "converter_kind_labels";
 type Sorter = "sorter_fuzzy";
@@ -96,12 +94,10 @@ const vimSource: SourceConfig = {
   },
 };
 
-export class Config extends BaseConfig {
-  async config({
-    denops,
-    contextBuilder,
-  }: ConfigArguments): Promise<void> {
-    contextBuilder.patchGlobal({
+export async function main(denops: Denops) {
+  await denops.batch([
+    "ddc#custom#patch_global",
+    {
       ui: "native" satisfies "native" | "pum",
       sources: [
         ultisnipsSource,
@@ -125,16 +121,19 @@ export class Config extends BaseConfig {
           cmdlineSource,
         ],
       },
-    });
-    contextBuilder.patchFiletype("vim", {
+    },
+  ]);
+  await denops.batch([
+    "ddc#custom#patch_filetype",
+    "vim",
+    {
       sources: [
         ultisnipsSource,
         vimSource,
         skkSource,
         bufferSource,
       ],
-    });
-
-    return await Promise.resolve();
-  }
+    },
+  ]);
+  await denops.batch(["ddc#enable"]);
 }
