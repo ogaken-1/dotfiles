@@ -28,3 +28,6 @@ repo = 'hashivim/vim-terraform'
 
 [[plugins]]
 repo = 'neovimhaskell/haskell-vim'
+
+[[plugins]]
+repo = 'kaarmu/typst.vim'
