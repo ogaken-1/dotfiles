@@ -2,6 +2,9 @@
 [[plugins]]
 repo = 'Shougo/ddc.vim'
 depends = 'denops.vim'
+lua_add = '''
+  require('config.plugins.ddc').init()
+'''
 
 # ddc.vimの補完メニューとしてpum.vimを使うためのやつ
 [[plugins]]

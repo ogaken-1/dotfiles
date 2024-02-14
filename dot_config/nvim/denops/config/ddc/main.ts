@@ -4,7 +4,6 @@ import { getCurrent, patchBuffer, patchFiletype, patchGlobal } from "./call.ts";
 import {
   bufferSource,
   cmdlineSource,
-  lspSource,
   skkSource,
   vimSource,
 } from "./sources.ts";
@@ -51,10 +50,6 @@ export async function main(denops: Denops) {
   await patchGlobal<MyDdc>(denops, {
     specialBufferCompletion: false,
     ui,
-    sources: [
-      await lspSource(denops),
-      bufferSource,
-    ],
     sourceOptions: {
       _: {
         dup: "keep",

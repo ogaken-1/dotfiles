@@ -1,5 +1,3 @@
-import { Denops } from "../../deps.ts";
-import { denopsCallback } from "../callback.ts";
 import { SourceConfig, SourceOptions } from "./types.ts";
 
 const basicSourceOptions: Partial<SourceOptions> = {
@@ -31,30 +29,22 @@ export const bufferSource: SourceConfig = {
   },
 };
 
-export const lspSource = async (denops: Denops): Promise<SourceConfig> => {
-  return {
-    name: "nvim-lsp",
-    params: {
-      snippetEngine: await denopsCallback(
-        denops,
-        async ([body]: unknown[]) => {
-          await denops.call("vsnip#anonymous", body);
-        },
-      ),
-      enableResolveItem: true,
-      enableAdditionalTextEdit: true,
-      confirmBehavior: "replace",
-    },
-    options: {
-      matchers: ["matcher_fuzzy"],
-      sorters: ["sorter_fuzzy", "sorter_lsp-kind"],
-      ignoreCase: true,
-      mark: "[LS]",
-      converters: ["converter_fuzzy", "converter_kind_labels"],
-      minAutoCompleteLength: 1,
-      forceCompletionPattern: "\\.",
-    },
-  };
+export const lspSource: SourceConfig = {
+  name: "nvim-lsp",
+  params: {
+    enableResolveItem: false,
+    enableAdditionalTextEdit: false,
+    confirmBehavior: "insert",
+  },
+  options: {
+    matchers: ["matcher_fuzzy"],
+    sorters: ["sorter_fuzzy", "sorter_lsp-kind"],
+    ignoreCase: true,
+    mark: "[LS]",
+    converters: ["converter_fuzzy", "converter_kind_labels"],
+    minAutoCompleteLength: 1,
+    forceCompletionPattern: "\\.",
+  },
 };
 
 export const cmdlineSource: SourceConfig = {

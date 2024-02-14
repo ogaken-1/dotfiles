@@ -131,6 +131,14 @@ local setup = function()
       end,
     },
     {
+      enabled = function()
+        return vim.snippet.jumpable(1)
+      end,
+      action = function()
+        vim.snippet.jump(1)
+      end,
+    },
+    {
       priority = -1,
       enabled = lexima_installed,
       action = function(ctx)
@@ -154,6 +162,14 @@ local setup = function()
       end,
       action = function(ctx)
         ctx.send '<Plug>(ultisnips-jump-previous)'
+      end,
+    },
+    {
+      enabled = function()
+        return vim.snippet.jumpable(-1)
+      end,
+      action = function()
+        vim.snippet.jump(-1)
       end,
     },
     {
