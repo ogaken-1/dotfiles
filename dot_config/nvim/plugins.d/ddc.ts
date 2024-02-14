@@ -1,10 +1,24 @@
 import { ConfigArguments } from "https://deno.land/x/ddc_vim@v4.0.4/base/config.ts";
 import {
   BaseConfig,
-  SourceOptions,
+  SourceOptions as PublicSourceOptions,
   UserSource,
 } from "https://deno.land/x/ddc_vim@v4.0.4/types.ts";
 import { Denops } from "https://deno.land/x/denops_core@v5.0.0/mod.ts";
+
+type Converter = "converter_fuzzy" | "converter_kind_labels";
+type Sorter = "sorter_fuzzy";
+type Matcher = "matcher_fuzzy" | "skkeleton";
+
+type SourceOptions = PublicSourceOptions & {
+  matchers: Matcher[];
+  sorters: Sorter[];
+  converters: Converter[];
+};
+
+type SourceConfig = UserSource & {
+  options: Partial<SourceOptions>;
+};
 
 const basicSourceOptions: Partial<SourceOptions> = {
   matchers: ["matcher_fuzzy"],
@@ -13,7 +27,7 @@ const basicSourceOptions: Partial<SourceOptions> = {
   ignoreCase: true,
 };
 
-const skkSource: UserSource = {
+const skkSource: SourceConfig = {
   name: "skkeleton",
   options: {
     mark: "[SKK]",
@@ -22,7 +36,7 @@ const skkSource: UserSource = {
   },
 };
 
-const bufferSource: UserSource = {
+const bufferSource: SourceConfig = {
   name: "buffer",
   options: {
     ...basicSourceOptions,
@@ -34,12 +48,12 @@ const bufferSource: UserSource = {
   },
 };
 
-const generalSources: UserSource[] = [
+const generalSources: SourceConfig[] = [
   skkSource,
   bufferSource,
 ];
 
-const lspSource = (denops: Denops): UserSource => {
+const lspSource = (denops: Denops): SourceConfig => {
   return {
     name: "nvim-lsp",
     params: {
@@ -60,14 +74,14 @@ const lspSource = (denops: Denops): UserSource => {
   };
 };
 
-const cmdlineSource: UserSource = {
+const cmdlineSource: SourceConfig = {
   name: "cmdline",
   options: {
     ...basicSourceOptions,
   },
 };
 
-const vimSource: UserSource = {
+const vimSource: SourceConfig = {
   name: "necovim",
   options: {
     ...basicSourceOptions,
