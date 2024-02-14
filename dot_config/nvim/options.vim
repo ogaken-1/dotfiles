@@ -24,6 +24,7 @@ set nowrap
 let &completeopt = ['menu', 'menuone', 'longest', 'noinsert']->join(',')
 let &wildoptions = ['fuzzy','pum','tagfile']->join(',')
 set nomore
+set shada=
 
 set matchpairs+=「:」,『:』,【:】
 
