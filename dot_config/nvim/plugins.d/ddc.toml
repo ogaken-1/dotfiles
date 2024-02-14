@@ -38,3 +38,6 @@ repo = 'matsui54/ddc-buffer'
 
 [[plugins]]
 repo = 'Shougo/neco-vim'
+
+[[plugins]]
+repo = 'uga-rosa/ddc-preview.nvim'
