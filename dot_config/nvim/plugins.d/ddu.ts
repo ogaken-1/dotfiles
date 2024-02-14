@@ -59,6 +59,13 @@ export class Config extends BaseConfig {
           volatile: true,
           columns: ["filename"],
         },
+        git_status: {
+          converters: [
+            "converter_devicon",
+            "converter_hl_dir",
+            "converter_git_status",
+          ],
+        },
       },
       kindOptions: {
         file: {
@@ -81,6 +88,9 @@ export class Config extends BaseConfig {
         },
         deno_module: {
           defaultAction: "resolve",
+        },
+        git_status: {
+          defaultAction: "open",
         },
       },
       kindParams: {

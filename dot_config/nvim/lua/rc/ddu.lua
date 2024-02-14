@@ -378,6 +378,24 @@ local function setup()
       },
     }
   )
+
+  vim.keymap.set('n', '<Space>aa', function()
+    vim.fn['ddu#start'] {
+      sources = {
+        {
+          name = 'git_status',
+          options = {
+            path = vim.fn.expand '%',
+          },
+        },
+      },
+      uiParams = {
+        ff = {
+          startAutoAction = true,
+        },
+      },
+    }
+  end)
 end
 
 return setmetatable(ddu, {
