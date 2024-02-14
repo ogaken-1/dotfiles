@@ -69,3 +69,5 @@ endfunction
 autocmd VimRc FileType cs command! -bang -buffer Csharpier call s:Csharpier('<bang>' ==# '!' ? s:findRoot(bufname(), '.git') : bufname())
 
 command LspRefresh lua vim.lsp.semantic_tokens.force_refresh(vim.api.nvim_get_current_buf())
+
+command ChezmoiApply !chezmoi apply
