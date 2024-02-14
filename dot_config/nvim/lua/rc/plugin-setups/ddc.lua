@@ -9,7 +9,7 @@ vim.api.nvim_create_autocmd({ 'InsertEnter', 'CmdlineEnter' }, {
 
     vim.fn['ddc#custom#load_config'](vim.fs.joinpath(vim.env.DEIN_CONFIG_DIR, 'ddc.ts'))
     vim.fn['ddc#enable']()
-    local preview = require 'ddc_preview'
+    local preview = require 'ddc_previewer_floating'
     preview.setup {
       ui = 'native',
       window_options = {
