@@ -37,6 +37,7 @@ local function setup()
     vim = require 'config.plugins.ddc.sources.vim',
     cmdline = require 'config.plugins.ddc.sources.cmdline',
     denippet = require 'config.plugins.ddc.sources.denippet',
+    dictionary = require 'config.plugins.ddc.sources.dictionary',
   }
   local filters = {
     sorters = {
@@ -53,6 +54,7 @@ local function setup()
       sources.denippet,
       sources.nvim_lsp,
       sources.buffer,
+      sources.dictionary,
     },
     cmdlineSources = {
       [':'] = {

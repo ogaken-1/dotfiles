@@ -33,6 +33,10 @@ repo = 'Shougo/ddc-source-nvim-lsp'
 [[plugins]]
 repo = 'Shougo/ddc-source-cmdline'
 
+# pacman -S words
+[[plugins]]
+repo = 'uga-rosa/ddc-source-dictionary'
+
 [[plugins]]
 repo = 'tani/ddc-fuzzy'
 
