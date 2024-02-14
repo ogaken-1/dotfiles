@@ -72,6 +72,16 @@ export class Config extends BaseConfig {
             "converter_git_status",
           ],
         },
+        git_branch: {
+          columns: [
+            "git_branch_head",
+            "git_branch_remote",
+            "git_branch_name",
+            "git_branch_upstream",
+            "git_branch_author",
+            "git_branch_date",
+          ],
+        },
       },
       kindOptions: {
         file: {
