@@ -76,6 +76,7 @@ export const cmdlineSource: SourceConfig = {
   options: {
     ...basicSourceOptions,
     minAutoCompleteLength: 1,
+    keywordPattern: "[a-zA-Z0-9#\_]+",
   },
 };
 
