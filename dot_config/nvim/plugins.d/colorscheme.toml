@@ -1,6 +1,6 @@
 lua_add = '''
-  -- Vimが起動するとき、 $COLOR_SCHEMEでカラースキームが指定されていればそれを設定する。
-  -- $COLOR_SCHEMEが指定されていなかったとき、`g:Themes`に登録されているカラースキームから無作為に設定する
+  -- Vimが起動するとき、 $NVIM_COLORSCHEMEでカラースキームが指定されていればそれを設定する。
+  -- $NVIM_COLORSCHEMEが指定されていなかったとき、`g:Themes`に登録されているカラースキームから無作為に設定する
   -- 直下で定義しているautocmdも実行させたいのでnestedを指定する
   vim.api.nvim_create_autocmd('VimEnter', {
     group = 'VimRc',
@@ -9,8 +9,8 @@ lua_add = '''
     callback = function()
       local u = require('rc.utils')
       local theme
-      if not u.nilOrEmpty(vim.env.COLOR_SCHEME) then
-        theme = vim.env.COLOR_SCHEME
+      if not u.nilOrEmpty(vim.env.NVIM_COLORSCHEME) then
+        theme = vim.env.NVIM_COLORSCHEME
       else
         theme = u.pick(vim.g.Themes)
       end

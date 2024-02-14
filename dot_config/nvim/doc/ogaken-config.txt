@@ -8,7 +8,7 @@ ENVIRONMENT VARIABLES
 • NVIM_CMDLINE
   	"wilder" | "ddc" | undefined
 
-• COLOR_SCHEME
+• NVIM_COLORSCHEME
   	string | undefined
 
 ==============================================================================
