@@ -18,6 +18,9 @@ return {
                 '${3rd}/busted/library',
               },
             },
+            format = {
+              enable = false,
+            },
           },
         },
       }
