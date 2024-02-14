@@ -27,3 +27,5 @@ let g:dein#inline_vimrcs = [
       \ ]
 
 execute 'source' s:here .. '/dein.vim'
+
+lua require('rc.diagnostics')
