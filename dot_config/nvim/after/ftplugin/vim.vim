@@ -44,4 +44,4 @@ if !exists('*s:gd')
   endfunction
 endif
 
-nnoremap <buffer> gd <Cmd>call <SID>gd(expand('<cword>'))<CR>
+nnoremap <buffer> gd m'<Cmd>keepjumps call <SID>gd(expand('<cword>'))<CR>
