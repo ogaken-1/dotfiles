@@ -1273,4 +1273,9 @@ vim.notify = function(...)
 end
 '''
 
+[[plugins]]
+repo = 'stevearc/oil.nvim'
+lua_add = '''
+  require('config.plugins.oil').init()
+'''
 # vim:ft=toml expandtab tabstop=2 shiftwidth=2
