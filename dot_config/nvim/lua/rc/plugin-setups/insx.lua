@@ -13,6 +13,11 @@ local function wilder_visible()
       vim.fn['wilder#in_context']() == 1
 end
 
+local function vsnip_jumpable(count)
+  return 1 == vim.fn.exists '*vsnip#jumpable' and
+      1 == vim.fn['vsnip#jumpable'](count)
+end
+
 local setup = function()
   local insx = require 'insx'
   do -- handle <CR>
@@ -148,7 +153,7 @@ local setup = function()
   do -- handle '<Tab>'
     insx.add('<Tab>', {
       enabled = function()
-        return vim.fn.exists '*vsnip#jumpable' == 1 and vim.fn['vsnip#jumpable'](1) == 1
+        return vsnip_jumpable(1)
       end,
       action = function(ctx)
         ctx.send '<Plug>(vsnip-jump-next)'
@@ -176,7 +181,7 @@ local setup = function()
   do -- handle '<S-Tab>'
     insx.add('<S-Tab>', {
       enabled = function()
-        return vim.fn.exists '*vsnip#jumpable' == 1 and vim.fn['vsnip#jumpable'](1) == 1
+        return vsnip_jumpable(-1)
       end,
       action = function(ctx)
         ctx.send '<Plug>(vsnip-jump-next)'
