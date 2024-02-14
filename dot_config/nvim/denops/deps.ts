@@ -12,6 +12,7 @@ export { is } from "https://deno.land/x/unknownutil@v3.9.0/mod.ts";
 
 export {
   ActionFlags,
+  BaseFilter,
   BaseSource,
 } from "https://deno.land/x/ddu_vim@v3.6.0/types.ts";
 export type {
@@ -26,12 +27,4 @@ export type { Params as FfParams } from "https://deno.land/x/ddu_ui_ff@v1.1.0/ff
 export type { ActionData as GitRepoActionData } from "https://raw.githubusercontent.com/KentoOgata/ddu-kind-git_repo/0.3.1/denops/@ddu-kinds/git_repo/types.ts";
 export type { ActionData as GitStatusActionData } from "https://raw.githubusercontent.com/kuuote/ddu-source-git_status/v1.0.0/denops/@ddu-kinds/git_status.ts";
 export { Source as GhqSource } from "https://raw.githubusercontent.com/4513ECHO/ddu-source-ghq/7df8ab95f648ee06f8e3f0e80ee639908dcd2a16/denops/@ddu-sources/ghq.ts";
-
-export type {
-  DdcOptions,
-  SourceOptions as PublicSourceOptions,
-  UserSource,
-} from "https://deno.land/x/ddc_vim@v4.0.5/types.ts";
-export type {
-  CompletionItem,
-} from "https://raw.githubusercontent.com/Shougo/ddc-source-nvim-lsp/a5620bcf08ad8f694c64c1659ce6e895aa88e8ce/denops/ddc-source-nvim-lsp/completion_item.ts";
+export type { ActionData as FileKindActionData } from "https://deno.land/x/ddu_kind_file@v0.7.1/file.ts";
