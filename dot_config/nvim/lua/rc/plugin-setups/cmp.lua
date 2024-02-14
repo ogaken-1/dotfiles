@@ -245,8 +245,8 @@ local snippetTrigger = '<Plug>(expand-bracket)'
 
 local function addLeximaRules()
   local rules = {
-    { except = [[\%#(]], input = '(', input_after = ')' },
-    { input = '', priority = -1 },
+    { except = [[\%#(]],    input = '(',  input_after = ')' },
+    { input = '',           priority = -1 },
     { filetype = 'haskell', input = '' },
   }
   for _, rule in ipairs(rules) do
@@ -269,7 +269,20 @@ end
 -- NOTE: なぜか実行しても問題ない
 addLeximaRules()
 
-local leximaExpand = require('rc.utils').leximaExpand
+local function expand()
+  local leximaExpand = require('rc.utils').leximaExpand
+  feedkeys(leximaExpand('i', snippetTrigger))
+end
+
+vim.api.nvim_create_autocmd('CompleteDone', {
+  group = 'VimRc',
+  callback = function()
+    local item = vim.v.completed_item
+    if item.kind == 'Function' then
+      expand()
+    end
+  end,
+})
 
 cmp.event:on('confirm_done', function(event)
   local function is_function_symbol(item)
@@ -278,7 +291,7 @@ cmp.event:on('confirm_done', function(event)
   end
   local item = event.entry:get_completion_item()
   if ((item.textEdit == nil) or (item.textEdit.newText == item.label)) and is_function_symbol(item) then
-    feedkeys(leximaExpand('i', snippetTrigger))
+    expand()
   end
 end)
 
