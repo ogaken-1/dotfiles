@@ -11,7 +11,7 @@ export async function denopsCallback(
   denops.dispatcher = {
     ...denops.dispatcher,
     [method]: async (...args: unknown[]) => {
-      await callback(args);
+      return await callback(args);
     },
   };
 
