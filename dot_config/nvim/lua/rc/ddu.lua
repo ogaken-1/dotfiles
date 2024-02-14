@@ -351,6 +351,8 @@ function ddu.setup()
           { 'pp', itemAction 'patch' },
         },
       }
+
+      vim.wo.cursorline = true
     end,
   })
 
