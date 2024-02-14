@@ -3,7 +3,7 @@ import {
   DduOptions,
   FfParams,
   GitStatusActionData,
-} from "../../../deps.ts";
+} from "../../deps.ts";
 
 export function globalConfig(): Partial<DduOptions> {
   return {
