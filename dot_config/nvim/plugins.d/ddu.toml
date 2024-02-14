@@ -29,6 +29,7 @@ repo = 'Shougo/ddu-kind-file'
 
 [[plugins]]
 repo = 'Shougo/ddu-ui-ff'
+rev = '2b53834'
 
 [[plugins]]
 repo = 'yuki-yano/ddu-filter-fzf'
