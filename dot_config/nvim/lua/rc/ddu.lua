@@ -202,7 +202,41 @@ local function setup()
   end
 
   nmap('<Plug>(ddu-buffers)', ddu.getStartFunc 'buffer')
-  nmap('<Plug>(ddu-files)', ddu.getStartFunc 'file_external')
+  nmap('<Plug>(ddu-files)', '<Plug>(ddu-files:buf)')
+  nmap('<Plug>(ddu-files:buf)', function()
+    local bufnr = vim.api.nvim_get_current_buf()
+    local path
+    if vim.api.nvim_get_option_value('buftype', { buf = bufnr }) == '' then
+      local root = vim.fs.find('.git', {
+        upward = true,
+        type = 'directory',
+        path = vim.api.nvim_buf_get_name(bufnr),
+        stop = vim.uv.os_homedir(),
+      })
+      if #root == 0 then
+        path = nil
+      else
+        path = vim.fs.dirname(root[1])
+      end
+    else
+      path = nil
+    end
+    vim.fn['ddu#start'] {
+      name = 'default',
+      resume = false,
+      sources = {
+        {
+          name = 'file_external',
+          options = {
+            -- pathがnilである場合はlua的にはundefinedみたいになるので
+            -- デフォルトのcwdが使われる
+            path = path,
+          },
+        },
+      },
+    }
+  end, { desc = 'バッファのあるプロジェクトのルートディレクトリからfdした結果をddu' })
+  nmap('<Plug>(ddu-files:cwd)', ddu.getStartFunc 'file_external')
   nmap('<Plug>(ddu-rg)', ddu.getStartFunc 'rg')
   nmap('<Plug>(ddu-lines)', ddu.getStartFunc 'line')
   nmap(
