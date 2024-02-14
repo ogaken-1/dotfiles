@@ -66,6 +66,10 @@ vim.opt.helplang = { 'ja', 'en' }
 vim.opt.incsearch = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
+vim.opt.wrap = false
+vim.opt.exrc = true
+vim.opt.cursorline = true
+vim.opt.fileencodings:prepend 'cp932'
 
 do
   vim.cmd.colorscheme 'habamax'
