@@ -42,9 +42,8 @@ hook_add = '''
 hooks_file = '$DEIN_CONFIG_DIR/gitsigns.lua'
 
 [[plugins]]
-repo = 'rhysd/committia.vim'
+repo = 'KentoOgata/committia.vim'
 on_path = ['COMMIT_EDITMSG', 'MERGE_MSG']
 hook_add = '''
   let g:committia_open_only_vim_starting = 0
-  autocmd VimRc BufReadPost COMMIT_EDITMSG,MERGE_MSG autocmd BufWinLeave <buffer> unlet $GIT_INDEX_FILE
 '''
