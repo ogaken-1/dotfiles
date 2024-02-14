@@ -19,8 +19,9 @@ if which dotnet &> /dev/null; then
   zinit load memark/zsh-dotnet-completion
 fi
 
-if which starship &> /dev/null; then
-  eval "$(starship init zsh)"
+load_starship=$(starship init zsh)
+if [ -n "$load_starship" ]; then
+  eval "$load_starship"
 fi
 
 # if which neofetch &> /dev/null; then
