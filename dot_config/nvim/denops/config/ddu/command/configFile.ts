@@ -1,4 +1,4 @@
-import { join } from "https://deno.land/std@0.192.0/path/mod.ts";
+import { join } from "https://deno.land/std@0.203.0/path/mod.ts";
 import { Denops, vars } from "../../../deps.ts";
 import { Command } from "./main.ts";
 
