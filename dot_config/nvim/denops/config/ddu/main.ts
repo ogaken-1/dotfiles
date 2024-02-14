@@ -1,6 +1,6 @@
 import { Denops, opt } from "../../deps.ts";
 import { globalConfig } from "./ff/global.ts";
-import { patchGlobal } from "./fn.ts";
+import { patchGlobal } from "./call.ts";
 
 export async function main(denops: Denops) {
   await patchGlobal(denops, globalConfig());

@@ -1,5 +1,5 @@
 import { Denops } from "../../deps.ts";
-import { patchFiletype, patchGlobal } from "./fn.ts";
+import { patchFiletype, patchGlobal } from "./call.ts";
 import {
   bufferSource,
   cmdlineSource,
