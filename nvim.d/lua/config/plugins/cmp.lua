@@ -4,6 +4,7 @@ return {
   dependencies = {
     'hrsh7th/cmp-nvim-lsp',
     'hrsh7th/cmp-buffer',
+    'uga-rosa/cmp-denippet',
   },
   config = function()
     local cmp = require 'cmp'
@@ -22,6 +23,7 @@ return {
         },
       },
       sources = cmp.config.sources({
+        { name = 'denippet' },
         { name = 'nvim_lsp' },
       }, {
         { name = 'buffer' },
