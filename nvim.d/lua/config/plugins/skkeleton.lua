@@ -7,14 +7,20 @@ return {
     local global_dict_path = '/usr/share/skk'
     vim.uv.fs_opendir(global_dict_path, function(err1, dir)
       if err1 ~= nil then
-        vim.notify(err1, vim.log.levels.ERROR)
-        dir:closedir()
+        vim.schedule(function()
+          vim.notify(err1, vim.log.levels.ERROR)
+        end)
+        if dir ~= nil then
+          dir:closedir()
+        end
         return
       end
       dir:readdir(function(err2, entries)
         dir:closedir()
         if err2 ~= nil then
-          vim.notify(err2, vim.log.levels.ERROR)
+          vim.schedule(function()
+            vim.notify(err2, vim.log.levels.ERROR)
+          end)
           return
         end
         if entries == nil then
