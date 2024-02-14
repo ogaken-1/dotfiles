@@ -22,6 +22,7 @@ import { command as ghq } from "./ghq.ts";
 import { command as plugin } from "./plugin.ts";
 import { command as gitBranch } from "./gitBranch.ts";
 import { command as resume } from "./resume.ts";
+import { command as gitLog } from "./gitLog.ts";
 
 export type Command = {
   name: string;
@@ -50,6 +51,7 @@ export async function addCommand(denops: Denops) {
     plugin,
     gitBranch,
     resume,
+    gitLog,
   ];
 
   await defCommand(denops, commands);

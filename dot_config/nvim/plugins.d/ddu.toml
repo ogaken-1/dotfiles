@@ -84,3 +84,6 @@ repo = 'kyoh86/ddu-source-git_branch'
 
 [[plugins]]
 repo = 'KentoOgata/ddu-kind-git_repo'
+
+[[plugins]]
+repo = 'kyoh86/ddu-source-git_log'
