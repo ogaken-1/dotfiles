@@ -62,7 +62,7 @@ call s:add_rules(
 call s:add_rules(
       \   #{ filetype: ['cs', 'typescript'] },
       \   [
-      \     #{ char: '<Space>', except: '\%#(', at: '\%(if\|for\|while\|foreach\|switch\)\%#', input: '<Space>(', input_after: ')' },
+      \     #{ char: '<Space>', except: '\%#(', at: '\<\%(if\|for\|while\|foreach\|switch\)\>\%#', input: '<Space>(', input_after: ')' },
       \   ]
       \ )
 
