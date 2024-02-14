@@ -14,3 +14,10 @@ export async function currentWorktree(denops: Denops) {
     }
   });
 }
+
+export async function getcwd(
+  denops: Denops,
+  winnr: number | undefined = undefined,
+) {
+  return await currentWorktree(denops) ?? await fn.getcwd(denops, winnr);
+}

@@ -1,5 +1,5 @@
-import { Denops, fn } from "../../../deps.ts";
-import { currentWorktree } from "../util.ts";
+import { Denops } from "../../../deps.ts";
+import { getcwd } from "../util.ts";
 import { Command } from "./main.ts";
 
 export const command: Command = {
@@ -12,7 +12,7 @@ export const command: Command = {
         {
           name: "file_external",
           options: {
-            path: await currentWorktree(denops) ?? await fn.getcwd(denops),
+            path: await getcwd(denops),
           },
         },
       ],
