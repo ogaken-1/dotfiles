@@ -5,6 +5,8 @@ local safeCall = function(name, ...)
   return vim.fn.exists(('*%s'):format(name)) == 1 and vim.fn[name](...)
 end
 
+local M = {}
+
 cmp.setup {
   enabled = function()
     -- プロンプトバッファでは無効
@@ -294,7 +296,7 @@ end
 -- NOTE: なぜか実行しても問題ない
 addLeximaRules()
 
-local function expand()
+function M.expandBrackets()
   local leximaExpand = require 'rc.utils'.leximaExpand
   feedkeys(leximaExpand('i', snippetTrigger))
 end
@@ -302,11 +304,16 @@ end
 vim.api.nvim_create_autocmd('CompleteDone', {
   group = 'VimRc',
   callback = function()
-    local item = vim.v.completed_item
-    --NOTE: ddc-source-nvim-lspが渡してくるkind文字列に依存している
-    if (item.kind == 'Function') or (item.kind == 'Method') then
-      expand()
-    end
+    vim.schedule(function()
+      if vim.fn.mode() ~= 'i' then
+        return
+      end
+      local item = vim.v.completed_item
+      --NOTE: ddc-source-nvim-lspが渡してくるkind文字列に依存している
+      if (item.kind == 'Function') or (item.kind == 'Method') then
+        M.expandBrackets()
+      end
+    end)
   end,
 })
 
@@ -317,7 +324,7 @@ cmp.event:on('confirm_done', function(event)
   end
   local item = event.entry:get_completion_item()
   if ((item.textEdit == nil) or (item.textEdit.newText == item.label)) and is_function_symbol(item) then
-    expand()
+    M.expandBrackets()
   end
 end)
 
