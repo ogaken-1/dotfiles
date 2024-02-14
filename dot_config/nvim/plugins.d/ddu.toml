@@ -12,6 +12,9 @@ hook_add = '''
   nnoremap <Plug>(ff-lsp_references)      <Plug>(ddu-lsp_references)
   nnoremap <Plug>(ff-mrw)                 <Plug>(ddu-mrw)
 
+  nnoremap <Plug>(git-status)             <Plug>(ddu-git_status)
+  nnoremap <Plug>(git-branch)             <Plug>(ddu-git_branch)
+
   AlterCmd fp DduPlugins
   AlterCmd fq DduGhq
 
@@ -79,3 +82,6 @@ repo = 'Shougo/ddu-column-filename'
 
 [[plugins]]
 repo = 'kuuote/ddu-source-git_status'
+
+[[plugins]]
+repo = 'kyoh86/ddu-source-git_branch'

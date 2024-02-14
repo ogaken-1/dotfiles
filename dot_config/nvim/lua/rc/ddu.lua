@@ -397,7 +397,7 @@ function ddu.setup()
     }
   )
 
-  vim.keymap.set('n', '<Plug>(git-status)', function()
+  vim.keymap.set('n', '<Plug>(ddu-git_status)', function()
     vim.fn['ddu#start'] {
       sources = {
         {
@@ -410,6 +410,26 @@ function ddu.setup()
       uiParams = {
         ff = {
           startAutoAction = true,
+        },
+      },
+    }
+  end)
+
+  vim.keymap.set('n', '<Plug>(ddu-git_branch)', function()
+    local path = find_root(vim.api.nvim_get_current_buf(), '.git')
+    vim.print(('path!: %s'):format(path))
+    vim.fn['ddu#start'] {
+      uiParams = {
+        ff = {
+          startAutoAction = true,
+        },
+      },
+      sources = {
+        {
+          name = 'git_branch',
+          options = {
+            path = path,
+          },
         },
       },
     }

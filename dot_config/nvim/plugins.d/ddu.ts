@@ -116,6 +116,9 @@ export class Config extends BaseConfig {
             },
           },
         },
+        git_branch: {
+          defaultAction: "switch",
+        },
       },
       kindParams: {
         file: {

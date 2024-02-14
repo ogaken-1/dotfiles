@@ -8,7 +8,7 @@ hook_add = '''
   " nnoremap <Plug>(git-status) <Cmd>GinStatus<CR>
   nnoremap <Plug>(git-commit) <Cmd>Gin commit -v<CR>
   nnoremap <Plug>(git-commit:amend) <Cmd>Gin commit -v --amend<CR>
-  nnoremap <Plug>(git-branch) <Cmd>GinBranch<CR>
+  " nnoremap <Plug>(git-branch) <Cmd>GinBranch<CR>
   nnoremap <Plug>(git-log:all) <Cmd>GinLog --all<CR>
   nnoremap <Plug>(git-log:current) <Cmd>GinLog -- %:p<CR>
 
@@ -22,6 +22,7 @@ hook_add = '''
 
   AlterCmd gs GinStatus
   AlterCmd gp Gin<Space>push
+  AlterCmd gb GinBranch
   lua vim.cmd.AlterCmd { 'gpf', 'Gin push --force-with-lease --force-if-include' }
 
   " bufferlineするときにリストにあるとだいたいパースできなくて死ぬので
