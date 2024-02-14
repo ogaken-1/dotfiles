@@ -41,6 +41,8 @@ gin-diff = '''
   end
 EOF
 '''
+gin-status = '''
+  nnoremap <buffer> <C-r> <Cmd>GinStatus<CR>
 '''
 gin-branch = '''
   nnoremap <buffer> N <Plug>(gin-action-new)
@@ -86,3 +88,7 @@ lua_source = '''
 [[plugins]]
 repo = 'sindrets/diffview.nvim'
 on_cmd = 'DiffviewOpen'
+
+[[plugins]]
+repo = 'lambdalisue/gina.vim'
+on_cmd = 'Gina'
