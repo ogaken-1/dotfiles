@@ -57,20 +57,3 @@ exec 'set' 'guicursor=' .. [
      \ ]->join(',')
 
 autocmd VimRc FileType markdown,help,org setl wrap
-
-lua << EOF
-vim.g.clipboard = {
-  name = 'OSC 52',
-  copy = {
-    ['+'] = require('vim.ui.clipboard.osc52').copy '+',
-    ['*'] = require('vim.ui.clipboard.osc52').copy '*',
-  },
-  paste = {
-    ['+'] = require('vim.ui.clipboard.osc52').paste '+',
-    ['*'] = require('vim.ui.clipboard.osc52').paste '*',
-  },
-}
-vim.keymap.set({ 'n', 'x' }, '<Space>y', '"+y')
-vim.keymap.set('n', '<Space>yy', '"+yy')
-vim.keymap.set({ 'n', 'x' }, '<Space>p', '"+p')
-EOF

@@ -59,3 +59,9 @@ nnoremap tc <Cmd>tabnew<CR>
 nnoremap tq <Cmd>tabclose<CR>
 nnoremap tp <Cmd>tabprevious<CR>
 nnoremap tn <Cmd>tabnext<CR>
+
+lua << EOF
+vim.keymap.set({ 'n', 'x' }, '<Space>y', '"+y')
+vim.keymap.set('n', '<Space>yy', '"+yy')
+vim.keymap.set({ 'n', 'x' }, '<Space>p', '"+p')
+EOF
