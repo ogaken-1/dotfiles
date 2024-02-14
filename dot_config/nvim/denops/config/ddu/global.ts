@@ -42,6 +42,7 @@ export async function globalConfig(
         matchers: ["matcher_fzf"],
         sorters: ["sorter_fzf"],
         converters: ["converter_devicon"],
+        ignoreCase: true,
       },
       help: {
         converters: [],
