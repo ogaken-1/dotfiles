@@ -12,4 +12,7 @@ export const command: Command = {
       ],
     };
   },
+  itemActions: {
+    "x": "startTmux",
+  },
 };
