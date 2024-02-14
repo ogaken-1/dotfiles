@@ -6,6 +6,8 @@ function sgr -a command -a content
 
   if [ "$command" = 'color:blue' ]
     printf '\033[34m'
+  else if [ "$command" = 'color:magenta' ]
+    printf '\033[35m'
   else if [ "$command" = 'color:cyan' ]
     printf '\033[36m'
   else if [ "$command" = 'color:yellow' ]
