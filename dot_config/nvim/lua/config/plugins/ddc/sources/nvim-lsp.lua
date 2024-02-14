@@ -9,6 +9,7 @@ return {
     minAutoCompleteLength = 1,
     forceCompletionPattern = [[\.]],
     dup = 'keep',
+    timeout = 500,
   },
   params = {
     lspEngine = 'nvim-lsp',
