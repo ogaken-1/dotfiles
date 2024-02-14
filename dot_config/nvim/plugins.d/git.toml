@@ -6,13 +6,12 @@ depends = 'denops.vim'
 hook_add = '''
   nnoremap <Plug>(git-commit) <Cmd>Gin commit -v<CR>
   nnoremap <Plug>(git-commit:amend) <Cmd>Gin commit -v --amend<CR>
-  nnoremap <Plug>(git-log:current) <Cmd>GinLog<CR>
-  nnoremap <Plug>(git-log:all) <Cmd>GinLog --all<CR>
+  nnoremap <Plug>(git-log:current) <Cmd>GinLog --graph<CR>
+  nnoremap <Plug>(git-log:all) <Cmd>GinLog --graph --all<CR>
   nnoremap <Plug>(git-log:cbuf) <Cmd>GinLog --follow -- %:p<CR>
 
   let g:gin_log_persistent_args = [
         \ '++emojify',
-        \ '--graph',
         \ '--format=%C(green)%h%C(reset) %s %C(bold yellow)%cr%C(reset) %C(bold magenta)<%an>%C(reset) %C(auto)%d%C(reset)',
         \ '--abbrev-commit',
         \ '--max-count=100',
