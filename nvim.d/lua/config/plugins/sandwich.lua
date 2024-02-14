@@ -9,4 +9,7 @@ return {
     { 'ib', '<Plug>(textobj-sandwich-auto-i)', mode = { 'x', 'o' } },
     { 'ab', '<Plug>(textobj-sandwich-auto-a)', mode = { 'x', 'o' } },
   },
+  init = function ()
+    vim.g.sandwich_no_default_key_mappings = 1
+  end
 }
