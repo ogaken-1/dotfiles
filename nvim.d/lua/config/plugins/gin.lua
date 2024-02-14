@@ -9,7 +9,7 @@ return {
     vim.keymap.set('n', prefix .. 'c', '<Cmd>Gin commit -v<CR>')
     vim.keymap.set('n', prefix .. 'C', '<Cmd>Gin commit -v --amend<CR>')
     vim.keymap.set('n', prefix .. 'b', '<Cmd>GinBranch<CR>')
-    vim.keymap.set('n', prefix .. 'h', '<Cmd>GinLog<CR>')
+    vim.keymap.set('n', prefix .. 'h', '<Cmd>GinLog --graph<CR>')
     vim.keymap.set('n', prefix .. 'H', '<Cmd>GinLog -- %<CR>')
     vim.g.gin_log_persistent_args = {
       '++emojify',
