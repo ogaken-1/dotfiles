@@ -40,6 +40,7 @@ const bufferSource: SourceConfig = {
   name: "buffer",
   options: {
     ...basicSourceOptions,
+    dup: "ignore",
     mark: "[Buffer]",
     keywordPattern: "[a-zA-Z0-9-\_]+",
   },
