@@ -278,18 +278,6 @@ on_cmd = 'AiReview'
 repo = 'nvim-lua/plenary.nvim'
 lazy = true
 
-# gfの拡張? 便利さはよくわかってない
-[[plugins]]
-repo = 'hrsh7th/nvim-gtd'
-on_map = '<Plug>(gtd:'
-hook_add = '''
-  nnoremap gfH <Plug>(gtd:splitleft)
-  nnoremap gfJ <Plug>(gtd:splitbelow)
-  nnoremap gfK <Plug>(gtd:splitabove)
-  nnoremap gfL <Plug>(gtd:splitright)
-'''
-hooks_file = '$DEIN_CONFIG_DIR/gtd.lua'
-
 # p で貼り付ける内容をヤンク履歴から選べる
 # 貼り付け位置のインデントに合わせて貼り付けてくれるのが地味に便利
 [[plugins]]
