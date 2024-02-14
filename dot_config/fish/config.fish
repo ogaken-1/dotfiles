@@ -32,6 +32,4 @@ if status --is-interactive
   abbr -a gp 'git push'
   abbr -a gpu 'git push -u origin "$(git branch --show-current)"'
   abbr -a gpf 'git push --force-if-includes --force-with-lease'
-
-  starship init fish | source
 end
