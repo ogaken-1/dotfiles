@@ -609,6 +609,12 @@ repo = 'KentoOgata/wilder.nvim'
 if = '$NVIM_CMDLINE ==# "wilder"'
 on_event = 'CmdlineEnter'
 hook_source = '''
+  function! s:fzf_filter(ctx, candidates, query) abort
+    return ['fzf', '-f', a:query]
+        \ ->systemlist(a:candidates->map({ _, word -> word->printf("'%s'") }))
+        \ ->map({ _, word -> word->substitute("^'\\(.\\+\\)'$", '\1', '') })
+  endfunction
+
   call wilder#set_option('pipeline', [
         \ wilder#branch(
         \   wilder#python_file_finder_pipeline({
@@ -617,7 +623,7 @@ hook_source = '''
         \   }),
         \   wilder#cmdline_pipeline({
         \     'fuzzy': 2,
-        \     'fuzzy_filter': wilder#vim_fuzzy_filter(),
+        \     'fuzzy_filter': function('s:fzf_filter'),
         \   }),
         \   [
         \     wilder#check({_, x -> empty(x)}),
