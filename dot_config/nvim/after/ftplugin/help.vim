@@ -3,6 +3,7 @@ if &modifiable
   setl textwidth=78
   let &l:colorcolumn=&l:textwidth
   setl conceallevel=0
+  setl spell
 endif
 
 setl tabstop=8
