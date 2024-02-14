@@ -43,21 +43,6 @@ local function nmap(lhs, rhs, opts)
   vim.keymap.set('n', lhs, rhs, opts)
 end
 
----@enum DduActionFlags
-local actionFlags = {
-  None = 0,
-  RefreshItems = 1,
-  Redraw = 2,
-  Persist = 4,
-  RestoreCursor = 8,
-}
-
----@class DduCustomActionDefinition
----@field type 'kind'|'source'|'ui'
----@field name string
----@field actionName string
----@field func fun(args: any): DduActionFlags
-
 ---@param config string|table
 ---@return table
 local function normalize_config(config)
@@ -115,12 +100,6 @@ function ddu.get_start_func(config)
   return function()
     ddu.start(config)
   end
-end
-
----@param def DduCustomActionDefinition
----@return nil
-function ddu.add_custom_action(def)
-  vim.fn['ddu#custom#action'](def.type, def.name, def.actionName, def.func)
 end
 
 function ddu.setup()
