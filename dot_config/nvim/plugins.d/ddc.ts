@@ -32,7 +32,7 @@ export class Config extends BaseConfig {
   async config(_args: ConfigArguments): Promise<void> {
     const { denops, contextBuilder } = _args;
     contextBuilder.patchGlobal({
-      ui: "native",
+      ui: "native" satisfies "native" | "pum",
       sources: [
         {
           name: "nvim-lsp",
