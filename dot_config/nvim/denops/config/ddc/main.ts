@@ -16,6 +16,7 @@ type MyDdc = DdcOptions & {
 
 export async function main(denops: Denops) {
   await patchGlobal<MyDdc>(denops, {
+    specialBufferCompletion: false,
     ui: "native",
     sources: [
       ultisnipsSource,
