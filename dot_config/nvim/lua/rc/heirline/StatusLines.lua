@@ -59,6 +59,36 @@ local specialStatusLine = {
   align,
 }
 
+local gin_status_line = {
+  condition = function()
+    return conditions.buffer_matches {
+      filetype = { '^gin$' },
+    }
+  end,
+  init = function(self)
+    local commit_id = vim.fn.split(vim.fn.getline(1), '\\s')[2]
+    self.commit = {
+      id = commit_id,
+      message = vim.fn.systemlist({
+        'git',
+        '-C',
+        vim.fn['gin#util#worktree'](vim.fn.bufname()),
+        'log',
+        '-1',
+        '--format=%s',
+        commit_id,
+      })[1],
+    }
+  end,
+  fileType,
+  align,
+  {
+    provider = function(self)
+      return self.commit.message
+    end,
+  },
+}
+
 local terminalName = require 'rc.heirline.components.TerminalName'
 
 local terminalStatusLine = {
@@ -104,6 +134,7 @@ return {
   },
   fallthrough = false,
   -- GitStatusline,
+  gin_status_line,
   specialStatusLine,
   terminalStatusLine,
   inactiveStatusLine,
