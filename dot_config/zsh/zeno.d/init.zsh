@@ -11,4 +11,5 @@ if [[ -n $ZENO_LOADED ]]; then
   bindkey '^x ' zeno-insert-space
   bindkey '^x^m' accept-line
   bindkey '^x^z' zeno-toggle-auto-snippet
+  bindkey '^r' zeno-history-selection
 fi
