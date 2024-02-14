@@ -8,7 +8,7 @@ hook_add = '''
 
   function! g:MapTelescope() abort
     nnoremap <Plug>(ff-files) <Cmd>Telescope find_files<CR>
-    nnoremap <Plug>(ff-config_files) <Cmd>exec 'Telescope' 'find_files' 'cwd='..gin#util#worktree(bufname())<CR>
+    nnoremap <Plug>(ff-config_files) <Cmd>exec 'Telescope' 'find_files' 'cwd='..system('chezmoi source-path')<CR>
   endfunction
   if $NVIM_FF ==# 'telescope'
     call MapTelescope()
