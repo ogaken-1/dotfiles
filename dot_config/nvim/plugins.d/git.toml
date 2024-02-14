@@ -62,7 +62,7 @@ lua_source = '''
   require('neogit').setup {
     integrations = {
       telescope = false,
-      diffview = false,
+      diffview = true,
       fzf_lua = true,
     }
   }
