@@ -4,6 +4,7 @@ import {
   DduItem,
   DduOptions,
   Denops,
+  echoerr,
   FfParams,
   GitStatusActionData,
 } from "../../deps.ts";
@@ -118,27 +119,41 @@ export async function globalConfig(
             denops,
             async ([args]: unknown[]) => {
               const { items } = args as ActionArguments<Empty>;
-              const tasks: Promise<Deno.CommandStatus>[] = [];
+              const files: Map<string, string[]> = new Map();
               for (const item of items) {
                 if (!isGitStatusKindItem(item)) {
                   continue;
                 }
-                const { path, worktree } = item.action;
-                const process = new Deno.Command("git", {
+                const { worktree, path } = item.action;
+                const paths = files.get(worktree);
+                files.set(worktree, paths == null ? [path] : [...paths, path]);
+              }
+              if (files.size === 0) {
+                return ActionFlags.Persist;
+              }
+              const tasks: Promise<Deno.CommandStatus>[] = [];
+              for (const worktree of files.keys()) {
+                const paths = files.get(worktree);
+                if (paths == null) {
+                  continue;
+                }
+                const { status } = new Deno.Command("git", {
                   args: [
                     "-C",
                     worktree,
                     "restore",
                     "--staged",
-                    path,
+                    "--",
+                    ...paths,
                   ],
                 }).spawn();
-                tasks.push(process.status);
+                tasks.push(status);
               }
-              for (const result of await Promise.all(tasks)) {
-                if (!result.success) {
-                  throw new Error(
-                    `Git unstage failed with error code ${result.code}.`,
+              for (const status of await Promise.all(tasks)) {
+                if (!status.success) {
+                  await echoerr(
+                    denops,
+                    `Git restore action failed with exit code ${status.code}`,
                   );
                 }
               }
