@@ -154,6 +154,16 @@ hook_add = '''
   lua require 'rc.plugin-setups.skkeleton'
 '''
 
+# skkeletonのモードをカーソル付近に表示する
+[[plugins]]
+repo = 'delphinus/skkeleton_indicator.nvim'
+on_event = 'InsertEnter'
+lua_source = '''
+  require('skkeleton_indicator').setup {
+    eijiText = 'ASC',
+  }
+'''
+
 # skkの辞書
 # deinで管理するアイディアはkuuさんがslackで言及してたやつ
 [[plugins]]
