@@ -100,8 +100,10 @@ const vimSource: SourceConfig = {
 };
 
 export class Config extends BaseConfig {
-  async config(_args: ConfigArguments): Promise<void> {
-    const { denops, contextBuilder } = _args;
+  async config({
+    denops,
+    contextBuilder,
+  }: ConfigArguments): Promise<void> {
     contextBuilder.patchGlobal({
       ui: "native" satisfies "native" | "pum",
       sources: [
