@@ -1294,4 +1294,29 @@ lua_source = '''
   }
 '''
 
+[[plugins]]
+repo = 'monaqa/dial.nvim'
+on_map = '<Plug>(dial-'
+hook_add = '''
+  nnoremap <C-a> <Plug>(dial-increment)
+  nnoremap <C-x> <Plug>(dial-decrement)
+  xnoremap <C-a> <Plug>(dial-increment)
+  xnoremap <C-x> <Plug>(dial-decrement)
+'''
+lua_source = '''
+  local augend = require 'dial.augend'
+  require('dial.config').augends:register_group {
+    -- default augends used when no group name is specified
+    default = {
+      augend.integer.alias.decimal,
+      augend.integer.alias.hex,
+      augend.date.new {
+        pattern = '%Y/%m/%d',
+        default_kind = 'day',
+      },
+      augend.constant.alias.bool,
+    },
+  }
+'''
+
 # vim:ft=toml expandtab tabstop=2 shiftwidth=2
