@@ -544,7 +544,7 @@ hook_source = '''
 [[plugins]]
 repo = 'KentoOgata/vim-colorcolumn'
 hook_add = '''
-  let g:colorcolumn_options = #{
+  const s:colorcolumn_options = #{
         \   lua: #{
         \     fname_pattern: 'stylua\.toml',
         \     value_path: { root -> root.column_width },
@@ -553,8 +553,12 @@ hook_add = '''
         \     fname_pattern: 'deno\.json',
         \     value_path: { root -> root.fmt.lineWidth },
         \   },
+        \   cs: #{
+        \     fname_pattern: 'csharpierrc',
+        \     value_path: { root -> root.printWidth },
+        \   },
         \ }
-  autocmd VimRc BufReadPost * ++once call colorcolumn#setup()
+  autocmd VimRc BufReadPost * ++once call colorcolumn#setup(s:colorcolumn_options)
 '''
 
 # vim:ft=toml expandtab tabstop=2 shiftwidth=2
