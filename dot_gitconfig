@@ -12,5 +12,3 @@
 	root = ~/repos
 [commit]
         verbose = true
-[pull]
-        rebase = true
