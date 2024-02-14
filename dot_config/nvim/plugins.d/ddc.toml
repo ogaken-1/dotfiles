@@ -64,9 +64,6 @@ lua_add = '''
 '''
 
 [[plugins]]
-repo = 'matsui54/ddc-ultisnips'
-
-[[plugins]]
 repo = 'Shougo/ddc-filter-sorter_rank'
 
 [[plugins]]

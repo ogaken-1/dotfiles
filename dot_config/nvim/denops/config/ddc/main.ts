@@ -6,7 +6,6 @@ import {
   cmdlineSource,
   lspSource,
   skkSource,
-  ultisnipsSource,
   vimSource,
 } from "./sources.ts";
 
@@ -53,7 +52,6 @@ export async function main(denops: Denops) {
     specialBufferCompletion: false,
     ui,
     sources: [
-      ultisnipsSource,
       await lspSource(denops),
       bufferSource,
     ],
@@ -81,7 +79,6 @@ export async function main(denops: Denops) {
   });
   await patchFiletype(denops, "vim", {
     sources: [
-      ultisnipsSource,
       vimSource,
       bufferSource,
     ],

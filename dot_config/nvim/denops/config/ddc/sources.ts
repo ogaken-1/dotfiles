@@ -31,20 +31,6 @@ export const bufferSource: SourceConfig = {
   },
 };
 
-export const ultisnipsSource: SourceConfig = {
-  name: "ultisnips",
-  options: {
-    mark: "[ultisnips]",
-    sorters: ["sorter_rank"],
-    matchers: ["matcher_head"],
-    converters: [],
-    ignoreCase: true,
-  },
-  params: {
-    expandSnippets: true,
-  },
-};
-
 export const lspSource = async (denops: Denops): Promise<SourceConfig> => {
   return {
     name: "nvim-lsp",
