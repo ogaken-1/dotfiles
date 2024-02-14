@@ -26,6 +26,13 @@ const generalSources: UserSource[] = [
       fromAltBuf: true,
     },
   },
+  {
+    name: "ultisnips",
+    options: {
+      matchers: ["matcher_fuzzy"],
+      mark: "US",
+    },
+  },
 ];
 
 export class Config extends BaseConfig {
