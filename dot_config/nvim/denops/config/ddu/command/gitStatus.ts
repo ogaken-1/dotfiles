@@ -25,5 +25,7 @@ export const command: Command = {
   },
   itemActions: {
     ["<<"]: "add",
+    [">>"]: "unstage",
+    ["c"]: "commit",
   },
 };

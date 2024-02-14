@@ -15,6 +15,8 @@ export {
   BaseSource,
 } from "https://deno.land/x/ddu_vim@v3.5.1/types.ts";
 export type {
+  ActionArguments,
+  DduItem,
   DduOptions,
   Item,
 } from "https://deno.land/x/ddu_vim@v3.5.1/types.ts";

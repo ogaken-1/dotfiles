@@ -1,11 +1,19 @@
 import {
+  ActionArguments,
   ActionFlags,
+  DduItem,
   DduOptions,
+  Denops,
   FfParams,
   GitStatusActionData,
 } from "../../deps.ts";
+import { denopsCallback } from "../callback.ts";
 
-export function globalConfig(): Partial<DduOptions> {
+type Empty = Record<string | number | symbol, never>;
+
+export async function globalConfig(
+  denops: Denops,
+): Promise<Partial<DduOptions>> {
   return {
     ui: "ff",
     uiParams: {
@@ -98,22 +106,45 @@ export function globalConfig(): Partial<DduOptions> {
       git_status: {
         defaultAction: "open",
         actions: {
-          chaperon: async (args) => {
-            const { denops, items } = args;
-            for (const item of items) {
-              const action = item.action as GitStatusActionData;
-              await denops.cmd(`GinChaperon ${action.path}`);
-            }
-            return ActionFlags.None;
-          },
-          patch: async (args) => {
-            const { denops, items } = args;
-            for (const item of items) {
-              const action = item.action as GitStatusActionData;
-              await denops.cmd(`GinPatch ${action.path}`);
-            }
-            return ActionFlags.None;
-          },
+          commit: await denopsCallback(
+            denops,
+            async () => {
+              await denops.batch(["ddu#ui#do_action", "quit"]);
+              await denops.cmd("Gin commit");
+              return ActionFlags.None;
+            },
+          ),
+          unstage: await denopsCallback(
+            denops,
+            async ([args]: unknown[]) => {
+              const { items } = args as ActionArguments<Empty>;
+              const tasks: Promise<Deno.CommandStatus>[] = [];
+              for (const item of items) {
+                if (!isGitStatusKindItem(item)) {
+                  continue;
+                }
+                const { path, worktree } = item.action;
+                const process = new Deno.Command("git", {
+                  args: [
+                    "-C",
+                    worktree,
+                    "restore",
+                    "--staged",
+                    path,
+                  ],
+                }).spawn();
+                tasks.push(process.status);
+              }
+              for (const result of await Promise.all(tasks)) {
+                if (!result.success) {
+                  throw new Error(
+                    `Git unstage failed with error code ${result.code}.`,
+                  );
+                }
+              }
+              return ActionFlags.RefreshItems;
+            },
+          ),
         },
       },
       git_branch: {
@@ -151,4 +182,19 @@ export function globalConfig(): Partial<DduOptions> {
       },
     },
   };
+}
+
+type GitStatusKindItem = DduItem & {
+  kind: "git_status";
+  action: GitStatusActionData;
+};
+
+function isGitStatusActionData(x: unknown): x is GitStatusActionData {
+  return x != null && typeof x === "object" && "status" in x &&
+    typeof x.status === "string" && "path" in x && typeof x.path === "string" &&
+    "worktree" in x && typeof x.worktree === "string";
+}
+
+function isGitStatusKindItem(item: DduItem): item is GitStatusKindItem {
+  return item.kind === "git_status" && isGitStatusActionData(item.action);
 }

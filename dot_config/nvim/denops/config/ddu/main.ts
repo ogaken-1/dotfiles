@@ -4,7 +4,7 @@ import { patchGlobal } from "./call.ts";
 import { addCommand } from "./command/main.ts";
 
 export async function main(denops: Denops) {
-  await patchGlobal(denops, globalConfig());
+  await patchGlobal(denops, await globalConfig(denops));
   await watchVimSize(denops, "VimRc");
   await addCommand(denops);
   await defineFinderKeymaps(denops);
