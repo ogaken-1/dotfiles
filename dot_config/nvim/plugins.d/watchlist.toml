@@ -72,3 +72,8 @@ lazy = true
 repo = 'folke/dot'
 name = 'folke'
 lazy = true
+
+[[plugins]]
+repo = 'yasunori0418/dotfiles'
+name = 'yasunori0418'
+lazy = true
