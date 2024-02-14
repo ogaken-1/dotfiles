@@ -11,27 +11,34 @@ local function get_dictionaries(types)
   return dictionaries
 end
 
-vim.api.nvim_create_autocmd('User', {
-  group = 'VimRc',
-  once = true,
-  pattern = 'DenopsPluginPost:skkeleton',
-  callback = function()
-    vim.keymap.set({ 'i', 'c' }, '<C-j>', '<Plug>(skkeleton-enable)')
-    vim.fn['skkeleton_azik#setup'] {
-      keys = {
-        katakana = '[',
-      },
-    }
-    local skkDataDir = vim.fs.joinpath(vim.env['XDG_DATA_HOME'], 'skk')
-    vim.fn['skkeleton#register_keymap']('henkan', 'p', 'purgeCandidate')
-    vim.fn['skkeleton#config'] {
-      eggLikeNewline = true,
-      globalDictionaries = get_dictionaries { 'L', 'geo', 'jinmei', 'emoji' },
-      userJisyo = vim.fs.joinpath(skkDataDir, 'user-jisyo'),
-      completionRankFile = vim.fs.joinpath(skkDataDir, 'rank.json'),
-      kanaTable = 'azik',
-      immediatelyCancel = false,
-      registerConvertResult = true,
-    }
-  end,
-})
+local function setup()
+  vim.keymap.set({ 'i', 'c' }, '<C-j>', '<Plug>(skkeleton-enable)')
+  vim.fn['skkeleton_azik#setup'] {
+    keys = {
+      katakana = '[',
+    },
+  }
+  local skkDataDir = vim.fs.joinpath(vim.env['XDG_DATA_HOME'], 'skk')
+  local databasePath = vim.fs.joinpath(vim.fn.stdpath 'cache', 'skkeleton', 'jisyo.db')
+  vim.fn['skkeleton#register_keymap']('henkan', 'p', 'purgeCandidate')
+  vim.fn['skkeleton#config'] {
+    eggLikeNewline = true,
+    globalDictionaries = get_dictionaries { 'L', 'geo', 'jinmei', 'emoji' },
+    userJisyo = vim.fs.joinpath(skkDataDir, 'user-jisyo'),
+    databasePath = databasePath,
+    completionRankFile = vim.fs.joinpath(skkDataDir, 'rank.json'),
+    kanaTable = 'azik',
+    immediatelyCancel = false,
+    registerConvertResult = true,
+  }
+end
+
+-- -- DenopsPluginPost:skkeletonの実行中にskkeleton#config()を呼ぶことができない
+
+-- vim.api.nvim_create_autocmd('User', {
+--   group = 'VimRc',
+--   once = true,
+--   pattern = 'DenopsPluginPost:skkeleton',
+--   callback = setup,
+-- })
+vim.fn['denops#plugin#wait_async']('skkeleton', setup)
