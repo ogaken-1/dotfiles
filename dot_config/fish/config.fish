@@ -23,8 +23,9 @@ if status --is-interactive
 
   # git
   abbr -a gs 'git status --short --branch -uall'
-  abbr -a gsw 'git branch --format="%(refname:short)" | fzf | xargs git switch'
-  abbr -a ga 'git ls-files --exclude-standard --others --modified | fzf -m | xargs git add'
+  abbr -a gsw 'git switch'
+  abbr -a ga 'git add'
+  abbr -a gd 'git diff'
   abbr -a gst 'git stash'
   abbr -a gci 'git commit'
   abbr -a gcif 'git commit --fixup='
