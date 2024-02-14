@@ -12,6 +12,7 @@
   "nvim-insx": { "branch": "main", "commit": "438ea4168383776e76841d8472b6cb8572d14833" },
   "nvim-lspconfig": { "branch": "master", "commit": "a367cab50457558b71151b3652d3732ca40c8fee" },
   "nvim-treesitter": { "branch": "master", "commit": "10d79b5dbbdffc3edf307b189284fb62e2e79a3e" },
+  "skkeleton": { "branch": "main", "commit": "b9fe24dce395cb7b7696fa23f0546d3d870365a3" },
   "vim-edgemotion": { "branch": "master", "commit": "8d16bd92f6203dfe44157d43be7880f34fd5c060" },
   "vim-sandwich": { "branch": "master", "commit": "2ce54d26564e66a675685c8a3331388b2747a26b" }
 }
