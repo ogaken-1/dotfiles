@@ -38,7 +38,7 @@ require 'mason-lspconfig'.setup_handlers {
             version = 'LuaJIT',
           },
           workspace = {
-            checkThirdParty = false,
+            checkThirdParty = 'Disable',
             library = vim.api.nvim_get_runtime_file('', true),
           },
           telemetry = {
