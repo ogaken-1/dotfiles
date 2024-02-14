@@ -262,4 +262,11 @@ call lsp#enable()
 repo = 'mattn/vim-lsp-settings'
 on_source = 'vim-lsp'
 
+[[plugins]]
+repo = 'ctrlpvim/ctrlp.vim'
+on_cmd = 'CtrlP'
+hook_add = '''
+nnoremap <C-p> <Cmd>CtrlP<CR>
+'''
+
 # vim:foldmarker=def\ ,enddef foldmethod=marker foldenable foldlevel=0
