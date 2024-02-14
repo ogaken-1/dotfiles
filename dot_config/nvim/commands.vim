@@ -30,10 +30,11 @@ function s:findRoot(path, rootPattern) abort
 endfunction
 
 function! s:OpenTerminal(command, shell, bang) abort
-  const path =
-        \ &l:buftype->empty() && !bufname()->empty()
-        \   ? (a:bang ? s:findRoot('%'->expand(), '.git') : '%:h')
-        \   : getcwd()
+  try
+    let path = gin#util#worktree(bufname())
+  catch
+    let path = getcwd()
+  endtry
   execute a:command printf('term://%s//%s', path, a:shell)
 endfunction
 command -bang Shell call s:OpenTerminal('edit', $SHELL, '<bang>' ==# '!')
