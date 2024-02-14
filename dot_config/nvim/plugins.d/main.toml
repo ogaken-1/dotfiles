@@ -651,7 +651,7 @@ hook_source = '''
 
 [[plugins]]
 repo = 'hrsh7th/nvim-insx'
-hook_source = '''
+hook_add = '''
   au VimRc User LeximaSetupDone ++once lua require('rc.plugin-setups.insx').setup()
 '''
 
