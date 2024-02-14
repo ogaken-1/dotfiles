@@ -20,8 +20,6 @@ call s:add_rules(
       \ [
       \   #{ char: '<Tab>', at: '\%#\s*\n{,1}\s*end', leave: 'end' },
       \   #{ char: '<Tab>', at: 'function\(\s[a-zA-Z0-9\.\_:]\+\)\{,1}(.*\%#)', leave: ')', input_after: 'end' },
-      \   #{ char: '<CR>', at: '\%#end', input_after: '<CR>' },
-      \   #{ char: '<CR>', at: 'if\s.*\sthen\%#', input_after: '<CR>end' },
       \   #{ char: '<Space>', at: '\%#end', input_after: '<Space>' },
       \ ]
       \ )
@@ -108,6 +106,13 @@ call s:add_rules(
       \ [
       \   #{ char: '<Space>', at: '\[\%#]', input: '<Space>' },
       \   #{ char: '<CR>', at: '^- \[ ] .\+\%#', input: '<CR>- [ ] ' },
+      \ ]
+      \ )
+
+call s:add_rules(
+      \ #{ filetype: 'fish' },
+      \ [
+      \   #{ char: '<CR>', at: '^function\s\+\w\+\%#$', input_after: '<CR>end' },
       \ ]
       \ )
 
