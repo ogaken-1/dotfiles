@@ -1,4 +1,4 @@
-import { autocmd, Denops } from "../../deps.ts";
+import { autocmd, DdcOptions, Denops } from "../../deps.ts";
 import { getContext, setContext } from "../context.ts";
 import { getCurrent, patchBuffer, patchFiletype, patchGlobal } from "./call.ts";
 import {
@@ -10,9 +10,13 @@ import {
   vimSource,
 } from "./sources.ts";
 
+type MyDdc = DdcOptions & {
+  ui: "native" | "pum";
+};
+
 export async function main(denops: Denops) {
-  await patchGlobal(denops, {
-    ui: "native" satisfies "native" | "pum",
+  await patchGlobal<MyDdc>(denops, {
+    ui: "native",
     sources: [
       ultisnipsSource,
       lspSource(denops),
