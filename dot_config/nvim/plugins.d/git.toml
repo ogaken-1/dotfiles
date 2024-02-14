@@ -50,8 +50,11 @@ hook_add = '''
 repo = 'NeogitOrg/neogit'
 on_cmd = 'Neogit'
 depends = 'plenary.nvim'
-hook_add = '''
-  AlterCmd gs Neogit
+lua_add = '''
+  vim.cmd.AlterCmd {
+    'gs',
+    'exec "Neogit" "cwd="..gin#util#worktree(bufname())'
+  }
 '''
 lua_source = '''
   require('neogit').setup {}
