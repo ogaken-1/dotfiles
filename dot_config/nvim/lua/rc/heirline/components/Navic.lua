@@ -1,11 +1,14 @@
 local utils = require 'heirline.utils'
 
 --- Blend two rgb colors using alpha
----@param color1 string  first color
----@param color2 string  second color
+---@param color1? string  first color
+---@param color2? string  second color
 ---@param alpha number (0, 1) float determining the weighted average
 ---@return string color hex string of the blended color
 local function blend(color1, color2, alpha)
+  if color1 == nil or color2 == nil then
+    return '#000000'
+  end
   color1 = type(color1) == 'number' and string.format('#%06x', color1) or color1
   color2 = type(color2) == 'number' and string.format('#%06x', color2) or color2
   local r1, g1, b1 = color1:match '#(%x%x)(%x%x)(%x%x)'
