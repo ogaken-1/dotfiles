@@ -32,4 +32,30 @@ return {
   feedkeys = function(keys, flags)
     vim.api.nvim_feedkeys(vim.keycode(keys), flags or 'nit', false)
   end,
+  ---@param bufnr integer
+  ---@return string?
+  worktree_path = function(bufnr)
+    local bufname = vim.api.nvim_buf_get_name(bufnr)
+    if string.match(bufname, '^gin') ~= nil then
+      return vim.fn['gin#util#worktree'](bufname)
+    else
+      local path
+      if vim.api.nvim_get_option_value('buftype', { buf = bufnr }) == '' then
+        local root = vim.fs.find('.git', {
+          upward = true,
+          type = 'directory',
+          path = vim.api.nvim_buf_get_name(bufnr),
+          stop = vim.uv.os_homedir(),
+        })
+        if #root == 0 then
+          path = nil
+        else
+          path = vim.fn.fnamemodify(vim.fs.dirname(root[1]) or root[1], ':p')
+        end
+      else
+        path = nil
+      end
+      return path
+    end
+  end,
 }

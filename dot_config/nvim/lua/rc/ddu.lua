@@ -1,3 +1,5 @@
+local worktree_path = require('rc.utils').worktree_path
+
 ---@param action string
 ---@return function
 local function uiAction(action)
@@ -31,30 +33,6 @@ local function multiActions(actions)
       end)
       :totable())
   end
-end
-
----@param bufnr integer
----@param pattern? string
----@return string|nil
-local function find_root(bufnr, pattern)
-  pattern = pattern or '.git'
-  local path
-  if vim.api.nvim_get_option_value('buftype', { buf = bufnr }) == '' then
-    local root = vim.fs.find(pattern, {
-      upward = true,
-      type = 'directory',
-      path = vim.api.nvim_buf_get_name(bufnr),
-      stop = vim.uv.os_homedir(),
-    })
-    if #root == 0 then
-      path = nil
-    else
-      path = vim.fn.fnamemodify(vim.fs.dirname(root[1]) or root[1], ':p')
-    end
-  else
-    path = nil
-  end
-  return path
 end
 
 ---A wrapper of vim.keymap.set()
@@ -233,7 +211,7 @@ function ddu.setup()
         {
           name = 'file_external',
           options = {
-            path = find_root(vim.api.nvim_get_current_buf()),
+            path = worktree_path(vim.api.nvim_get_current_buf()),
           },
         },
       },
@@ -246,7 +224,7 @@ function ddu.setup()
         {
           name = 'rg',
           options = {
-            path = find_root(vim.api.nvim_get_current_buf()),
+            path = worktree_path(vim.api.nvim_get_current_buf()),
           },
         },
       },
@@ -446,7 +424,7 @@ function ddu.setup()
   end)
 
   vim.keymap.set('n', '<Plug>(ddu-git_branch)', function()
-    local path = find_root(vim.api.nvim_get_current_buf(), '.git')
+    local path = worktree_path(vim.api.nvim_get_current_buf())
     vim.print(('path!: %s'):format(path))
     vim.fn['ddu#start'] {
       uiParams = {
