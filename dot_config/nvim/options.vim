@@ -15,6 +15,7 @@ set laststatus=0
 set showtabline=0
 set mouse=n
 set inccommand=split
+set exrc
 set secure
 set fileencodings=utf-8,cp932
 set fileformats=unix,dos,mac

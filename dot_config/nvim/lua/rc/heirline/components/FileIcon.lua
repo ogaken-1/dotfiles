@@ -1,6 +1,10 @@
 return {
   provider = function(self)
     self.bufnr = self.bufnr or vim.api.nvim_get_current_buf()
+    if vim.fn.bufexists(self.bufnr) == 0 then
+      return ''
+    end
+
     if vim.api.nvim_get_option_value('buftype', { buf = self.bufnr }) == '' then
       local filename = vim.api.nvim_buf_get_name(self.bufnr)
       local extension = vim.fn.fnamemodify(filename, ':e')

@@ -321,6 +321,7 @@ local function setup()
 
   vim.api.nvim_create_user_command('DduPlugins', ddu.getStartFunc 'dein', {})
   vim.api.nvim_create_user_command('DduGhq', ddu.getStartFunc 'ghq', {})
+  vim.api.nvim_create_user_command('DduDenoModules', ddu.getStartFunc 'deno_module', {})
 
   vim.api.nvim_create_autocmd('FileType', {
     group = 'VimRc',
@@ -336,7 +337,7 @@ local function setup()
           { '<CR>', uiAction 'itemAction' },
           { 'i', uiAction 'openFilterWindow' },
           { 'q', uiAction 'quit' },
-          { 'd', itemAction 'delete' },
+          { 'd', itemAction 'trash' },
           { '<SPACE>', uiAction 'toggleSelectItem', { nowait = true } },
           { 'a', uiAction 'chooseAction' },
           { '<C-Space>', uiAction 'toggleAllItems' },

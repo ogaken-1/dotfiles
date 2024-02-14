@@ -44,10 +44,8 @@ call s:add_rules(
       \   #{ char: '<Tab>', at: '\%(set\|init\)\%( => .\+\)*\%#; }', leave: '}' },
       \   #{ char: '<Tab>', at: '<\%([a-zA-Z0-9_\.]\+?\{,1}\)\%(,\s*[a-zA-Z0-9_\.]\+?\{,1}\)*>*\%#>', leave: '>' },
       \   #{ char: '<Space>', at: '\%(get\|set\|init\)\%#;', input: ' => ' },
-      \   #{ char: '<Space>', at: '\%(@if\|\s\+if\|^if\)\%#', input: '<Space>(', input_after: ')' },
       \   #{ char: 'd', at: '#if \%#', input: 'DEBUG' },
       \   #{ char: '<CR>', at: '^\s*#if\s\+.\+\%#', input_after: '<CR>#endif' },
-      \   #{ char: '<Space>', at: '@\{,1}\%(for\|while\|foreach\|switch\)\%#', input: '<Space>(', input_after: ')' },
       \   #{ char: '<BS>', at: '<\%#>', delete: '>' },
       \   #{ char: 'g', at: '{ \%# }', input: 'get', input_after: ';' },
       \   #{ char: 's', at: '{ get\%( => [^;]\+\)*; \%# }', input: 'set', input_after: ';' },
@@ -63,9 +61,19 @@ call s:add_rules(
       \ ]
       \ )
 
+call lexima#add_rule(#{ filetype: 'cs', char: '/', at: '^\s*//\%#', input: '/ <summary><CR> ', input_after: '<CR> </summary>' })
+
+call s:add_rules(
+      \   #{ filetype: ['cs', 'typescript'] },
+      \   [
+      \     #{ char: '<Space>', except: '\%#(', at: '\%(if\|for\|while\|foreach\|switch\)\%#', input: '<Space>(', input_after: ')' },
+      \   ]
+      \ )
+
 call s:add_rules(
       \ #{ filetype: 'razor' },
       \ [
+      \   #{ char: '<Space>', except: '\%#(', at: '@\{,1}\<\%(if\|for\|while\|foreach\|switch\)\%#', input: '<Space>(', input_after: ')' },
       \   #{ char: '*', at: '@\%#', input_after: '*@' },
       \   #{ char: '<Space>', at: '@\*\%#\*@', input_after: '<Space>' },
       \   #{ char: '<BS>', at: '@\*\s\%#\s\*@', input: '<BS><DEL>' },
@@ -73,7 +81,7 @@ call s:add_rules(
       \   #{ char: '/', at: '<[^>]\+\%#', input: '/>' },
       \   #{ char: '>', at: '<\(\w\+\)[^>]*\%#', with_submatch: 1, input: '>', input_after: '</\1>' },
       \   #{ char: '<CR>', at: '\%#</', input: '<CR>', input_after: '<CR>' },
-      \   #{ char: '<Tab>', at: '\%#\n\{,1}\s*</\w\+>', leave: '>' }
+      \   #{ char: '<Tab>', at: '\%#\n\{,1}\s*</\w\+>', leave: '>' },
       \ ]
       \ )
 
@@ -85,6 +93,7 @@ call s:add_rules(
       \   #{ char: '<Tab>', at: '\%#\\)', leave: '\\)' },
       \   #{ char: '<BS>', at: '\\(\%#\\)', input: '<BS><BS>', delete: '\\)' },
       \   #{ char: '<BS>', at: '\\%(\%#\\)', input: '<BS><BS><BS>', delete: '\\)' },
+      \   #{ char: '<CR>', at: '^\s*\\.*\%#$', input: '<CR>\ ' },
       \ ]
       \ )
 

@@ -498,6 +498,11 @@ lua_source = '''
         enabled = false,
       },
     },
+    exclude = {
+      function(win)
+        return not vim.api.nvim_win_get_config(win).focusable
+      end,
+    }
   }
 '''
 
@@ -542,18 +547,30 @@ hook_source = '''
 '''
 
 [[plugins]]
+repo = 'tani/vim-artemis'
+
+[[plugins]]
+repo = 'nvim-neorg/neorg'
+merged = false
+
+[[plugins]]
 repo = 'KentoOgata/vim-colorcolumn'
 hook_add = '''
-  const s:colorcolumn_options = #{
-        \   lua: #{
+  const s:colorcolumn_options = {
+        \   'lua': #{
         \     fname_pattern: 'stylua\.toml',
         \     value_path: { root -> root.column_width },
         \   },
-        \   typescript: #{
+        \   [
+        \     'javascript',
+        \     'typescript',
+        \     'javascriptreact',
+        \     'typescriptreact'
+        \   ]->join(','): #{
         \     fname_pattern: 'deno\.json',
         \     value_path: { root -> root.fmt.lineWidth },
         \   },
-        \   cs: #{
+        \   'cs': #{
         \     fname_pattern: 'csharpierrc',
         \     value_path: { root -> root.printWidth },
         \   },

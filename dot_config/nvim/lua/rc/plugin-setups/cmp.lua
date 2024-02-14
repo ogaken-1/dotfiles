@@ -1,21 +1,6 @@
 local cmp = require 'cmp'
-
----@param keys string
----@param flags nil|string
-local function feedkeys(keys, flags)
-  vim.api.nvim_feedkeys(vim.keycode(keys), flags or 'nit', false)
-end
-
-local function getCurrentDisplayedBuffers()
-  local bufs = {}
-  for _, win in ipairs(vim.api.nvim_list_wins()) do
-    local buf = vim.api.nvim_win_get_buf(win)
-    if not (vim.api.nvim_get_option_value('buftype', { buf = buf }) == 'terminal') then
-      table.insert(bufs, buf)
-    end
-  end
-  return bufs
-end
+local util = require 'rc.utils'
+local feedkeys = util.feedkeys
 
 cmp.setup {
   enabled = function()
@@ -72,7 +57,7 @@ cmp.setup {
     {
       name = 'buffer',
       option = {
-        get_bufnrs = getCurrentDisplayedBuffers,
+        get_bufnrs = util.getCurrentDisplayedBuffers,
       },
     },
     { name = 'spell' },
@@ -114,7 +99,8 @@ cmp.setup {
       elseif 1 == vim.fn.pumvisible() then
         feedkeys '<C-n>'
       else
-        cmp.complete()
+        vim.fn['ddc#map#manual_complete']()
+        -- cmp.complete()
       end
     end,
     ['<C-p>'] = function()
@@ -129,7 +115,9 @@ cmp.setup {
       end
     end,
     ['<C-g>'] = function(fallback)
-      if cmp.visible() then
+      if vim.fn.pumvisible() == 1 then
+        feedkeys '<C-e>'
+      elseif cmp.visible() then
         cmp.abort()
       elseif vim.fn['pum#visible']() then
         vim.fn['pum#map#cancel']()
@@ -210,6 +198,36 @@ cmp.setup.cmdline(':', {
     },
   },
 })
+cmp.setup.cmdline('/', {
+  enabled = true,
+  mapping = {
+    ['<Tab>'] = {
+      c = function()
+        if cmp.visible() then
+          cmp.select_next_item { behavior = cmp.SelectBehavior.Insert }
+        elseif vim.fn['pum#visible']() then
+          vim.fn['pum#map#insert_relative'](1)
+          vim.cmd.redraw { bang = true }
+        end
+      end,
+    },
+    ['<S-Tab>'] = {
+      c = function()
+        if cmp.visible() then
+          cmp.select_prev_item { behavior = cmp.SelectBehavior.Insert }
+        elseif vim.fn['pum#visible']() then
+          vim.fn['pum#map#insert_relative'](-1)
+        end
+      end,
+    },
+  },
+  ['<C-f>'] = function()
+    if vim.fn['pum#visible']() then
+      vim.fn['pum#map#cancel']()
+    end
+    feedkeys '<C-f>'
+  end,
+})
 cmp.setup.filetype('gitcommit', {
   sources = require('cmp').config.sources({
     { name = 'emoji' },
@@ -217,7 +235,7 @@ cmp.setup.filetype('gitcommit', {
     {
       name = 'buffer',
       option = {
-        get_bufnrs = getCurrentDisplayedBuffers,
+        get_bufnrs = util.getCurrentDisplayedBuffers,
       },
     },
   }),
@@ -245,8 +263,8 @@ local snippetTrigger = '<Plug>(expand-bracket)'
 
 local function addLeximaRules()
   local rules = {
-    { except = [[\%#(]],    input = '(',  input_after = ')' },
-    { input = '',           priority = -1 },
+    { except = [[\%#(]], input = '(', input_after = ')' },
+    { input = '', priority = -1 },
     { filetype = 'haskell', input = '' },
   }
   for _, rule in ipairs(rules) do
@@ -278,7 +296,8 @@ vim.api.nvim_create_autocmd('CompleteDone', {
   group = 'VimRc',
   callback = function()
     local item = vim.v.completed_item
-    if item.kind == 'Function' then
+    --NOTE: ddc-source-nvim-lspが渡してくるkind文字列に依存している
+    if (item.kind == 'Function') or (item.kind == 'Method') then
       expand()
     end
   end,

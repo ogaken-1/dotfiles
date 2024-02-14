@@ -24,6 +24,8 @@ function! skkeleton_azik#setup(config = {}) abort
         \ 'l':        'disable',
         \ "\<SPACE>": 'henkanFirst',
         \ config.keys.katakana: 'katakana',
+        \ 'L': 'zenkaku',
+        \ '/': 'abbrev',
         \})
 
   call skkeleton#register_kanatable('azik', { ':': 'henkanPoint' })

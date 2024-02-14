@@ -1,7 +1,7 @@
 # Maintainer: Kento Ogata <https://github.com/KentoOgata>
 
 pkgname='neovim-git'
-pkgver=0.9.1.re85e7fc7bcccfa3b8f9e52ec4d6cb21591b50468
+pkgver=0.9.1.rdf2f5e39127e283a7ac74a21cb0323c437c3294f
 pkgrel=1
 pkgdesc='Vim-fork focused on extensibility and usability'
 arch=('x86_64')

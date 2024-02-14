@@ -165,6 +165,11 @@ def s:SetupDduFf(): void
         defaultAction: 'open',
       },
     },
+    kindParams: {
+      file: {
+        trashCommand: ["trash"],
+      },
+    },
     filterParams: {
       _: {
         highlightMatched: 'Search',
@@ -290,6 +295,7 @@ ddu-ff = '''
 nnoremap <buffer> i <Cmd>call ddu#ui#ff#do_action('openFilterWindow')<CR>
 nnoremap <buffer> <CR> <Cmd>call ddu#ui#ff#do_action('itemAction')<CR>
 nnoremap <buffer> q <Cmd>close<CR>
+nnoremap <buffer> d <Cmd>call ddu#ui#do_action('itemAction', #{ name: 'trash' })
 '''
 
 [[plugins]]

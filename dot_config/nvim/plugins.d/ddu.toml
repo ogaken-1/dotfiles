@@ -77,3 +77,6 @@ repo = 'kyoh86/ddu-filter-converter_hl_dir'
 
 [[plugins]]
 repo = 'Shougo/ddu-column-filename'
+
+[[plugins]]
+repo = 'tennashi/ddu-source-git'

@@ -83,6 +83,11 @@ export class Config extends BaseConfig {
           defaultAction: "resolve",
         },
       },
+      kindParams: {
+        file: {
+          trashCommand: ["trash"],
+        },
+      },
       filterParams: {
         matcher_fzf: {
           highlightMatched: "Search",

@@ -298,11 +298,20 @@
   :global-minor-mode vertico-mode)
 
 (leaf magit
-  :ensure t)
+  :ensure t
+  :bind (("C-x g" . magit-status)))
 
 (leaf paredit
   :ensure t
   :init
   (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode))
+
+(leaf lsp-mode
+  :ensure t
+  :hook (csharp-mode . lsp)
+  :bind ("C-c h" . lsp-describe-thing-at-point))
+
+(leaf lsp-ui
+  :ensure t)
 
 ;;; init.el ends here

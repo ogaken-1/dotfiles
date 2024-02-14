@@ -1,8 +1,12 @@
+-- tabstopとexpandtabだけ設定するftpluginの場合はここに書いたほうが便利
+-- ほかの設定も書いてるときはftpluginでtabstopを設定していることもある
+
 local space2 = {
   'lua',
   'vim',
   'toml',
   'json',
+  'jsonc',
   'javascript',
   'typescript',
   'css',

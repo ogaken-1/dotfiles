@@ -18,7 +18,7 @@ lua_add = '''
     end,
   })
 
-  -- カラースキームが設定されたとき、setupが定義されていれば実行する 
+  -- カラースキームが設定されたとき、setupが定義されていれば実行する
   vim.api.nvim_create_autocmd('ColorSchemePre', {
     group = 'VimRc',
     callback = function(ctx)
@@ -90,7 +90,7 @@ hook_add = '''
         \ 'dayfox',
         \ 'terafox',
         \ 'carbonfox',
-        \ ])  
+        \ ])
 '''
 
 [[plugins]]
@@ -155,4 +155,10 @@ hook_add = '''
 repo = 'ray-x/aurora'
 hook_add = '''
   call add(g:Themes, 'aurora')
+'''
+
+[[plugins]]
+repo = 'rhysd/vim-color-spring-night'
+hook_add = '''
+  call add(g:Themes, 'spring-night')
 '''

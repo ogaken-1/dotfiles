@@ -8,21 +8,7 @@ end
 
 require('mason-lspconfig').setup {}
 
-local function get_completion_capabilities()
-  local dein = require 'dein'
-  if not dein.is_sourced 'cmp-nvim-lsp' then
-    dein.source 'cmp-nvim-lsp'
-  end
-  return require('cmp_nvim_lsp').default_capabilities().textDocument.completion
-end
-
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities.textDocument.completion = get_completion_capabilities()
-
-local format_disabled_capabilities = vim.deepcopy(capabilities)
-format_disabled_capabilities.textDocument.formatting = nil
-format_disabled_capabilities.textDocument.rangeFormatting = nil
-format_disabled_capabilities.textDocument.onTypeFormatting = nil
+local capabilities = require('rc.lsp.capabilities').get()
 
 local lspconfig = require 'lspconfig'
 
@@ -34,11 +20,16 @@ require('mason-lspconfig').setup_handlers {
   end,
   ['omnisharp'] = function()
     lspconfig.omnisharp.setup {
-      capabilities = format_disabled_capabilities,
+      on_attach = function(client, bufnr)
+        -- client.server_capabilities.textDocument.formatting = nil
+      end,
+      capabilities = capabilities,
       enable_editorconfig_support = true,
       enable_roslyn_analyzers = false,
       organize_imports_on_format = false,
       enable_import_completion = false,
+      analyze_open_documents_only = true,
+      root_dir = require('lspconfig.util').root_pattern '*.sln',
     }
   end,
   ['vtsls'] = function()
@@ -50,7 +41,7 @@ require('mason-lspconfig').setup_handlers {
   end,
   ['lua_ls'] = function()
     lspconfig.lua_ls.setup {
-      capabilities = format_disabled_capabilities,
+      capabilities = capabilities,
       settings = {
         Lua = {
           runtime = {

@@ -8,16 +8,7 @@ end
 
 local lspconfig = require 'lspconfig'
 
-local function get_completion_capabilities()
-  local dein = require 'dein'
-  if not dein.is_sourced 'cmp-nvim-lsp' then
-    dein.source 'cmp-nvim-lsp'
-  end
-  return require('cmp_nvim_lsp').default_capabilities().textDocument.completion
-end
-
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities.textDocument.completion = get_completion_capabilities()
+local capabilities = require('rc.lsp.capabilities').get()
 
 if 1 == vim.fn.executable 'haskell-language-server-wrapper' then
   lspconfig.hls.setup {
@@ -41,7 +32,7 @@ if 1 == vim.fn.executable 'deno' then
       if #node_modules > 0 then
         return
       end
-      local root = vim.fs.find({ '.git', 'deno.json', 'package.json' }, {
+      local root = vim.fs.find({ '.git', 'deno.json', 'package.json', 'deps.ts' }, {
         path = startpath,
         upward = true,
       })
