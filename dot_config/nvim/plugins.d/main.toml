@@ -588,4 +588,7 @@ hook_add = '''
 repo = 'dhruvasagar/vim-table-mode'
 on_cmd = 'TableModeEnable'
 
+[[plugins]]
+repo = 'KentoOgata/vim-vimscript-gd'
+
 # vim:ft=toml expandtab tabstop=2 shiftwidth=2
