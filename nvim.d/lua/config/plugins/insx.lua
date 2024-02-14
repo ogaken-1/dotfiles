@@ -50,8 +50,10 @@ return {
         return require('cmp').visible()
       end,
       action = function()
-        local cmp = require 'cmp'
-        cmp.confirm { select = true, behavior = cmp.ConfirmBehavior.Replace }
+        vim.schedule(function()
+          local cmp = require 'cmp'
+          cmp.confirm { select = true, behavior = cmp.ConfirmBehavior.Replace }
+        end)
       end,
     })
     local auto_pair = require 'insx.recipe.auto_pair'
