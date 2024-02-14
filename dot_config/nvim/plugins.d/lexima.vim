@@ -138,6 +138,7 @@ addLeximaRules()
 
 local function expandBrackets()
   local leximaExpand = require 'rc.utils'.leximaExpand
+  local feedkeys = require 'rc.utils'.feedkeys
   feedkeys(leximaExpand('i', snippetTrigger))
 end
 
