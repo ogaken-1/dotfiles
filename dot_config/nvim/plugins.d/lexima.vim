@@ -119,6 +119,7 @@ call s:add_rules(
 
 " input: >>, effect: `if (\%#)condition` -> `if (condition)`
 call lexima#add_rule(#{ char: '>', at: '(>\%#)', input: '<BS><DEL><End>)' })
+call lexima#add_rule(#{ char: '>', at: '(>\%#)', input: '<BS><End>)', delete: ')' })
 
 lua << EOF
 local snippetTrigger = '<Plug>(expand-bracket)'
