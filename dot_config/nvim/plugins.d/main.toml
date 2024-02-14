@@ -230,6 +230,9 @@ hook_add = '''
         \ 'fern',
         \ ]
 '''
+lua_source = '''
+  require('ibl').setup {}
+'''
 
 # vim.ui.selectとかvim.ui.inputの良い感じの設定を提供する
 [[plugins]]
