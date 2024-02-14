@@ -42,4 +42,8 @@ if status --is-interactive
   function _fishprompt_postexec --on-event fish_postexec
     osc_133 (printf 'D;%d' $status)
   end
+
+  if which direnv > /dev/null
+    eval (direnv hook fish)
+  end
 end
