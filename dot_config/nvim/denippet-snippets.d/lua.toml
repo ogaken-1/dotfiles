@@ -5,3 +5,15 @@ local function ${1:name}(${2:args})
 \t$0
 end
 """
+
+[autocmd]
+prefix = "au"
+body = """
+vim.api.nvim_create_autocmd('$1', {
+  group = $2,
+  pattern = '${3:*}',
+  callback = function($4)
+    $0
+  end,
+})
+"""
