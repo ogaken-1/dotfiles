@@ -1,0 +1,3 @@
+[required]
+prefix = "required"
+body = """required $1 { get; init; }$0"""
