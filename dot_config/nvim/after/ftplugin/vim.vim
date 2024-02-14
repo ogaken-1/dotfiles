@@ -7,7 +7,7 @@ if !exists('*s:gd')
             \ ->substitute('#', '/', 'g')
             \ ->substitute('/$', '', '')
             \ ->printf('autoload/%s.vim')
-      const files = nvim_get_runtime_file(fname, v:true)
+      const files = fname->globpath(&rtp, v:true, v:true)
       if files->len() ==# 1
         exe 'edit' files[0]
         call search(a:word->printf('\Vfunction!\?\s\zs\<%s\>'))
