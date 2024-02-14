@@ -17,7 +17,7 @@ set mouse=n
 set inccommand=split
 set exrc
 set secure
-set fileencodings=utf-8,cp932
+set fileencodings=utf-8,cp932,euc-jp
 set fileformats=unix,dos,mac
 set expandtab
 set nowrap
