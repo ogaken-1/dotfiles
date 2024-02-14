@@ -45,7 +45,7 @@ lua_add = '''
     callback = function(e)
       local preview = require 'ddc_previewer_floating'
       preview.setup {
-        ui = 'native',
+        ui = vim.env['NVIM_DDC_UI'] or 'native',
         window_options = {
           wrap = false,
           number = false,

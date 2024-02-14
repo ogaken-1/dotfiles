@@ -1,4 +1,4 @@
-import { autocmd, CompletionItem, DdcOptions, Denops } from "../../deps.ts";
+import { autocmd, CompletionItem, DdcOptions, Denops, fn } from "../../deps.ts";
 import { getContext, setContext } from "../context.ts";
 import { getCurrent, patchBuffer, patchFiletype, patchGlobal } from "./call.ts";
 import {
@@ -45,9 +45,13 @@ const priority: LspKind[] = [
 ];
 
 export async function main(denops: Denops) {
+  const ui = Deno.env.get("NVIM_DDC_UI") ?? "native";
+  if (!(ui === "native" || ui === "pum")) {
+    throw new Error(`Invalid ddc ui name: ${ui}`);
+  }
   await patchGlobal<MyDdc>(denops, {
     specialBufferCompletion: false,
-    ui: "native",
+    ui,
     sources: [
       ultisnipsSource,
       await lspSource(denops),
@@ -86,6 +90,16 @@ export async function main(denops: Denops) {
   await addSkkSource(denops);
 
   await denops.batch(["ddc#enable"]);
+
+  if (Deno.env.get("NVIM_CMDLINE") === "ddc") {
+    if (await fn.mode(denops, 1) === "c") {
+      await denops.call("ddc#enable_cmdline_completion");
+    }
+
+    await denops.cmd(
+      `au VimRc CmdlineEnter * call ddc#enable_cmdline_completion()`,
+    );
+  }
 }
 
 async function addSkkSource(denops: Denops) {

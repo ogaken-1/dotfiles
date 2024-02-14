@@ -606,6 +606,7 @@ repo = 'KentoOgata/vim-vimscript-gd'
 
 [[plugins]]
 repo = 'KentoOgata/wilder.nvim'
+if = '$NVIM_CMDLINE ==# "wilder"'
 on_event = 'CmdlineEnter'
 hook_source = '''
   call wilder#set_option('pipeline', [
