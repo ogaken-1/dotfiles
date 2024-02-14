@@ -162,3 +162,9 @@ repo = 'rhysd/vim-color-spring-night'
 hook_add = '''
   call add(g:Themes, 'spring-night')
 '''
+
+[[plugins]]
+repo = 'kyoh86/momiji'
+hook_add = '''
+  call add(g:Themes, 'momiji')
+'''
