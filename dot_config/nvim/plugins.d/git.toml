@@ -9,7 +9,7 @@ hook_add = '''
   nnoremap <Plug>(git-log:all) <Cmd>GinLog --all<CR>
   nnoremap <Plug>(git-log:current) <Cmd>GinLog -- %:p<CR>
 
-  let g:gin_log_default_args = [
+  let g:gin_log_persistent_args = [
         \ '--graph',
         \ '--pretty=oneline',
         \ '--abbrev-commit',
