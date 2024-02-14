@@ -11,7 +11,6 @@ vim.bool_fn = setmetatable({}, {
 ---@param config { mode: string|table, maps: table, opts: table|nil }
 ---@diagnostic disable-next-line: duplicate-set-field
 function vim.keymap.set_table(config)
-  local u = require 'rc.utils'
   for _, map in ipairs(config.maps) do
     local lhs, rhs = map[1], map[2]
 
