@@ -283,19 +283,17 @@ lazy = true
 [[plugins]]
 repo = 'hrsh7th/nvim-pasta'
 on_lua = 'pasta'
+on_event = 'TextYankPost'
 hook_add = '''
-  nnoremap p <Cmd>lua require('pasta.mappings').p()<CR>
-  nnoremap P <Cmd>lua require('pasta.mappings').P()<CR>
+  nnoremap p <Cmd>lua require('pasta.mapping').p()<CR>
+  nnoremap P <Cmd>lua require('pasta.mapping').P()<CR>
 '''
 lua_source = '''
-  require('pasta').setup {
-    paste_mode = false,
-    fix_cursor = true,
-    fix_indent = true,
-    prevent_diagnostics = false,
-    next_key = vim.keycode '<C-p>',
-    prev_key = vim.keycode '<C-n>',
-  }
+  local pasta = require 'pasta'
+  pasta.config.next_key = vim.keycode '<C-n>'
+  pasta.config.prev_key = vim.keycode '<C-p>'
+  pasta.config.indent_key = vim.keycode ','
+  pasta.config.indent_fix = true
 '''
 
 # <C-w><C-w>したときにどこのWindowに飛ぶか選べる
