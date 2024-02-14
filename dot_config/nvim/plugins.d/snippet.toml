@@ -64,6 +64,8 @@ hook_add = '''
   let g:UltiSnipsSnippetDirectories = ['ultisnips.snippets.d']
 
   let g:UltiSnipsExpandTrigger = '<Plug>(ultisnips-expand)'
+  let g:UltiSnipsExpandOrJumpTrigger = '<Plug>(ultisnips-expand-or-jump)'
+  let g:UltiSnipsJumpOrExpandTrigger = '<Plug>(ultisnips-jump-or-expand)'
   let g:UltiSnipsListSnippets = '<Plug>(ultisnips-list-snippets)'
   let g:UltiSnipsJumpForwardTrigger = '<Plug>(ultisnips-jump-next)'
   let g:UltiSnipsJumpBackwardTrigger = '<Plug>(ultisnips-jump-previous)'
