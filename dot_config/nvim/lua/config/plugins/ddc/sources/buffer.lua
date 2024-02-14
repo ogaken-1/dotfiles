@@ -7,5 +7,6 @@ return {
     ignoreCase = true,
     dup = 'ignore',
     mark = '[Buffer]',
+    minAutoCompleteLength = 1,
   },
 }
