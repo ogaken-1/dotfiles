@@ -25,6 +25,8 @@ let &completeopt = ['menu', 'menuone', 'longest', 'noinsert']->join(',')
 let &wildoptions = ['fuzzy','pum','tagfile']->join(',')
 set nomore
 
+set matchpairs+=「:」,『:』,【:】
+
 set number relativenumber
 " terminal以外ではnumber,relativenumberを有効化する
 autocmd VimRc OptionSet buftype
