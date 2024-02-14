@@ -38,6 +38,16 @@ do
   vim.keymap.set({ 'n', 'x' }, '<Space>y', '"+y')
   vim.keymap.set({ 'n', 'x' }, '<Space>p', '"+p')
 
+  for _, key in ipairs { 'i', 'a' } do
+    vim.keymap.set('n', key, function()
+      if #fn.getline(fn.line '.') == 0 then
+        return '"_cc'
+      else
+        return key
+      end
+    end, { expr = true, desc = '空の行ではインデントする' })
+  end
+
   vim.api.nvim_create_autocmd('LspAttach', {
     group = vim.api.nvim_create_augroup('config-lsp', { clear = true }),
     callback = function(ctx)
