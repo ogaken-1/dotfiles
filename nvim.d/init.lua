@@ -31,6 +31,10 @@ do
   vim.keymap.set('n', ']q', '<Cmd>cnext<CR>')
   vim.keymap.set('n', '[q', '<Cmd>cprevious<CR>')
   vim.keymap.set('n', '<A-,>', '<Cmd>edit $MYVIMRC<CR>')
+  -- cmdlineモードでの補完候補の選択には<Tab>を使うので<C-[pn]>は空けて良い。
+  -- <Up>/<Down>はカーソル前の入力をリスペクトするのでそちらを使う。
+  vim.keymap.set('c', '<C-p>', '<Up>')
+  vim.keymap.set('c', '<C-n>', '<Down>')
 
   vim.api.nvim_create_autocmd('LspAttach', {
     group = vim.api.nvim_create_augroup('config-lsp', { clear = true }),
