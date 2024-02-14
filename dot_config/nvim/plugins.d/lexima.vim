@@ -61,8 +61,6 @@ call s:add_rules(
       \ ]
       \ )
 
-call lexima#add_rule(#{ filetype: 'cs', char: '/', at: '^\s*//\%#', input: '/ <summary><CR> ', input_after: '<CR> </summary>' })
-
 call s:add_rules(
       \   #{ filetype: ['cs', 'typescript'] },
       \   [
