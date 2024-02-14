@@ -8,22 +8,14 @@ end
 
 require('mason-lspconfig').setup {}
 
-local capabilities = require('rc.lsp.capabilities').get()
-
 local lspconfig = require 'lspconfig'
 
 require('mason-lspconfig').setup_handlers {
   function(server_name)
-    lspconfig[server_name].setup {
-      capabilities = capabilities,
-    }
+    lspconfig[server_name].setup {}
   end,
   ['omnisharp'] = function()
     lspconfig.omnisharp.setup {
-      on_attach = function(client, bufnr)
-        -- client.server_capabilities.textDocument.formatting = nil
-      end,
-      capabilities = capabilities,
       enable_editorconfig_support = true,
       enable_roslyn_analyzers = false,
       organize_imports_on_format = false,
@@ -34,14 +26,12 @@ require('mason-lspconfig').setup_handlers {
   end,
   ['vtsls'] = function()
     lspconfig.vtsls.setup {
-      capabilities = capabilities,
       root_dir = require('lspconfig.util').root_pattern { 'tsconfig.json', 'jsconfig.json', 'node_modules' },
       single_file_support = false,
     }
   end,
   ['lua_ls'] = function()
     lspconfig.lua_ls.setup {
-      capabilities = capabilities,
       settings = {
         Lua = {
           runtime = {
@@ -66,7 +56,6 @@ require('mason-lspconfig').setup_handlers {
   end,
   ['rust_analyzer'] = function()
     lspconfig.rust_analyzer.setup {
-      capabilities = capabilities,
       settings = {
         ['rust-analyzer'] = {
           enable = true,
@@ -76,7 +65,6 @@ require('mason-lspconfig').setup_handlers {
   end,
   ['yamlls'] = function()
     lspconfig.yamlls.setup {
-      capabilities = capabilities,
       settings = {
         yaml = {
           keyOrdering = false,

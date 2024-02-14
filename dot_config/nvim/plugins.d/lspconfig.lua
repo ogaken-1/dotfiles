@@ -8,16 +8,13 @@ end
 
 local ok, ddc_lsp = pcall(require, 'ddc_nvim_lsp_setup')
 if ok then
-  ddc_lsp.setup()
+  ddc_lsp.setup {}
 end
 
 local lspconfig = require 'lspconfig'
 
-local capabilities = require('rc.lsp.capabilities').get()
-
 if 1 == vim.fn.executable 'haskell-language-server-wrapper' then
   lspconfig.hls.setup {
-    capabilities = capabilities,
     filetypes = { 'haskell' },
   }
 end
@@ -27,7 +24,6 @@ if 1 == vim.fn.executable 'deno' then
     'ts=typescript',
   }
   lspconfig.denols.setup {
-    capabilities = capabilities,
     root_dir = function(startpath)
       local node_modules = vim.fs.find({ 'node_modules', 'tsconfig.json', 'jsconfig.json' }, {
         path = startpath,
