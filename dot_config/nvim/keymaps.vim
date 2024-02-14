@@ -53,3 +53,9 @@ cnoremap <C-n> <Down>
 inoremap <silent><expr> <C-w> (pumvisible() ? "\<C-e>" : '') .. "\<C-w>"
 inoremap <silent><expr> <C-u> (pumvisible() ? "\<C-e>" : '') .. "\<C-u>"
 autocmd User LeximaSetupDone ++once inoremap <silent><expr> <BS> (pumvisible() ? "\<C-e>" : '') .. lexima#expand('<LT>BS>', 'i')
+
+nnoremap t <Nop>
+nnoremap tc <Cmd>tabnew<CR>
+nnoremap tq <Cmd>tabclose<CR>
+nnoremap tp <Cmd>tabprevious<CR>
+nnoremap tn <Cmd>tabnext<CR>
