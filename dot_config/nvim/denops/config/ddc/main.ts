@@ -1,4 +1,5 @@
 import { Denops } from "../../deps.ts";
+import { patchFiletype, patchGlobal } from "./fn.ts";
 import {
   bufferSource,
   cmdlineSource,
@@ -9,45 +10,38 @@ import {
 } from "./sources.ts";
 
 export async function main(denops: Denops) {
-  await denops.batch([
-    "ddc#custom#patch_global",
-    {
-      ui: "native" satisfies "native" | "pum",
-      sources: [
-        ultisnipsSource,
-        lspSource(denops),
-        skkSource,
-        bufferSource,
-      ],
-      sourceOptions: {
-        _: {
-          dup: "keep",
-        },
-      },
-      autoCompleteEvents: [
-        "TextChangedI",
-        "TextChangedP",
-        "CmdlineChanged",
-      ],
-      backspaceCompletion: true,
-      cmdlineSources: {
-        ":": [
-          cmdlineSource,
-        ],
+  await patchGlobal(denops, {
+    ui: "native" satisfies "native" | "pum",
+    sources: [
+      ultisnipsSource,
+      lspSource(denops),
+      skkSource,
+      bufferSource,
+    ],
+    sourceOptions: {
+      _: {
+        dup: "keep",
       },
     },
-  ]);
-  await denops.batch([
-    "ddc#custom#patch_filetype",
-    "vim",
-    {
-      sources: [
-        ultisnipsSource,
-        vimSource,
-        skkSource,
-        bufferSource,
+    autoCompleteEvents: [
+      "TextChangedI",
+      "TextChangedP",
+      "CmdlineChanged",
+    ],
+    backspaceCompletion: true,
+    cmdlineSources: {
+      ":": [
+        cmdlineSource,
       ],
     },
-  ]);
+  });
+  await patchFiletype(denops, "vim", {
+    sources: [
+      ultisnipsSource,
+      vimSource,
+      skkSource,
+      bufferSource,
+    ],
+  });
   await denops.batch(["ddc#enable"]);
 }
