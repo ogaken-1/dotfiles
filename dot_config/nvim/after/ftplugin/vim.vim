@@ -2,7 +2,7 @@ setl iskeyword+=:
 
 if !exists('*s:gd')
   function! s:gd(word) abort
-    const defcmd = '\%(function!\?\|let\|const\|\)'
+    const defcmd = '\%(function!\?\|let\|const\)'
     " autoload function
     if a:word =~# '^\%(\w\+#\)\+'
       const fname = a:word
@@ -25,6 +25,7 @@ if !exists('*s:gd')
     endif
 
     normal! gd
+    let @/ = a:word->printf('\V\<%s\>')
   endfunction
 endif
 
