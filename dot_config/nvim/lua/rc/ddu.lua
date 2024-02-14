@@ -49,7 +49,7 @@ local function find_root(bufnr, pattern)
     if #root == 0 then
       path = nil
     else
-      path = vim.fs.dirname(root[1])
+      path = vim.fn.fnamemodify(vim.fs.dirname(root[1]) or root[1], ':p')
     end
   else
     path = nil
