@@ -13,8 +13,15 @@ function! s:ensure_executable(fname) abort
     return
   endif
   if '#!' ==# a:fname->getbufoneline(1)[0:1]
-    call setfperm(a:fname, 'rwxr-xr-x')
-    echomsg 'Set executable permission to ' .. a:fname
+    const prompt = $'Do you want apply executable permission to {a:fname->fnamemodify(':.')} ? [Y/n] '
+    const input = input(#{
+          \ prompt: prompt,
+          \ cancelreturn: 'no',
+          \})
+    if input =~? '^y\%[es]$'
+      call setfperm(a:fname, 'rwxr-xr-x')
+      echomsg 'Set executable permission to ' .. a:fname
+    endif
   endif
 endfunction
 

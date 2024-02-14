@@ -19,6 +19,7 @@ local space2 = {
 local space4 = {
   'cs',
   'razor',
+  'sql',
 }
 
 local tab4 = {
