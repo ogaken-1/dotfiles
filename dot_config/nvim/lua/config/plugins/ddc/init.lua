@@ -36,6 +36,7 @@ local function setup()
     buffer = require 'config.plugins.ddc.sources.buffer',
     vim = require 'config.plugins.ddc.sources.vim',
     cmdline = require 'config.plugins.ddc.sources.cmdline',
+    denippet = require 'config.plugins.ddc.sources.denippet',
   }
   local filters = {
     sorters = {
@@ -49,6 +50,7 @@ local function setup()
   vim.fn['ddc#custom#patch_global'] {
     ui = ui,
     sources = {
+      sources.denippet,
       sources.nvim_lsp,
       sources.buffer,
     },

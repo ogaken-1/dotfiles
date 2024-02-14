@@ -42,3 +42,13 @@ stpl = '''
   setl tabstop=4
   setl noexpandtab
 '''
+
+[[plugins]]
+repo = 'uga-rosa/denippet.vim'
+hook_add = '''
+  const g:denippet_snippets_dir = stdpath('config')..'/denippet-snippets.d'
+  autocmd VimRc InsertEnter * ++once
+        \ :for fname in readdir(g:denippet_snippets_dir)
+        \ |  call denippet#load(g:denippet_snippets_dir .. '/' .. fname)
+        \ |endfor
+'''
