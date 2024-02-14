@@ -48,8 +48,9 @@ do
     end, { expr = true, desc = '空の行ではインデントする' })
   end
 
+  local gid = vim.api.nvim_create_augroup('config-lsp', { clear = false })
   vim.api.nvim_create_autocmd('LspAttach', {
-    group = vim.api.nvim_create_augroup('config-lsp', { clear = true }),
+    group = gid,
     callback = function(ctx)
       local opts = { buffer = ctx.buf }
       vim.keymap.set('n', 'ma', '<Cmd>FzfLua lsp_code_actions<CR>', opts)
@@ -58,6 +59,16 @@ do
       vim.keymap.set('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
       vim.keymap.set('n', ']d', '<Cmd>lua vim.diagnostic.goto_next()<CR>', opts)
       vim.keymap.set('n', '[d', '<Cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
+
+      vim.api.nvim_create_autocmd('BufWritePre', {
+        group = gid,
+        buffer = ctx.buf,
+        callback = function()
+          vim.lsp.buf.format {
+            bufnr = ctx.buf,
+          }
+        end,
+      })
     end,
   })
 end
