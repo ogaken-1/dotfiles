@@ -88,6 +88,8 @@ gitsigns.setup {
       },
     }
 
+    vim.keymap.set('x', '<Space>hs', ':Gitsigns stage_hunk<CR>', { buffer = bufnr, silent = true })
+
     -- Text object
     vim.keymap.set({ 'x', 'o' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
   end,
