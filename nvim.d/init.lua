@@ -18,10 +18,15 @@ require('lazy').setup 'config.plugins'
 do
   vim.keymap.set({ 'n', 'x' }, ';', '<Nop>')
   vim.keymap.set({ 'n', 'x' }, '<Plug>(submode-f);', ';<Plug>(submode-f)')
-  vim.keymap.set({ 'n', 'x' }, 'f', function()
-    local char = fn.nr2char(fn.getchar())
-    return 'f' .. char .. '<Plug>(submode-f)'
-  end, { expr = true })
+  local function jump_and_enter_submode(key)
+    return function()
+      local char = fn.getcharstr()
+      return key .. char .. '<Plug>(submode-f)'
+    end
+  end
+  for _, key in ipairs { 'f', 'F', 't', 'T' } do
+    vim.keymap.set({ 'n', 'x' }, key, jump_and_enter_submode(key), { expr = true })
+  end
 end
 
 do
