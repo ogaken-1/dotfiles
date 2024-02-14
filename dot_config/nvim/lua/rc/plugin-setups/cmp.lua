@@ -31,7 +31,7 @@ cmp.setup {
   },
   formatting = {
     fields = { 'kind', 'abbr', 'menu' },
-    format = require('lspkind').cmp_format {
+    format = require 'lspkind'.cmp_format {
       mode = 'symbol',
       preset = 'codicons',
       menu = {
@@ -233,7 +233,7 @@ cmp.setup.cmdline('/', {
   end,
 })
 cmp.setup.filetype('gitcommit', {
-  sources = require('cmp').config.sources({
+  sources = require 'cmp'.config.sources({
     { name = 'emoji' },
   }, {
     {
@@ -253,13 +253,13 @@ cmp.setup.filetype('TelescopePrompt', {
 vim.api.nvim_create_autocmd('User', {
   pattern = 'skkeleton-disable-post',
   callback = function()
-    require('cmp').setup.buffer { enabled = true }
+    require 'cmp'.setup.buffer { enabled = true }
   end,
 })
 vim.api.nvim_create_autocmd('User', {
   pattern = 'skkeleton-enable-post',
   callback = function()
-    require('cmp').setup.buffer { enabled = false }
+    require 'cmp'.setup.buffer { enabled = false }
   end,
 })
 
@@ -267,8 +267,8 @@ local snippetTrigger = '<Plug>(expand-bracket)'
 
 local function addLeximaRules()
   local rules = {
-    { except = [[\%#(]], input = '(', input_after = ')' },
-    { input = '', priority = -1 },
+    { except = [[\%#(]],    input = '(',  input_after = ')' },
+    { input = '',           priority = -1 },
     { filetype = 'haskell', input = '' },
   }
   for _, rule in ipairs(rules) do
@@ -292,7 +292,7 @@ end
 addLeximaRules()
 
 local function expand()
-  local leximaExpand = require('rc.utils').leximaExpand
+  local leximaExpand = require 'rc.utils'.leximaExpand
   feedkeys(leximaExpand('i', snippetTrigger))
 end
 

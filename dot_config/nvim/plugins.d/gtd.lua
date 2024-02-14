@@ -1,5 +1,5 @@
 -- lua_source {{{
-require('gtd').setup {}
+require 'gtd'.setup {}
 
 vim.keymap.set_table {
   mode = 'n',
@@ -7,7 +7,7 @@ vim.keymap.set_table {
     {
       '<Plug>(gtd:edit)',
       function()
-        require('gtd').exec { command = 'edit' }
+        require 'gtd'.exec { command = 'edit' }
       end,
     },
     {
@@ -15,11 +15,11 @@ vim.keymap.set_table {
       function()
         local splitright = vim.go.splitright
         vim.go.splitright = false
-        require('gtd').exec({
+        require 'gtd'.exec({
           command = 'vsplit',
         }, {
           on_event = function(event)
-            if event == require('gtd').Event.Finish then
+            if event == require 'gtd'.Event.Finish then
               vim.go.splitright = splitright
             end
           end,
@@ -31,11 +31,11 @@ vim.keymap.set_table {
       function()
         local splitbelow = vim.go.splitbelow
         vim.go.splitbelow = true
-        require('gtd').exec({
+        require 'gtd'.exec({
           command = 'split',
         }, {
           on_event = function(event)
-            if event == require('gtd').Event.Finish then
+            if event == require 'gtd'.Event.Finish then
               vim.go.splitbelow = splitbelow
             end
           end,
@@ -47,11 +47,11 @@ vim.keymap.set_table {
       function()
         local splitbelow = vim.go.splitbelow
         vim.go.splitbelow = false
-        require('gtd').exec({
+        require 'gtd'.exec({
           command = 'split',
         }, {
           on_event = function(event)
-            if event == require('gtd').Event.Finish then
+            if event == require 'gtd'.Event.Finish then
               vim.go.splitbelow = splitbelow
             end
           end,
@@ -63,11 +63,11 @@ vim.keymap.set_table {
       function()
         local splitright = vim.go.splitright
         vim.go.splitright = true
-        require('gtd').exec({
+        require 'gtd'.exec({
           command = 'vsplit',
         }, {
           on_event = function(event)
-            if event == require('gtd').Event.Finish then
+            if event == require 'gtd'.Event.Finish then
               vim.go.splitright = splitright
             end
           end,

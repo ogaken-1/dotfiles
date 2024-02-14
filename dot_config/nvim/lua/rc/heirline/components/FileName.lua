@@ -13,7 +13,7 @@ return {
   end,
   hl = function()
     if vim.bo.modified then
-      return { fg = utils.get_highlight('Directory').fg, bold = true, italic = true }
+      return { fg = utils.get_highlight 'Directory'.fg, bold = true, italic = true }
     end
     return 'Directory'
   end,

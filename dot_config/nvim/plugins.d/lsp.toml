@@ -74,9 +74,6 @@ lua_source = '''
   local null_ls_utils = require('null-ls.utils').make_conditional_utils()
   null_ls.setup {
     sources = {
-      null_ls.builtins.formatting.stylua.with {
-        root_dir = null_ls_utils.root_has_file { 'stylua.toml', '.stylua.toml' },
-      },
       null_ls.builtins.diagnostics.shellcheck.with {
         extra_args = function(params)
           return params.ft == 'PKGBUILD' and { '--exclude', 'SC2148,SC2034,SC2154,SC2155,SC2164' } or {}

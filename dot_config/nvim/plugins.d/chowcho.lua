@@ -9,15 +9,15 @@ end
 
 win_keymap_set('w', function()
   local wins = #vim
-    .iter(vim.api.nvim_tabpage_list_wins(0))
-    :filter(function(winnr)
-      local conf = vim.api.nvim_win_get_config(winnr)
-      return conf.focusable
-    end)
-    :totable()
+      .iter(vim.api.nvim_tabpage_list_wins(0))
+      :filter(function(winnr)
+        local conf = vim.api.nvim_win_get_config(winnr)
+        return conf.focusable
+      end)
+      :totable()
 
   if wins > 2 then
-    require('chowcho').run()
+    require 'chowcho'.run()
   else
     vim.cmd.wincmd 'w'
   end

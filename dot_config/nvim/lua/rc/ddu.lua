@@ -1,4 +1,4 @@
-local worktree_path = require('rc.utils').worktree_path
+local worktree_path = require 'rc.utils'.worktree_path
 
 ---@param action string
 ---@return function
@@ -279,19 +279,19 @@ function ddu.setup()
           buffer = ctx.buf,
         },
         maps = {
-          { '<CR>', uiAction 'itemAction' },
-          { 'i', uiAction 'openFilterWindow' },
-          { 'q', uiAction 'quit' },
-          { 'd', itemAction 'trash' },
-          { '<SPACE>', uiAction 'toggleSelectItem', { nowait = true } },
-          { 'a', uiAction 'chooseAction' },
+          { '<CR>',      uiAction 'itemAction' },
+          { 'i',         uiAction 'openFilterWindow' },
+          { 'q',         uiAction 'quit' },
+          { 'd',         itemAction 'trash' },
+          { '<SPACE>',   uiAction 'toggleSelectItem',                                               { nowait = true } },
+          { 'a',         uiAction 'chooseAction' },
           { '<C-Space>', uiAction 'toggleAllItems' },
-          { 'c', multiActions { 'toggleAllItems', { 'itemAction', { name = 'quickfix' } } } },
-          { 'p', uiAction 'toggleAutoAction' },
-          { 'l', uiAction 'expandItem' },
-          { 'h', uiAction 'collapseItem' },
-          { '<<', itemAction 'add' },
-          { 'pp', itemAction 'patch' },
+          { 'c',         multiActions { 'toggleAllItems', { 'itemAction', { name = 'quickfix' } } } },
+          { 'p',         uiAction 'toggleAutoAction' },
+          { 'l',         uiAction 'expandItem' },
+          { 'h',         uiAction 'collapseItem' },
+          { '<<',        itemAction 'add' },
+          { 'pp',        itemAction 'patch' },
         },
       }
 
@@ -336,6 +336,7 @@ function ddu.setup()
       uiParams = {
         ff = {
           startAutoAction = true,
+          startFilter = false,
         },
       },
     }
