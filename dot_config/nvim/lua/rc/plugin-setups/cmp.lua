@@ -128,6 +128,8 @@ cmp.setup {
     ['<Tab>'] = function(fallback)
       if vim.fn['vsnip#jumpable'](1) == 1 then
         feedkeys '<Plug>(vsnip-jump-next)'
+      elseif vim.fn['UltiSnips#CanJumpForwards']() == 1 then
+        feedkeys '<Plug>(ultisnips-jump-next)'
       else
         fallback()
       end
@@ -135,6 +137,8 @@ cmp.setup {
     ['<S-Tab>'] = function(fallback)
       if vim.fn['vsnip#jumpable'](-1) == 1 then
         feedkeys '<Plug>(vsnip-jump-prev)'
+      elseif vim.fn['UltiSnips#CanJumpBackwards']() == 1 then
+        feedkeys '<Plug>(ultisnips-jump-previous)'
       else
         fallback()
       end
