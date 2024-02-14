@@ -32,6 +32,9 @@ const generalSources: UserSource[] = [
       matchers: ["matcher_fuzzy"],
       mark: "US",
     },
+    params: {
+      expandSnippets: true,
+    },
   },
 ];
 
