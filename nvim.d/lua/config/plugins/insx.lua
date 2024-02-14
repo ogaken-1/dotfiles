@@ -56,6 +56,20 @@ return {
         end)
       end,
     })
+
+    do -- C# rules
+      insx.add(';', {
+        enabled = function(ctx)
+          return (ctx.filetype == 'cs' or ctx.filetype == 'razor') and ctx.after() ~= ''
+        end,
+        action = function(ctx)
+          local row = ctx.row()
+          ctx.move(row, #vim.fn.getline(row + 1))
+          ctx.send ';'
+        end,
+      })
+    end
+
     local auto_pair = require 'insx.recipe.auto_pair'
     local delete_pair = require 'insx.recipe.delete_pair'
     local jump_next = require 'insx.recipe.jump_next'
