@@ -49,3 +49,5 @@ exec 'set' 'guicursor=' .. [
      \ 'i-ci-ve:blinkwait700-blinkoff400-blinkon250',
      \ 'sm:block-blinkwait175-blinkoff150-blinkon175',
      \ ]->join(',')
+
+autocmd VimRc FileType markdown,help,org setl wrap
