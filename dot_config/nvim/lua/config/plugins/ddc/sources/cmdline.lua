@@ -7,5 +7,5 @@ return {
     ignoreCase = true,
     minAutoCompleteLength = 1,
     keywordPattern = [=[[a-zA-Z0-9#\_]+]=],
-  }
+  },
 }

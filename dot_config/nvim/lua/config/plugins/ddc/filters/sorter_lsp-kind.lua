@@ -26,6 +26,6 @@ return {
       'Operator',
       'TypeParameter',
       'Text',
-    }
-  }
+    },
+  },
 }

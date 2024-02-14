@@ -18,7 +18,7 @@ local function on_attach(context)
       remap = true,
     },
     maps = {
-      { 'K',  vim.lsp.buf.hover,           { desc = 'textDocument/hover' } },
+      { 'K', vim.lsp.buf.hover, { desc = 'textDocument/hover' } },
       {
         'gd',
         function()
@@ -27,8 +27,8 @@ local function on_attach(context)
         { desc = 'textDocument/definition' },
       },
       { 'gD', vim.lsp.buf.type_definition, { desc = 'textDocument/typeDefinition' } },
-      { 'ma', '<Plug>(lsp-codeAction)',    { desc = 'textDocument/codeAction' } },
-      { 'mr', vim.lsp.buf.rename,          { desc = 'textDocument/rename' } },
+      { 'ma', '<Plug>(lsp-codeAction)', { desc = 'textDocument/codeAction' } },
+      { 'mr', vim.lsp.buf.rename, { desc = 'textDocument/rename' } },
       {
         'mf',
         function()
@@ -37,7 +37,7 @@ local function on_attach(context)
         { desc = 'textDocument/formatting' },
       },
       { 'gi', '<Plug>(ff-lsp_implementations)', { desc = 'textDocument/implementation*' } },
-      { 'gr', '<Plug>(ff-lsp_references)',      { desc = 'textDocument/references' } },
+      { 'gr', '<Plug>(ff-lsp_references)', { desc = 'textDocument/references' } },
     },
   }
 

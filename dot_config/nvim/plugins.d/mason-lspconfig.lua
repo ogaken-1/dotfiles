@@ -6,11 +6,11 @@ if vim.env.NO_LSP then
   return
 end
 
-require 'mason-lspconfig'.setup {}
+require('mason-lspconfig').setup {}
 
 local lspconfig = require 'lspconfig'
 
-require 'mason-lspconfig'.setup_handlers {
+require('mason-lspconfig').setup_handlers {
   function(server_name)
     lspconfig[server_name].setup {}
   end,
@@ -21,12 +21,12 @@ require 'mason-lspconfig'.setup_handlers {
       organize_imports_on_format = false,
       enable_import_completion = false,
       analyze_open_documents_only = true,
-      root_dir = require 'lspconfig.util'.root_pattern '*.sln',
+      root_dir = require('lspconfig.util').root_pattern '*.sln',
     }
   end,
   ['vtsls'] = function()
     lspconfig.vtsls.setup {
-      root_dir = require 'lspconfig.util'.root_pattern { 'tsconfig.json', 'jsconfig.json', 'node_modules' },
+      root_dir = require('lspconfig.util').root_pattern { 'tsconfig.json', 'jsconfig.json', 'node_modules' },
       single_file_support = false,
     }
   end,
@@ -49,12 +49,13 @@ require 'mason-lspconfig'.setup_handlers {
             showWord = 'Disable',
           },
           format = {
+            enable = false,
             defaultConfig = {
               indent_style = 'space',
               indent_size = '2',
               quote_style = 'single',
               call_arg_parentheses = 'remove',
-            }
+            },
           },
         },
       },

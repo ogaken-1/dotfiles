@@ -7,5 +7,5 @@ return {
     ignoreCase = true,
     dup = 'ignore',
     mark = '[Buffer]',
-  }
+  },
 }

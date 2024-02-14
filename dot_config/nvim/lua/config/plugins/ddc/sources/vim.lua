@@ -6,5 +6,5 @@ return {
     converters = { 'converter_fuzzy' },
     ignoreCase = true,
     mark = '[Vim]',
-  }
+  },
 }

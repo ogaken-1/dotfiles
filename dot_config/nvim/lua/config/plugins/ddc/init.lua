@@ -13,7 +13,7 @@ local function add_skk_source()
           skkeleton_source,
         },
       }
-    end
+    end,
   })
   vim.api.nvim_create_autocmd('User', {
     pattern = 'skkeleton-disable-post',
@@ -26,7 +26,7 @@ local function add_skk_source()
         sources = vim.b[ctx.buf].ddc_sources,
       }
       vim.b[ctx.buf].ddc_sources = nil
-    end
+    end,
   })
 end
 
@@ -112,7 +112,7 @@ return {
       callback = function()
         vim.fn['ddc#enable']()
         vim.api.nvim_del_augroup_by_name 'ddc-enable'
-      end
+      end,
     })
   end,
 }

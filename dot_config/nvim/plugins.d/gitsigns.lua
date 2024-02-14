@@ -9,8 +9,8 @@ gitsigns.setup {
     changedelete = { text = '~' },
   },
   signcolumn = true, -- Toggle with `:Gitsigns toggle_signs`
-  numhl = false,     -- Toggle with `:Gitsigns toggle_numhl`
-  linehl = false,    -- Toggle with `:Gitsigns toggle_linehl`
+  numhl = false, -- Toggle with `:Gitsigns toggle_numhl`
+  linehl = false, -- Toggle with `:Gitsigns toggle_linehl`
   word_diff = false, -- Toggle with `:Gitsigns toggle_word_diff`
   watch_gitdir = {
     interval = 1000,
@@ -57,7 +57,7 @@ gitsigns.setup {
               return
             end
 
-            require 'gitsigns'.next_hunk {
+            require('gitsigns').next_hunk {
               navigation_message = false,
             }
           end,
@@ -70,7 +70,7 @@ gitsigns.setup {
               return
             end
 
-            require 'gitsigns'.prev_hunk {
+            require('gitsigns').prev_hunk {
               navigation_message = false,
             }
           end,
@@ -84,7 +84,7 @@ gitsigns.setup {
         { '<Space>hB', '<cmd>Gitsigns toggle_current_line_blame<CR>' },
         { '<Space>hd', '<cmd>Gitsigns diffthis<CR>' },
         { '<Space>hD', '<cmd>lua require"gitsigns".diffthis("~")<CR>' },
-        { '<C-t>',     '<cmd>Gitsigns toggle_deleted<CR>' },
+        { '<C-t>', '<cmd>Gitsigns toggle_deleted<CR>' },
       },
     }
 

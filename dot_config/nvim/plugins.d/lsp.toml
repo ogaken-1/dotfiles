@@ -71,6 +71,7 @@ lua_source = '''
   local null_ls_utils = require('null-ls.utils').make_conditional_utils()
   null_ls.setup {
     sources = {
+      null_ls.builtins.formatting.stylua,
       null_ls.builtins.diagnostics.shellcheck.with {
         extra_args = function(params)
           return { '--exclude', 'SC2148' }
