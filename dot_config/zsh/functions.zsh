@@ -12,8 +12,19 @@ gcd () {
     if [ -z "${PROJECT_PATH}" ]; then
       return
     fi
-    SESSION_NAME="$(basename ${PROJECT_PATH} | sed -E 's/\./_/g')"
-    tmux new-session -d -s "${SESSION_NAME}" -c "${PROJECT_PATH}" || tmux a -t "${SESSION_NAME}"
+    SESSION_NAME="$(basename "${PROJECT_PATH}" | sed -E 's/\./_/g')"
+    if [[ -f "${PROJECT_PATH}/devbox.json" ]]; then
+      SHELL_COMMAND='devbox shell'
+      tmux new-session -d -s "${SESSION_NAME}" -c "${PROJECT_PATH}" "${SHELL_COMMAND}"
+      if [[ $? -eq 1 ]]; then
+        tmux a -t "${SESSION_NAME}"
+      fi
+    else
+      tmux new-session -d -s "${SESSION_NAME}" -c "${PROJECT_PATH}"
+      if [[ $? -eq 1 ]]; then
+        tmux a -t "${SESSION_NAME}"
+      fi
+    fi
     if [ -n "${TMUX}" ]; then
       tmux switch-client -t "${SESSION_NAME}"
     else
