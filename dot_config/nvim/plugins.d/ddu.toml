@@ -1,26 +1,24 @@
 [[plugins]]
 repo = 'Shougo/ddu.vim'
 hook_add = '''
-  nnoremap <Plug>(ff-buffers)             <Plug>(ddu-buffers)
-  nnoremap <Plug>(ff-files)               <Plug>(ddu-files)
-  nnoremap <Plug>(ff-resume)              <Plug>(ddu-resume)
-  nnoremap <Plug>(ff-config_files)        <Plug>(ddu-config_files)
-  nnoremap <Plug>(ff-help_tags)           <Plug>(ddu-help_tags)
-  nnoremap <Plug>(ff-grep_help)           <Plug>(ddu-grep_help)
-  nnoremap <Plug>(ff-grep)                <Plug>(ddu-rg)
-  nnoremap <Plug>(ff-lines)               <Plug>(ddu-lines)
-  nnoremap <Plug>(ff-lsp_implementations) <Plug>(ddu-lsp_implementations)
-  nnoremap <Plug>(ff-lsp_references)      <Plug>(ddu-lsp_references)
-  nnoremap <Plug>(ff-mrw)                 <Plug>(ddu-mrw)
+  nnoremap <Plug>(ff-buffers)             <Cmd>Ddu buffer<CR>
+  nnoremap <Plug>(ff-files)               <Cmd>Ddu files<CR>
+  nnoremap <Plug>(ff-resume)              <Cmd>Ddu resume<CR>
+  nnoremap <Plug>(ff-config_files)        <Cmd>Ddu config_file<CR>
+  nnoremap <Plug>(ff-help_tags)           <Cmd>Ddu help_tag<CR>
+  nnoremap <Plug>(ff-grep_help)           <Cmd>Ddu grep_help<CR>
+  nnoremap <Plug>(ff-grep)                <Cmd>Ddu rg<CR>
+  nnoremap <Plug>(ff-lines)               <Cmd>Ddu line<CR>
+  nnoremap <Plug>(ff-lsp_implementations) <Cmd>Ddu lsp_implementation<CR>
+  nnoremap <Plug>(ff-lsp_references)      <Cmd>Ddu lsp_reference<CR>
+  nnoremap <Plug>(lsp-codeAction)         <Cmd>Ddu lsp_codeAction<CR>
+  nnoremap <Plug>(ff-mrw)                 <Cmd>Ddu mrw<CR>
 
-  nnoremap <Plug>(git-status)             <Plug>(ddu-git_status)
-  nnoremap <Plug>(git-branch)             <Plug>(ddu-git_branch)
+  nnoremap <Plug>(git-status)             <Cmd>Ddu git_status<CR>
+  nnoremap <Plug>(git-branch)             <Cmd>Ddu git_branch<CR>
 
-  AlterCmd fp DduPlugins
-  AlterCmd fq DduGhq
-
-  " denopsが立ち上がったときにdduをセットアップする
-  autocmd VimRc User DenopsReady ++once call timer_start(10, { -> luaeval("require('rc.ddu').setup()") })
+  AlterCmd fp Ddu<Space>plugin
+  AlterCmd fq Ddu<Space>ghq
 '''
 
 [[plugins]]

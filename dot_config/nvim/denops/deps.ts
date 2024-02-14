@@ -1,6 +1,12 @@
 export type { Denops } from "https://deno.land/x/denops_std@v5.0.1/mod.ts";
 export * as opt from "https://deno.land/x/denops_std@v5.0.1/option/mod.ts";
 export * as autocmd from "https://deno.land/x/denops_std@v5.0.1/autocmd/mod.ts";
+export * as fn from "https://deno.land/x/denops_std@v5.0.1/function/mod.ts";
+export { map } from "https://deno.land/x/denops_std@v5.0.1/mapping/mod.ts";
+export { echoerr } from "https://deno.land/x/denops_std@v5.0.1/helper/echo.ts";
+export * as vars from "https://deno.land/x/denops_std@v5.0.1/variable/mod.ts";
+
+export { is } from "https://deno.land/x/unknownutil@v3.6.0/mod.ts";
 
 export {
   ActionFlags,

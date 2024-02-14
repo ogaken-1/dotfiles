@@ -1,10 +1,13 @@
-import { Denops, opt } from "../../deps.ts";
+import { autocmd, Denops, map, opt } from "../../deps.ts";
 import { globalConfig } from "./ff/global.ts";
 import { patchGlobal } from "./call.ts";
+import { main as commandMain } from "./command/main.ts";
 
 export async function main(denops: Denops) {
   await patchGlobal(denops, globalConfig());
   await watchVimSize(denops, "VimRc");
+  await commandMain(denops);
+  await defineFinderKeymaps(denops);
 }
 
 async function watchVimSize(denops: Denops, augroup: string) {
@@ -48,5 +51,71 @@ async function watchVimSize(denops: Denops, augroup: string) {
 
   await denops.cmd(
     `au ${augroup} VimResized * call denops#notify('${denops.name}', '${fn}', [])`,
+  );
+}
+
+const uiActions: Record<string, string> = {
+  ["<CR>"]: "itemAction",
+  ["i"]: "openFilterWindow",
+  ["q"]: "quit",
+  ["<Space>"]: "toggleSelectItem",
+  ["<C-Space>"]: "toggleAllItems",
+  ["p"]: "toggleAutoAction",
+  ["l"]: "expandItem",
+  ["h"]: "collapseItem",
+};
+
+async function doUiMaps(denops: Denops) {
+  for (const keys in uiActions) {
+    await map(
+      denops,
+      keys,
+      `<Cmd>call ddu#ui#do_action('${uiActions[keys]}')<CR>`,
+      { mode: "n", buffer: true },
+    );
+  }
+}
+
+async function defineFinderKeymaps(denops: Denops) {
+  denops.dispatcher = {
+    ...denops.dispatcher,
+    ["ddu:ff:keyMaps"]: async () => {
+      await doUiMaps(denops);
+    },
+    ["ddu:ff-filter:keyMaps"]: async () => {
+      await map(
+        denops,
+        "<CR>",
+        "<Esc><Cmd>call ddu#ui#do_action('closeFilterWindow')<CR>",
+        { mode: "i", buffer: true },
+      );
+      await map(
+        denops,
+        "<CR>",
+        "<Cmd>call ddu#ui#do_action('closeFilterWindow')<CR>",
+        { mode: "n", buffer: true },
+      );
+      await map(
+        denops,
+        "q",
+        "<Cmd>call ddu#ui#do_action('quit')<CR>",
+        { mode: "n", buffer: true },
+      );
+    },
+  };
+
+  await autocmd.define(
+    denops,
+    "FileType",
+    "ddu-ff",
+    `call denops#request('${denops.name}', 'ddu:ff:keyMaps', [])`,
+    { group: "VimRc" },
+  );
+  await autocmd.define(
+    denops,
+    "FileType",
+    "ddu-ff-filter",
+    `call denops#request('${denops.name}', 'ddu:ff-filter:keyMaps', [])`,
+    { group: "VimRc" },
   );
 }
