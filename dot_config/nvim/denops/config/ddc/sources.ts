@@ -34,8 +34,11 @@ export const bufferSource: SourceConfig = {
 export const ultisnipsSource: SourceConfig = {
   name: "ultisnips",
   options: {
-    ...basicSourceOptions,
     mark: "[ultisnips]",
+    sorters: ["sorter_rank"],
+    matchers: ["matcher_head"],
+    converters: [],
+    ignoreCase: true,
   },
   params: {
     expandSnippets: true,

@@ -73,3 +73,9 @@ repo = 'uga-rosa/ddc-nvim-lsp-setup'
 
 [[plugins]]
 repo = 'matsui54/ddc-ultisnips'
+
+[[plugins]]
+repo = 'Shougo/ddc-filter-sorter_rank'
+
+[[plugins]]
+repo = 'Shougo/ddc-filter-matcher_head'
