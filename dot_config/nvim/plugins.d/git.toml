@@ -3,7 +3,6 @@
 [[plugins]]
 repo = 'lambdalisue/gin.vim'
 depends = 'denops.vim'
-on_cmd = ['GinStatus', 'GinBranch', 'Gin', 'GinPatch', 'GinChaperon']
 hook_add = '''
   " nnoremap <Plug>(git-status) <Cmd>GinStatus<CR>
   nnoremap <Plug>(git-commit) <Cmd>Gin commit -v<CR>
@@ -21,9 +20,10 @@ hook_add = '''
         \ ]
 
   AlterCmd gs GinStatus
-  AlterCmd gp Gin<Space>push
   AlterCmd gb GinBranch
+  lua vim.cmd.AlterCmd { 'gp', 'Gin push' }
   lua vim.cmd.AlterCmd { 'gpf', 'Gin push --force-with-lease --force-if-include' }
+  lua vim.cmd.AlterCmd { 'gpu', [[exec 'Gin' 'push' '--set-upstream' 'origin' system('git branch --show-current')]] }
 
   " bufferlineするときにリストにあるとだいたいパースできなくて死ぬので
   autocmd VimRc FileType gin* setl nobuflisted
