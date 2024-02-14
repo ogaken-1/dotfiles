@@ -651,9 +651,8 @@ hook_source = '''
 
 [[plugins]]
 repo = 'hrsh7th/nvim-insx'
-on_event = ['InsertEnter', 'CmdlineEnter']
 hook_source = '''
-  lua require('rc.plugin-setups.insx').setup()
+  au VimRc User LeximaSetupDone ++once lua require('rc.plugin-setups.insx').setup()
 '''
 
 # vim:ft=toml expandtab tabstop=2 shiftwidth=2
