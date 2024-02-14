@@ -5,3 +5,7 @@ show () {
 gitop () {
   cd "$(git rev-parse --show-toplevel)"
 }
+
+gcd () {
+  cd "$(ghq list --full-path | fzf)"
+}

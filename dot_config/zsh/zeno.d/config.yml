@@ -77,21 +77,9 @@ snippets:
   - name: dotnet build
     keyword: db
     snippet: dotnet build --nologo --no-restore
-  - name: ghq cd
-    keyword: gcd
-    snippet: cd "$(ghq list --full-path | fzf)"
   - name: dotnet test
     keyword: dt
     snippet: dotnet test --nologo --no-restore
-  - name: chezmoi edit
-    keyword: ced
-    snippet: chezmoi edit
-  - name: chezmoi cd
-    keyword: ccd
-    snippet: chezmoi cd
-  - name: cd to gitroot
-    keyword: cdr
-    snippet: cd "$(git rev-parse --show-toplevel)"
   - name: git switch
     keyword: gsw
     snippet: git switch {{branch}}
