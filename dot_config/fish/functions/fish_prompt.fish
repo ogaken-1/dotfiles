@@ -11,7 +11,7 @@ function fish_prompt
     set -a components '(chezmoi)'
   end
 
-  set -a components (sgr color:yellow "$USER")
+  set -a components "$(sgr color:yellow "$USER")@$(sgr color:magenta "$hostname")"
 
   # User can find that if he is in a git repository
   set -l git_repo $(git rev-parse --show-toplevel 2> /dev/null)
