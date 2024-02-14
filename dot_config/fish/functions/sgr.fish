@@ -5,14 +5,15 @@ function sgr -a command -a content
   end
 
   switch "$command"
-    case 'color:yellow'
-      printf '\033[33m'
-    case 'color:blue'
-      printf '\033[34m'
-    case 'color:magenta'
-      printf '\033[35m'
-    case 'color:cyan'
-      printf '\033[36m'
+    case 'color:*'
+      set -l colors 'black' 'red' 'green' 'yellow' 'blue' 'magenta' 'cyan' 'white'
+      set -l color (echo "$command" | awk -F ':' '{ print $2 }')
+      if set -l idx (contains -i "$color" $colors)
+        printf '\033[3%dm' (echo "$idx - 1" | bc)
+      else
+        echo "color: '$color' is invalid."
+        return 1
+      end
     case '*'
       echo "sgr: command '$command' is not supported."
       return 1
