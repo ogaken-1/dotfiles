@@ -345,6 +345,8 @@ local function setup()
           { 'p', uiAction 'toggleAutoAction' },
           { 'l', uiAction 'expandItem' },
           { 'h', uiAction 'collapseItem' },
+          { '<<', itemAction 'add' },
+          { 'pp', itemAction 'patch' },
         },
       }
     end,

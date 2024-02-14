@@ -30,11 +30,11 @@ function s:findRoot(path, rootPattern) abort
 endfunction
 
 function! s:OpenTerminal(command, shell, bang) abort
-  execute a:command $'term://{
-        \   &l:buftype->empty() && !bufname()->empty()
-        \     ? a:bang ? s:findRoot(expand('%'), '.git') : "%:h"
-        \     : getcwd()
-        \ }//{a:shell}'
+  const path =
+        \ &l:buftype->empty() && !bufname()->empty()
+        \   ? (a:bang ? s:findRoot('%'->expand(), '.git') : '%:h')
+        \   : getcwd()
+  execute a:command printf('term://%s//%s', path, a:shell)
 endfunction
 command -bang Shell call s:OpenTerminal('edit', $SHELL, '<bang>' ==# '!')
 command -bang HShell call s:OpenTerminal('belowright split', $SHELL, '<bang>' ==# '!')
@@ -44,7 +44,7 @@ command -bang TShell call s:OpenTerminal('tabnew', $SHELL, '<bang>' ==# '!')
 function! s:OpenRazor(command, fname, bang) abort
   const expectedFileTypes = ['cs', 'razor']
   if -1 ==# expectedFileTypes->index(&ft)
-    throw $'FileType "{&ft}" is not expected.'
+    throw &ft->printf('FileType "%s" is not expected.')
   endif
 
   if &ft ==# 'razor'

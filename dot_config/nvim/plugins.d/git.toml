@@ -26,7 +26,7 @@ hook_add = '''
 
   AlterCmd gs GinStatus
   AlterCmd gp Gin<Space>push
-  AlterCmd gpf Gin<Space>push<Space>--force-with-lease<Space>--force-if-include
+  lua vim.cmd.AlterCmd { 'gpf', 'Gin push --force-with-lease --force-if-include' }
 
   " bufferlineするときにリストにあるとだいたいパースできなくて死ぬので
   autocmd VimRc FileType gin* setl nobuflisted
