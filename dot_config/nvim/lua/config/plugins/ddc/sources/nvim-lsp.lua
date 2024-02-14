@@ -1,5 +1,5 @@
 return {
-  name = 'nvim-lsp',
+  name = 'lsp',
   options = {
     mark = '[LS]',
     matchers = { 'matcher_fuzzy' },
