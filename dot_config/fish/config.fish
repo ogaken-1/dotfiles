@@ -28,7 +28,7 @@ if status --is-interactive
   abbr -a gd 'git diff'
   abbr -a gst 'git stash'
   abbr -a gci 'git commit'
-  abbr -a gcif 'git commit --fixup='
+  abbr -a gcif 'git-commit-fixup'
   abbr -a gcia 'git commit --amend'
   abbr -a gp 'git push'
   abbr -a gpu 'git push -u origin "$(git branch --show-current)"'
