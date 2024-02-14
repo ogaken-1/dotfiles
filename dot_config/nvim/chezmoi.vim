@@ -4,6 +4,6 @@ autocmd VimRc BufWritePost */chezmoi/* ++once
       \ autocmd VimRc VimLeavePre * call system(['chezmoi', 'apply'])
 
 " <A-,>でinit.vimを開く
-nnoremap <expr> <A-,> executable('chezmoi')
-      \ ? $'<Cmd>edit {system(['chezmoi', 'source-path', $MYVIMRC])}<CR>'
-      \ : '<Cmd>edit $MYVIMRC<CR>'
+nnoremap <expr> <A-,>
+      \ (executable('chezmoi') ? system(['chezmoi', 'source-path', $MYVIMRC]) : $MYVIMRC)
+      \ ->printf('<Cmd>edit %s<CR>')
