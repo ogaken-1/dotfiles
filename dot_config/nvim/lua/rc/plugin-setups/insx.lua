@@ -1,8 +1,3 @@
-local function cmp_visible()
-  local ok, cmp = pcall(require, 'cmp')
-  return ok and cmp.visible()
-end
-
 local function pum_visible()
   return vim.fn.exists '*pum#visible' == 1 and
       vim.fn['pum#visible']()
@@ -22,13 +17,6 @@ local setup = function()
   local insx = require 'insx'
 
   insx.add('<CR>', insx.compose {
-    {
-      enabled = cmp_visible,
-      action = function()
-        local cmp = require 'cmp'
-        cmp.confirm { select = true, behavior = cmp.ConfirmBehavior.Replace, }
-      end,
-    },
     {
       enabled = pum_visible,
       action = function()
@@ -61,13 +49,6 @@ local setup = function()
 
   insx.add('<C-n>', insx.compose {
     {
-      enabled = cmp_visible,
-      action = function()
-        local cmp = require 'cmp'
-        cmp.select_next_item { behavior = cmp.SelectBehavior.Insert }
-      end,
-    },
-    {
       enabled = function()
         return 1 == vim.fn.pumvisible()
       end,
@@ -91,13 +72,6 @@ local setup = function()
 
   insx.add('<C-p>', insx.compose {
     {
-      enabled = cmp_visible,
-      action = function()
-        local cmp = require 'cmp'
-        cmp.select_prev_item { behavior = cmp.SelectBehavior.Insert }
-      end,
-    },
-    {
       enabled = function()
         return 1 == vim.fn.pumvisible()
       end,
@@ -116,13 +90,6 @@ local setup = function()
   })
 
   insx.add('<C-g>', insx.compose {
-    {
-      enabled = cmp_visible,
-      action = function()
-        local cmp = require 'cmp'
-        cmp.abort()
-      end,
-    },
     {
       enabled = function()
         return 1 == vim.fn.pumvisible()
@@ -207,13 +174,6 @@ local setup = function()
 
   cmdline_add('<Tab>', insx.compose {
     {
-      enabled = cmp_visible,
-      action = function()
-        local cmp = require 'cmp'
-        cmp.select_next_item { behavior = cmp.SelectBehavior.Insert }
-      end,
-    },
-    {
       enabled = pum_visible,
       action = function(ctx)
         vim.fn['pum#map#insert_relative'](1)
@@ -235,13 +195,6 @@ local setup = function()
   })
 
   cmdline_add('<S-Tab>', insx.compose {
-    {
-      enabled = cmp_visible,
-      action = function()
-        local cmp = require 'cmp'
-        cmp.select_prev_item { behavior = cmp.SelectBehavior.Insert }
-      end,
-    },
     {
       enabled = pum_visible,
       action = function(ctx)
@@ -273,13 +226,6 @@ local setup = function()
 
   cmdline_add('<C-g>', insx.compose {
     {
-      enabled = cmp_visible,
-      action = function()
-        local cmp = require 'cmp'
-        cmp.close()
-      end,
-    },
-    {
       enabled = pum_visible,
       action = function()
         vim.fn['pum#map#cancel']()
@@ -300,14 +246,6 @@ local setup = function()
   })
 
   cmdline_add('<C-f>', insx.compose {
-    {
-      enabled = cmp_visible,
-      action = function(ctx)
-        local cmp = require 'cmp'
-        cmp.close()
-        ctx.send '<C-f>'
-      end,
-    },
     {
       enabled = pum_visible,
       action = function(ctx)
