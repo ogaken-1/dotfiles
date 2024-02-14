@@ -65,25 +65,26 @@ return {
       { '"', '"' },
       { '\'', '\'' },
     } do
+      local open_char, close_char = unpack(pair)
       insx.add(
-        pair[1],
+        open_char,
         auto_pair {
-          open = pair[1],
-          close = pair[2],
+          open = open_char,
+          close = close_char,
         }
       )
       insx.add(
         '<BS>',
         delete_pair {
-          open_pat = esc(pair[1]),
-          close_pat = esc(pair[2]),
+          open_pat = esc(open_char),
+          close_pat = esc(close_char),
         }
       )
       insx.add(
         '<Tab>',
         jump_next {
           jump_pat = {
-            [[\%#]] .. esc(pair[2]) .. [[\zs]],
+            [[\%#]] .. esc(close_char) .. [[\zs]],
           },
         }
       )
