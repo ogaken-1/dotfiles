@@ -25,4 +25,10 @@ export async function main(denops: Denops) {
       },
     );
   });
+
+  // Load ddu configs
+  await denops.batch([
+    "ddu#custom#load_config",
+    join(await e.get(denops, "DEIN_CONFIG_DIR"), "ddu.ts"),
+  ]);
 }

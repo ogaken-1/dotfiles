@@ -156,8 +156,6 @@ function ddu.add_custom_action(def)
 end
 
 function ddu.setup()
-  vim.fn['ddu#custom#load_config'](vim.fs.joinpath(vim.env.DEIN_CONFIG_DIR, 'ddu.ts'))
-
   vim.api.nvim_create_autocmd('VimResized', {
     group = 'VimRc',
     callback = ddu.notify_window_size,
