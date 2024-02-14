@@ -57,24 +57,28 @@ hook_add = '''
 
 [[plugins]]
 repo = 'sainnhe/gruvbox-material'
+merged = false
 hook_add = '''
   call add(g:Themes, 'gruvbox-material')
 '''
 
 [[plugins]]
 repo = 'sainnhe/edge'
+merged = false
 hook_add = '''
   call add(g:Themes, 'edge')
 '''
 
 [[plugins]]
 repo = 'sainnhe/everforest'
+merged = false
 hook_add = '''
   call add(g:Themes, 'everforest')
 '''
 
 [[plugins]]
 repo = 'sainnhe/sonokai'
+merged = false
 hook_add = '''
   call add(g:Themes, 'sonokai')
 '''
