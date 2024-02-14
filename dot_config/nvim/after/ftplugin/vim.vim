@@ -13,7 +13,7 @@ if !exists('*s:gd')
       const files = fname->globpath(&rtp, v:true, v:true)
       if files->len() ==# 1
         exe 'edit' files[0]
-        call search(a:word->printf('\Vfunction!\?\s\zs\<%s\>'))
+        call search(a:word->printf('\V'..defcmd..'\s\zs\<%s\>'))
         let @/ = a:word->printf('\V\<%s\>')
         return
       endif
