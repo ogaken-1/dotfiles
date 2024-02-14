@@ -22,7 +22,6 @@ let g:dein#inline_vimrcs = [
       \ s:here .. '/commands.vim',
       \ s:here .. '/options.vim',
       \ s:here .. '/keymaps.vim',
-      \ s:here .. '/chezmoi.vim',
       \ s:here .. '/tabstop.lua',
       \ ]
 
