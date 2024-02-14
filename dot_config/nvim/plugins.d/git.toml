@@ -7,7 +7,7 @@ hook_add = '''
   nnoremap <Plug>(git-commit) <Cmd>Gin commit -v<CR>
   nnoremap <Plug>(git-commit:amend) <Cmd>Gin commit -v --amend<CR>
   nnoremap <Plug>(git-log:all) <Cmd>GinLog --all<CR>
-  nnoremap <Plug>(git-log:current) <Cmd>GinLog -- %:p<CR>
+  nnoremap <Plug>(git-log:current) <Cmd>GinLog --follow -- %:p<CR>
 
   let g:gin_log_persistent_args = [
         \ '--graph',
