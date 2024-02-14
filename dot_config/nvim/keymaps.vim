@@ -43,10 +43,8 @@ nnoremap <Plug>(git-log) <Plug>(git-log:all)
 nnoremap <Space>aH <Plug>(git-log:current)
 nnoremap <Space>ab <Plug>(git-branch)
 
-" ファイルに紐付いているバッファならその親ディレクトリを指定する
-" そうでない場合はcwd
-nnoremap <Space>e <Cmd>exe 'e' (&l:buftype->empty() ? '%:p:h' : '.')<CR>
-nnoremap <Space>E <Cmd>exe 'e' luaeval('require("rc.utils").worktree_path(_A)', bufnr()) ?? getcwd()<CR>
+nnoremap <Space>e <Plug>(filer-parent)
+nnoremap <Space>E <Plug>(filer-worktree)
 
 " <C-[pn]>による履歴の補完でも現在の入力をリスペクトしてほしい
 cnoremap <C-p> <Up>

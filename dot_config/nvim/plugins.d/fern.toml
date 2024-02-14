@@ -3,8 +3,24 @@
 [[plugins]]
 repo = 'lambdalisue/fern.vim'
 on_cmd = 'Fern'
-hook_add = '''
-  cabbrev f. Fern . -reveal=%
+lua_add = '''
+  -- ファイルに紐付いているバッファならその親ディレクトリを指定する
+  -- そうでない場合はcwd
+  vim.keymap.set('n', '<Plug>(filer-parent)', function()
+    local buftype = vim.api.nvim_get_option_value('buftype', { buf = vim.api.nvim_get_current_buf() })
+    local path
+    if buftype == '' then
+      path = '%:p:h'
+    else
+      path = '.'
+    end
+    vim.cmd.Fern { path, '-reveal=%' }
+  end)
+  vim.keymap.set('n', '<Plug>(filer-worktree)', function()
+    local worktree_path = require('rc.utils').worktree_path
+    local path = worktree_path(vim.api.nvim_get_current_buf()) or vim.fn.getcwd()
+    vim.cmd.Fern { path, '-reveal=%' }
+  end)
 '''
 hook_source = '''
   let g:fern#hide_cursor = v:true
