@@ -46,6 +46,7 @@ require 'mason-lspconfig'.setup_handlers {
           },
           completion = {
             autoRequire = false,
+            showWord = 'Disable',
           },
           format = {
             defaultConfig = {
