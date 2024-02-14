@@ -86,6 +86,9 @@ snippets:
   - name: git add
     keyword: ga
     snippet: git add {{file}}
+  - name: ls
+    keyword: ls
+    snippet: eza --icons auto {{path}}
 
 completions:
   - name: dotnet add reference
