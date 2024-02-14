@@ -9,9 +9,10 @@ export async function main(denops: Denops) {
 }
 
 async function watchVimSize(denops: Denops) {
+  const fn = "notifyVimSize";
   denops.dispatcher = {
     ...denops.dispatcher,
-    notifyVimSize: async () => {
+    [fn]: async () => {
       const lines = await opt.lines.get(denops);
       const columns = await opt.columns.get(denops);
 
@@ -47,9 +48,9 @@ async function watchVimSize(denops: Denops) {
     },
   };
 
-  await denops.dispatcher.notifyVimSize();
+  await denops.dispatcher[fn]();
 
   await denops.cmd(
-    `au VimRc VimResized * call denops#notify('${denops.name}', 'notifyVimSize', [])`,
+    `au VimRc VimResized * call denops#notify('${denops.name}', '${fn}', [])`,
   );
 }
