@@ -1,6 +1,9 @@
-import { GatherArguments } from "https://deno.land/x/ddu_vim@v3.3.3/base/source.ts";
-import { BaseSource, Item } from "https://deno.land/x/ddu_vim@v3.3.3/types.ts";
-import { ActionData } from "https://raw.githubusercontent.com/KentoOgata/ddu-kind-git_repo/0.1.0/denops/@ddu-kinds/git_repo/types.ts";
+import {
+  BaseSource,
+  GatherArguments,
+  GitRepoActionData,
+  Item,
+} from "../deps.ts";
 
 type SourceParams = Record<string | number | symbol, never>;
 
@@ -39,12 +42,12 @@ function isDeinPlugins(x: unknown): x is Record<string, DeinPlugin> {
   return true;
 }
 
-export class Source extends BaseSource<SourceParams, ActionData> {
+export class Source extends BaseSource<SourceParams, GitRepoActionData> {
   kind = "git_repo";
 
   gather(
     { denops }: GatherArguments<SourceParams>,
-  ): ReadableStream<Item<ActionData>[]> {
+  ): ReadableStream<Item<GitRepoActionData>[]> {
     return new ReadableStream({
       start: async (controller) => {
         try {
@@ -52,7 +55,7 @@ export class Source extends BaseSource<SourceParams, ActionData> {
           if (!isDeinPlugins(plugins)) {
             return;
           }
-          const items: Item<ActionData>[] = [];
+          const items: Item<GitRepoActionData>[] = [];
           for (const name in plugins) {
             const { path } = plugins[name];
             items.push({

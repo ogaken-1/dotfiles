@@ -1,11 +1,9 @@
-import { Params as FfParams } from "https://deno.land/x/ddu_ui_ff@v1.1.0/ff.ts";
 import {
   ActionFlags,
   DduOptions,
-} from "https://deno.land/x/ddu_vim@v3.5.1/types.ts";
-import {
-  ActionData as GitStatusActionData,
-} from "https://raw.githubusercontent.com/kuuote/ddu-source-git_status/v1.0.0/denops/@ddu-kinds/git_status.ts";
+  FfParams,
+  GitStatusActionData,
+} from "../../../deps.ts";
 
 export function globalConfig(): Partial<DduOptions> {
   return {

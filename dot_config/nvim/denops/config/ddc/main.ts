@@ -1,8 +1,4 @@
-import { Denops } from "https://deno.land/x/denops_std@v5.0.1/mod.ts";
-import {
-  SourceOptions as PublicSourceOptions,
-  UserSource,
-} from "https://deno.land/x/ddc_vim@v4.0.4/types.ts";
+import { Denops, PublicSourceOptions, UserSource } from "../../deps.ts";
 
 type Converter = "converter_fuzzy" | "converter_kind_labels";
 type Sorter = "sorter_fuzzy";
