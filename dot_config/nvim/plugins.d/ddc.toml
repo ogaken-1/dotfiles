@@ -16,9 +16,12 @@ repo = 'Shougo/ddc-ui-native'
 repo = 'Shougo/pum.vim'
 # キーマップはnvim-cmpで解決するのでここでは設定しない
 hook_add = '''
+  function! s:SetupPum() abort
+    call pum#set_option('border', 'none')
+  endfunction
   " なんかのプラグインがpum.vimを呼び出したときに実行する
   " Vimの初期化より先に実行したい処理ではないため
-  autocmd VimRc SourcePost pum.vim ++once call pum#set_option('border', 'rounded')
+  autocmd VimRc SourcePost pum.vim ++once call s:SetupPum()
 '''
 
 [[plugins]]
