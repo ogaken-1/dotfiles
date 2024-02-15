@@ -12,4 +12,14 @@ return {
   init = function()
     vim.g.sandwich_no_default_key_mappings = 1
   end,
+  config = function()
+    vim.g['sandwich#magicchar#f#patterns'] = {
+      {
+        header = [[\<\%(\h\k*\.\)*\h\k*]],
+        bra = '(',
+        ket = ')',
+        footer = '',
+      },
+    }
+  end,
 }
