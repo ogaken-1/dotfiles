@@ -16,6 +16,7 @@ return {
                 vim.env.VIMRUNTIME,
                 '${3rd}/luv/library',
                 '${3rd}/busted/library',
+                ('%s/lazy/nvim-insx/lua'):format(vim.fn.stdpath 'data'),
               },
             },
             format = {
