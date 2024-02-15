@@ -80,7 +80,7 @@ vim.opt.smartcase = true
 vim.opt.wrap = false
 vim.opt.exrc = true
 vim.opt.cursorline = true
-vim.opt.fileencodings:prepend 'cp932'
+vim.opt.fileencodings = { 'utf-8', 'cp932', 'euc-jp', 'latin1' }
 
 do
   vim.cmd.colorscheme 'habamax'
