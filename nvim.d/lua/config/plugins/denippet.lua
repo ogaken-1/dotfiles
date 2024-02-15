@@ -7,14 +7,20 @@ return {
     local dir_path = vim.fs.joinpath(vim.fn.stdpath 'config', 'snippets.d')
     vim.uv.fs_opendir(dir_path, function(err1, dir)
       if err1 ~= nil then
-        vim.notify(err1, vim.log.levels.ERROR)
-        dir:readdir()
+        vim.schedule(function()
+          vim.notify(err1, vim.log.levels.ERROR)
+        end)
+        if dir ~= nil then
+          dir:readdir()
+        end
         return
       end
       dir:readdir(function(err2, entries)
         dir:closedir()
         if err2 ~= nil then
-          vim.notify(err2, vim.log.levels.ERROR)
+          vim.schedule(function()
+            vim.notify(err2, vim.log.levels.ERROR)
+          end)
           return
         end
         if entries == nil then
