@@ -81,6 +81,7 @@ vim.opt.wrap = false
 vim.opt.exrc = true
 vim.opt.cursorline = true
 vim.opt.fileencodings = { 'utf-8', 'cp932', 'euc-jp', 'latin1' }
+vim.opt.grepprg = 'rg --vimgrep'
 
 do
   vim.cmd.colorscheme 'habamax'
