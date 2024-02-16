@@ -1,3 +1,7 @@
 [required]
 prefix = "required"
 body = """required $1 { get; init; }$0"""
+
+[WriteLine]
+prefix = "cw"
+body = """Console.WriteLine($0);"""
