@@ -68,6 +68,16 @@ return {
           ctx.send ';'
         end,
       })
+      for _, word in ipairs { 'if', 'for', 'foreach', 'while' } do
+        insx.add('<Space>', {
+          enabled = function(ctx)
+            return (ctx.filetype == 'cs' or ctx.filetype == 'razor') and (ctx.match([[\<]] .. word .. [[\%#]]))
+          end,
+          action = function(ctx)
+            ctx.send '<Space>()<C-g>U<Left>'
+          end,
+        })
+      end
     end
 
     -- '(>\%#)expr'.key('>') → '(expr)\%#'
