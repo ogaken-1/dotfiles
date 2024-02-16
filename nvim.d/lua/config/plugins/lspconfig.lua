@@ -37,5 +37,8 @@ return {
         analyze_open_documents_only = true,
       }
     end
+    if 1 == vim.fn.executable 'deno' then
+      lspconfig.denols.setup {}
+    end
   end,
 }
