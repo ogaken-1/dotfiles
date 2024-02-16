@@ -9,6 +9,7 @@
   "fzf-lua": { "branch": "main", "commit": "91ec17b4fd0d810599f054eef08db967a0457fbf" },
   "gin.vim": { "branch": "main", "commit": "f97b57d149896826b8f69182c24b10801d526592" },
   "gitsigns.nvim": { "branch": "main", "commit": "2c2463dbd82eddd7dbab881c3a62cfbfbe3c67ae" },
+  "gruvbox-material": { "branch": "master", "commit": "b17fe51688b76e2ccf118e5f76f3978b9a8c503e" },
   "lazy.nvim": { "branch": "main", "commit": "aedcd79811d491b60d0a6577a9c1701063c2a609" },
   "none-ls.nvim": { "branch": "main", "commit": "34b1311bd07bd3741e60e06b34d0709d6e5a9f0f" },
   "nvim-cmp": { "branch": "main", "commit": "04e0ca376d6abdbfc8b52180f8ea236cbfddf782" },
