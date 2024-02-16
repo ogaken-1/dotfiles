@@ -9,5 +9,13 @@ return {
     vim.keymap.set('n', '<C-n>', '<Cmd>FzfLua buffers<CR>')
     vim.keymap.set('n', '<C-r>', '<Cmd>FzfLua oldfiles<CR>')
   end,
+  config = function()
+    require('fzf-lua').setup {
+      files = {
+        actions = {
+          ['ctrl-g'] = false,
+        },
+      },
+    }
   end,
 }
