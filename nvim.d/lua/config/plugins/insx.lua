@@ -127,7 +127,7 @@ return {
         '<Tab>',
         jump_next {
           jump_pat = {
-            [[\%#]] .. esc(ket) .. [[\zs]],
+            [[\%#\s*]] .. esc(ket) .. [[\zs]],
           },
         }
       )
