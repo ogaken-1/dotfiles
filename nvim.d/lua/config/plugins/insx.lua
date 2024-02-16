@@ -91,13 +91,55 @@ return {
     local auto_pair = require 'insx.recipe.auto_pair'
     local delete_pair = require 'insx.recipe.delete_pair'
     local jump_next = require 'insx.recipe.jump_next'
+    local pair_spacing = require 'insx.recipe.pair_spacing'
     local esc = insx.helper.regex.esc
     for _, pair in ipairs {
       { '(', ')' },
       { '{', '}' },
       { '[', ']' },
+    } do
+      local bra, ket = unpack(pair)
+      insx.add(
+        bra,
+        auto_pair {
+          open = bra,
+          close = ket,
+        }
+      )
+      insx.add(
+        '<BS>',
+        delete_pair {
+          open_pat = esc(bra),
+          close_pat = esc(ket),
+        }
+      )
+      insx.add(
+        '<Tab>',
+        jump_next {
+          jump_pat = {
+            [[\%#]] .. esc(ket) .. [[\zs]],
+          },
+        }
+      )
+      insx.add(
+        '<Space>',
+        pair_spacing.increase {
+          open_pat = esc(bra),
+          close_pat = esc(ket),
+        }
+      )
+      insx.add(
+        '<BS>',
+        pair_spacing.decrease {
+          open_pat = esc(bra),
+          close_pat = esc(ket),
+        }
+      )
+    end
+    for _, pair in ipairs {
       { '"', '"' },
       { '\'', '\'' },
+      { '`', '`' },
     } do
       local open_char, close_char = unpack(pair)
       insx.add(
