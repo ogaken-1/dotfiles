@@ -56,6 +56,16 @@ return {
         end)
       end,
     })
+    insx.add('<C-g>', {
+      enabled = function()
+        return require('cmp').visible()
+      end,
+      action = function()
+        vim.schedule(function()
+          require('cmp').abort()
+        end)
+      end,
+    })
 
     do -- C# rules
       insx.add(';', {
