@@ -1,0 +1,6 @@
+[font.normal]
+family = "CaskaydiaCove Nerd Font"
+
+[window]
+decorations = "Buttonless"
+option_as_alt = "Both"
