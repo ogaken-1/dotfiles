@@ -13,7 +13,15 @@ if not vim.uv.fs_stat(lazypath) then
   }
 end
 vim.opt.rtp:prepend(lazypath)
-require('lazy').setup 'config.plugins'
+require('lazy').setup('config.plugins', {
+  dev = {
+    path = function(plugin)
+      ---@type string
+      local repo = plugin[1]
+      return vim.fs.joinpath('~/repos/github.com', repo)
+    end,
+  },
+})
 
 do
   vim.keymap.set({ 'n', 'x' }, ';', '<Nop>')
