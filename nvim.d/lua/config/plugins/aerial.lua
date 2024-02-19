@@ -1,6 +1,6 @@
 return {
   'stevearc/aerial.nvim',
-  cmd = 'AerialOpen',
+  cmd = { 'AerialOpen', 'AerialNext', 'AerialPrev' },
   init = function()
     vim.keymap.set('n', '<Space>i', function()
       vim.cmd.AerialOpen 'float'
@@ -8,6 +8,15 @@ return {
       -- see: https://github.com/stevearc/aerial.nvim/issues/331#issuecomment-1939760914
       vim.cmd.doautocmd 'BufWinEnter'
     end)
+    vim.keymap.set('n', '<A-j>', '<Cmd>AerialNext<CR>')
+    vim.keymap.set('n', '<A-k>', '<Cmd>AerialPrev<CR>')
+    vim.api.nvim_create_autocmd('FileType', {
+      group = vim.api.nvim_create_augroup('config-aerial', { clear = false }),
+      pattern = { 'gin', 'gin-diff' },
+      callback = function(ctx)
+        vim.keymap.set('n', '<Space>i', '<Cmd>AerialOpen left<CR>', { buffer = ctx.buf })
+      end,
+    })
   end,
   config = function()
     require('aerial').setup {
@@ -34,6 +43,21 @@ return {
           conf.row = 0
           return conf
         end,
+      },
+      filter_kind = {
+        'Class',
+        'Constructor',
+        'Enum',
+        'Function',
+        'Interface',
+        'Module',
+        'Method',
+        'Struct',
+        'Property',
+        'File',
+      },
+      ignore = {
+        buftypes = {},
       },
     }
   end,
