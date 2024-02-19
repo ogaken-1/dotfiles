@@ -88,6 +88,15 @@ return {
           end,
         })
       end
+      insx.add('<Space>', {
+        enabled = function(ctx)
+          return (ctx.filetype == 'cs' or ctx.filetype == 'razor')
+            and (ctx.match [=[\((\|,\s*\)\(out\|var\|await\)\@!\w\+\%#]=])
+        end,
+        action = function(ctx)
+          ctx.send '<Space>=><Space>'
+        end,
+      })
     end
 
     -- '(>\%#)expr'.key('>') → '(expr)\%#'
