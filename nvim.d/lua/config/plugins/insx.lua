@@ -121,6 +121,7 @@ return {
     local delete_pair = require 'insx.recipe.delete_pair'
     local jump_next = require 'insx.recipe.jump_next'
     local pair_spacing = require 'insx.recipe.pair_spacing'
+    local fast_break = require 'insx.recipe.fast_break'
     local esc = insx.helper.regex.esc
     for _, pair in ipairs {
       { '(', ')' },
@@ -162,6 +163,16 @@ return {
         pair_spacing.decrease {
           open_pat = esc(bra),
           close_pat = esc(ket),
+        }
+      )
+      insx.add(
+        '<CR>',
+        fast_break {
+          open_pat = esc(bra),
+          close_pat = esc(ket),
+          arguments = true,
+          html_attrs = true,
+          html_tags = true,
         }
       )
     end
