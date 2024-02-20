@@ -17,8 +17,6 @@ return {
         end,
       })
     end,
-    config = function()
-      vim.cmd.colorscheme 'gruvbox-material'
-    end,
   },
+  { 'kyoh86/momiji' },
 }

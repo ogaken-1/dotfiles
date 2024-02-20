@@ -91,4 +91,6 @@ vim.opt.cursorline = true
 vim.opt.fileencodings = { 'utf-8', 'cp932', 'euc-jp', 'latin1' }
 vim.opt.grepprg = 'rg --vimgrep'
 
+vim.cmd.colorscheme(vim.env.NVIM_COLORSCHEME or 'momiji')
+
 -- vim:ft=lua et ts=2 sw=2
