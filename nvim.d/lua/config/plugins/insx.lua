@@ -205,5 +205,16 @@ return {
         }
       )
     end
+    insx.add('>', {
+      enabled = function(ctx)
+        return (ctx.filetype == 'lua')
+          and (vim.treesitter.get_node({ pos = { ctx.row(), ctx.col() } }):type() == 'string')
+          and (ctx.match [[<Cmd\%#]])
+      end,
+      action = function(ctx)
+        local left = '<C-g>U<Left>'
+        ctx.send('><lt>CR>' .. (left:rep(#'<CR>')))
+      end,
+    })
   end,
 }
