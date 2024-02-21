@@ -4,8 +4,8 @@ local function in_node(node_type)
   return node ~= nil
     and (
       (node:type() == node_type)
-      or (node:parent():type() ~= node_type)
-      or (node:parent():parent():type() ~= node_type)
+      or (node:parent():type() == node_type)
+      or (node:parent():parent():type() == node_type)
     )
 end
 local function insx_mod()
