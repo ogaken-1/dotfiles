@@ -15,10 +15,7 @@ return {
 
     vim.opt.rtp:prepend(vim.fs.joinpath(vim.fn.stdpath 'data', 'treesitter'))
     require('nvim-treesitter.configs').setup {
-      ensure_installed = {
-        'lua',
-        'unifieddiff',
-      },
+      auto_install = true,
       highlight = {
         enable = true,
       },
