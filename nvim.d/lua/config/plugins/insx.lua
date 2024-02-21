@@ -13,6 +13,7 @@ return {
   event = 'InsertEnter',
   config = function()
     local insx = require 'insx'
+    local left = '<C-g>U<Left>'
     insx.add(',', {
       enabled = function()
         return vim.fn['denippet#expandable']()
@@ -78,14 +79,58 @@ return {
     })
 
     do -- C# rules
+      ---@param ctx insx.Context
+      local function is_cs(ctx)
+        return ctx.filetype == 'cs' or ctx.filetype == 'razor'
+      end
       insx.add(';', {
         enabled = function(ctx)
-          return (ctx.filetype == 'cs' or ctx.filetype == 'razor') and ctx.after() ~= ''
+          return is_cs(ctx) and ctx.after() ~= ''
         end,
         action = function(ctx)
           local row = ctx.row()
           ctx.move(row, #vim.fn.getline(row + 1))
           ctx.send ';'
+        end,
+      })
+      insx.add('g', {
+        enabled = function(ctx)
+          return is_cs(ctx) and ctx.match [[{\s*\%#\s*}]]
+        end,
+        action = function(ctx)
+          ctx.send('get;' .. left)
+        end,
+      })
+      insx.add('<Tab>', {
+        enabled = function(ctx)
+          return is_cs(ctx) and ctx.match [[{\s*get\%#;\s*}]]
+        end,
+        action = function(ctx)
+          ctx.move(ctx.row(), ctx.col() + 1)
+        end,
+      })
+      insx.add('s', {
+        enabled = function(ctx)
+          return is_cs(ctx) and ctx.match [=[{\s*\(get[^;]*;\s*\)\?\%#\s*}]=]
+        end,
+        action = function(ctx)
+          ctx.send('set;' .. left)
+        end,
+      })
+      insx.add('i', {
+        enabled = function(ctx)
+          return is_cs(ctx) and ctx.match [=[{\s*\(get[^;]*;\s*\)\?\%#\s*}]=]
+        end,
+        action = function(ctx)
+          ctx.send('init;' .. left)
+        end,
+      })
+      insx.add('<Tab>', {
+        enabled = function(ctx)
+          return is_cs(ctx) and ctx.match [=[{\s*\(get[^;]*;\s*\)\?\(set\|init\)[^;]*\%#;\s*}]=]
+        end,
+        action = function(ctx)
+          ctx.move(ctx.row(), ctx.col() + vim.regex([[;\s*}\zs]]):match_str(ctx.after()))
         end,
       })
       for _, word in ipairs { 'if', 'for', 'foreach', 'while' } do
@@ -94,7 +139,7 @@ return {
             return (ctx.filetype == 'cs' or ctx.filetype == 'razor') and (ctx.match([[\<]] .. word .. [[\%#]]))
           end,
           action = function(ctx)
-            ctx.send '<Space>()<C-g>U<Left>'
+            ctx.send('<Space>()' .. left)
           end,
         })
       end
@@ -225,7 +270,6 @@ return {
           and (ctx.match [[<Cmd\%#]])
       end,
       action = function(ctx)
-        local left = '<C-g>U<Left>'
         ctx.send('><lt>CR>' .. (left:rep(#'<CR>')))
       end,
     })
