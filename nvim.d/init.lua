@@ -24,18 +24,6 @@ require('lazy').setup('config.plugins', {
 })
 
 do
-  vim.keymap.set({ 'n', 'x' }, ';', '<Nop>')
-  vim.keymap.set({ 'n', 'x' }, '<Plug>(submode-f);', ';<Plug>(submode-f)')
-  local function jump_and_enter_submode(key)
-    return function()
-      local char = fn.getcharstr()
-      return key .. char .. '<Plug>(submode-f)'
-    end
-  end
-  for _, key in ipairs { 'f', 'F', 't', 'T' } do
-    vim.keymap.set({ 'n', 'x' }, key, jump_and_enter_submode(key), { expr = true })
-  end
-
   vim.keymap.set('n', ']q', '<Cmd>cnext<CR>')
   vim.keymap.set('n', '[q', '<Cmd>cprevious<CR>')
   vim.keymap.set('n', '<A-,>', '<Cmd>edit $MYVIMRC<CR>')

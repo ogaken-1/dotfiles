@@ -22,6 +22,7 @@
   "skkeleton": { "branch": "main", "commit": "32e0048f0f4198ef0344b5f177056db7b41bdcef" },
   "vim-asterisk": { "branch": "master", "commit": "77e97061d6691637a034258cc415d98670698459" },
   "vim-edgemotion": { "branch": "master", "commit": "8d16bd92f6203dfe44157d43be7880f34fd5c060" },
+  "vim-eft": { "branch": "master", "commit": "419deb0c45141c11cfd2648b8523f520f8413ec2" },
   "vim-razor": { "branch": "master", "commit": "3fcc140db220aff169d77c5d8314a088dd161245" },
   "vim-sandwich": { "branch": "master", "commit": "2ce54d26564e66a675685c8a3331388b2747a26b" }
 }
