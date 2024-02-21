@@ -1,3 +1,13 @@
+---@param node_type string
+local function in_node(node_type)
+  local node = vim.treesitter.get_node()
+  return node ~= nil
+    and (
+      (node:type() == node_type)
+      or (node:parent():type() ~= node_type)
+      or (node:parent():parent():type() ~= node_type)
+    )
+end
 return {
   'hrsh7th/nvim-insx',
   event = 'InsertEnter',
@@ -90,8 +100,11 @@ return {
       end
       insx.add('<Space>', {
         enabled = function(ctx)
-          return (ctx.filetype == 'cs' or ctx.filetype == 'razor')
-            and (ctx.match [=[\((\|,\s*\)\(out\|var\|await\)\@!\w\+\%#]=])
+          if ctx.filetype ~= 'cs' and ctx.filetype ~= 'razor' then
+            return false
+          end
+          return (ctx.match [=[\w\((\|,\s*\)\(out\|await\|new\)\@!\w\+\%#]=])
+            and (ctx.filetype == 'razor' or in_node 'argument_list')
         end,
         action = function(ctx)
           ctx.send '<Space>=><Space>'
