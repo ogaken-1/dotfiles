@@ -14,4 +14,8 @@ return {
       vim.cmd.Fern(dir)
     end)
   end,
+  config = function()
+    vim.g['fern#hide_cursor'] = 1
+    vim.g['fern#default_hidden'] = 1
+  end,
 }
