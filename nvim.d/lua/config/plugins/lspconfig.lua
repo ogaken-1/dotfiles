@@ -1,3 +1,6 @@
+local function plugin_path(plugin_name)
+  return vim.fs.joinpath(vim.fn.stdpath 'data', 'lazy', plugin_name, 'lua')
+end
 return {
   'neovim/nvim-lspconfig',
   event = 'FileType',
@@ -16,7 +19,7 @@ return {
                 vim.env.VIMRUNTIME,
                 '${3rd}/luv/library',
                 '${3rd}/busted/library',
-                ('%s/lazy/nvim-insx/lua'):format(vim.fn.stdpath 'data'),
+                plugin_path 'nvim-insx',
               },
             },
             format = {
