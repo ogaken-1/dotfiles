@@ -1,7 +1,9 @@
-local fn = vim.fn
-
 vim.loader.enable()
-local lazypath = vim.fs.joinpath(vim.fn.stdpath 'data', 'lazy', 'lazy.nvim')
+
+local fn = vim.fn
+local assert = require 'config.assert'
+
+local lazypath = vim.fs.joinpath(assert.string(vim.fn.stdpath 'data'), 'lazy', 'lazy.nvim')
 if not vim.uv.fs_stat(lazypath) then
   vim.fn.system {
     'git',

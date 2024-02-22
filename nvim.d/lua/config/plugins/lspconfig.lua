@@ -1,5 +1,6 @@
+local assert = require 'config.assert'
 local function plugin_path(plugin_name)
-  return vim.fs.joinpath(vim.fn.stdpath 'data', 'lazy', plugin_name, 'lua')
+  return vim.fs.joinpath(assert.string(vim.fn.stdpath 'data'), 'lazy', plugin_name, 'lua')
 end
 return {
   'neovim/nvim-lspconfig',
