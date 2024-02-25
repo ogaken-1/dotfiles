@@ -38,6 +38,14 @@ function M.load()
     local kana_table = read_file(file_name)
     local skkeleton_kanaTable = build(kana_table)
     vim.fn['skkeleton#register_kanatable']('azik', skkeleton_kanaTable, true)
+    vim.fn['skkeleton#register_kanatable']('azik', {
+      [vim.keycode '<Space>'] = 'henkanFirst',
+      ['x'] = 'henkanBackward',
+      ['['] = 'katakana',
+      ['l'] = 'disable',
+      ['L'] = 'zenkaku',
+      ['/'] = 'abbrev',
+    })
   end)
 end
 
