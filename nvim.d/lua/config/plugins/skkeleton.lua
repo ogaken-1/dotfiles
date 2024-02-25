@@ -2,6 +2,7 @@ return {
   'vim-skk/skkeleton',
   dependencies = {
     'vim-denops/denops.vim',
+    'delphinus/skkeleton_indicator.nvim',
   },
   config = function()
     require('config.skkeleton-azik').load()
@@ -21,6 +22,7 @@ return {
         globalDictionaries = dictionaries,
         userDictionary = vim.fs.joinpath(vim.uv.os_getenv 'XDG_DATA_HOME', 'skk', 'user-jisyo'),
       }
+      require('skkeleton_indicator').setup()
     end)
     vim.keymap.set('i', '<C-j>', '<Plug>(skkeleton-enable)')
   end,

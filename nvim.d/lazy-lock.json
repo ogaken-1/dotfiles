@@ -22,6 +22,7 @@
   "nvim-treesitter": { "branch": "master", "commit": "c06292fdc641d71d185d2f1a507ad8232b6cf528" },
   "plenary.nvim": { "branch": "master", "commit": "4f71c0c4a196ceb656c824a70792f3df3ce6bb6d" },
   "skkeleton": { "branch": "main", "commit": "32e0048f0f4198ef0344b5f177056db7b41bdcef" },
+  "skkeleton_indicator.nvim": { "branch": "main", "commit": "8acf07b2cde9307f04f65a0253a754de153ab7f5" },
   "vim-asterisk": { "branch": "master", "commit": "77e97061d6691637a034258cc415d98670698459" },
   "vim-edgemotion": { "branch": "master", "commit": "8d16bd92f6203dfe44157d43be7880f34fd5c060" },
   "vim-eft": { "branch": "master", "commit": "419deb0c45141c11cfd2648b8523f520f8413ec2" },
