@@ -6,7 +6,7 @@ return {
   config = function()
     require('config.skkeleton-azik').load()
     vim.fn['denops#plugin#wait_async']('skkeleton', function()
-      local global_dict_path = '/usr/share/skk'
+      local global_dict_path = vim.env.SKK_DICT_DIR or '/usr/share/skk'
       local dictionaries = {}
       local files = vim.fn.readdir(global_dict_path)
       for _, fname in ipairs(files) do
