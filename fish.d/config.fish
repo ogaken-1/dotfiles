@@ -11,6 +11,8 @@ fish_add_path "$HOME/.rustup/toolchains/*/bin"
 fish_add_path "$HOME/.deno/bin"
 fish_add_path "$HOME/.ghcup/bin"
 fish_add_path "$HOME/.cabal/bin"
+# fsautocompleteなどの dotnet-* ではないツールを使うときに必要になる
+fish_add_path "$HOME/.dotnet/tools"
 
 set -x EDITOR 'nvim'
 set -x MANPAGER 'nvim +Man!'
