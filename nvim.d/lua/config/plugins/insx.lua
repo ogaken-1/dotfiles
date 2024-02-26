@@ -1,12 +1,13 @@
+---@param node? TSNode
 ---@param node_type string
+---@return boolean
+local function in_node_recursive(node, node_type)
+  return (node ~= nil) and ((node:type() == node_type) or in_node_recursive(node:parent(), node_type))
+end
+---@param node_type string
+---@return boolean
 local function in_node(node_type)
-  local node = vim.treesitter.get_node()
-  return node ~= nil
-    and (
-      (node:type() == node_type)
-      or (node:parent():type() == node_type)
-      or (node:parent():parent():type() == node_type)
-    )
+  return in_node_recursive(vim.treesitter.get_node(), node_type)
 end
 local function insx_mod()
   local insx = require 'insx'
