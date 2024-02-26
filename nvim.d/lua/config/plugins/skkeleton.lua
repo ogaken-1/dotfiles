@@ -1,4 +1,3 @@
-local assert = require 'config.assert'
 return {
   'vim-skk/skkeleton',
   dependencies = {
@@ -10,7 +9,8 @@ return {
     vim.fn['denops#plugin#wait_async']('skkeleton', function()
       local global_dict_path = vim.env.SKK_DICT_DIR or '/usr/share/skk'
       local dictionaries = {}
-      local files = vim.fn.readdir(global_dict_path)
+      local files =
+        vim.fn.readdir(global_dict_path, [=[['L', 'jinmei', 'geo']->index(v:val->fnamemodify(':e')) != -1]=])
       for _, fname in ipairs(files) do
         if fname:sub(1, #'SKK-JISYO') == 'SKK-JISYO' then
           table.insert(dictionaries, vim.fs.joinpath(global_dict_path, fname))
@@ -21,11 +21,7 @@ return {
         completionRankFile = vim.fs.joinpath(vim.uv.os_getenv 'XDG_DATA_HOME', 'skk', 'rank.json'),
         eggLikeNewline = true,
         globalDictionaries = dictionaries,
-        sources = {
-          'deno_kv',
-          'skk_dictionary',
-        },
-        databasePath = vim.fs.joinpath(assert.string(vim.fn.stdpath 'cache'), 'skkeleton', 'dict.db'),
+        sources = { 'skk_dictionary' },
         userDictionary = vim.fs.joinpath(vim.uv.os_getenv 'XDG_DATA_HOME', 'skk', 'user-jisyo'),
       }
       require('skkeleton_indicator').setup()
