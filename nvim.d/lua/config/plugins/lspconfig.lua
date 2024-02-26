@@ -4,6 +4,9 @@ local function plugin_path(plugin_name)
 end
 return {
   'neovim/nvim-lspconfig',
+  dependencies = {
+    'Hoffs/omnisharp-extended-lsp.nvim',
+  },
   event = 'FileType',
   config = function()
     local lspconfig = require 'lspconfig'
@@ -33,6 +36,9 @@ return {
     if 1 == vim.fn.executable 'omnisharp' then
       lspconfig.omnisharp.setup {
         cmd = { 'omnisharp' },
+        handlers = {
+          ['textDocument/definition'] = require('omnisharp_extended').handler,
+        },
         enable_editorconfig_support = true,
         enable_ms_build_load_projects_on_demand = false,
         enable_roslyn_analyzers = true,
