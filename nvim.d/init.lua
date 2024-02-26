@@ -23,6 +23,10 @@ require('lazy').setup('config.plugins', {
       return vim.fs.joinpath('~/repos/github.com', repo)
     end,
   },
+  change_detection = {
+    enabled = false,
+    notify = false,
+  },
 })
 
 do
