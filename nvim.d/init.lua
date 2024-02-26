@@ -59,6 +59,7 @@ do
       vim.keymap.set('n', 'mr', '<Cmd>lua vim.lsp.buf.rename()<CR>', opts)
       vim.keymap.set('n', 'gr', '<Cmd>FzfLua lsp_references<CR>', opts)
       vim.keymap.set('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+      vim.keymap.set('n', 'gi', '<Cmd>FzfLua lsp_implementations<CR>', opts)
       vim.keymap.set('n', ']d', '<Cmd>lua vim.diagnostic.goto_next()<CR>', opts)
       vim.keymap.set('n', '[d', '<Cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
 
