@@ -23,10 +23,7 @@ return {
         local function is_normal_buffer()
           return vim.fn.bufname(ctx.buf) ~= '' and vim.bo[ctx.buf].buftype == ''
         end
-        local function is_gin_buffer()
-          return vim.regex([[^gin.*:///]]):match_str(vim.fn.bufname(ctx.buf))
-        end
-        if is_normal_buffer() or is_gin_buffer() then
+        if is_normal_buffer() then
           vim.fn['denops#plugin#wait_async']('gin', vim.cmd.GinLcd)
         end
       end,
