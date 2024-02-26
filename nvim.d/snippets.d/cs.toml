@@ -5,3 +5,7 @@ body = """required $1 { get; init; }$0"""
 [WriteLine]
 prefix = "cw"
 body = """Console.WriteLine($0);"""
+
+[dbContext]
+prefix = "using var dbContext"
+body = """using var dbContext = dbContextFactory.CreateDbContext();"""
