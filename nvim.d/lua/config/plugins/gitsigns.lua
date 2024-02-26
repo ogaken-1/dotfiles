@@ -14,5 +14,6 @@ return {
       vim.keymap.set('n', '<Space>hb', '<Cmd>Gitsigns blame_line<CR>', { buffer = bufnr })
       vim.keymap.set('n', '<Space>hu', '<Cmd>Gitsigns reset_hunk<CR>', { buffer = bufnr })
     end,
+    attach_to_untracked = true,
   },
 }
