@@ -1,3 +1,4 @@
+local assert = require 'config.assert'
 return {
   'vim-skk/skkeleton',
   dependencies = {
@@ -20,6 +21,11 @@ return {
         completionRankFile = vim.fs.joinpath(vim.uv.os_getenv 'XDG_DATA_HOME', 'skk', 'rank.json'),
         eggLikeNewline = true,
         globalDictionaries = dictionaries,
+        sources = {
+          'deno_kv',
+          'skk_dictionary',
+        },
+        databasePath = vim.fs.joinpath(assert.string(vim.fn.stdpath 'cache'), 'skkeleton', 'dict.db'),
         userDictionary = vim.fs.joinpath(vim.uv.os_getenv 'XDG_DATA_HOME', 'skk', 'user-jisyo'),
       }
       require('skkeleton_indicator').setup()
