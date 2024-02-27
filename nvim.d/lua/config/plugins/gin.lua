@@ -1,3 +1,9 @@
+---@param bufnr integer
+---@return boolean
+local function is_normal_buffer(bufnr)
+  return vim.fn.bufname(bufnr) ~= '' and vim.bo[bufnr].buftype == ''
+end
+
 return {
   'lambdalisue/gin.vim',
   dependencies = {
@@ -20,12 +26,11 @@ return {
       group = gid,
       desc = 'Change cwd to git root of cbuf automatically.',
       callback = function(ctx)
-        local function is_normal_buffer()
-          return vim.fn.bufname(ctx.buf) ~= '' and vim.bo[ctx.buf].buftype == ''
-        end
-        if is_normal_buffer() then
-          vim.fn['denops#plugin#wait_async']('gin', vim.cmd.GinLcd)
-        end
+        vim.schedule(function()
+          if (vim.api.nvim_get_current_buf() == ctx.buf) and is_normal_buffer(ctx.buf) then
+            vim.fn['denops#plugin#wait_async']('gin', vim.cmd.GinLcd)
+          end
+        end)
       end,
     })
   end,
