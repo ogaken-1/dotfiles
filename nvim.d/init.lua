@@ -41,6 +41,7 @@ do
   vim.keymap.set({ 'n', 'x' }, '<Space>p', '"+p')
   vim.keymap.set('ca', 'w', 'update')
   vim.keymap.set('ca', 'wq', 'exit')
+  vim.keymap.set('n', 'mf', '<Plug>(run-format)')
 
   for _, key in ipairs { 'i', 'a' } do
     vim.keymap.set('n', key, function()
@@ -59,6 +60,11 @@ do
       local opts = { buffer = ctx.buf }
       vim.keymap.set('n', 'ma', '<Cmd>FzfLua lsp_code_actions<CR>', opts)
       vim.keymap.set('n', 'mr', '<Cmd>lua vim.lsp.buf.rename()<CR>', opts)
+      if vim.fn.maparg('<Plug>(run-format)', 'n') == '' then
+        vim.keymap.set('n', '<Plug>(run-format)', function()
+          vim.lsp.buf.format { async = true }
+        end, opts)
+      end
       vim.keymap.set('n', 'gr', '<Cmd>FzfLua lsp_references<CR>', opts)
       vim.keymap.set('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
       vim.keymap.set('n', 'gi', '<Cmd>FzfLua lsp_implementations<CR>', opts)
