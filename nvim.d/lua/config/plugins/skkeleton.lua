@@ -23,6 +23,7 @@ return {
         globalDictionaries = dictionaries,
         sources = { 'skk_dictionary' },
         userDictionary = vim.fs.joinpath(vim.uv.os_getenv 'XDG_DATA_HOME', 'skk', 'user-jisyo'),
+        immediatelyCancel = true,
       }
       require('skkeleton_indicator').setup()
     end)
