@@ -38,6 +38,10 @@ if status --is-interactive
   abbr -a gpf 'git push --force-if-includes --force-with-lease'
   abbr -a gf 'git fetch'
 
+  if [ -z $TMUX ]
+    bind \cqs 'tmux attach-session -t (tmux list-sessions -F \'#{session_name}\' | fzf --layout=reverse --border=block)'
+  end
+
   # tmux
   abbr -a ta 'tmux attach -t'
 
