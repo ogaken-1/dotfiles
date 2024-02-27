@@ -26,6 +26,6 @@ return {
       }
       require('skkeleton_indicator').setup()
     end)
-    vim.keymap.set('i', '<C-j>', '<Plug>(skkeleton-enable)')
+    vim.keymap.set({ 'i', 'c' }, '<C-j>', '<Plug>(skkeleton-enable)')
   end,
 }
