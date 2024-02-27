@@ -39,6 +39,8 @@ do
   vim.keymap.set('c', '<C-n>', '<Down>')
   vim.keymap.set({ 'n', 'x' }, '<Space>y', '"+y')
   vim.keymap.set({ 'n', 'x' }, '<Space>p', '"+p')
+  vim.keymap.set('ca', 'w', 'update')
+  vim.keymap.set('ca', 'wq', 'exit')
 
   for _, key in ipairs { 'i', 'a' } do
     vim.keymap.set('n', key, function()
