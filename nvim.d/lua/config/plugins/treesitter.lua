@@ -13,8 +13,10 @@ return {
     vim.treesitter.language.register('unifieddiff', 'gin')
     vim.treesitter.language.register('unifieddiff', 'gin-diff')
 
-    vim.opt.rtp:prepend(vim.fs.joinpath(vim.fn.stdpath 'data', 'treesitter'))
+    local parser_install_dir = vim.fs.joinpath(vim.fn.stdpath 'data', 'treesitter')
+    vim.opt.rtp:prepend(parser_install_dir)
     require('nvim-treesitter.configs').setup {
+      parser_install_dir = parser_install_dir,
       auto_install = true,
       highlight = {
         enable = true,
