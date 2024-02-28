@@ -21,6 +21,7 @@ return {
       '--abbrev-commit',
       '--max-count=150',
     }
+    vim.g.gin_proxy_apply_without_confirm = true
     local gid = vim.api.nvim_create_augroup('gin-config', { clear = true })
     vim.api.nvim_create_autocmd('BufWinEnter', {
       group = gid,
