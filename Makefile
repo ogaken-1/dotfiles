@@ -2,25 +2,26 @@ DIR := $(shell git rev-parse --show-toplevel)
 ifndef XDG_CONFIG_HOME
 	XDG_CONFIG_HOME := $(HOME)/.config
 endif
+
 NVIM_SRC := $(DIR)/nvim.d
-NVIM := $(XDG_CONFIG_HOME)/nvim
+NVIM_DEST := $(XDG_CONFIG_HOME)/nvim
+
 FISH_SRC := $(DIR)/fish.d
-FISH := $(XDG_CONFIG_HOME)/fish
+FISH_DEST := $(XDG_CONFIG_HOME)/fish
 
 ALACRITTY_SRC := $(DIR)/alacritty.toml
-ALACRITTY_BASE := $(XDG_CONFIG_HOME)/alacritty
-ALACRITTY := $(ALACRITTY_BASE)/alacritty.toml
+ALACRITTY_DEST := $(XDG_CONFIG_HOME)/alacritty/alacritty.toml
 
 .PHONY: install
-install: $(NVIM) $(FISH) $(ALACRITTY)
+install: $(NVIM_DEST) $(FISH_DEST) $(ALACRITTY_DEST)
 	ls --color -l $(XDG_CONFIG_HOME)
 
-$(NVIM): $(NVIM_SRC)
-	ln -s $(NVIM_SRC) $(NVIM)
+$(NVIM_DEST): $(NVIM_SRC)
+	ln -s $< $@
 
-$(FISH): $(FISH_SRC)
-	ln -s $(FISH_SRC) $(FISH)
+$(FISH_DEST): $(FISH_SRC)
+	ln -s $< $@
 
-$(ALACRITTY): $(ALACRITTY_SRC)
-	[ -d $(ALACRITTY_BASE) ] || mkdir $(ALACRITTY_BASE)
-	ln -s $(ALACRITTY_SRC) $(ALACRITTY)
+$(ALACRITTY_DEST): $(ALACRITTY_SRC)
+	[ -d $(@D) ] || mkdir $(@D)
+	ln -s $< $@
