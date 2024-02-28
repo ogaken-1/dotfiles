@@ -24,3 +24,5 @@
 	autoStash = true
 [fetch]
 	prune = true
+
+# vim: ft=gitconfig
