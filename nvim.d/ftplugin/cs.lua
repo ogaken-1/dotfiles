@@ -9,8 +9,8 @@ if vim.env.TMUX ~= nil then
       end
     end
     if not ok then
-      local ans = vim.fn.input 'Unsaved buffer exists. Save files and run format? [Y/n] '
-      if vim.regex([=[^[Yy]\(es\)\?$]=]):match_str(ans) then
+      local confirm = require 'config.confirm'
+      if confirm 'Unsaved buffer exists. Save files and run format?' then
         vim.cmd '%update'
       else
         vim.print 'Formatting canceled.'

@@ -3,8 +3,8 @@ local function nmap(lhs, rhs)
 end
 local function push(flags)
   return function()
-    local input = vim.fn.input { prompt = 'Push to remote? [Y/n] ' }
-    if vim.regex([=[^[Yy]\(es\)\?]=]):match_str(input) then
+    local confirm = require 'config.confirm'
+    if confirm 'Push to remote?' then
       local cmd = flags or {}
       table.insert(cmd, 1, 'push')
       vim.cmd.Gin(cmd)
