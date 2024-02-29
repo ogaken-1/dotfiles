@@ -45,6 +45,23 @@ function M.load()
       ['l'] = 'disable',
       ['L'] = 'zenkaku',
       ['/'] = 'abbrev',
+      [':'] = 'henkanPoint',
+    })
+    vim.api.nvim_create_autocmd('User', {
+      group = vim.api.nvim_create_augroup('config-skkeleton-azik', { clear = true }),
+      pattern = 'skkeleton-enable-post',
+      callback = function(ctx)
+        local function handle_key(key)
+          vim.fn['skkeleton#handle']('handleKey', { key = key })
+        end
+        vim.keymap.set('i', ':', function()
+          handle_key ':'
+          -- safeな状態で実行する必要はないが、`:` のhandleが終わった後に実行する必要はある
+          vim.schedule(function()
+            handle_key ';'
+          end)
+        end, { buffer = ctx.buf })
+      end,
     })
   end)
 end
