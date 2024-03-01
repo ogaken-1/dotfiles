@@ -15,7 +15,7 @@ local function push(flags)
 end
 
 local prefix = {
-  push = 'P',
+  push = 'p',
   fetch = 'f',
   commit = 'c',
 }
