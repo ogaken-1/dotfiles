@@ -20,6 +20,11 @@ set -x SYSTEMD_EDITOR "$EDITOR"
 set -x LESSCHARSET 'utf-8'
 set -x LANG 'en_US.UTF-8'
 
+set -x PNPM_HOME "$XDG_DATA_HOME/pnpm"
+if not string match -q -- $PNPM_HOME $PATH
+  fish_add_path $PNPM_HOME
+end
+
 if status --is-interactive
   abbr -a ls 'eza --icons auto'
 

@@ -6,6 +6,7 @@ return {
   'neovim/nvim-lspconfig',
   dependencies = {
     'Hoffs/omnisharp-extended-lsp.nvim',
+    'yioneko/nvim-vtsls',
   },
   event = 'FileType',
   config = function()
@@ -47,8 +48,17 @@ return {
         analyze_open_documents_only = true,
       }
     end
+    local util = require 'lspconfig.util'
     if 1 == vim.fn.executable 'deno' then
-      lspconfig.denols.setup {}
+      lspconfig.denols.setup {
+        root_dir = util.root_pattern { 'deno.json' },
+      }
+    end
+    if 1 == vim.fn.executable 'vtsls' then
+      require('lspconfig.configs').vtsls = require('vtsls').lspconfig
+      lspconfig.vtsls.setup {
+        root_dir = util.root_pattern { 'node_modules', 'package.json' },
+      }
     end
   end,
 }
