@@ -51,14 +51,17 @@ return {
     local util = require 'lspconfig.util'
     if 1 == vim.fn.executable 'deno' then
       lspconfig.denols.setup {
-        root_dir = util.root_pattern { 'deno.json' },
+        root_dir = util.root_pattern { 'deno.json', 'deno.jsonc' },
       }
     end
     if 1 == vim.fn.executable 'vtsls' then
-      require('lspconfig.configs').vtsls = require('vtsls').lspconfig
-      lspconfig.vtsls.setup {
-        root_dir = util.root_pattern { 'node_modules', 'package.json' },
-      }
+      require('lspconfig.configs').vtsls = vim.tbl_extend('force', require('vtsls').lspconfig, {
+        default_config = {
+          root_dir = util.root_pattern { 'node_modules', 'package.json' },
+          single_file_support = false,
+        },
+      })
+      lspconfig.vtsls.setup {}
     end
   end,
 }
