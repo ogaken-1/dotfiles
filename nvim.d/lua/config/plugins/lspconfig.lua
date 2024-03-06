@@ -55,7 +55,7 @@ return {
       }
     end
     if 1 == vim.fn.executable 'vtsls' then
-      require('lspconfig.configs').vtsls = vim.tbl_extend('force', require('vtsls').lspconfig, {
+      require('lspconfig.configs').vtsls = vim.tbl_deep_extend('force', require('vtsls').lspconfig, {
         default_config = {
           root_dir = util.root_pattern { 'node_modules', 'package.json' },
           single_file_support = false,
