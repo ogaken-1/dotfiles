@@ -1,4 +1,5 @@
 vim.cmd.compiler 'dotnet_build'
+vim.bo.iskeyword = vim.bo.iskeyword .. ',@-@'
 if vim.env.TMUX ~= nil then
   vim.keymap.set('n', '<Plug>(run-format)', function()
     local ok = true
@@ -27,3 +28,8 @@ if vim.env.TMUX ~= nil then
     }
   end, { buffer = true })
 end
+vim.api.nvim_buf_create_user_command(vim.api.nvim_get_current_buf(), 'OpenRazor', function()
+  local csharp_file_name = vim.fn.expand '%:p'
+  local razor_file_name = vim.fn.fnamemodify(csharp_file_name, ':r:r') .. '.razor'
+  vim.cmd.edit(razor_file_name)
+end, {})
