@@ -96,6 +96,7 @@ vim.opt.grepprg = 'rg --vimgrep'
 vim.opt.expandtab = true
 vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
+vim.opt.shiftround = true
 
 vim.cmd.colorscheme(vim.env.NVIM_COLORSCHEME or 'momiji')
 
