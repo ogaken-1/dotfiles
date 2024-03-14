@@ -13,6 +13,7 @@ local function insx_mod()
   local insx = require 'insx'
   return {
     add = insx.add,
+    with = insx.with,
     auto_pair = require 'insx.recipe.auto_pair',
     delete_pair = require 'insx.recipe.delete_pair',
     jump_next = require 'insx.recipe.jump_next',
@@ -150,7 +151,7 @@ local function c_sharp()
       ctx.move(ctx.row(), ctx.col() + vim.regex([[;\s*}\zs]]):match_str(ctx.after()))
     end,
   })
-  for _, word in ipairs { 'if', 'for', 'foreach', 'while' } do
+  for _, word in ipairs { 'if', 'for', 'while' } do
     insx.add('<Space>', {
       enabled = function(ctx)
         return (ctx.filetype == 'cs' or ctx.filetype == 'razor') and (ctx.match([[\<]] .. word .. [[\%#]]))
@@ -160,6 +161,23 @@ local function c_sharp()
       end,
     })
   end
+  insx.add(
+    '<Space>',
+    insx.with({
+      action = function(ctx)
+        ctx.send '<C-w>'
+        vim.snippet.expand(table.concat({
+          'foreach (var ${2:item} in ${1:collection})',
+          '{',
+          '\t$0',
+          '}',
+        }, '\n'))
+      end,
+    }, {
+      insx.with.filetype { 'cs', 'razor' },
+      insx.with.match [[\<@\?foreach\%#]],
+    })
+  )
   insx.add('<Space>', {
     enabled = function(ctx)
       if ctx.filetype ~= 'cs' and ctx.filetype ~= 'razor' then
@@ -172,6 +190,34 @@ local function c_sharp()
       ctx.send '<Space>=><Space>'
     end,
   })
+  insx.add(
+    '<Space>',
+    insx.with({
+      action = function(ctx)
+        ctx.send '<C-w>'
+        vim.snippet.expand(table.concat({
+          'var $2 = $1;$0',
+        }, '\n'))
+      end,
+    }, {
+      insx.with.filetype { 'cs', 'razor' },
+      insx.with.match [[^\s*v\%#$]],
+    })
+  )
+  insx.add(
+    '<Space>',
+    insx.with({
+      action = function(ctx)
+        ctx.send '<C-w>'
+        vim.snippet.expand(table.concat {
+          'var ${1:func} = (${2:args}) => $0;',
+        })
+      end,
+    }, {
+      insx.with.filetype { 'cs', 'razor' },
+      insx.with.match [[^\s*vf\%#$]],
+    })
+  )
 end
 local function common()
   local insx = insx_mod()
