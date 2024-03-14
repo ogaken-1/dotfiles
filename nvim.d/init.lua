@@ -97,6 +97,7 @@ vim.opt.expandtab = true
 vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
 vim.opt.shiftround = true
+vim.opt.scrolloff = 5
 
 vim.cmd.colorscheme(vim.env.NVIM_COLORSCHEME or 'momiji')
 
