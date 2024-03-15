@@ -9,6 +9,19 @@ end
 local function in_node(node_type)
   return in_node_recursive(vim.treesitter.get_node(), node_type)
 end
+---@param lines string|string[]
+---@return insx.Recipe
+local function snippet_recipe(lines)
+  if type(lines) == 'table' then
+    lines = table.concat(lines, '\n')
+  end
+  return {
+    action = function(ctx)
+      ctx.send '<C-w>'
+      vim.snippet.expand(lines)
+    end,
+  }
+end
 local function insx_mod()
   local insx = require 'insx'
   return {
@@ -163,20 +176,18 @@ local function c_sharp()
   end
   insx.add(
     '<Space>',
-    insx.with({
-      action = function(ctx)
-        ctx.send '<C-w>'
-        vim.snippet.expand(table.concat({
-          'foreach (var ${2:item} in ${1:collection})',
-          '{',
-          '\t$0',
-          '}',
-        }, '\n'))
-      end,
-    }, {
-      insx.with.filetype { 'cs', 'razor' },
-      insx.with.match [[\<@\?foreach\%#]],
-    })
+    insx.with(
+      snippet_recipe {
+        'foreach (var ${2:item} in ${1:collection})',
+        '{',
+        '\t$0',
+        '}',
+      },
+      {
+        insx.with.filetype { 'cs', 'razor' },
+        insx.with.match [[\<@\?foreach\%#]],
+      }
+    )
   )
   insx.add('<Space>', {
     enabled = function(ctx)
@@ -192,28 +203,14 @@ local function c_sharp()
   })
   insx.add(
     '<Space>',
-    insx.with({
-      action = function(ctx)
-        ctx.send '<C-w>'
-        vim.snippet.expand(table.concat({
-          'var $2 = $1;$0',
-        }, '\n'))
-      end,
-    }, {
+    insx.with(snippet_recipe 'var $2 = $1;$0', {
       insx.with.filetype { 'cs', 'razor' },
       insx.with.match [[^\s*v\%#$]],
     })
   )
   insx.add(
     '<Space>',
-    insx.with({
-      action = function(ctx)
-        ctx.send '<C-w>'
-        vim.snippet.expand(table.concat {
-          'var ${1:func} = (${2:args}) => $0;',
-        })
-      end,
-    }, {
+    insx.with(snippet_recipe 'var ${1:func} = (${2:args}) => $0;', {
       insx.with.filetype { 'cs', 'razor' },
       insx.with.match [[^\s*vf\%#$]],
     })
