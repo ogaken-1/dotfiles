@@ -8,6 +8,13 @@ vim.keymap.set('n', 'gd', function()
   local switch = require 'config.switch'
   local file_name = (vim.fn.expand '<cword>')
   local files = vim.fn.systemlist { 'fd', '-e', 'razor', file_name }
+  local file_name = (vim.fn.expand '<cword>') .. '.razor'
+  local files = vim
+    .iter(vim.fn.systemlist { 'fd', '-e', 'razor', file_name })
+    :filter(function(item)
+      return vim.fn.fnamemodify(item, ':t') == file_name
+    end)
+    :totable()
   switch(#files)
     :case(1, function()
       local file = files[1]
