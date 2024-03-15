@@ -167,7 +167,7 @@ local function c_sharp()
   for _, word in ipairs { 'if', 'for', 'while' } do
     insx.add('<Space>', {
       enabled = function(ctx)
-        return (ctx.filetype == 'cs' or ctx.filetype == 'razor') and (ctx.match([[\<]] .. word .. [[\%#]]))
+        return (ctx.filetype == 'cs' or ctx.filetype == 'razor') and (ctx.match([[\<]] .. word .. [[\%#(\@!]]))
       end,
       action = function(ctx)
         ctx.send('<Space>()' .. left)
