@@ -10,7 +10,7 @@ local function in_node(node_type)
   return in_node_recursive(vim.treesitter.get_node(), node_type)
 end
 ---@param lines string|string[]
----@return insx.Recipe
+---@return insx.RecipeSource
 local function snippet_recipe(lines)
   if type(lines) == 'table' then
     lines = table.concat(lines, '\n')
@@ -21,6 +21,23 @@ local function snippet_recipe(lines)
       vim.snippet.expand(lines)
     end,
   }
+end
+---@param x insx.RecipeSource | fun(ctx: insx.Context) | string
+---@return insx.RecipeSource
+local function normalize(x)
+  if type(x) == 'function' then
+    return { action = x }
+  elseif type(x) == 'string' then
+    return {
+      action = function(ctx)
+        ctx.send(x)
+      end,
+    }
+  elseif type(x) == 'table' then
+    return x
+  else
+    error('Unexpected type: ' .. type(x))
+  end
 end
 local function insx_mod()
   local insx = require 'insx'
@@ -110,111 +127,49 @@ local function cmp1()
 end
 local function c_sharp()
   local insx = insx_mod()
-  ---@param ctx insx.Context
-  local function is_cs(ctx)
-    return ctx.filetype == 'cs' or ctx.filetype == 'razor'
+  ---@param key string
+  ---@param at string
+  ---@param recipe insx.RecipeSource | fun(ctx: insx.Context) | string
+  local function add(key, at, recipe)
+    insx.add(key, insx.with(normalize(recipe), { insx.with.filetype { 'cs', 'razor' }, insx.with.match(at) }))
   end
-  insx.add(';', {
-    enabled = function(ctx)
-      return is_cs(ctx) and ctx.after() ~= ''
-    end,
-    action = function(ctx)
-      local row = ctx.row()
-      ctx.move(row, #vim.fn.getline(row + 1))
-      ctx.send ';'
-    end,
-  })
-  insx.add('g', {
-    enabled = function(ctx)
-      return is_cs(ctx) and ctx.match [[{\s*\%#\s*}]]
-    end,
-    action = function(ctx)
-      ctx.send('get;' .. left)
-    end,
-  })
-  insx.add('<Tab>', {
-    enabled = function(ctx)
-      return is_cs(ctx) and ctx.match [[{\s*get\%#;\s*}]]
-    end,
-    action = function(ctx)
-      ctx.move(ctx.row(), ctx.col() + 1)
-    end,
-  })
-  insx.add('s', {
-    enabled = function(ctx)
-      return is_cs(ctx) and ctx.match [=[{\s*\(get[^;]*;\s*\)\?\%#\s*}]=]
-    end,
-    action = function(ctx)
-      ctx.send('set;' .. left)
-    end,
-  })
-  insx.add('i', {
-    enabled = function(ctx)
-      return is_cs(ctx) and ctx.match [=[{\s*\(get[^;]*;\s*\)\?\%#\s*}]=]
-    end,
-    action = function(ctx)
-      ctx.send('init;' .. left)
-    end,
-  })
-  insx.add('<Tab>', {
-    enabled = function(ctx)
-      return is_cs(ctx) and ctx.match [=[{\s*\(get[^;]*;\s*\)\?\(set\|init\)[^;]*\%#;\s*}]=]
-    end,
-    action = function(ctx)
-      ctx.move(ctx.row(), ctx.col() + vim.regex([[;\s*}\zs]]):match_str(ctx.after()))
-    end,
-  })
+  add(';', [[\%#$\@!]], function(ctx)
+    local row = ctx.row()
+    ctx.move(row, #vim.fn.getline(row + 1))
+    ctx.send ';'
+  end)
+  add('g', [[{\s*\%#\s*}]], 'get;' .. left)
+  add('<Tab>', [[{\s*get\%#;\s*}]], function(ctx)
+    ctx.move(ctx.row(), ctx.col() + 1)
+  end)
+  add('s', [=[{\s*\(get[^;]*;\s*\)\?\%#\s*}]=], 'set;' .. left)
+  add('i', [=[{\s*\(get[^;]*;\s*\)\?\%#\s*}]=], 'init;' .. left)
+  add('<Tab>', [=[{\s*\(get[^;]*;\s*\)\?\(set\|init\)[^;]*\%#;\s*}]=], function(ctx)
+    ctx.move(ctx.row(), ctx.col() + vim.regex([[;\s*}\zs]]):match_str(ctx.after()))
+  end)
   for _, word in ipairs { 'if', 'for', 'while' } do
-    insx.add('<Space>', {
-      enabled = function(ctx)
-        return (ctx.filetype == 'cs' or ctx.filetype == 'razor') and (ctx.match([[\<]] .. word .. [[\%#(\@!]]))
-      end,
-      action = function(ctx)
-        ctx.send('<Space>()' .. left)
-      end,
-    })
+    add('<Space>', [[\<]] .. word .. [[\%#(\@!]], '<Space>()' .. left)
   end
-  insx.add(
+  add(
     '<Space>',
-    insx.with(
-      snippet_recipe {
-        'foreach (var ${2:item} in ${1:collection})',
-        '{',
-        '\t$0',
-        '}',
-      },
-      {
-        insx.with.filetype { 'cs', 'razor' },
-        insx.with.match [[\<@\?foreach\%#]],
-      }
-    )
+    [[\<@\?foreach\%#]],
+    snippet_recipe {
+      'foreach (var ${2:item} in ${1:collection})',
+      '{',
+      '\t$0',
+      '}',
+    }
   )
-  insx.add('<Space>', {
+  add('<Space>', [[^\s*vf\%#$]], snippet_recipe 'var ${1:func} = (${2:args}) => $0;')
+  add('<Space>', [[^\s*v\%#$]], snippet_recipe 'var $2 = $1;$0')
+  add('<Space>', [=[\w\((\|,\s*\)\(out\|await\|new\|ref\)\@!\w\+\%#]=], {
     enabled = function(ctx)
-      if ctx.filetype ~= 'cs' and ctx.filetype ~= 'razor' then
-        return false
-      end
-      return (ctx.match [=[\w\((\|,\s*\)\(out\|await\|new\)\@!\w\+\%#]=])
-        and (ctx.filetype == 'razor' or in_node 'argument_list')
+      return (ctx.filetype == 'razor' or in_node 'argument_list')
     end,
     action = function(ctx)
       ctx.send '<Space>=><Space>'
     end,
   })
-  insx.add(
-    '<Space>',
-    insx.with(snippet_recipe 'var $2 = $1;$0', {
-      insx.with.filetype { 'cs', 'razor' },
-      insx.with.match [[^\s*v\%#$]],
-    })
-  )
-  insx.add(
-    '<Space>',
-    insx.with(snippet_recipe 'var ${1:func} = (${2:args}) => $0;', {
-      insx.with.filetype { 'cs', 'razor' },
-      insx.with.match [[^\s*vf\%#$]],
-    })
-  )
 end
 local function common()
   local insx = insx_mod()
