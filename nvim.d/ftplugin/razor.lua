@@ -4,15 +4,12 @@ vim.api.nvim_buf_create_user_command(vim.api.nvim_get_current_buf(), 'OpenCSharp
   local csharp_file_name = vim.fn.fnamemodify(razor_file_name, ':r') .. '.razor.cs'
   vim.cmd.edit(csharp_file_name)
 end, {})
-vim.keymap.set('n', 'gd', function()
+local function find_file(name)
   local switch = require 'config.switch'
-  local file_name = (vim.fn.expand '<cword>')
-  local files = vim.fn.systemlist { 'fd', '-e', 'razor', file_name }
-  local file_name = (vim.fn.expand '<cword>') .. '.razor'
   local files = vim
-    .iter(vim.fn.systemlist { 'fd', '-e', 'razor', file_name })
+    .iter(vim.fn.systemlist { 'fd', name })
     :filter(function(item)
-      return vim.fn.fnamemodify(item, ':t') == file_name
+      return vim.fn.fnamemodify(item, ':t') == name
     end)
     :totable()
   switch(#files)
@@ -21,7 +18,7 @@ vim.keymap.set('n', 'gd', function()
       vim.cmd.edit(file)
     end)
     :case(0, function()
-      vim.notify('File ' .. file_name .. ' is not found in current directory.')
+      vim.notify('File ' .. name .. ' is not found in current directory.')
     end)
     :default(function()
       local qf_items = {}
@@ -35,4 +32,13 @@ vim.keymap.set('n', 'gd', function()
       vim.cmd.copen()
     end)
     :eval()
+end
+vim.keymap.set('n', 'gd', function()
+  local syntax = vim.inspect_pos().syntax
+  local hl_group = syntax[#syntax].hl_group
+  if hl_group == 'razorhtmlTagName' then
+    find_file((vim.fn.expand '<cword>') .. '.razor')
+  else
+    vim.cmd.normal { 'gd', bang = true }
+  end
 end, { buffer = true })
