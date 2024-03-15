@@ -150,6 +150,7 @@ local function c_sharp()
   for _, word in ipairs { 'if', 'for', 'while' } do
     add('<Space>', [[\<]] .. word .. [[\%#(\@!]], '<Space>()' .. left)
   end
+  add('w', [[^\s*c\%#$]], snippet_recipe 'Console.WriteLine(\\$"{nameof(${1})}:\\t{$1}")')
   add(
     '<Space>',
     [[\<@\?foreach\%#]],
