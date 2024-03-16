@@ -4,6 +4,7 @@
   "cmp-buffer": { "branch": "main", "commit": "3022dbc9166796b644a841a02de8dd1cc1d311fa" },
   "cmp-denippet": { "branch": "main", "commit": "14e6bc88a96ff1231beecaaeb6ca51633b59661a" },
   "cmp-nvim-lsp": { "branch": "main", "commit": "5af77f54de1b16c34b23cba810150689a3a90312" },
+  "cmp-skkeleton": { "branch": "main", "commit": "2c268a407e9e843abd03c6fa77485541a4ddcd9a" },
   "denippet.vim": { "branch": "main", "commit": "1076a50c514df0d1d5c8087254cf6606226e0d23" },
   "denops.vim": { "branch": "main", "commit": "b5dfcbc249a7559cbdc08ba1b7dc1cd92dec6d98" },
   "fern.vim": { "branch": "main", "commit": "56f8e4c79da01eecb0f7f3803c051cd23c803b35" },
