@@ -51,7 +51,7 @@ return {
     local util = require 'lspconfig.util'
     if 1 == vim.fn.executable 'deno' then
       lspconfig.denols.setup {
-        root_dir = util.root_pattern { 'deno.json', 'deno.jsonc' },
+        root_dir = util.root_pattern { 'deno.json', 'deno.jsonc', 'denops' },
       }
     end
     if 1 == vim.fn.executable 'vtsls' then
