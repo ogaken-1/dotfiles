@@ -71,6 +71,9 @@ do
       vim.keymap.set('n', ']d', '<Cmd>lua vim.diagnostic.goto_next()<CR>', opts)
       vim.keymap.set('n', '[d', '<Cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
 
+      if vim.bo[ctx.buf].filetype == 'cs' then
+        return
+      end
       vim.api.nvim_create_autocmd('BufWritePre', {
         group = gid,
         buffer = ctx.buf,
