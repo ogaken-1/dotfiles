@@ -171,6 +171,20 @@ local function c_sharp()
       ctx.send '<Space>=><Space>'
     end,
   })
+  local substitute = require 'insx.recipe.substitute'
+  -- fix typos of `await`
+  for _, wai in ipairs { 'wia', 'iwa', 'awi' } do
+    insx.add(
+      't',
+      insx.with(
+        substitute {
+          pattern = [[\<a]] .. wai .. [[\%#]],
+          replace = [[await\%#]],
+        },
+        { insx.with.filetype { 'cs' } }
+      )
+    )
+  end
 end
 local function common()
   local insx = insx_mod()
