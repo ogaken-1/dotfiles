@@ -38,6 +38,10 @@ vim.keymap.set('n', 'gd', function()
   local hl_group = syntax[#syntax].hl_group
   if hl_group == 'razorhtmlTagName' then
     find_file((vim.fn.expand '<cword>') .. '.razor')
+  elseif hl_group == 'razorcsRHSIdentifier' then
+    local word = vim.fn.expand '<cword>'
+    vim.cmd.OpenCSharp()
+    vim.fn.search(([[\V\<%s\>]]):format(word))
   else
     vim.cmd.normal { 'gd', bang = true }
   end
