@@ -102,6 +102,14 @@ vim.opt.shiftwidth = 2
 vim.opt.shiftround = true
 vim.opt.scrolloff = 5
 
+vim.api.nvim_create_autocmd('QuickFixCmdPost', {
+  group = vim.api.nvim_create_augroup('config-quickfix', { clear = true }),
+  callback = function()
+    vim.cmd.cclose()
+    vim.cmd.copen { mods = { split = 'belowright' } }
+  end,
+})
+
 vim.cmd.colorscheme(vim.env.NVIM_COLORSCHEME or 'momiji')
 
 -- vim:ft=lua et ts=2 sw=2
