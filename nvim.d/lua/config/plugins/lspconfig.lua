@@ -7,6 +7,7 @@ return {
   dependencies = {
     'Hoffs/omnisharp-extended-lsp.nvim',
     'yioneko/nvim-vtsls',
+    'williamboman/mason.nvim',
   },
   event = 'FileType',
   config = function()
