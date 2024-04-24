@@ -37,7 +37,16 @@ vim.keymap.set('n', 'gd', function()
   local syntax = vim.inspect_pos().syntax
   local hl_group = syntax[#syntax].hl_group
   local cword = vim.fn.expand '<cword>'
-  if hl_group == 'razorhtmlTagName' or hl_group == 'razorhtmlEndTagName' then
+  local function is_typename()
+    return (hl_group == 'razorRHSIdentifier' or hl_group == 'razorIdentifier')
+      and ((vim.fn.expand '<cWORD>'):sub(1, 1) == 'T')
+  end
+  if
+    hl_group == 'razorhtmlTagName'
+    or hl_group == 'razorhtmlEndTagName'
+    or hl_group == 'razorTypeIdentifier'
+    or is_typename()
+  then
     find_file(cword .. '.razor')
   elseif hl_group == 'razorcsRHSIdentifier' then
     vim.cmd.OpenCSharp()
