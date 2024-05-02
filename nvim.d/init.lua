@@ -80,6 +80,9 @@ do
         callback = function()
           vim.lsp.buf.format {
             bufnr = ctx.buf,
+            filter = function(client)
+              return client.name ~= 'vtsls' or client.name ~= 'omnisharp'
+            end,
           }
         end,
       })

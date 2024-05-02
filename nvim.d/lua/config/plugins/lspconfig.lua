@@ -64,5 +64,16 @@ return {
       })
       lspconfig.vtsls.setup {}
     end
+    if 1 == vim.fn.executable 'yaml-language-server' then
+      lspconfig.yamlls.setup {}
+    end
+    if 1 == vim.fn.executable 'vscode-json-language-server' then
+      lspconfig.jsonls.setup {}
+    end
+    if 1 == vim.fn.executable 'pnpm' then
+      lspconfig.biome.setup {
+        cmd = { 'pnpm', 'biome', 'lsp-proxy' },
+      }
+    end
   end,
 }
