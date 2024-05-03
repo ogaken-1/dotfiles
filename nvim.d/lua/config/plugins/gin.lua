@@ -23,17 +23,5 @@ return {
       '--max-count=150',
     }
     vim.g.gin_proxy_apply_without_confirm = true
-    local gid = vim.api.nvim_create_augroup('gin-config', { clear = true })
-    vim.api.nvim_create_autocmd('BufWinEnter', {
-      group = gid,
-      desc = 'Change cwd to git root of cbuf automatically.',
-      callback = function(ctx)
-        vim.schedule(function()
-          if (vim.api.nvim_get_current_buf() == ctx.buf) and is_normal_buffer(ctx.buf) then
-            vim.fn['denops#plugin#wait_async']('gin', vim.cmd.GinLcd)
-          end
-        end)
-      end,
-    })
   end,
 }
