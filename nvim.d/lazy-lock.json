@@ -8,6 +8,7 @@
   "denippet.vim": { "branch": "main", "commit": "1076a50c514df0d1d5c8087254cf6606226e0d23" },
   "denops.vim": { "branch": "main", "commit": "b5dfcbc249a7559cbdc08ba1b7dc1cd92dec6d98" },
   "fern.vim": { "branch": "main", "commit": "928d355e4c06e08eb3c9062485a661f1d37b01d1" },
+  "fidget.nvim": { "branch": "main", "commit": "1ba38e4cbb24683973e00c2e36f53ae64da38ef5" },
   "flash.nvim": { "branch": "main", "commit": "48817af25f51c0590653bbc290866e4890fe1cbe" },
   "fzf-lua": { "branch": "main", "commit": "618c4de7d36b6c2a2f46794845e631fa6007bbfc" },
   "gin.vim": { "branch": "main", "commit": "bba0adcbd17e54c2cc566cae88fd68a58d702e7f" },
