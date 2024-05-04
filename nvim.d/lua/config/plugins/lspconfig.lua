@@ -78,5 +78,8 @@ return {
         cmd = { 'pnpm', 'tsp-server', '--stdio' },
       }
     end
+    if 1 == vim.fn.executable 'rust-analyzer' then
+      lspconfig.rust_analyzer.setup {}
+    end
   end,
 }
