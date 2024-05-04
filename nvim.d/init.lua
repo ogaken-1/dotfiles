@@ -115,4 +115,10 @@ vim.api.nvim_create_autocmd('QuickFixCmdPost', {
 
 vim.cmd.colorscheme(vim.env.NVIM_COLORSCHEME or 'momiji')
 
+vim.filetype.add {
+  extension = {
+    tsp = 'typespec',
+  },
+}
+
 -- vim:ft=lua et ts=2 sw=2

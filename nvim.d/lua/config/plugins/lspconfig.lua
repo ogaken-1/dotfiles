@@ -74,6 +74,9 @@ return {
       lspconfig.biome.setup {
         cmd = { 'pnpm', 'biome', 'lsp-proxy' },
       }
+      lspconfig.tsp_server.setup {
+        cmd = { 'pnpm', 'tsp-server', '--stdio' },
+      }
     end
   end,
 }
