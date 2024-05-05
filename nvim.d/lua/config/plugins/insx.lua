@@ -76,7 +76,7 @@ local function builtin_snippet()
   local insx = insx_mod()
   insx.add('<Tab>', {
     enabled = function()
-      return vim.snippet.jumpable(1)
+      return vim.snippet.active { direction = 1 }
     end,
     action = function()
       vim.snippet.jump(1)
