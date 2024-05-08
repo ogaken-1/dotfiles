@@ -26,8 +26,6 @@ if not string match -q -- $PNPM_HOME $PATH
 end
 
 if status --is-interactive
-  abbr -a ls 'eza --icons auto'
-
   # git
   abbr -a gs 'git status --short --branch -uall'
   abbr -a gsw 'git switch'
