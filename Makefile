@@ -18,8 +18,11 @@ GIT_DEST := $(XDG_CONFIG_HOME)/git
 TMUX_SRC := $(DIR)/tmux.conf
 TMUX_DEST := $(XDG_CONFIG_HOME)/tmux/tmux.conf
 
+NIX_SRC := $(DIR)/nix.conf
+NIX_DEST := $(XDG_CONFIG_HOME)/nix/nix.conf
+
 .PHONY: install
-install: $(NVIM_DEST) $(FISH_DEST) $(ALACRITTY_DEST) $(GIT_DEST) $(TMUX_DEST)
+install: $(NVIM_DEST) $(FISH_DEST) $(ALACRITTY_DEST) $(GIT_DEST) $(TMUX_DEST) $(NIX_DEST)
 	ls --color -l $(XDG_CONFIG_HOME)
 
 $(NVIM_DEST): $(NVIM_SRC)
@@ -36,5 +39,9 @@ $(GIT_DEST): $(GIT_SRC)
 	ln -s $< $@
 
 $(TMUX_DEST): $(TMUX_SRC)
+	[ -d $(@D) ] || mkdir $(@D)
+	ln -s $< $@
+
+$(NIX_DEST): $(NIX_SRC)
 	[ -d $(@D) ] || mkdir $(@D)
 	ln -s $< $@
