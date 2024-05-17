@@ -27,6 +27,7 @@
   "nvim-vtsls": { "branch": "main", "commit": "719fabc328c48fa03b1f3373205fcd1f60d21dc2" },
   "omnisharp-extended-lsp.nvim": { "branch": "main", "commit": "6e0aa6465f8fa8ac6c833f6ac4713adfee0202a0" },
   "plenary.nvim": { "branch": "master", "commit": "08e301982b9a057110ede7a735dd1b5285eb341f" },
+  "rose-pine": { "branch": "main", "commit": "b6fe88c3282cf9f117a3e836d761c2d78d02f417" },
   "skkeleton": { "branch": "main", "commit": "87ad1d1f594e592ecad0429d651be45ce5fb03da" },
   "skkeleton_indicator.nvim": { "branch": "main", "commit": "22d0986a871d9c02f4df5ed4ae1a9fbddce33057" },
   "vim-asterisk": { "branch": "master", "commit": "77e97061d6691637a034258cc415d98670698459" },

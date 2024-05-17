@@ -19,4 +19,8 @@ return {
     end,
   },
   { 'kyoh86/momiji' },
+  {
+    'rose-pine/neovim',
+    name = 'rose-pine',
+  },
 }
