@@ -90,6 +90,16 @@ do
   })
 end
 
+vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, {
+  border = 'rounded',
+})
+
+vim.diagnostic.config {
+  float = {
+    border = 'rounded',
+  },
+}
+
 vim.opt.helplang = { 'ja', 'en' }
 vim.opt.incsearch = true
 vim.opt.ignorecase = true
