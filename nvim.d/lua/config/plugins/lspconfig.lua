@@ -81,5 +81,8 @@ return {
     if 1 == vim.fn.executable 'rust-analyzer' then
       lspconfig.rust_analyzer.setup {}
     end
+    if 1 == vim.fn.executable 'gopls' then
+      lspconfig.gopls.setup {}
+    end
   end,
 }
