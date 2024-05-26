@@ -23,4 +23,5 @@ return {
     'rose-pine/neovim',
     name = 'rose-pine',
   },
+  { 'cryptomilk/nightcity.nvim' },
 }

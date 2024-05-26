@@ -18,6 +18,7 @@
   "lazy.nvim": { "branch": "main", "commit": "05240b41548c4245a04d34ee54f789e824129991" },
   "mason.nvim": { "branch": "main", "commit": "49ff59aded1047a773670651cfa40e76e63c6377" },
   "momiji": { "branch": "main", "commit": "7dbdf58bcf7ee02ffca757f04a7bb4e7c85c4979" },
+  "nightcity.nvim": { "branch": "main", "commit": "8d83a8e09e39bba9c4c161c93522cc230452feeb" },
   "none-ls-shellcheck.nvim": { "branch": "main", "commit": "0f84461241e76e376a95fb7391deac82dc3efdbf" },
   "none-ls.nvim": { "branch": "main", "commit": "a0c30205edc07e4d54a2eeb72adb7e59cdcfcf9d" },
   "nvim-cmp": { "branch": "main", "commit": "5260e5e8ecadaf13e6b82cf867a909f54e15fd07" },
