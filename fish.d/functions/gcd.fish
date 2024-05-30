@@ -1,4 +1,4 @@
-function ghq-cd -d 'Select git project and start a tmux session.'
+function gcd -d 'Select git project and start a tmux session.'
   set -l repo (ghq list --full-path | fzf --prompt='Project >' --preview 'bat {}/README.*' --ansi)
 
   if [ -z "$repo" ]
