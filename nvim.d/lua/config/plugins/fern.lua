@@ -1,6 +1,9 @@
 return {
   'lambdalisue/fern.vim',
   cmd = 'Fern',
+  dependencies = {
+    'lambdalisue/vim-fern-git-status',
+  },
   init = function()
     vim.keymap.set('n', '<Space>e', function()
       if vim.go.columns < 200 then
@@ -24,5 +27,6 @@ return {
     vim.g['fern#hide_cursor'] = 1
     vim.g['fern#default_hidden'] = 1
     vim.g['fern#drawer_width'] = 60
+    vim.fn['fern_git_status#init']()
   end,
 }
