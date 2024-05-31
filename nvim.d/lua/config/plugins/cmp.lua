@@ -20,12 +20,13 @@ end
 
 return {
   'hrsh7th/nvim-cmp',
-  event = 'InsertEnter',
+  event = { 'InsertEnter', 'CmdlineEnter' },
   dependencies = {
     'hrsh7th/cmp-nvim-lsp',
     'hrsh7th/cmp-buffer',
     'uga-rosa/cmp-denippet',
     'uga-rosa/cmp-skkeleton',
+    'hrsh7th/cmp-cmdline',
   },
   config = function()
     local cmp = require 'cmp'
@@ -47,6 +48,17 @@ return {
         ghost_text = true,
       },
     }
+    cmp.setup.cmdline(':', {
+      mapping = cmp.mapping.preset.cmdline(),
+      sources = cmp.config.sources {
+        {
+          name = 'cmdline',
+          option = {
+            ignore_cmds = { 'Man', '!' },
+          },
+        },
+      },
+    })
     setup_normal_sources()
     local gid = vim.api.nvim_create_augroup('config-cmp', { clear = true })
     vim.api.nvim_create_autocmd('User', {
