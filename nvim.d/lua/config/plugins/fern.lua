@@ -26,7 +26,6 @@ return {
   config = function()
     vim.g['fern#hide_cursor'] = 1
     vim.g['fern#default_hidden'] = 1
-    vim.g['fern#drawer_width'] = 60
     vim.fn['fern_git_status#init']()
   end,
 }
