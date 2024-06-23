@@ -114,6 +114,7 @@ vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
 vim.opt.shiftround = true
 vim.opt.scrolloff = 5
+vim.opt.nrformats:append 'unsigned'
 
 vim.api.nvim_create_autocmd('QuickFixCmdPost', {
   group = vim.api.nvim_create_augroup('config-quickfix', { clear = true }),
