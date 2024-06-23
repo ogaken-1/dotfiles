@@ -42,7 +42,7 @@ if status --is-interactive
   abbr -a gf 'git fetch'
 
   if [ -z $TMUX ]
-    bind \cqs 'tmux attach-session -t (tmux list-sessions -F \'#{session_name}\' | fzf --layout=reverse --border=block)'
+    bind \cqs 'tmux attach-session -t (tmux list-sessions -F \'#{session_name}\' 2> /dev/null | fzf --layout=reverse --border=block) > /dev/null 2> /dev/null'
   end
 
   # tmux
