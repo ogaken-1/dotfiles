@@ -41,12 +41,20 @@ return {
         handlers = {
           ['textDocument/definition'] = require('omnisharp_extended').handler,
         },
-        enable_editorconfig_support = true,
-        enable_ms_build_load_projects_on_demand = false,
-        enable_roslyn_analyzers = true,
-        organize_imports_on_format = false,
-        enable_import_completion = false,
-        analyze_open_documents_only = true,
+        settings = {
+          FormattingOptions = {
+            EnableEditorConfigSupport = true,
+            OrganizeImports = false,
+          },
+          MsBuild = {
+            LoadProjectsOnDemand = false,
+          },
+          RoslynExtensionsOptions = {
+            EnableAnalyzersSupport = true,
+            EnableImportCompletion = false,
+            AnalyzeOpenDocumentsOnly = true,
+          },
+        },
       }
     end
     local util = require 'lspconfig.util'
