@@ -186,6 +186,22 @@ local function c_sharp()
     )
   end
 end
+local function ruby()
+  local insx = insx_mod()
+  ---@param key string
+  ---@param at string
+  ---@param recipe insx.RecipeSource | fun(ctx: insx.Context) | string
+  local function add(key, at, recipe)
+    insx.add(key, insx.with(normalize(recipe), { insx.with.filetype 'ruby', insx.with.match(at) }))
+  end
+  add('<CR>', [[\%(if\|class\)\s.\+\%#$]], function(ctx)
+    ctx.send '<CR>'
+    local row, col = ctx.row(), ctx.col()
+    ctx.send '<CR>end'
+    ctx.move(row, col)
+    ctx.send((' '):rep(col))
+  end)
+end
 local function common()
   local insx = insx_mod()
 
@@ -315,6 +331,7 @@ return {
       c_sharp,
       common,
       lua,
+      ruby,
     }
     for _, fn in ipairs(setups) do
       fn()
