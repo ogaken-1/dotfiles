@@ -49,7 +49,26 @@ return {
       },
     }
     cmp.setup.cmdline(':', {
-      mapping = cmp.mapping.preset.cmdline(),
+      mapping = {
+        ['<Tab>'] = {
+          c = function()
+            if cmp.visible() then
+              cmp.select_next_item { behavior = cmp.SelectBehavior.Insert }
+            else
+              cmp.complete()
+            end
+          end,
+        },
+        ['<S-Tab>'] = {
+          c = function()
+            if cmp.visible() then
+              cmp.select_prev_item { behavior = cmp.SelectBehavior.Insert }
+            else
+              cmp.complete()
+            end
+          end,
+        },
+      },
       sources = cmp.config.sources {
         {
           name = 'cmdline',
