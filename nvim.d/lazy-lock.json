@@ -31,8 +31,9 @@
   "plenary.nvim": { "branch": "master", "commit": "a3e3bc82a3f95c5ed0d7201546d5d2c19b20d683" },
   "rose-pine": { "branch": "main", "commit": "e10c9c6436556405ec6b187fd459a718f5c55156" },
   "skkeleton": { "branch": "main", "commit": "1c96108b9ba055f82c458ddb78638ec266c44af5" },
-  "skkeleton_indicator.nvim": { "branch": "v2", "commit": "d9b649d734ca7d3871c4f124004771d0213dc747" },
+  "skkeleton_indicator.nvim": { "branch": "main", "commit": "d9b649d734ca7d3871c4f124004771d0213dc747" },
   "vim-asterisk": { "branch": "master", "commit": "77e97061d6691637a034258cc415d98670698459" },
+  "vim-csharpier": { "branch": "main", "commit": "0d266d4dc9504bb46c3a9ab8095e79a3af1b830f" },
   "vim-edgemotion": { "branch": "master", "commit": "8d16bd92f6203dfe44157d43be7880f34fd5c060" },
   "vim-eft": { "branch": "master", "commit": "419deb0c45141c11cfd2648b8523f520f8413ec2" },
   "vim-fern-git-status": { "branch": "master", "commit": "151336335d3b6975153dad77e60049ca7111da8e" },
@@ -40,5 +41,6 @@
   "vim-operator-replace": { "branch": "master", "commit": "1345a556a321a092716e149d4765a5e17c0e9f0f" },
   "vim-operator-user": { "branch": "master", "commit": "c3dfd41c1ed516b4b901c97562e644de62c367aa" },
   "vim-razor": { "branch": "master", "commit": "305dd1db88c657c0c02effbee1a88048479bb0c4" },
-  "vim-sandwich": { "branch": "master", "commit": "74cf93d58ccc567d8e2310a69860f1b93af19403" }
+  "vim-sandwich": { "branch": "master", "commit": "74cf93d58ccc567d8e2310a69860f1b93af19403" },
+  "vim-terraform": { "branch": "master", "commit": "24de93afb05078bac6a2e966402cc1f672277708" }
 }

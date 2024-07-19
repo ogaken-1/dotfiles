@@ -92,5 +92,8 @@ return {
     if 1 == vim.fn.executable 'gopls' then
       lspconfig.gopls.setup {}
     end
+    if 1 == vim.fn.executable 'terraform-ls' then
+      lspconfig.terraformls.setup {}
+    end
   end,
 }
