@@ -1,3 +1,16 @@
+---@class GalaxyLine.Section
+---@field left {[string]: GalaxyLine.Element}[]
+---@field right {[string]: GalaxyLine.Element}[]
+---@field short_line_left {[string]: GalaxyLine.Element}[]
+---@field short_line_right {[string]: GalaxyLine.Element}[]
+
+--- @class GalaxyLine.Element
+--- @field provider (fun(): string) | string | string[]
+--- @field highlight? string[]
+--- @field separator? string
+--- @field separator_highlight? (string|fun(): string)[]
+--- @field condition? fun(): boolean
+
 return {
   'nvimdev/galaxyline.nvim',
   dependencies = {
@@ -7,6 +20,7 @@ return {
     --- ORIGINAL AUTHOR: Copyright (c) 2020 Raphael
     --- LICENSE: [MIT License](https://github.com/nvimdev/galaxyline.nvim/blob/main/LICENSE)
     local gl = require 'galaxyline'
+    ---@type GalaxyLine.Section
     local gls = gl.section
     gl.short_line_list = { 'fern' }
 
