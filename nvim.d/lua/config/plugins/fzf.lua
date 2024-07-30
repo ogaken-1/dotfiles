@@ -1,5 +1,8 @@
 return {
   'ibhagwan/fzf-lua',
+  dependencies = {
+    'nvim-tree/nvim-web-devicons',
+  },
   cmd = 'FzfLua',
   init = function()
     vim.keymap.set('n', 'U', '<C-r>')
