@@ -185,6 +185,48 @@ local function c_sharp()
       )
     )
   end
+  -- XML comment syntax
+  insx.add(
+    '/',
+    insx.with(
+      snippet_recipe {
+        '/// <summary>',
+        '/// $0',
+        '/// </summary>',
+      },
+      {
+        insx.with.filetype 'cs',
+        insx.with.in_comment(true),
+        insx.with.match [[^\s*\/\/\%#$]],
+      }
+    )
+  )
+  insx.add(
+    '>',
+    insx.with(
+      substitute {
+        pattern = [[<\(\w\+\).\{-}\%#]],
+        replace = [[\0>\%#</\1>]],
+      },
+      {
+        insx.with.filetype 'cs',
+        insx.with.in_comment(true),
+      }
+    )
+  )
+  insx.add(
+    '<BS>',
+    insx.with(
+      substitute {
+        pattern = [[<\(\w\+\).\{-}>\%#</.\{-}>]],
+        replace = [[\%#]],
+      },
+      {
+        insx.with.filetype 'cs',
+        insx.with.in_comment(true),
+      }
+    )
+  )
 end
 local function ruby()
   local insx = insx_mod()
