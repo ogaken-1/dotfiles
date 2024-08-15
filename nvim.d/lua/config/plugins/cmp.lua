@@ -18,6 +18,49 @@ local function setup_skk_source()
   }
 end
 
+local function mapping()
+  local insx = require 'insx'
+  insx.add('<C-n>', {
+    enabled = function()
+      return require('cmp').visible()
+    end,
+    action = function()
+      local cmp = require 'cmp'
+      cmp.select_next_item { behavior = cmp.SelectBehavior.Select }
+    end,
+  })
+  insx.add('<C-p>', {
+    enabled = function()
+      return require('cmp').visible()
+    end,
+    action = function()
+      local cmp = require 'cmp'
+      cmp.select_prev_item { behavior = cmp.SelectBehavior.Select }
+    end,
+  })
+  insx.add('<CR>', {
+    enabled = function()
+      return require('cmp').visible()
+    end,
+    action = function()
+      vim.schedule(function()
+        local cmp = require 'cmp'
+        cmp.confirm { select = true, behavior = cmp.ConfirmBehavior.Replace }
+      end)
+    end,
+  })
+  insx.add('<C-g>', {
+    enabled = function()
+      return require('cmp').visible()
+    end,
+    action = function()
+      vim.schedule(function()
+        require('cmp').abort()
+      end)
+    end,
+  })
+end
+
 return {
   'hrsh7th/nvim-cmp',
   event = { 'InsertEnter', 'CmdlineEnter' },
@@ -89,6 +132,15 @@ return {
       group = gid,
       pattern = 'skkeleton-disable-post',
       callback = setup_normal_sources,
+    })
+
+    mapping()
+
+    vim.api.nvim_create_autocmd('InsertLeave', {
+      group = gid,
+      callback = function()
+        vim.o.virtualedit = 'none'
+      end,
     })
   end,
 }

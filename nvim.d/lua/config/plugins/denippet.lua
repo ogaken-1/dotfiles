@@ -1,3 +1,23 @@
+local function mapping()
+  local insx = require 'insx'
+  insx.add(',', {
+    enabled = function()
+      return vim.fn['denippet#expandable']()
+    end,
+    action = function(ctx)
+      ctx.send '<Plug>(denippet-expand)'
+    end,
+  })
+  insx.add('<Tab>', {
+    enabled = function()
+      return vim.fn['denippet#jumpable'](1)
+    end,
+    action = function(ctx)
+      ctx.send '<Plug>(denippet-jump-next)'
+    end,
+  })
+end
+
 return {
   'uga-rosa/denippet.vim',
   dependencies = {
@@ -38,5 +58,12 @@ return {
         end)
       end)
     end, 100)
+
+    -- insxのロードが必要なので、マッピングの登録はInsertEnterまで遅延する
+    vim.api.nvim_create_autocmd('InsertEnter', {
+      group = vim.api.nvim_create_augroup('config-denippet', { clear = true }),
+      once = true,
+      callback = mapping,
+    })
   end,
 }
