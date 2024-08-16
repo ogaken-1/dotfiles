@@ -15,15 +15,23 @@ return {
       ctx.move(row, #vim.fn.getline(row + 1))
       ctx.send ';'
     end)
-    add('g', [[{\s*\%#\s*}]], 'get;' .. u.left)
-    add('<Tab>', [[{\s*get\%#;\s*}]], function(ctx)
-      ctx.move(ctx.row(), ctx.col() + 1)
-    end)
-    add('s', [=[{\s*\(get[^;]*;\s*\)\?\%#\s*}]=], 'set;' .. u.left)
-    add('i', [=[{\s*\(get[^;]*;\s*\)\?\%#\s*}]=], 'init;' .. u.left)
-    add('<Tab>', [=[{\s*\(get[^;]*;\s*\)\?\(set\|init\)[^;]*\%#;\s*}]=], function(ctx)
-      ctx.move(ctx.row(), ctx.col() + vim.regex([[;\s*}\zs]]):match_str(ctx.after()))
-    end)
+    do -- for auto property syntax
+      local patterns = {
+        no_accessors = [[{\s*\%#\s*}]],
+        getter_body = [[{\s*get\%#;\s*}]],
+        getter_completed = [=[{\s*\%(get[^;]*;\s*\)\?\%#\s*}]=],
+        setter_body = [=[{\s*\%(get[^;]*;\s*\)\?\%(set\|init\)[^;]*\%#;\s*}]=],
+      }
+      add('g', patterns.no_accessors, 'get;' .. u.left)
+      add('<Tab>', patterns.getter_body, function(ctx)
+        ctx.move(ctx.row(), ctx.col() + 1)
+      end)
+      add('s', patterns.getter_completed, 'set;' .. u.left)
+      add('i', patterns.getter_completed, 'init;' .. u.left)
+      add('<Tab>', patterns.setter_body, function(ctx)
+        ctx.move(ctx.row(), ctx.col() + vim.regex([[;\s*}\zs]]):match_str(ctx.after()))
+      end)
+    end
     for _, word in ipairs { 'if', 'for', 'while' } do
       add('<Space>', [[\<]] .. word .. [[\%#(\@!]], '<Space>()' .. u.left)
     end
