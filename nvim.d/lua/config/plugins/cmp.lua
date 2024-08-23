@@ -48,6 +48,7 @@ local function mapping()
         cmp.confirm { select = true, behavior = cmp.ConfirmBehavior.Replace }
       end)
     end,
+    priority = 1,
   })
   insx.add('<C-g>', {
     enabled = function()

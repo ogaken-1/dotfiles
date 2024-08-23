@@ -55,6 +55,7 @@ return {
       action = function(ctx)
         ctx.send '<Space>=><Space>'
       end,
+      priority = 1,
     })
     -- fix typos of `await`
     for _, wai in ipairs { 'wia', 'iwa', 'awi' } do

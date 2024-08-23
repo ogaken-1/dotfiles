@@ -44,5 +44,6 @@
   "vim-operator-user": { "branch": "master", "commit": "c3dfd41c1ed516b4b901c97562e644de62c367aa" },
   "vim-razor": { "branch": "master", "commit": "305dd1db88c657c0c02effbee1a88048479bb0c4" },
   "vim-sandwich": { "branch": "master", "commit": "74cf93d58ccc567d8e2310a69860f1b93af19403" },
+  "vim-snipewin": { "branch": "main", "commit": "9616fd4564d61c78947e3dda53ef9ac61cce032c" },
   "vim-terraform": { "branch": "master", "commit": "24de93afb05078bac6a2e966402cc1f672277708" }
 }
