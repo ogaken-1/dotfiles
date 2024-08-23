@@ -19,9 +19,8 @@ return {
     end,
   },
   { 'kyoh86/momiji' },
-  {
-    'rose-pine/neovim',
-    name = 'rose-pine',
-  },
+  { 'rose-pine/neovim', name = 'rose-pine' },
   { 'cryptomilk/nightcity.nvim' },
+  { 'cocopon/iceberg.vim' },
+  { 'EdenEast/nightfox.nvim' },
 }
