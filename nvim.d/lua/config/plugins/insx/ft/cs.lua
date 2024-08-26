@@ -48,7 +48,7 @@ return {
     )
     add('<Space>', [[^\s*vf\%#$]], u.snippet_recipe 'var ${1:func} = (${2:args}) => $0;')
     add('<Space>', [[^\s*v\%#$]], u.snippet_recipe 'var $2 = $1;$0')
-    add('<Space>', [=[\w\((\|,\s*\)\(out\|await\|new\|ref\)\@!\w\+\%#]=], {
+    add('<Space>', [=[\w\((\|,\s*\)\(out\|await\|new\|ref\|static\)\@!\w\+\%#]=], {
       enabled = function(ctx)
         return (ctx.filetype == 'razor' or u.in_node 'argument_list')
       end,
