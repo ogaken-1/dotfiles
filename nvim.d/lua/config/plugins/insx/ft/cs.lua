@@ -32,7 +32,17 @@ return {
         ctx.move(ctx.row(), ctx.col() + vim.regex([[;\s*}\zs]]):match_str(ctx.after()))
       end)
     end
-    for _, word in ipairs { 'if', 'for', 'while' } do
+    add(
+      '<Space>',
+      [[\<for\%#(\@!]],
+      u.snippet_recipe {
+        'for (int ${1:i} = 0; $1 < ${2:collection.Count}; $1++)',
+        '{',
+        '\t$0',
+        '}',
+      }
+    )
+    for _, word in ipairs { 'if', 'while' } do
       add('<Space>', [[\<]] .. word .. [[\%#(\@!]], '<Space>()' .. u.left)
     end
     add('w', [[^\s*c\%#$]], u.snippet_recipe 'Console.WriteLine(\\$"{nameof(${1})}:\\t{$1}")')
