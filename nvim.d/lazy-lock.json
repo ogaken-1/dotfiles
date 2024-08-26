@@ -1,6 +1,7 @@
 {
   "Ionide-vim": { "branch": "master", "commit": "00099c3cf53cba28a1d8084ab8d21639c62bd747" },
   "aerial.nvim": { "branch": "master", "commit": "db0af491ff13c18a966ce2f9ac7f5211aec000a7" },
+  "catppuccin": { "branch": "main", "commit": "4fd72a9ab64b393c2c22b168508fd244877fec96" },
   "cmp-buffer": { "branch": "main", "commit": "3022dbc9166796b644a841a02de8dd1cc1d311fa" },
   "cmp-cmdline": { "branch": "main", "commit": "d250c63aa13ead745e3a40f61fdd3470efde3923" },
   "cmp-denippet": { "branch": "main", "commit": "bf154d34d36fd4da1b64185dd3eab90904273c1a" },

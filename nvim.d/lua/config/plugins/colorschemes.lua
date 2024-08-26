@@ -23,4 +23,5 @@ return {
   { 'cryptomilk/nightcity.nvim' },
   { 'cocopon/iceberg.vim' },
   { 'EdenEast/nightfox.nvim' },
+  { 'catppuccin/nvim', name = 'catppuccin' },
 }
