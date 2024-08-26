@@ -26,6 +26,24 @@ return {
       add('<Tab>', patterns.getter_body, function(ctx)
         ctx.move(ctx.row(), ctx.col() + 1)
       end)
+      add('<CR>', patterns.getter_body, function(ctx)
+        -- プロパティがある行のインデント
+        local indent = vim.fn.indent(vim.fn.line '.')
+        -- { get; } を全て消して改行し、スニペットを展開する
+        ctx.remove(patterns.getter_body)
+        local snippet = table.concat({
+          '{',
+          '\tget',
+          '\t{',
+          '\t\t$0',
+          '\t}',
+          '}',
+        }, '\n')
+        ctx.send '<CR>'
+        -- インデントをプロパティの開始行に合わせる
+        ctx.move(ctx.row(), indent)
+        vim.snippet.expand(snippet)
+      end)
       add('s', patterns.getter_completed, 'set;' .. u.left)
       add('i', patterns.getter_completed, 'init;' .. u.left)
       add('<Tab>', patterns.setter_body, function(ctx)
