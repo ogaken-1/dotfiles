@@ -123,10 +123,13 @@ function preview_diff.close(status_winid)
   if preview_winid == nil then
     return
   end
-  if vim.api.nvim_win_is_valid(preview_winid) then
-    vim.api.nvim_win_close(preview_winid, false)
-    vim.w[status_winid].gin_status_preview_winid = nil
-  end
+  -- Window will not be closed if `preview_diff.close()` called in asynchronous context
+  vim.schedule(function()
+    if vim.api.nvim_win_is_valid(preview_winid) then
+      vim.api.nvim_win_close(preview_winid, false)
+      vim.w[status_winid].gin_status_preview_winid = nil
+    end
+  end)
 end
 
 function preview_diff.resize(status_winid)
