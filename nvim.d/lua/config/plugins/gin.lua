@@ -2,6 +2,7 @@ return {
   'lambdalisue/gin.vim',
   dependencies = {
     'vim-denops/denops.vim',
+    'ogaken-1/nvim-gin-preview',
   },
   init = function()
     local prefix = '<Space>a'
