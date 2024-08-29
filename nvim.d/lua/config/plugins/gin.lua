@@ -6,6 +6,7 @@ return {
   },
   init = function()
     local prefix = '<Space>a'
+    vim.keymap.set('n', prefix .. 'a', '<Cmd>GinStatus<CR>')
     vim.keymap.set('n', prefix .. 'c', '<Cmd>Gin commit<CR>')
     vim.keymap.set('n', prefix .. 'C', '<Cmd>Gin commit --amend<CR>')
     vim.keymap.set('n', prefix .. 'b', '<Cmd>GinBranch<CR>')
