@@ -70,7 +70,6 @@ return {
     'hrsh7th/cmp-buffer',
     'uga-rosa/cmp-denippet',
     'uga-rosa/cmp-skkeleton',
-    'hrsh7th/cmp-cmdline',
   },
   config = function()
     local cmp = require 'cmp'
@@ -92,36 +91,6 @@ return {
         ghost_text = true,
       },
     }
-    cmp.setup.cmdline(':', {
-      mapping = {
-        ['<Tab>'] = {
-          c = function()
-            if cmp.visible() then
-              cmp.select_next_item { behavior = cmp.SelectBehavior.Insert }
-            else
-              cmp.complete()
-            end
-          end,
-        },
-        ['<S-Tab>'] = {
-          c = function()
-            if cmp.visible() then
-              cmp.select_prev_item { behavior = cmp.SelectBehavior.Insert }
-            else
-              cmp.complete()
-            end
-          end,
-        },
-      },
-      sources = cmp.config.sources {
-        {
-          name = 'cmdline',
-          option = {
-            ignore_cmds = { 'Man', '!' },
-          },
-        },
-      },
-    })
     setup_normal_sources()
     local gid = vim.api.nvim_create_augroup('config-cmp', { clear = true })
     vim.api.nvim_create_autocmd('User', {

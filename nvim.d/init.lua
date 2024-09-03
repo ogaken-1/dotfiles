@@ -18,10 +18,10 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup('config.plugins', {
   dev = {
     path = function(plugin)
-      ---@type string
-      local repo = plugin[1]
-      return vim.fs.joinpath('~/repos/github.com', repo)
+      return vim.fs.joinpath('~/repos/github.com/ogaken-1', plugin.name)
     end,
+    patterns = { 'ogaken-1' },
+    fallback = true,
   },
   change_detection = {
     enabled = false,
