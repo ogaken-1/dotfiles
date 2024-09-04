@@ -29,6 +29,20 @@ require('lazy').setup('config.plugins', {
   },
 })
 
+---@param lhs string
+---@param rhs string
+---@return nil
+local function abbr_cmdline(lhs, rhs)
+  vim.keymap.set('ca', lhs, function()
+    local cmdtype = vim.fn.getcmdtype()
+    if cmdtype ~= ':' then
+      return lhs
+    end
+    local cmdline = vim.fn.getcmdline()
+    return cmdline == lhs and rhs or lhs
+  end, { expr = true })
+end
+
 do
   vim.keymap.set('n', ']q', '<Cmd>cnext<CR>')
   vim.keymap.set('n', '[q', '<Cmd>cprevious<CR>')
@@ -39,8 +53,8 @@ do
   vim.keymap.set('c', '<C-n>', '<Down>')
   vim.keymap.set({ 'n', 'x' }, '<Space>y', '"+y')
   vim.keymap.set({ 'n', 'x' }, '<Space>p', '"+p')
-  vim.keymap.set('ca', 'w', 'update')
-  vim.keymap.set('ca', 'wq', 'exit')
+  abbr_cmdline('w', 'update')
+  abbr_cmdline('wq', 'exit')
   vim.keymap.set('n', 'mf', '<Plug>(run-format)')
 
   for _, key in ipairs { 'i', 'a' } do
