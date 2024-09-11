@@ -47,6 +47,7 @@ do
   vim.keymap.set('n', ']q', '<Cmd>cnext<CR>')
   vim.keymap.set('n', '[q', '<Cmd>cprevious<CR>')
   vim.keymap.set('n', '<A-,>', '<Cmd>edit $MYVIMRC<CR>')
+  vim.keymap.set('n', 'ggr', '<Cmd>execute \'grep\' expand(\'<cword>\')<CR>')
   -- cmdlineモードでの補完候補の選択には<Tab>を使うので<C-[pn]>は空けて良い。
   -- <Up>/<Down>はカーソル前の入力をリスペクトするのでそちらを使う。
   vim.keymap.set('c', '<C-p>', '<Up>')
