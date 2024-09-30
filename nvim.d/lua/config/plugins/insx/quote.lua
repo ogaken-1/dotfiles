@@ -27,14 +27,6 @@ return {
 
       local after_escaped_quote = ([[\\%s\%%#]]):format(char)
       insx.add(
-        char,
-        insx.with({
-          action = function(ctx)
-            ctx.send('\\' .. char)
-          end,
-        }, { insx.with.in_string(true) })
-      )
-      insx.add(
         '<BS>',
         insx.with({
           action = function(ctx)
