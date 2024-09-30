@@ -25,7 +25,6 @@ in
       ripgrep
       stylua
       tailscale
-      tmux
       trash-cli
       vim
       vscode-langservers-extracted
