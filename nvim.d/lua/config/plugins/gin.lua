@@ -30,5 +30,14 @@ return {
         end)
       end,
     })
+    vim.keymap.set('ca', 'cq', function()
+      local cmdtype = vim.fn.getcmdtype()
+      if cmdtype ~= ':' then
+        return 'cq'
+      end
+      local buffer_commands = vim.api.nvim_buf_get_commands(0, {})
+      local cmdline = vim.fn.getcmdline()
+      return cmdline == 'cq' and (buffer_commands['Cancel'] == nil and 'cq' or 'Cancel') or 'cq'
+    end, { expr = true })
   end,
 }
