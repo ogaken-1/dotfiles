@@ -20,6 +20,7 @@ return {
     end
     add_if_exists('prettierd', null_ls.builtins.formatting.prettierd)
     add_if_exists('stylua', null_ls.builtins.formatting.stylua)
+    table.insert(sources, null_ls.builtins.formatting.nixfmt)
     null_ls.setup { sources = sources }
   end,
 }

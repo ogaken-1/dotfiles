@@ -1,7 +1,7 @@
 { pkgs, ... }:
 let
   dirModules = dir: builtins.map (file: dir + "/${file}") (builtins.attrNames (builtins.readDir dir));
-  programs =  dirModules ./programs;
+  programs = dirModules ./programs;
 in
 {
   home = {
@@ -21,6 +21,7 @@ in
       kubectl
       lua-language-server
       nil
+      nixfmt-rfc-style
       postgresql_16
       ripgrep
       skk-dicts
@@ -33,7 +34,7 @@ in
       yaml-language-server
     ];
     sessionVariables = {
-      SKK_DICT_DIR = "${pkgs.skk-dicts}/share" ;
+      SKK_DICT_DIR = "${pkgs.skk-dicts}/share";
     };
   };
   xdg.enable = true;
