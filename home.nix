@@ -1,4 +1,8 @@
 { pkgs, ... }:
+let
+  dirModules = dir: builtins.map (file: dir + "/${file}") (builtins.attrNames (builtins.readDir dir));
+  programs =  dirModules ./programs;
+in
 {
   home = {
     username = "ogaken";
@@ -29,5 +33,5 @@
       yaml-language-server
     ];
   };
-  imports = import ./programs;
+  imports = programs;
 }
