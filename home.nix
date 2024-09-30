@@ -1,5 +1,9 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
+let
+  fish = import ./programs/fish;
+in
 {
+  imports = [fish];
   home = {
     username = "ogaken";
     homeDirectory = "/home/ogaken";
@@ -8,9 +12,7 @@
       azure-cli
       bc
       deno
-      direnv
       fd
-      fzf
       gcc14
       ghq
       gnumake
@@ -19,7 +21,6 @@
       kubectl
       lua-language-server
       nil
-      nix-direnv
       postgresql_16
       ripgrep
       stylua
@@ -92,6 +93,13 @@
       gitCredentialHelper = {
         enable = true;
       };
+    };
+    fzf = {
+      enable = true;
+    };
+    direnv = {
+      enable = true;
+      nix-direnv.enable = true;
     };
   };
 }
