@@ -23,6 +23,7 @@ in
       nil
       postgresql_16
       ripgrep
+      skk-dicts
       stylua
       tailscale
       trash-cli
@@ -31,6 +32,10 @@ in
       wget
       yaml-language-server
     ];
+    sessionVariables = {
+      SKK_DICT_DIR = "${pkgs.skk-dicts}/share" ;
+    };
   };
+  xdg.enable = true;
   imports = programs;
 }
