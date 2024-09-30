@@ -7,20 +7,18 @@ return {
   event = 'FileType',
   config = function()
     local null_ls = require 'null-ls'
-    null_ls.register(require 'none-ls-shellcheck.diagnostics')
-    null_ls.register(require 'none-ls-shellcheck.code_actions')
-    local sources = {}
-    local function add(source)
-      table.insert(sources, source)
-    end
-    local function add_if_exists(cmd, source)
-      if vim.fn.executable(cmd) == 1 then
-        add(source)
+    local sources = {
+      require 'none-ls-shellcheck.diagnostics',
+      require 'none-ls-shellcheck.code_actions',
+      null_ls.builtins.formatting.stylua,
+      null_ls.builtins.formatting.nixfmt,
+    }
+    local function add_if(execution, source)
+      if 1 == vim.fn.exists(execution) then
+        table.insert(sources, source)
       end
     end
-    add_if_exists('prettierd', null_ls.builtins.formatting.prettierd)
-    add_if_exists('stylua', null_ls.builtins.formatting.stylua)
-    table.insert(sources, null_ls.builtins.formatting.nixfmt)
+    add_if('prettierd', null_ls.builtins.formatting.prettierd)
     null_ls.setup { sources = sources }
   end,
 }

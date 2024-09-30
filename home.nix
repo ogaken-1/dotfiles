@@ -24,6 +24,7 @@ in
       nixfmt-rfc-style
       postgresql_16
       ripgrep
+      shellcheck
       skk-dicts
       stylua
       tailscale
