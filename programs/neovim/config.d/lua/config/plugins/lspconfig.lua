@@ -12,8 +12,9 @@ return {
   event = 'FileType',
   config = function()
     local lspconfig = require 'lspconfig'
-    if 1 == vim.fn.executable 'lua-language-server' then
-      lspconfig.lua_ls.setup {
+    local util = require 'lspconfig.util'
+    local configs = {
+      lua_ls = {
         settings = {
           Lua = {
             runtime = {
@@ -33,11 +34,9 @@ return {
             },
           },
         },
-      }
-    end
-    if 1 == vim.fn.executable 'omnisharp' then
-      lspconfig.omnisharp.setup {
-        cmd = { 'omnisharp' },
+      },
+      omnisharp = {
+        cmd = { 'OmniSharp' },
         handlers = {
           ['textDocument/definition'] = require('omnisharp_extended').handler,
         },
@@ -55,13 +54,17 @@ return {
             AnalyzeOpenDocumentsOnly = true,
           },
         },
-      }
-    end
-    local util = require 'lspconfig.util'
-    if 1 == vim.fn.executable 'deno' then
-      lspconfig.denols.setup {
+      },
+      denols = {
         root_dir = util.root_pattern { 'deno.json', 'deno.jsonc', 'denops' },
-      }
+      },
+      yamlls = {},
+      jsonls = {},
+      nil_ls = {},
+      gopls = {},
+    }
+    for name, config in pairs(configs) do
+      lspconfig[name].setup(config)
     end
     if 1 == vim.fn.executable 'vtsls' then
       require('lspconfig.configs').vtsls = vim.tbl_deep_extend('force', require('vtsls').lspconfig, {
@@ -71,12 +74,6 @@ return {
         },
       })
       lspconfig.vtsls.setup {}
-    end
-    if 1 == vim.fn.executable 'yaml-language-server' then
-      lspconfig.yamlls.setup {}
-    end
-    if 1 == vim.fn.executable 'vscode-json-language-server' then
-      lspconfig.jsonls.setup {}
     end
     if 1 == vim.fn.executable 'pnpm' then
       lspconfig.biome.setup {
@@ -88,9 +85,6 @@ return {
     end
     if 1 == vim.fn.executable 'rust-analyzer' then
       lspconfig.rust_analyzer.setup {}
-    end
-    if 1 == vim.fn.executable 'gopls' then
-      lspconfig.gopls.setup {}
     end
     if 1 == vim.fn.executable 'terraform-ls' then
       lspconfig.terraformls.setup {}

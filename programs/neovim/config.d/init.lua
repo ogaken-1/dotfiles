@@ -29,25 +29,24 @@ require('lazy').setup('config.plugins', {
   },
 })
 
----@param lhs string
----@param rhs string
----@return nil
-local function abbr_cmdline(lhs, rhs)
-  vim.keymap.set('ca', lhs, function()
-    local cmdtype = vim.fn.getcmdtype()
-    if cmdtype ~= ':' then
-      return lhs
-    end
-    local cmdline = vim.fn.getcmdline()
-    return cmdline == lhs and rhs or lhs
-  end, { expr = true })
-end
-
 do
+  local abbr_cmdline = require('config.cmdline').abbr_cmdline
   vim.keymap.set('n', ']q', '<Cmd>cnext<CR>')
   vim.keymap.set('n', '[q', '<Cmd>cprevious<CR>')
   vim.keymap.set('n', '<A-,>', '<Cmd>edit $MYVIMRC<CR>')
-  vim.keymap.set('n', 'ggr', '<Cmd>execute \'grep\' expand(\'<cword>\')<CR>')
+  vim.keymap.set('n', '<space>g', function()
+    local cword = vim.fn.expand '<cword>'
+    local word = vim.fn.input {
+      prompt = 'Grep > ',
+      default = cword,
+      completion = 'buffer',
+      cancelreturn = '',
+    }
+    if word == '' then
+      return
+    end
+    vim.cmd.grep(word)
+  end)
   -- cmdlineモードでの補完候補の選択には<Tab>を使うので<C-[pn]>は空けて良い。
   -- <Up>/<Down>はカーソル前の入力をリスペクトするのでそちらを使う。
   vim.keymap.set('c', '<C-p>', '<Up>')
@@ -123,7 +122,7 @@ vim.opt.wrap = false
 vim.opt.exrc = true
 vim.opt.cursorline = true
 vim.opt.fileencodings = { 'utf-8', 'cp932', 'euc-jp', 'latin1' }
-vim.opt.grepprg = 'rg --vimgrep'
+vim.opt.grepprg = 'rg --vimgrep --smart-case'
 vim.opt.expandtab = true
 vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
