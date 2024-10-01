@@ -1,3 +1,4 @@
+{ pkgs, ... }:
 {
   services = {
     vscode-server = {
@@ -59,5 +60,6 @@
       "wheel"
       "docker"
     ];
+    shell = "${pkgs.fish}/bin/fish";
   };
 }
