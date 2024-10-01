@@ -67,4 +67,5 @@ return {
     ft = 'fsharp',
   },
   { 'hashivim/vim-terraform' },
+  { 'direnv/direnv.vim' },
 }
