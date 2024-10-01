@@ -1,4 +1,7 @@
 { pkgs, ... }:
+let
+  home = ((import ./home.nix) pkgs).home;
+in
 {
   services = {
     vscode-server = {
@@ -20,7 +23,7 @@
 
   wsl = {
     enable = true;
-    defaultUser = "ogaken";
+    defaultUser = home.username;
     docker-desktop.enable = false;
     interop = {
       includePath = false;
@@ -52,9 +55,9 @@
     };
   };
 
-  users.users.ogaken = {
+  users.users.${home.username} = {
     isNormalUser = true;
-    home = "/home/ogaken";
+    home = home.homeDirectory;
     description = "Kento Ogata";
     extraGroups = [
       "wheel"
