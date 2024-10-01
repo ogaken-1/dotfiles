@@ -1,4 +1,4 @@
-return {
+local fern = {
   'lambdalisue/fern.vim',
   cmd = 'Fern',
   dependencies = {
@@ -29,3 +29,8 @@ return {
     vim.fn['fern_git_status#init']()
   end,
 }
+local fern_hijack = {
+  'lambdalisue/vim-fern-hijack',
+}
+
+return { fern, fern_hijack }
