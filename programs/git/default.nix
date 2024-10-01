@@ -4,6 +4,7 @@
     delta = {
       enable = true;
     };
+    lfs.enable = true;
     ignores = [
       "**/.envrc"
       "**/.DS_Store"
