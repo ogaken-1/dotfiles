@@ -10,6 +10,7 @@ in
     stateVersion = "24.05";
     packages = with pkgs; [
       azure-cli
+      bat
       bc
       fd
       gcc14
