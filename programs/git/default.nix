@@ -8,6 +8,7 @@
     ignores = [
       "**/.envrc"
       "**/.DS_Store"
+      "**/.direnv"
     ];
     aliases = {
       clean-branches = "! git branch --format='%(refname:short) %(upstream:track)' | grep '\\[gone\\]' | awk '{ print $1 }' | xargs git branch -D";
