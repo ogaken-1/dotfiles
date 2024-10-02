@@ -43,5 +43,6 @@
           (import ./nixos-wsl.nix)
         ];
       };
+      formatter.${system} = pkgs.nixfmt-rfc-style;
     };
 }
