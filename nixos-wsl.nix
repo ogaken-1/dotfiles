@@ -43,6 +43,10 @@ in
         "flakes"
       ];
     };
+    gc = {
+      automatic = true;
+      dates = "weekly";
+    };
   };
 
   systemd = {
