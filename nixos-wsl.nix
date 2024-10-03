@@ -59,6 +59,8 @@ in
     };
   };
 
+  time.timeZone = "Asia/Tokyo";
+
   users.users.${home.username} = {
     isNormalUser = true;
     home = home.homeDirectory;
