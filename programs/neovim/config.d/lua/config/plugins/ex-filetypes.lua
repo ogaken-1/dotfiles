@@ -1,9 +1,9 @@
 local function find_and_open_file(name)
   local switch = require 'config.switch'
   local files = vim
-    .iter(vim.fn.systemlist { 'fd', name })
+    .iter(vim.fn.systemlist { 'fd', name, '-e', 'razor', '-e', 'cs', '-t', 'file' })
     :filter(function(item)
-      return vim.fn.fnamemodify(item, ':t') == name
+      return vim.fn.fnamemodify(item, ':t:r') == name
     end)
     :totable()
   switch(#files)
@@ -45,7 +45,7 @@ return {
           or hl_group == 'razorTypeIdentifier'
           or is_typename()
         then
-          find_and_open_file(cword .. '.razor')
+          find_and_open_file(cword)
         elseif hl_group == 'razorcsRHSIdentifier' then
           vim.cmd.OpenCSharp()
           vim.fn.search(([[\V\<%s\>]]):format(cword))
