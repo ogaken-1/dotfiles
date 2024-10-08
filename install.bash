@@ -12,7 +12,7 @@ nix-shell \
 if which nixos-rebuild > /dev/null 2> /dev/null; then
   nix-shell \
     --packages git home-manager \
-    --run "sudo nixos-rebuild --flake ${dir} switch"
+    --run "sudo NIX_CONFIG='extra-experimental-features = flakes' nixos-rebuild --flake ${dir} switch"
 fi
 
 # 3. Apply home-manager configurations
