@@ -1,8 +1,8 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 {
   home = {
     file = {
-      ".config/nvim/" = {
+      "${config.xdg.configHome}/nvim/" = {
         source = ./config.d;
         recursive = true;
       };

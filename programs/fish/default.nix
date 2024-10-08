@@ -1,6 +1,7 @@
+{ config, ... }:
 {
   home.file = {
-    ".config/fish/functions/" = {
+    "${config.xdg.configHome}/fish/functions/" = {
       source = ./functions;
       recursive = true;
     };
