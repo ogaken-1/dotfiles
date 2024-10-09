@@ -14,14 +14,25 @@
       nil
       nixfmt-rfc-style
       shellcheck
-      skk-dicts
+      skkDictionaries.l
+      skkDictionaries.jinmei
+      skkDictionaries.geo
       stylua
       trash-cli
       vscode-langservers-extracted
       yaml-language-server
     ];
     sessionVariables = {
-      SKK_DICT_DIR = "${pkgs.skk-dicts}/share";
+      SKK_DICT_DIRS = builtins.concatStringsSep ":" (
+        map (d: "${d}/share/skk") (
+          with pkgs.skkDictionaries;
+          [
+            l
+            jinmei
+            geo
+          ]
+        )
+      );
     };
   };
   programs.neovim = {
