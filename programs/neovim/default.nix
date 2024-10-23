@@ -13,10 +13,11 @@
       lua-language-server
       nil
       nixfmt-rfc-style
+      omnisharp-roslyn
       shellcheck
-      skkDictionaries.l
-      skkDictionaries.jinmei
       skkDictionaries.geo
+      skkDictionaries.jinmei
+      skkDictionaries.l
       stylua
       trash-cli
       vscode-langservers-extracted
