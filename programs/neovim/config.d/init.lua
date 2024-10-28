@@ -145,6 +145,9 @@ vim.filetype.add {
   extension = {
     tsp = 'typespec',
   },
+  filename = {
+    ['Directory.Build.props'] = 'xml',
+  },
 }
 
 -- vim:ft=lua et ts=2 sw=2
