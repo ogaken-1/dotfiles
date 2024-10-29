@@ -61,6 +61,7 @@ return {
       jsonls = {},
       nil_ls = {},
       gopls = {},
+      typst_lsp = {},
     }
     for name, config in pairs(configs) do
       lspconfig[name].setup(config)

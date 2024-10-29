@@ -20,6 +20,7 @@
       skkDictionaries.l
       stylua
       trash-cli
+      typst-lsp
       vscode-langservers-extracted
       yaml-language-server
     ];
