@@ -23,6 +23,7 @@ in
       tailscale
       vim
       wget
+      wslu
     ];
   };
   xdg.enable = true;
