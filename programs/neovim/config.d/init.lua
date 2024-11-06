@@ -29,6 +29,8 @@ require('lazy').setup('config.plugins', {
   },
 })
 
+require 'config.commands'
+
 do
   local abbr_cmdline = require('config.cmdline').abbr_cmdline
   vim.keymap.set('n', ']q', '<Cmd>cnext<CR>')
