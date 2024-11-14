@@ -62,6 +62,7 @@ return {
       nil_ls = {},
       gopls = {},
       typst_lsp = {},
+      rust_analyzer = {},
     }
     for name, config in pairs(configs) do
       lspconfig[name].setup(config)
@@ -82,9 +83,6 @@ return {
       lspconfig.tsp_server.setup {
         cmd = { 'pnpm', 'tsp-server', '--stdio' },
       }
-    end
-    if 1 == vim.fn.executable 'rust-analyzer' then
-      lspconfig.rust_analyzer.setup {}
     end
     if 1 == vim.fn.executable 'terraform-ls' then
       lspconfig.terraformls.setup {}
