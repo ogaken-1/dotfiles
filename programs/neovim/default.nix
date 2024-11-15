@@ -11,7 +11,7 @@
       deno
       gopls
       lua-language-server
-      nil
+      nixd
       nixfmt-rfc-style
       omnisharp-roslyn
       rust-analyzer

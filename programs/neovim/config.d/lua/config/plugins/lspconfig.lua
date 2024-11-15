@@ -59,7 +59,7 @@ return {
       },
       yamlls = {},
       jsonls = {},
-      nil_ls = {},
+      nixd = {},
       gopls = {},
       typst_lsp = {},
       rust_analyzer = {},
