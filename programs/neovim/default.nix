@@ -14,7 +14,6 @@
       nixd
       nixfmt-rfc-style
       omnisharp-roslyn
-      rust-analyzer
       shellcheck
       skkDictionaries.geo
       skkDictionaries.jinmei

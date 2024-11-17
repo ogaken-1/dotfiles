@@ -24,6 +24,7 @@ in
       vim
       wget
       wslu
+      rustup
     ];
   };
   nix = {
