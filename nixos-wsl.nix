@@ -38,10 +38,6 @@ in
         "root"
         "@wheel"
       ];
-      experimental-features = [
-        "nix-command"
-        "flakes"
-      ];
     };
     gc = {
       automatic = true;

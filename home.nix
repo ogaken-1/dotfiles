@@ -26,6 +26,10 @@ in
       wslu
     ];
   };
+  nix = {
+    package = pkgs.nix;
+    extraOptions = "extra-experimental-features = flakes nix-command\n";
+  };
   xdg.enable = true;
   imports = programs;
 }
