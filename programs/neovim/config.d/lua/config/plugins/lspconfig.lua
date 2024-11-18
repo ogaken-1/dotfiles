@@ -12,6 +12,12 @@ return {
   config = function()
     local lspconfig = require 'lspconfig'
     local util = require 'lspconfig.util'
+    require('lspconfig.configs').vtsls = vim.tbl_deep_extend('force', require('vtsls').lspconfig, {
+      default_config = {
+        root_dir = util.root_pattern { 'node_modules', 'package.json' },
+        single_file_support = false,
+      },
+    })
     local configs = {
       lua_ls = {
         settings = {
@@ -63,18 +69,10 @@ return {
       gopls = {},
       typst_lsp = {},
       rust_analyzer = {},
+      vtsls = {},
     }
     for name, config in pairs(configs) do
       lspconfig[name].setup(config)
-    end
-    if 1 == vim.fn.executable 'vtsls' then
-      require('lspconfig.configs').vtsls = vim.tbl_deep_extend('force', require('vtsls').lspconfig, {
-        default_config = {
-          root_dir = util.root_pattern { 'node_modules', 'package.json' },
-          single_file_support = false,
-        },
-      })
-      lspconfig.vtsls.setup {}
     end
     if 1 == vim.fn.executable 'pnpm' then
       lspconfig.biome.setup {
