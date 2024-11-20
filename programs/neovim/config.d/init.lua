@@ -38,16 +38,20 @@ do
   vim.keymap.set('n', '<A-,>', '<Cmd>edit $MYVIMRC<CR>')
   vim.keymap.set('n', '<space>g', function()
     local cword = vim.fn.expand '<cword>'
-    local word = vim.fn.input {
+    local search_word = vim.fn.input {
       prompt = 'Grep > ',
       default = cword,
-      completion = 'buffer',
       cancelreturn = '',
     }
-    if word == '' then
+    if search_word == '' then
       return
     end
-    vim.cmd.grep(word)
+    vim.cmd.grep(search_word)
+  end)
+  vim.keymap.set('n', '<C-n>', function()
+    local search_word = vim.fn.getreg '/'
+    -- When no matches found, :vimgrep cause error
+    pcall(vim.cmd.vimgrep, { search_word, '%' })
   end)
   -- cmdlineモードでの補完候補の選択には<Tab>を使うので<C-[pn]>は空けて良い。
   -- <Up>/<Down>はカーソル前の入力をリスペクトするのでそちらを使う。
