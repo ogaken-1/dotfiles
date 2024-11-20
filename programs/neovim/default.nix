@@ -8,6 +8,7 @@
       };
     };
     packages = with pkgs; [
+      csharpier
       deno
       gopls
       lua-language-server
