@@ -51,7 +51,7 @@ do
   vim.keymap.set('n', '<C-n>', function()
     local search_word = vim.fn.getreg '/'
     -- When no matches found, :vimgrep cause error
-    pcall(vim.cmd.vimgrep, { search_word, '%' })
+    pcall(vim.cmd.vimgrep, { ('\'%s\''):format(search_word), '%' })
   end)
   -- cmdlineモードでの補完候補の選択には<Tab>を使うので<C-[pn]>は空けて良い。
   -- <Up>/<Down>はカーソル前の入力をリスペクトするのでそちらを使う。
