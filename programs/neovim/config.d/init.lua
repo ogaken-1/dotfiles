@@ -36,18 +36,6 @@ do
   vim.keymap.set('n', ']q', '<Cmd>cnext<CR>')
   vim.keymap.set('n', '[q', '<Cmd>cprevious<CR>')
   vim.keymap.set('n', '<A-,>', '<Cmd>edit $MYVIMRC<CR>')
-  vim.keymap.set('n', '<space>g', function()
-    local cword = vim.fn.expand '<cword>'
-    local search_word = vim.fn.input {
-      prompt = 'Grep > ',
-      default = cword,
-      cancelreturn = '',
-    }
-    if search_word == '' then
-      return
-    end
-    vim.cmd.grep(search_word)
-  end)
   vim.keymap.set('n', '<C-n>', function()
     local search_word = vim.fn.getreg '/'
     -- When no matches found, :vimgrep cause error
