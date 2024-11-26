@@ -59,6 +59,8 @@ in
     };
   };
 
+  programs.nix-ld.enable = true;
+
   time.timeZone = "Asia/Tokyo";
 
   users.users.${home.username} = {
