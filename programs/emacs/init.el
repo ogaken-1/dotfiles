@@ -261,6 +261,8 @@
   :doc "keep track of recently opened files"
   :global-minor-mode t)
 
+(set-frame-font "CascadiaCode")
+
 (provide 'init)
 
 ;; Local Variables:

@@ -32,6 +32,10 @@ in
 
   system.stateVersion = "24.05";
 
+  fonts.packages = with pkgs; [
+    cascadia-code
+  ];
+
   nix = {
     settings = {
       trusted-users = [
