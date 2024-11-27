@@ -261,7 +261,7 @@
   :doc "keep track of recently opened files"
   :global-minor-mode t)
 
-(set-frame-font "CascadiaCode")
+(set-frame-font "Cascadia Next JP Medium")
 
 (provide 'init)
 

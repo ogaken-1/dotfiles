@@ -53,7 +53,7 @@
     in
     {
       homeConfigurations.ogaken = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
+        pkgs = pkgs;
         modules = [
           {
             programs.neovim = {
@@ -64,6 +64,7 @@
         ];
       };
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+        pkgs = pkgs;
         system = system;
         modules = [
           nixos-wsl.nixosModules.default

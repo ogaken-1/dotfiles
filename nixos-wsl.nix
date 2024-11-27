@@ -1,6 +1,7 @@
 { pkgs, ... }:
 let
   home = ((import ./home.nix) pkgs).home;
+  cascadia-next-jp = (import ./packages/cascadia-next/package.nix) pkgs;
 in
 {
   services = {
@@ -32,8 +33,8 @@ in
 
   system.stateVersion = "24.05";
 
-  fonts.packages = with pkgs; [
-    cascadia-code
+  fonts.packages = [
+    cascadia-next-jp
   ];
 
   nix = {
