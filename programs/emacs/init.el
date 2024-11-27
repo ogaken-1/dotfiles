@@ -217,7 +217,8 @@
   :doc "The Emacs Client for LSP servers"
   :hook ((csharp-mode-hook . eglot-ensure))
   :custom ((eldoc-echo-area-use-multiple-line-p . nil)
-           (eglot-connect-timeout . 600)))
+           (eglot-connect-timeout . 600)
+           (eglot-server-programs . '((csharp-mode . ("OmniSharp" "-lsp"))))))
 
 (leaf eglot-booster
   :when (executable-find "emacs-lsp-booster")
