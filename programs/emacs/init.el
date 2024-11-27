@@ -272,6 +272,21 @@
   :doc "Major mode for Nix expressions, powered by tree-sitter"
   :ensure t)
 
+(leaf ddskk
+  :doc "Simple Kana to Kanji conversion program"
+  :ensure t
+  :bind ("C-x C-j" . skk-mode)
+  :custom `((skk-use-azik . t)
+            (skk-azik-keyboard-type . "us101")
+            (skk-jisyo . ,(string-join `(,(getenv "XDG_DATA_HOME") "skk" "user-jisyo") "/"))
+            (skk-jisyo-code . "utf-8")
+            (skk-egg-like-newline . t))
+  :init
+  (leaf ddskk-posframe
+    :doc "Show Henkan tooltip for ddskk via posframe"
+    :ensure t
+    :global-minor-mode t))
+
 (provide 'init)
 
 ;; Local Variables:
