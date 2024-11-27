@@ -60,8 +60,7 @@
 	        (scroll-bar-mode . nil)
 	        (indent-tabs-mode . nil))
   :config
-  (defalias 'yes-or-no-p 'y-or-n-p)
-  (keyboard-translate ?\C-h ?\C-?))
+  (defalias 'yes-or-no-p 'y-or-n-p))
 
 (leaf autorevert
   :doc "revert buffers when files on disk change"
