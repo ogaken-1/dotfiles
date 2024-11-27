@@ -35,6 +35,7 @@ in
 
   fonts.packages = [
     cascadia-next-jp
+    pkgs.rounded-mgenplus
   ];
 
   nix = {

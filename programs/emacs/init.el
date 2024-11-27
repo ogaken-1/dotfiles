@@ -263,7 +263,12 @@
   :doc "keep track of recently opened files"
   :global-minor-mode t)
 
+(set-language-environment "Japanese")
 (set-frame-font "Cascadia Next JP Medium")
+
+(leaf nix-ts-mode
+  :doc "Major mode for Nix expressions, powered by tree-sitter"
+  :ensure t)
 
 (provide 'init)
 
