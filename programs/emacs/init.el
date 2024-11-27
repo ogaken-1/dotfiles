@@ -265,6 +265,7 @@
 
 (set-language-environment "Japanese")
 (set-frame-font "Cascadia Next JP Medium")
+(load-theme 'modus-operandi t)
 
 (leaf nix-ts-mode
   :doc "Major mode for Nix expressions, powered by tree-sitter"
