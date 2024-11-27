@@ -292,6 +292,21 @@
   :custom ((ace-window-posframe-mode . t)
            (aw-keys . '(?a ?s ?d ?f ?g ?h ?j ?k ?l))))
 
+(leaf org-modern
+  :doc "Modern looks for Org"
+  :ensure t
+  :hook (org-mode-hook . org-modern-mode))
+
+(leaf perfect-margin
+  :doc "Auto center windows, works with line numbers"
+  :ensure t
+  :global-minor-mode t)
+
+(leaf spacious-padding
+  :doc "Increase the padding/spacing of frames and windows"
+  :ensure t
+  :global-minor-mode t)
+
 (provide 'init)
 
 ;; Local Variables:
