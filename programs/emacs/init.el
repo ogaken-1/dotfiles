@@ -287,6 +287,13 @@
     :ensure t
     :global-minor-mode t))
 
+(leaf ace-window
+  :doc "Quickly switch windows"
+  :ensure t
+  :bind ([remap other-window] . ace-window)
+  :custom ((ace-window-posframe-mode . t)
+           (aw-keys . '(?a ?s ?d ?f ?g ?h ?j ?k ?l))))
+
 (provide 'init)
 
 ;; Local Variables:
