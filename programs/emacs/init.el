@@ -58,9 +58,7 @@
 	        (menu-bar-mode . t)
 	        (tool-bar-mode . nil)
 	        (scroll-bar-mode . nil)
-	        (indent-tabs-mode . nil))
-  :config
-  (defalias 'yes-or-no-p 'y-or-n-p))
+	        (indent-tabs-mode . nil)))
 
 (leaf autorevert
   :doc "revert buffers when files on disk change"
