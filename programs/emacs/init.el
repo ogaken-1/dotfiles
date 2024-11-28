@@ -292,6 +292,14 @@
   :custom ((ace-window-posframe-mode . t)
            (aw-keys . '(?a ?s ?d ?f ?g ?h ?j ?k ?l))))
 
+(leaf org-mode
+  :doc "Outline-based notes management and organizer"
+  :tag "builtin"
+  :bind (("C-c c" . org-capture)
+         ("C-c a" . org-agenda))
+  :config
+  (add-to-list 'org-babel-load-languages '(shell . t)))
+
 (leaf perfect-margin
   :doc "Auto center windows, works with line numbers"
   :ensure t
