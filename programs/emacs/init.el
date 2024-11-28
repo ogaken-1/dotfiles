@@ -292,11 +292,6 @@
   :custom ((ace-window-posframe-mode . t)
            (aw-keys . '(?a ?s ?d ?f ?g ?h ?j ?k ?l))))
 
-(leaf org-modern
-  :doc "Modern looks for Org"
-  :ensure t
-  :hook (org-mode-hook . org-modern-mode))
-
 (leaf perfect-margin
   :doc "Auto center windows, works with line numbers"
   :ensure t
