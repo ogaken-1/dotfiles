@@ -263,7 +263,7 @@
   :global-minor-mode t)
 
 (set-language-environment "Japanese")
-(set-frame-font "Cascadia Next JP Medium")
+(set-frame-font "CaskaydiaCove NFM")
 (load-theme 'modus-operandi t)
 
 (leaf nix-ts-mode
@@ -309,6 +309,12 @@
   :doc "Increase the padding/spacing of frames and windows"
   :ensure t
   :global-minor-mode t)
+
+(leaf doom-modeline
+  :doc "A minimal and modern mode-line"
+  :ensure t
+  :hook (after-init-hook . doom-modeline-mode)
+  :custom ((nerd-icons-font-family . "CaskaydiaCove")))
 
 (provide 'init)
 

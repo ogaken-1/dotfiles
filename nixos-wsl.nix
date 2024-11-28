@@ -1,7 +1,7 @@
 { pkgs, ... }:
 let
   home = ((import ./home.nix) pkgs).home;
-  cascadia-next-jp = (import ./packages/cascadia-next/package.nix) pkgs;
+  caskaydia-cove = (import ./packages/caskaydia-cove/package.nix) pkgs;
 in
 {
   services = {
@@ -33,9 +33,10 @@ in
 
   system.stateVersion = "24.05";
 
-  fonts.packages = [
-    cascadia-next-jp
-    pkgs.rounded-mgenplus
+  fonts.packages = with pkgs; [
+    caskaydia-cove
+    rounded-mgenplus
+    noto-fonts-color-emoji
   ];
 
   nix = {
