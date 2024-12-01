@@ -316,6 +316,10 @@
   :hook (after-init-hook . doom-modeline-mode)
   :custom ((nerd-icons-font-family . "CaskaydiaCove")))
 
+(leaf editorconfig
+  :doc "EditorConfig Emacs Plugin"
+  :ensure t)
+
 (provide 'init)
 
 ;; Local Variables:
