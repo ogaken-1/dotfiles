@@ -194,6 +194,11 @@
           ("M-." . embark-dwim)
           ("C-." . embark-act))))
 
+(leaf embark
+  :doc "Conveniently act on minibuffer completions."
+  :ensure t
+  :bind (("C-." . embark-act)))
+
 (leaf corfu
   :doc "COmpletion in Region FUnction"
   :ensure t
