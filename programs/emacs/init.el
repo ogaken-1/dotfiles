@@ -320,6 +320,11 @@
   :doc "EditorConfig Emacs Plugin"
   :ensure t)
 
+(leaf git-gutter-fringe
+  :doc "Fringe version of git-gutter.el"
+  :ensure t
+  :global-minor-mode global-git-gutter-mode)
+
 (provide 'init)
 
 ;; Local Variables:
