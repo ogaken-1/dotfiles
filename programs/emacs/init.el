@@ -186,18 +186,19 @@
            (completion-category-defaults . nil)
            (completion-category-overrides . '((file (styles partial-completion))))))
 
-(leaf embark-consult
-  :doc "Consult integration for Embark"
-  :ensure t
-  :bind ((minibuffer-mode-map
-          :package emacs
-          ("M-." . embark-dwim)
-          ("C-." . embark-act))))
-
 (leaf embark
   :doc "Conveniently act on minibuffer completions."
   :ensure t
-  :bind (("C-." . embark-act)))
+  :bind (("C-." . embark-act)
+         (minibuffer-mode-map
+          :package emacs
+          ("M-." . embark-dwim)
+          ("C-." . embark-act)))
+  :init
+  (leaf embark-consult
+    :doc "Consult integration for Embark"
+    :ensure t))
+
 
 (leaf corfu
   :doc "COmpletion in Region FUnction"
