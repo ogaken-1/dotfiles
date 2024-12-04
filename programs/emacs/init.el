@@ -58,7 +58,8 @@
 	        (menu-bar-mode . t)
 	        (tool-bar-mode . nil)
 	        (scroll-bar-mode . nil)
-	        (indent-tabs-mode . nil)))
+	        (indent-tabs-mode . nil)
+            (show-trailing-whitespace . t)))
 
 (leaf autorevert
   :doc "revert buffers when files on disk change"
