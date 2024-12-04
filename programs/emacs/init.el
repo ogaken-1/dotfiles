@@ -276,6 +276,15 @@
   :doc "Major mode for Nix expressions, powered by tree-sitter"
   :ensure t)
 
+(defun skk-jisyo-files ()
+  "List SKK dictionary files in $SKK_DICT_DIRS."
+  (let ((dict-dirs (split-string (or (getenv "SKK_DICT_DIRS") "") ":")))
+    (seq-mapcat
+     (lambda (dir)
+       (when (file-directory-p dir)
+         (directory-files-recursively dir "SKK-JISYO" t)))
+     dict-dirs)))
+
 (leaf ddskk
   :doc "Simple Kana to Kanji conversion program"
   :ensure t
@@ -283,6 +292,7 @@
   :custom `((skk-use-azik . t)
             (skk-azik-keyboard-type . "us101")
             (skk-jisyo . ,(string-join `(,(getenv "XDG_DATA_HOME") "skk" "user-jisyo") "/"))
+            (skk-extra-jisyo-file-list . `,(skk-jisyo-files))
             (skk-jisyo-code . "utf-8")
             (skk-egg-like-newline . t))
   :init
