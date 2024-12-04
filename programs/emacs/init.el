@@ -273,8 +273,16 @@
 (set-frame-font "CaskaydiaCove NFM")
 (load-theme 'modus-operandi t)
 
-(leaf nix-ts-mode
-  :doc "Major mode for Nix expressions, powered by tree-sitter"
+(leaf nix-mode
+  :doc "Major mode for editing .nix files"
+  :ensure t)
+
+(leaf typescript-mode
+  :doc "Major mode for editing typescript"
+  :ensure t)
+
+(leaf yaml-mode
+  :doc "Major mode for editing YAML files"
   :ensure t)
 
 (defun skk-jisyo-files ()
