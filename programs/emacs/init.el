@@ -165,9 +165,6 @@
           :package emacs
           ("C-r" . consult-history)))
   :init
-  (leaf consult-ls-git
-    :doc "Consult integration for git"
-    :ensure t)
   (leaf consult-ghq
     :doc "Ghq interface using consult"
     :ensure t))
