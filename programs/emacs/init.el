@@ -103,7 +103,7 @@
   :doc "A universal on-the-fly syntax checker"
   :bind ((prog-mode-map
           ("M-n" . flymake-goto-next-error)
-          ("M-p" . flymake-goto-prefv-error))))
+          ("M-p" . flymake-goto-prev-error))))
 
 (leaf which-key
   :doc "Display available keybindings in popup"
