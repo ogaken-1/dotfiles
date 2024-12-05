@@ -348,6 +348,11 @@
   :config
   (add-to-list 'org-babel-load-languages '(shell . t)))
 
+(leaf org-modern
+  :doc "Modern looks for Org."
+  :ensure t
+  :global-minor-mode global-org-modern-mode)
+
 (leaf perfect-margin
   :doc "Auto center windows, works with line numbers"
   :ensure t
