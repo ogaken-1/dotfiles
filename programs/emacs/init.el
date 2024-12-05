@@ -180,12 +180,38 @@
   :bind (("C-M-s r" . affe-grep)
          ("C-M-s f" . affe-bind)))
 
+(leaf migemo
+  :doc "Japanese incremental search through dynamic pattern expansion"
+  :ensure t
+  :custom `((migemo-dictionary . `,(getenv "MIGEMO_UTF8_DICT"))
+            (migemo-user-dictionary . nil)
+            (migemo-regex-dictionary . nil)
+            (migemo-coding-system . 'utf-8-unix))
+  :init (autoload 'migemo-get-pattern "migemo.el")
+  :defer-config (migemo-init))
+
 (leaf orderless
   :doc "Completion style for matching regexp in any order"
   :ensure t
   :custom ((completion-styles . '(orderless))
            (completion-category-defaults . nil)
-           (completion-category-overrides . '((file (styles partial-completion))))))
+           (completion-category-overrides . '((file (styles partial-completion))
+                                              ;; consult-lineでorderless+migemoによるマッチを使う
+                                              (consult-location (styles orderless+migemo)))))
+  :require t                            ; `orderless-define-completion-style'を:configセクションで実行するために必要
+  :config
+  (defun orderless-migemo (component)
+    "componentが3文字以上であればmigemoでパターンを作って返す"
+    (if (length< component 3) ; 短い文字数でmigemoするとregexpが複雑になりすぎてやばい
+        component
+      (let ((pattern (migemo-get-pattern component)))
+        (condition-case nil
+            (progn (string-match-p pattern "") pattern)
+          (invalid-regexp nil)))))
+  (orderless-define-completion-style orderless+migemo
+    (orderless-matching-styles '(orderless-literal
+                                 orderless-regexp
+                                 orderless-migemo))))
 
 (leaf embark
   :doc "Conveniently act on minibuffer completions."
