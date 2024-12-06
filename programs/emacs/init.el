@@ -294,7 +294,11 @@
 
 (set-language-environment "Japanese")
 (set-frame-font "CaskaydiaCove NFM")
-(load-theme 'modus-operandi t)
+
+(leaf zenburn-theme
+  :doc "A low contrast color theme for Emacs"
+  :ensure t
+  :config (load-theme 'zenburn t))
 
 (leaf nix-mode
   :doc "Major mode for editing .nix files"
