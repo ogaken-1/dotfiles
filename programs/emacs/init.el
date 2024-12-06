@@ -4,14 +4,14 @@
 (eval-and-compile
   (when (or load-file-name byte-compile-current-file)
     (setq user-emacs-directory
-	      (expand-file-name
-	       (file-name-directory (or load-file-name byte-compile-current-file))))))
+          (expand-file-name
+           (file-name-directory (or load-file-name byte-compile-current-file))))))
 
 (eval-and-compile
   (customize-set-variable
    'package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-		               ("melpa" . "https://melpa.org/packages/")
-		               ("org" . "https://orgmode.org/elpa/")))
+                       ("melpa" . "https://melpa.org/packages/")
+                       ("org" . "https://orgmode.org/elpa/")))
   (package-initialize)
   (use-package leaf :ensure t)
   (leaf leaf-keywords
@@ -37,28 +37,28 @@
     (redraw-frame))
   :bind (("M-ESC ESC" . c/redraw-frame))
   :custom '((user-full-name . "Kento Ogata")
-	        (user-mail-address . "k.ogata1013@gmail.com")
-	        (user-login-name . "ogaken")
-	        (create-lockfiles . nil)
-	        (tab-width . 4)
-	        (debug-on-error . t)
-	        (init-file-debug . t)
-	        (frame-resize-pixelwise . t)
-	        (enable-recursive-minibuffers . t)
-	        (history-length . 1000)
-	        (history-delete-duplicates . t)
-	        (scroll-preserve-screen-position . t)
-	        (scroll-conservatively . 100)
-	        (mouse-wheel-scroll-amount . '(1 ((control) . 5)))
-	        (ring-bell-function . 'ignore)
-	        (text-quoting-style . 'straight)
-	        (truncate-lines . t)
-	        (use-dialog-box . nil)
-	        (use-file-dialog . nil)
-	        (menu-bar-mode . t)
-	        (tool-bar-mode . nil)
-	        (scroll-bar-mode . nil)
-	        (indent-tabs-mode . nil)
+            (user-mail-address . "k.ogata1013@gmail.com")
+            (user-login-name . "ogaken")
+            (create-lockfiles . nil)
+            (tab-width . 4)
+            (debug-on-error . t)
+            (init-file-debug . t)
+            (frame-resize-pixelwise . t)
+            (epnable-recursive-minibuffers . t)
+            (history-length . 1000)
+            (history-delete-duplicates . t)
+            (scroll-preserve-screen-position . t)
+            (scroll-conservatively . 100)
+            (mouse-wheel-scroll-amount . '(1 ((control) . 5)))
+            (ring-bell-function . 'ignore)
+            (text-quoting-style . 'straight)
+            (truncate-lines . t)
+            (use-dialog-box . nil)
+            (use-file-dialog . nil)
+            (menu-bar-mode . t)
+            (tool-bar-mode . nil)
+            (scroll-bar-mode . nil)
+            (indent-tabs-mode . nil)
             (show-trailing-whitespace . t)))
 
 (leaf autorevert
@@ -147,7 +147,7 @@
          ([remap switch-to-buffer] . consult-buffer)                 ; C-x b
          ([remap project-switch-to-buffer] . consult-project-buffer) ; C-x p b
          ([remap find-file-read-only] . consult-recent-file)         ; C-x C-r
-         
+
          ;; M-b bindings (goto-map)
          ([remap goto-line] . consult-goto-line) ; M-g g
          ([remap imenu] . consult-imenu) ; M-g i
