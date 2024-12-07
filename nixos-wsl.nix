@@ -1,7 +1,7 @@
 { pkgs, ... }:
 let
   home = ((import ./home.nix) pkgs).home;
-  caskaydia-cove = pkgs.callPackage ./packages/caskaydia-cove/package.nix {};
+  caskaydia-cove = pkgs.callPackage ./packages/caskaydia-cove/package.nix { };
 in
 {
   services = {
