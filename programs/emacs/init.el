@@ -13,24 +13,24 @@
                        ("melpa" . "https://melpa.org/packages/")
                        ("org" . "https://orgmode.org/elpa/")))
   (package-initialize)
-  (use-package leaf :ensure t)
+  (require 'leaf)
   (leaf leaf-keywords
-    :ensure t
     :init
-    (leaf blackout :ensure t)
+    (leaf blackout)
     :config
     (leaf-keywords-init)))
 
 (leaf leaf-convert
-  :doc "Convert many format to leaf format"
-  :ensure t)
+  :doc "Convert many format to leaf format")
 
 (leaf cus-edit
   :doc "tools for customizing Emacs and Lisp pacakges"
+  :tag "builtin"
   :custom `((custom-file . ,(locate-user-emacs-file "custom.el"))))
 
 (leaf cus-start
   :doc "define customization properties of builtins"
+  :tag "builtin"
   :preface
   (defun c/redraw-frame nil
     (interactive)
@@ -63,18 +63,22 @@
 
 (leaf autorevert
   :doc "revert buffers when files on disk change"
+  :tag "builtin"
   :global-minor-mode global-auto-revert-mode)
 
 (leaf delsel
   :doc "delete selection if you insert"
+  :tag "builtin"
   :global-minor-mode delete-selection-mode)
 
 (leaf paren
   :doc "highlight matching paren"
+  :tag "builtin"
   :global-minor-mode show-paren-mode)
 
 (leaf simple
   :doc "basic editing commands for Emacs"
+  :tag "builtin"
   :custom ((kill-read-only-ok . t)
            (kill-whole-line . t)
            (eval-expression-print-length . nil)
@@ -82,6 +86,7 @@
 
 (leaf files
   :doc "file input and output commands for Emacs"
+  :tag "builtin"
   :global-minor-mode auto-save-visited-mode
   :custom `((auto-save-file-name-transforms . '((".*" ,(locate-user-emacs-file "backup/") t)))
             (backup-directory-alist . '((".*" . ,(locate-user-emacs-file "backup"))
@@ -92,27 +97,28 @@
 
 (leaf startup
   :doc "process Emacs shell arguments"
+  :tag "builtin"
   :custom `((auto-save-list-file-prefix . ,(locate-user-emacs-file "backup/.saves-"))))
 
 (leaf savehist
   :doc "Save minibuffer history"
+  :tag "builtin"
   :custom `((savehist-file . ,(locate-user-emacs-file "savehist")))
   :global-minor-mode t)
 
 (leaf flymake
   :doc "A universal on-the-fly syntax checker"
+  :tag "builtin"
   :bind ((prog-mode-map
           ("M-n" . flymake-goto-next-error)
           ("M-p" . flymake-goto-prev-error))))
 
 (leaf which-key
   :doc "Display available keybindings in popup"
-  :ensure t
   :global-minor-mode t)
 
 (leaf exec-path-from-shell
   :doc "Get environment variables such as $PATH from shell"
-  :ensure t
   :defun (exec-path-from-shell-initialize)
   :custom ((exec-path-from-shell-check-startup-files)
            (exec-path-from-shell-variables . '("PATH" "GOPATH" "JAVA_HOME" "DOTNET_ROOT")))
@@ -120,17 +126,14 @@
 
 (leaf vertico
   :doc "VERTical Interactive COmpletion"
-  :ensure t
   :global-minor-mode t)
 
 (leaf marginalia
   :doc "Enrich existing commands with completion annotations"
-  :ensure t
   :global-minor-mode t)
 
 (leaf consult
   :doc "Consulting completing-read"
-  :ensure t
   :hook (completion-list-mode-hook . consult-preview-at-point-mode)
   :defun consult-line
   :preface
@@ -166,12 +169,10 @@
           ("C-r" . consult-history)))
   :init
   (leaf consult-ghq
-    :doc "Ghq interface using consult"
-    :ensure t))
+    :doc "Ghq interface using consult"))
 
 (leaf affe
   :doc "Asynchronous Fuzzy Finder for Emacs"
-  :ensure t
   :custom ((affe-highlight-function . 'orderless-highlight-matches)
            (affe-regexp-function . 'orderless-pattern-compiler))
   :bind (("C-M-s r" . affe-grep)
@@ -179,7 +180,6 @@
 
 (leaf migemo
   :doc "Japanese incremental search through dynamic pattern expansion"
-  :ensure t
   :custom `((migemo-dictionary . `,(getenv "MIGEMO_UTF8_DICT"))
             (migemo-user-dictionary . nil)
             (migemo-regex-dictionary . nil)
@@ -189,7 +189,6 @@
 
 (leaf orderless
   :doc "Completion style for matching regexp in any order"
-  :ensure t
   :custom ((completion-styles . '(orderless))
            (completion-category-defaults . nil)
            (completion-category-overrides . '((file (styles partial-completion))
@@ -212,7 +211,6 @@
 
 (leaf embark
   :doc "Conveniently act on minibuffer completions."
-  :ensure t
   :bind (("C-." . embark-act)
          (minibuffer-mode-map
           :package emacs
@@ -220,13 +218,11 @@
           ("C-." . embark-act)))
   :init
   (leaf embark-consult
-    :doc "Consult integration for Embark"
-    :ensure t))
+    :doc "Consult integration for Embark"))
 
 
 (leaf corfu
   :doc "COmpletion in Region FUnction"
-  :ensure t
   :global-minor-mode global-corfu-mode corfu-popupinfo-mode
   :custom ((corfu-auto . t)
            (corfu-auto-delay . 0)
@@ -237,16 +233,15 @@
 
 (leaf cape
   :doc "Completion At Point Extensions"
-  :ensure t
   :config
   (add-to-list 'completion-at-point-functions #'cape-file))
 
 (leaf eglot
   :doc "The Emacs Client for LSP servers"
+  :tag "builtin"
   :hook ((csharp-mode-hook . eglot-ensure))
   :custom ((eldoc-echo-area-use-multiple-line-p . nil)
-           (eglot-connect-timeout . 600)
-           (eglot-server-programs . '((csharp-mode . ("OmniSharp" "-lsp"))))))
+           (eglot-connect-timeout . 600)))
 
 (leaf eglot-booster
   :when (executable-find "emacs-lsp-booster")
@@ -255,7 +250,6 @@
 
 (leaf puni
   :doc "Parentheses Universalistic"
-  :ensure t
   :global-minor-mode puni-global-mode
   :bind (puni-mode-map
          ;; default mapping
@@ -276,20 +270,20 @@
   :config
   (leaf elec-pair
     :doc "Automatic parenthesis pairing"
+    :tag "builtin"
     :global-minor-mode electric-pair-mode))
 
 (leaf magit
   :doc "A Git porcelain inside Emacs."
-  :ensure t
   :bind ("C-x g" . magit-status))
 
 (leaf direnv
   :doc "Direnv integration."
-  :ensure t
   :global-minor-mode t)
 
 (leaf recentf
   :doc "keep track of recently opened files"
+  :tag "builtin"
   :global-minor-mode t)
 
 (set-language-environment "Japanese")
@@ -297,20 +291,19 @@
 
 (leaf zenburn-theme
   :doc "A low contrast color theme for Emacs"
-  :ensure t
   :config (load-theme 'zenburn t))
 
 (leaf nix-mode
-  :doc "Major mode for editing .nix files"
-  :ensure t)
+  :doc "Major mode for editing .nix files")
 
 (leaf typescript-mode
-  :doc "Major mode for editing typescript"
-  :ensure t)
+  :doc "Major mode for editing typescript")
+
+(leaf astro-ts-mode
+  :doc "Major mode for editing Astro templates")
 
 (leaf yaml-mode
-  :doc "Major mode for editing YAML files"
-  :ensure t)
+  :doc "Major mode for editing YAML files")
 
 (defun skk-jisyo-files ()
   "List SKK dictionary files in $SKK_DICT_DIRS."
@@ -323,7 +316,6 @@
 
 (leaf ddskk
   :doc "Simple Kana to Kanji conversion program"
-  :ensure t
   :bind ("C-x C-j" . skk-mode)
   :custom `((skk-use-azik . t)
             (skk-azik-keyboard-type . "us101")
@@ -334,12 +326,10 @@
   :init
   (leaf ddskk-posframe
     :doc "Show Henkan tooltip for ddskk via posframe"
-    :ensure t
     :global-minor-mode t))
 
 (leaf ace-window
   :doc "Quickly switch windows"
-  :ensure t
   :bind ([remap other-window] . ace-window)
   :custom ((ace-window-posframe-mode . t)
            (aw-keys . '(?a ?s ?d ?f ?g ?h ?j ?k ?l))))
@@ -354,32 +344,26 @@
 
 (leaf org-modern
   :doc "Modern looks for Org."
-  :ensure t
   :global-minor-mode global-org-modern-mode)
 
 (leaf perfect-margin
   :doc "Auto center windows, works with line numbers"
-  :ensure t
   :global-minor-mode t)
 
 (leaf spacious-padding
   :doc "Increase the padding/spacing of frames and windows"
-  :ensure t
   :global-minor-mode t)
 
 (leaf doom-modeline
   :doc "A minimal and modern mode-line"
-  :ensure t
   :hook (after-init-hook . doom-modeline-mode)
   :custom ((nerd-icons-font-family . "CaskaydiaCove")))
 
 (leaf editorconfig
-  :doc "EditorConfig Emacs Plugin"
-  :ensure t)
+  :doc "EditorConfig Emacs Plugin")
 
 (leaf git-gutter-fringe
   :doc "Fringe version of git-gutter.el"
-  :ensure t
   :global-minor-mode global-git-gutter-mode)
 
 (provide 'init)
