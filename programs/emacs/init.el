@@ -25,7 +25,8 @@
 (leaf cus-edit
   :doc "tools for customizing Emacs and Lisp pacakges"
   :tag "builtin"
-  :custom `((custom-file . ,(locate-user-emacs-file "custom.el"))))
+  :custom `((custom-file . ,(locate-user-emacs-file "custom.el")))
+  :config (load custom-file))
 
 (leaf cus-start
   :doc "define customization properties of builtins"
