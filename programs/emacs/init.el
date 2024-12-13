@@ -176,7 +176,7 @@
   :custom ((affe-highlight-function . 'orderless-highlight-matches)
            (affe-regexp-function . 'orderless-pattern-compiler))
   :bind (("C-M-s r" . affe-grep)
-         ("C-M-s f" . affe-bind)))
+         ("C-M-s f" . affe-find)))
 
 (leaf migemo
   :doc "Japanese incremental search through dynamic pattern expansion"
