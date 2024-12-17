@@ -169,7 +169,8 @@
           ("C-r" . consult-history)))
   :init
   (leaf consult-ghq
-    :doc "Ghq interface using consult"))
+    :doc "Ghq interface using consult"
+    :bind ([remap project-switch-project] . consult-ghq-switch-project)))
 
 (leaf affe
   :doc "Asynchronous Fuzzy Finder for Emacs"
