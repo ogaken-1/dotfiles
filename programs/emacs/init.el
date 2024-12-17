@@ -288,7 +288,10 @@
   :global-minor-mode t)
 
 (set-language-environment "Japanese")
-(set-frame-font "CaskaydiaCove NFM")
+;; Use nf patched cascadia code if avalilable.
+(let '(font "CaskaydiaCove NFM")
+  (if (fontp font)
+      (set-frame-font font)))
 
 (leaf zenburn-theme
   :doc "A low contrast color theme for Emacs"
