@@ -267,12 +267,12 @@
          ("M-s" . puni-splice)
          ("M-r" . puni-raise)
          ("M-U" . puni-splice-killing-backward)
-         ("M-z" . puni-squeeze))
-  :config
-  (leaf elec-pair
-    :doc "Automatic parenthesis pairing"
-    :tag "builtin"
-    :global-minor-mode electric-pair-mode))
+         ("M-z" . puni-squeeze)))
+
+(leaf elec-pair
+  :doc "Automatic parenthesis pairing"
+  :tag "builtin"
+  :global-minor-mode electric-pair-mode)
 
 (leaf magit
   :doc "A Git porcelain inside Emacs."
