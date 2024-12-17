@@ -306,6 +306,13 @@
 (leaf yaml-mode
   :doc "Major mode for editing YAML files")
 
+(leaf basic-mode
+  :doc "Major mode for editing BASIC code"
+  :config
+  ;; デフォルトではvb.netのファイルをBASICだと認識してくれない
+  (autoload 'basic-generic-mode "basic-mode" "Major mode for editing BASIC code." t)
+  (add-to-list 'auto-mode-alist '("\\.vb\\'" . basic-generic-mode)))
+
 (defun skk-jisyo-files ()
   "List SKK dictionary files in $SKK_DICT_DIRS."
   (let ((dict-dirs (split-string (or (getenv "SKK_DICT_DIRS") "") ":")))

@@ -19,6 +19,7 @@
         ace-window
         affe
         astro-ts-mode
+        basic-mode
         blackout
         cape
         consult
