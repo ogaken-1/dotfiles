@@ -30,6 +30,7 @@
         direnv
         doom-modeline
         editorconfig
+        eldoc-box
         embark
         embark-consult
         exec-path-from-shell

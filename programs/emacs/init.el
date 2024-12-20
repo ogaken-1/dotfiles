@@ -249,6 +249,11 @@
   :vc (:url "https://github.com/jdtsmith/eglot-booster")
   :global-minor-mode t)
 
+(leaf eldoc-box
+  :doc "Display documentation in childframe"
+  :hook ((eglot-managed-mode-hook . eldoc-box-hover-at-point-mode)
+         (emacs-lisp-mode-hook . eldoc-box-hover-at-point-mode)))
+
 (leaf puni
   :doc "Parentheses Universalistic"
   :global-minor-mode puni-global-mode
