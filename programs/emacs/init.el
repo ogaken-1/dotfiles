@@ -242,7 +242,9 @@
   :tag "builtin"
   :hook ((csharp-mode-hook . eglot-ensure))
   :custom ((eldoc-echo-area-use-multiple-line-p . nil)
-           (eglot-connect-timeout . 600)))
+           (eglot-connect-timeout . 600))
+  :bind (("C-c r" . eglot-rename)
+         ("C-c ." . eglot-code-actions)))
 
 (leaf eglot-booster
   :when (executable-find "emacs-lsp-booster")
