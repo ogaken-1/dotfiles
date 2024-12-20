@@ -198,8 +198,8 @@
   :require t                            ; `orderless-define-completion-style'を:configセクションで実行するために必要
   :config
   (defun orderless-migemo (component)
-    "componentが3文字以上であればmigemoでパターンを作って返す"
-    (if (length< component 3) ; 短い文字数でmigemoするとregexpが複雑になりすぎてやばい
+    "componentが2文字以上であればmigemoでパターンを作って返す"
+    (if (length< component 2) ; 短い文字数でmigemoするとregexpが複雑になりすぎてやばい
         component
       (let ((pattern (migemo-get-pattern component)))
         (condition-case nil
