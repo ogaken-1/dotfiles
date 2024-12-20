@@ -300,8 +300,39 @@
 (leaf nix-mode
   :doc "Major mode for editing .nix files")
 
-(leaf typescript-mode
-  :doc "Major mode for editing typescript")
+(leaf web-mode
+  :doc "Major mode for editing web templates"
+  :custom ((web-mode-engines-alist . '(("razor" . "\\.razor\\'"))))
+  :config
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.cshtml?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.razor?\\'" . web-mode)))
+
+(leaf typescript-ts-mode
+  :doc "tree sitter support for TypeScript"
+  :tag "builtin"
+  :mode (("\\.tsx\\'" . tsx-ts-mode)
+         ("\\.ts\\'" . typescript-ts-mode))
+  :custom (typescript-ts-mode-indent-offset . 2))
+
+(leaf treesit
+  :doc "tree-sitter utilities"
+  :tag "builtin"
+  :custom (treesit-font-lock-level . 4))
+
+(leaf treesit-auto
+  :doc "Automatically use tree-sitter enhanced major modes"
+  :custom (treesit-auto-install . t)
+  :global-minor-mode global-treesit-auto-mode)
+
+(leaf tree-sitter
+  :doc "Incremental parsing system"
+  :hook ((typescript-ts-mode tsx-ts-mode) . tree-sitter-hl-mode)
+  :global-minor-mode global-tree-sitter-mode)
+
+(leaf tree-sitter-langs
+  :doc "Grammar bundle for tree-sitter"
+  :after tree-sitter)
 
 (leaf astro-ts-mode
   :doc "Major mode for editing Astro templates")

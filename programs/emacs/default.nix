@@ -46,8 +46,11 @@
         perfect-margin
         puni
         spacious-padding
-        typescript-mode
+        tree-sitter
+        tree-sitter-langs
+        treesit-auto
         vertico
+        web-mode
         which-key
         yaml-mode
         zenburn-theme
