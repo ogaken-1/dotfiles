@@ -19,6 +19,12 @@
     :config
     (leaf-keywords-init)))
 
+;; nixでinit.elcにコンパイルしているので、コンパイル中には `user-emacs-directory' が
+;;  /buildとかになってしまう。そのため、:customで `locate-user-emacs-file' を評価している
+;; 箇所では /build/custom.el のように設定されてしまい、実行時にエラーが発生するようになる。
+(eval-when-compile
+  (setq user-emacs-directory "~/.config/emacs/"))
+
 (leaf leaf-convert
   :doc "Convert many format to leaf format")
 
@@ -185,6 +191,7 @@
             (migemo-user-dictionary . nil)
             (migemo-regex-dictionary . nil)
             (migemo-coding-system . 'utf-8-unix))
+  :defun migemo-init migemo-get-pattern
   :init (autoload 'migemo-get-pattern "migemo.el")
   :defer-config (migemo-init))
 
@@ -195,20 +202,21 @@
            (completion-category-overrides . '((file (styles partial-completion))
                                               ;; consult-lineでorderless+migemoによるマッチを使う
                                               (consult-location (styles orderless+migemo)))))
-  :require t                            ; `orderless-define-completion-style'を:configセクションで実行するために必要
   :config
-  (defun orderless-migemo (component)
-    "componentが2文字以上であればmigemoでパターンを作って返す"
-    (if (length< component 2) ; 短い文字数でmigemoするとregexpが複雑になりすぎてやばい
-        component
-      (let ((pattern (migemo-get-pattern component)))
-        (condition-case nil
-            (progn (string-match-p pattern "") pattern)
-          (invalid-regexp nil)))))
-  (orderless-define-completion-style orderless+migemo
-    (orderless-matching-styles '(orderless-literal
-                                 orderless-regexp
-                                 orderless-migemo))))
+  (eval-and-compile
+    (require 'orderless)
+    (defun orderless-migemo (component)
+      "componentが2文字以上であればmigemoでパターンを作って返す"
+      (if (length< component 2) ; 短い文字数でmigemoするとregexpが複雑になりすぎてやばい
+          component
+        (let ((pattern (migemo-get-pattern component)))
+          (condition-case nil
+              (progn (string-match-p pattern "") pattern)
+            (invalid-regexp nil)))))
+    (orderless-define-completion-style orderless+migemo
+      (orderless-matching-styles '(orderless-literal
+                                   orderless-regexp
+                                   orderless-migemo)))))
 
 (leaf embark
   :doc "Conveniently act on minibuffer completions."
@@ -388,6 +396,7 @@
   :tag "builtin"
   :bind (("C-c c" . org-capture)
          ("C-c a" . org-agenda))
+  :defvar org-babel-load-languages
   :config
   (add-to-list 'org-babel-load-languages '(shell . t)))
 

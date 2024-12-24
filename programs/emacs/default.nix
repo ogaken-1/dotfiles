@@ -1,8 +1,19 @@
 { pkgs, config, ... }:
-{
+rec {
   home.file = {
-    "${config.xdg.configHome}/emacs/init.el" = {
-      source = ./init.el;
+    "${config.xdg.configHome}/emacs/init.elc" = {
+      source =
+        pkgs.runCommand "init.elc"
+          {
+            buildInputs = [ (pkgs.emacs.pkgs.withPackages (programs.emacs.extraPackages)) ];
+            XDG_DATA_HOME = "${config.xdg.dataHome}";
+          }
+          ''
+            cp ${./init.el} init.el
+            emacs --batch \
+              --funcall batch-byte-compile init.el
+            cp init.elc $out
+          '';
     };
   };
   home.packages = with pkgs; [
