@@ -261,21 +261,17 @@
       "workspace/didChangeConfigurationのparams.settingsに渡すオブジェクトを返す"
       (pcase (plist-get (eglot--server-info server) :name)
         ("OmniSharp"
-         '(:FormattingOptions
-           (:EnableEditorConfigSupport t :OrganizeImports :json-false)
-           :MsBuild
-           (:LoadProjectsOnDemand :json-false)
-           :RoslynExtensionsOptions
-           (:EnableAnalyzersSupport t :EnableImportCompletion :json-false :AnalyzeOpenDocumentsOnly t)))
+         '((:FormattingOptions . ((EnableEditorConfigSupport . t)
+                                  (OrganizeImports . :json-false)))
+           (:MsBuild . ((LoadProjectsOnDemand . :json-false)))
+           (:RoslynExtensionsOptions . ((EnableAnalyzersSupport . t)
+                                        (EnableImportCompletion . :json-false)
+                                        (AnalyzeOpenDocumentsOnly . t)))))
         ("vtsls"
-         '(:typescript
-           (:updateImportsOnFileMove "always")
-           :javascript
-           (:updateImportsOnFileMove "always")
-           :vtsls
-           (:experimental
-            (:completion (:entriesLimit 50)) ; 最大候補数を制限しないと重すぎてヤバい
-            :enableMoveToFileCodeAction t)))))
+         '((:typescript . ((updateImportsOnFileMove . "always")))
+           (:javascript . ((updateImportsOnFileMove . "always")))
+           (:vtsls . ((experimental . ((completion . ((entriesLimit . 50)))  ; 最大候補数を制限しないと重すぎてヤバい
+                                       (enableMoveToFileCodeAction . t)))))))))
     (defun c/set-eglot-server-program (modes command-list)
       "`eglot-server-programs'の一部を更新する"
       (if (assoc modes eglot-server-programs #'equal)
