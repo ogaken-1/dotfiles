@@ -248,9 +248,9 @@
 (leaf eglot
   :doc "The Emacs Client for LSP servers"
   :tag "builtin"
-  :hook ((csharp-mode-hook . eglot-ensure))
+  :hook (((csharp-mode-hook typescript-ts-mode-hook tsx-ts-mode-hook) . eglot-ensure))
   :custom ((eldoc-echo-area-use-multiple-line-p . nil)
-           (eglot-connect-timeout . 600))
+           (eglot-connect-timeout . 60))
   :bind (("C-c r" . eglot-rename)
          ("C-c ." . eglot-code-actions))
   :defvar eglot-server-programs
@@ -264,7 +264,16 @@
          :MsBuild
          (:LoadProjectsOnDemand :json-false)
          :RoslynExtensionsOptions
-         (:EnableAnalyzersSupport t :EnableImportCompletion :json-false :AnalyzeOpenDocumentsOnly t)))))
+         (:EnableAnalyzersSupport t :EnableImportCompletion :json-false :AnalyzeOpenDocumentsOnly t)))
+      ("vtsls"
+       '(:typescript
+         (:updateImportsOnFileMove "always")
+         :javascript
+         (:updateImportsOnFileMove "always")
+         :vtsls
+         (:experimental
+          (:completion (:entriesLimit 50)) ; 最大候補数を制限しないと重すぎてヤバい
+          :enableMoveToFileCodeAction t)))))
   (setq-default eglot-workspace-configuration #'c/eglot-server-configuration)
 
   (defun c/set-eglot-server-program (modes command-list)
@@ -280,7 +289,12 @@
      "--zero-based-indices"
      "DotNet:enablePackageRestore=true"
      "--encoding" "utf-8"
-     "--hostPID" ,(int-to-string (emacs-pid)))))
+     "--hostPID" ,(int-to-string (emacs-pid))))
+  (c/set-eglot-server-program
+   '((typescript-ts-mode :language-id "typescript")
+     (tsx-ts-mode :language-id "typescriptreact"))
+   '("vtsls" "--stdio")))
+
 (leaf eglot-booster
   :when (executable-find "emacs-lsp-booster")
   :vc (:url "https://github.com/jdtsmith/eglot-booster")
