@@ -297,6 +297,7 @@
 
 (leaf eglot-booster
   :when (executable-find "emacs-lsp-booster")
+  :after eglot
   :vc (:url "https://github.com/jdtsmith/eglot-booster")
   :global-minor-mode t)
 
