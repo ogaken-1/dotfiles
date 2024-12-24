@@ -252,8 +252,35 @@
   :custom ((eldoc-echo-area-use-multiple-line-p . nil)
            (eglot-connect-timeout . 600))
   :bind (("C-c r" . eglot-rename)
-         ("C-c ." . eglot-code-actions)))
+         ("C-c ." . eglot-code-actions))
+  :defvar eglot-server-programs
+  :config
+  ;; 特定のサーバーで設定をカスタムする
+  (defun c/eglot-server-configuration (server)
+    (pcase (plist-get (eglot--server-info server) :name)
+      ("OmniSharp"
+       '(:FormattingOptions
+         (:EnableEditorConfigSupport t :OrganizeImports :json-false)
+         :MsBuild
+         (:LoadProjectsOnDemand :json-false)
+         :RoslynExtensionsOptions
+         (:EnableAnalyzersSupport t :EnableImportCompletion :json-false :AnalyzeOpenDocumentsOnly t)))))
+  (setq-default eglot-workspace-configuration #'c/eglot-server-configuration)
 
+  (defun c/set-eglot-server-program (modes command-list)
+    "`eglot-server-programs'の一部を更新する"
+    (if (assoc modes eglot-server-programs #'equal)
+        (setf (alist-get modes eglot-server-programs nil nil #'equal)
+              command-list)
+      (add-to-list 'eglot-server-programs (cons modes command-list))))
+  (c/set-eglot-server-program
+   '(csharp-mode)
+   `("OmniSharp" ; nixpkgsで入るomnisharpのコマンドは何故かOmniSharpになっている
+     "--languageserver"
+     "--zero-based-indices"
+     "DotNet:enablePackageRestore=true"
+     "--encoding" "utf-8"
+     "--hostPID" ,(int-to-string (emacs-pid)))))
 (leaf eglot-booster
   :when (executable-find "emacs-lsp-booster")
   :vc (:url "https://github.com/jdtsmith/eglot-booster")
