@@ -248,7 +248,7 @@
 (leaf eglot
   :doc "The Emacs Client for LSP servers"
   :tag "builtin"
-  :hook (((csharp-mode-hook typescript-ts-mode-hook tsx-ts-mode-hook) . eglot-ensure))
+  :hook (((csharp-mode-hook typescript-ts-mode-hook tsx-ts-mode-hook nix-mode-hook) . eglot-ensure))
   :custom ((eldoc-echo-area-use-multiple-line-p . nil)
            (eglot-connect-timeout . 60))
   :bind (("C-c r" . eglot-rename)
@@ -290,7 +290,8 @@
   (c/set-eglot-server-program
    '((typescript-ts-mode :language-id "typescript")
      (tsx-ts-mode :language-id "typescriptreact"))
-   '("vtsls" "--stdio")))
+   '("vtsls" "--stdio"))
+  (c/set-eglot-server-program '(nix-mode) '("nixd")))
 
 (leaf eglot-booster
   :when (executable-find "emacs-lsp-booster")
