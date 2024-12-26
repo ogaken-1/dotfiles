@@ -37,6 +37,7 @@ rec {
         consult
         consult-ghq
         corfu
+        dashboard
         ddskk
         ddskk-posframe
         direnv

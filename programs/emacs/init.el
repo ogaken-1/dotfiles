@@ -448,6 +448,10 @@
   :doc "Auto center windows, works with line numbers"
   :global-minor-mode t)
 
+(leaf dashboard
+  :doc "A startup screen extracted from Spacemacs"
+  :config (dashboard-setup-startup-hook))
+
 (leaf spacious-padding
   :doc "Increase the padding/spacing of frames and windows"
   :global-minor-mode t)
