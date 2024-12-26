@@ -19,19 +19,13 @@
     :config
     (leaf-keywords-init)))
 
-;; nixでinit.elcにコンパイルしているので、コンパイル中には `user-emacs-directory' が
-;;  /buildとかになってしまう。そのため、:customで `locate-user-emacs-file' を評価している
-;; 箇所では /build/custom.el のように設定されてしまい、実行時にエラーが発生するようになる。
-(eval-when-compile
-  (setq user-emacs-directory "~/.config/emacs/"))
-
 (leaf leaf-convert
   :doc "Convert many format to leaf format")
 
 (leaf cus-edit
   :doc "tools for customizing Emacs and Lisp pacakges"
   :tag "builtin"
-  :custom `((custom-file . ,(locate-user-emacs-file "custom.el")))
+  :custom ((custom-file . `,(locate-user-emacs-file "custom.el")))
   :config (load custom-file))
 
 (leaf cus-start
@@ -94,22 +88,22 @@
   :doc "file input and output commands for Emacs"
   :tag "builtin"
   :global-minor-mode auto-save-visited-mode
-  :custom `((auto-save-file-name-transforms . '((".*" ,(locate-user-emacs-file "backup/") t)))
-            (backup-directory-alist . '((".*" . ,(locate-user-emacs-file "backup"))
-                                        (,tramp-file-name-regexp . nil)))
-            (version-control . t)
-            (delete-old-versions . t)
-            (auto-save-visited-interval . 1)))
+  :custom ((auto-save-file-name-transforms . `((".*" ,(locate-user-emacs-file "backup/") t)))
+           (backup-directory-alist . `((".*" . ,(locate-user-emacs-file "backup"))
+                                       (,tramp-file-name-regexp . nil)))
+           (version-control . t)
+           (delete-old-versions . t)
+           (auto-save-visited-interval . 1)))
 
 (leaf startup
   :doc "process Emacs shell arguments"
   :tag "builtin"
-  :custom `((auto-save-list-file-prefix . ,(locate-user-emacs-file "backup/.saves-"))))
+  :custom ((auto-save-list-file-prefix . `,(locate-user-emacs-file "backup/.saves-"))))
 
 (leaf savehist
   :doc "Save minibuffer history"
   :tag "builtin"
-  :custom `((savehist-file . ,(locate-user-emacs-file "savehist")))
+  :custom ((savehist-file . `,(locate-user-emacs-file "savehist")))
   :global-minor-mode t)
 
 (leaf flymake
