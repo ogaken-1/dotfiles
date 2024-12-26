@@ -246,7 +246,7 @@
 (leaf eglot
   :doc "The Emacs Client for LSP servers"
   :tag "builtin"
-  :hook (((csharp-mode-hook typescript-ts-mode-hook tsx-ts-mode-hook nix-mode-hook) . eglot-ensure))
+  :hook (((csharp-ts-mode-hook typescript-ts-mode-hook tsx-ts-mode-hook nix-mode-hook) . eglot-ensure))
   :custom ((eldoc-echo-area-use-multiple-line-p . nil)
            (eglot-connect-timeout . 60))
   :bind (("C-c r" . eglot-rename)
@@ -278,7 +278,7 @@
         (add-to-list 'eglot-server-programs (cons modes command-list)))))
   (setq-default eglot-workspace-configuration #'c/eglot-server-configuration)
   (c/set-eglot-server-program
-   '(csharp-mode)
+   '(csharp-ts-mode)
    `("OmniSharp" ; nixpkgsで入るomnisharpのコマンドは何故かOmniSharpになっている
      "--languageserver"
      "--zero-based-indices"

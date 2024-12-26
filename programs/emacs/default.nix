@@ -63,6 +63,7 @@ rec {
         tree-sitter
         tree-sitter-langs
         treesit-auto
+        treesit-grammars.with-all-grammars
         vertico
         web-mode
         which-key
