@@ -35,6 +35,10 @@
   (defun c/redraw-frame nil
     (interactive)
     (redraw-frame))
+  (defun c/posframe-available-p ()
+    "Check if posframe is available and can be used."
+    (and (fboundp 'posframe-show)
+         (display-graphic-p)))
   :bind (("M-ESC ESC" . c/redraw-frame))
   :custom '((user-full-name . "Kento Ogata")
             (user-mail-address . "k.ogata1013@gmail.com")
@@ -295,6 +299,7 @@
 
 (leaf eldoc-box
   :doc "Display documentation in childframe"
+  :when (c/posframe-available-p)
   :hook ((eglot-managed-mode-hook . eldoc-box-hover-at-point-mode)
          (emacs-lisp-mode-hook . eldoc-box-hover-at-point-mode)))
 
@@ -417,12 +422,13 @@
   :init
   (leaf ddskk-posframe
     :doc "Show Henkan tooltip for ddskk via posframe"
+    :when (c/posframe-available-p)
     :global-minor-mode t))
 
 (leaf ace-window
   :doc "Quickly switch windows"
   :bind ([remap other-window] . ace-window)
-  :custom ((ace-window-posframe-mode . t)
+  :custom ((ace-window-posframe-mode . `,(c/posframe-available-p))
            (aw-keys . '(?a ?s ?d ?f ?g ?h ?j ?k ?l))))
 
 (leaf org-mode
