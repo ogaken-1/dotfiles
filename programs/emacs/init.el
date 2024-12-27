@@ -436,6 +436,14 @@
   :tag "builtin"
   :bind (("C-c c" . org-capture)
          ("C-c a" . org-agenda))
+  :custom ((org-todo-keywords . '((type "TODO(t)" "PENDING(p)" "SCHEDULED(s)" "REVIEW(r)" "ASSIGNED(a)" "|" "DONE(d)")))
+           (org-log-done . 'time)
+           (org-log-reschedule . 'note)
+           (org-log-redeadline . 'note)
+           (org-log-into-drawer . "LOGBOOK")
+           (org-startup-folded . t)
+           (org-enforce-todo-dependencies . t)
+           (org-enforce-todo-checkbox-dependencies . t))
   :defvar org-babel-load-languages
   :config
   (add-to-list 'org-babel-load-languages '(shell . t)))
