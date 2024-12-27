@@ -57,7 +57,6 @@ rec {
         nix-mode
         orderless
         org-modern
-        perfect-margin
         puni
         spacious-padding
         tree-sitter

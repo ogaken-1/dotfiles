@@ -444,10 +444,6 @@
   :doc "Modern looks for Org."
   :global-minor-mode global-org-modern-mode)
 
-(leaf perfect-margin
-  :doc "Auto center windows, works with line numbers"
-  :global-minor-mode t)
-
 (leaf dashboard
   :doc "A startup screen extracted from Spacemacs"
   :config (dashboard-setup-startup-hook))
