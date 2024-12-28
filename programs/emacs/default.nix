@@ -1,11 +1,14 @@
 { pkgs, config, ... }:
+let
+  emacsPackage = pkgs.emacs30-gtk3;
+in
 rec {
   home.file = {
     "${config.xdg.configHome}/emacs/init.elc" = {
       source =
         pkgs.runCommand "init.elc"
           {
-            buildInputs = [ (pkgs.emacs.pkgs.withPackages (programs.emacs.extraPackages)) ];
+            buildInputs = [ (emacsPackage.pkgs.withPackages (programs.emacs.extraPackages)) ];
             XDG_DATA_HOME = "${config.xdg.dataHome}";
           }
           ''
@@ -25,7 +28,7 @@ rec {
   };
   programs.emacs = {
     enable = true;
-    package = pkgs.emacs-gtk;
+    package = emacsPackage;
     extraPackages =
       epkgs: with epkgs; [
         ace-window
@@ -43,6 +46,7 @@ rec {
         direnv
         doom-modeline
         editorconfig
+        eglot
         eldoc-box
         embark
         embark-consult

@@ -245,7 +245,6 @@
 
 (leaf eglot
   :doc "The Emacs Client for LSP servers"
-  :tag "builtin"
   :hook (((csharp-ts-mode-hook typescript-ts-mode-hook tsx-ts-mode-hook nix-mode-hook) . eglot-ensure))
   :custom ((eldoc-echo-area-use-multiple-line-p . nil)
            (eglot-connect-timeout . 60))
@@ -268,7 +267,7 @@
         ("vtsls"
          '((:typescript . ((updateImportsOnFileMove . "always")))
            (:javascript . ((updateImportsOnFileMove . "always")))
-           (:vtsls . ((experimental . ((completion . ((entriesLimit . 50)))  ; 最大候補数を制限しないと重すぎてヤバい
+           (:vtsls . ((experimental . ((completion . ((entriesLimit . 500)))  ; 最大候補数を制限しないとけっこう遅い
                                        (enableMoveToFileCodeAction . t)))))))))
     (defun c/set-eglot-server-program (modes command-list)
       "`eglot-server-programs'の一部を更新する"
