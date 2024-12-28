@@ -63,7 +63,9 @@
             (tool-bar-mode . nil)
             (scroll-bar-mode . nil)
             (indent-tabs-mode . nil)
-            (show-trailing-whitespace . t)))
+            (show-trailing-whitespace . t)
+            ;; 起動時にframeがresizeされるのが抑制されてちょっと動きがスッキリする
+            (frame-inhibit-implied-resize . t)))
 
 (leaf autorevert
   :doc "revert buffers when files on disk change"
