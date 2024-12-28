@@ -59,7 +59,7 @@
             (truncate-lines . t)
             (use-dialog-box . nil)
             (use-file-dialog . nil)
-            (menu-bar-mode . t)
+            (menu-bar-mode . nil)
             (tool-bar-mode . nil)
             (scroll-bar-mode . nil)
             (indent-tabs-mode . nil)
