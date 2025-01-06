@@ -1,10 +1,17 @@
-.PHONY: home
-home:
-	home-manager --flake . switch
+export NIX_CONFIG := extra-experimental-features = flakes
 
-.PHONY: os
-os:
-	sudo nixos-rebuild --flake . switch
+UNAME := $(shell uname -s)
+ifeq ($(UNAME),Darwin)
+	REBUILD := nix run nix-darwin --
+	HOSTNAME := $(shell scutil --get ComputerName)
+else ifeq ($(UNAME),Linux)
+	REBUILD := sudo nixos-rebuild
+	HOSTNAME := $(shell hostname)
+endif
+
+.PHONY: switch
+switch:
+	$(REBUILD) switch --flake .#$(HOSTNAME)
 
 .PHONY: update
 update:

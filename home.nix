@@ -5,8 +5,6 @@ let
 in
 {
   home = {
-    username = "ogaken";
-    homeDirectory = "/home/ogaken";
     stateVersion = "24.05";
     packages = with pkgs; [
       azure-cli
@@ -23,13 +21,8 @@ in
       tailscale
       vim
       wget
-      wslu
       rustup
     ];
-  };
-  nix = {
-    package = pkgs.nix;
-    extraOptions = "extra-experimental-features = flakes nix-command\n";
   };
   xdg.enable = true;
   imports = programs;

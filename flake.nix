@@ -38,40 +38,25 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
     };
+    nix-darwin = {
+      url = "github:LnL7/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
   outputs =
-    {
-      nixpkgs,
-      home-manager,
-      vscode-server,
-      nixos-wsl,
-      ...
-    }@inputs:
-    let
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-    in
-    {
-      homeConfigurations.ogaken = home-manager.lib.homeManagerConfiguration {
-        pkgs = pkgs;
-        modules = [
-          {
-            programs.neovim = {
-              package = inputs.neovim-nightly-overlay.packages.${system}.default;
-            };
-          }
-          ./home.nix
-        ];
+    { flake-parts, ... }@inputs:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = [
+        "x86_64-linux"
+        "aarch64-darwin"
+      ];
+      flake = {
+        nixosConfigurations = {
+          nixos = import ./hosts/wsl.nix { inherit inputs; };
+        };
+        darwinConfigurations = {
+          sechs = import ./hosts/sechs.nix { inherit inputs; };
+        };
       };
-      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-        pkgs = pkgs;
-        system = system;
-        modules = [
-          nixos-wsl.nixosModules.default
-          vscode-server.nixosModules.default
-          (import ./nixos-wsl.nix)
-        ];
-      };
-      formatter.${system} = pkgs.nixfmt-rfc-style;
     };
 }
