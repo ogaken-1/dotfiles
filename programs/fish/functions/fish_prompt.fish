@@ -51,7 +51,5 @@ function fish_prompt
     set -a components (sgr color:red "[$previous_command_status]")
   end
 
-  osc_133 'A'
   printf '\n%s\n> ' (string join ' ' $components)
-  osc_133 'B'
 end
