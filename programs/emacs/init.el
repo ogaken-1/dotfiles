@@ -99,7 +99,8 @@
                                        (,tramp-file-name-regexp . nil)))
            (version-control . t)
            (delete-old-versions . t)
-           (auto-save-visited-interval . 1)))
+           (auto-save-visited-interval . 1)
+           (auto-save-visited-mode . nil)))
 
 (leaf startup
   :doc "process Emacs shell arguments"
