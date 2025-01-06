@@ -402,7 +402,7 @@
   (autoload 'basic-generic-mode "basic-mode" "Major mode for editing BASIC code." t)
   (add-to-list 'auto-mode-alist '("\\.vb\\'" . basic-generic-mode)))
 
-(defun skk-jisyo-files ()
+(defun c/skk-jisyo-files ()
   "List SKK dictionary files in $SKK_DICT_DIRS."
   (let ((dict-dirs (split-string (or (getenv "SKK_DICT_DIRS") "") ":")))
     (seq-mapcat
@@ -417,7 +417,7 @@
   :custom `((skk-use-azik . t)
             (skk-azik-keyboard-type . "us101")
             (skk-jisyo . ,(string-join `(,(getenv "XDG_DATA_HOME") "skk" "user-jisyo") "/"))
-            (skk-extra-jisyo-file-list . `,(skk-jisyo-files))
+            (skk-extra-jisyo-file-list . `,(c/skk-jisyo-files))
             (skk-jisyo-code . "utf-8")
             (skk-egg-like-newline . t))
   :init
