@@ -62,6 +62,7 @@ rec {
         orderless
         org-modern
         puni
+        reformatter
         spacious-padding
         tree-sitter
         tree-sitter-langs

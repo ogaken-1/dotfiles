@@ -468,6 +468,15 @@
   :doc "Fringe version of git-gutter.el"
   :global-minor-mode global-git-gutter-mode)
 
+(leaf reformatter
+  :doc "Define commands which run reformatters on the current buffer"
+  :config
+  (reformatter-define stylua
+    :program "stylua" :args '("-"))
+  (reformatter-define nixfmt
+    :program "nixfmt" :args '("-"))
+  :hook ((nix-mode-hook . nixfmt-on-save-mode)))
+
 (provide 'init)
 
 ;; Local Variables:
