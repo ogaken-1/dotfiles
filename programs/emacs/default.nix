@@ -1,6 +1,20 @@
-{ pkgs, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 let
   emacsPackage = pkgs.emacs30-gtk3;
+  elispNames = builtins.filter (x: lib.isString x && x != "") (
+    builtins.split "\n" (
+      builtins.readFile (
+        pkgs.runCommand "names" {
+          buildInputs = [ emacsPackage ];
+        } "${emacsPackage}/bin/emacs --batch -l ${./list-required-packages.el} ${./init.el} > $out"
+      )
+    )
+  );
 in
 rec {
   home.file = {
@@ -30,49 +44,12 @@ rec {
     enable = true;
     package = emacsPackage;
     extraPackages =
-      epkgs: with epkgs; [
-        ace-window
-        affe
-        astro-ts-mode
-        basic-mode
-        blackout
-        cape
-        consult
-        consult-ghq
-        corfu
-        dashboard
-        ddskk
-        ddskk-posframe
-        direnv
-        doom-modeline
-        editorconfig
-        eglot
-        eldoc-box
-        embark
-        embark-consult
-        exec-path-from-shell
-        git-gutter-fringe
+      epkgs:
+      with epkgs;
+      [
         leaf
-        leaf-convert
-        leaf-keywords
-        magit
-        marginalia
-        migemo
-        nix-mode
-        orderless
-        org-modern
-        puni
-        reformatter
-        spacious-padding
-        tree-sitter
-        tree-sitter-langs
-        treesit-auto
         treesit-grammars.with-all-grammars
-        vertico
-        web-mode
-        which-key
-        yaml-mode
-        zenburn-theme
-      ];
+      ]
+      ++ (map (name: epkgs."${name}") elispNames);
   };
 }
