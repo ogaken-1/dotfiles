@@ -28,6 +28,10 @@
       inputs.git-hooks.follows = "git-hooks";
       inputs.hercules-ci-effects.follows = "hercules-ci-effects";
     };
+    emacs-overlay = {
+      url = "github:nix-community/emacs-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     git-hooks = {
       url = "github:cachix/git-hooks.nix";
       inputs.nixpkgs.follows = "nixpkgs";

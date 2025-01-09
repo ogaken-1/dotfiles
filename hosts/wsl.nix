@@ -21,7 +21,7 @@ nixpkgs.lib.nixosSystem {
     home-manager.nixosModules.home-manager
     {
       home-manager.useUserPackages = false;
-      home-manager.users.${username} = import ../home.nix;
+      home-manager.users.${username} = import ../home.nix { inherit inputs; };
     }
   ];
 }

@@ -1,9 +1,14 @@
+{ inputs }:
 { pkgs, ... }:
 let
   dirModules = dir: builtins.map (file: dir + "/${file}") (builtins.attrNames (builtins.readDir dir));
   programs = dirModules ./programs;
 in
 {
+  nixpkgs.overlays = with inputs; [
+    emacs-overlay.overlay
+    neovim-nightly-overlay.overlays.default
+  ];
   home = {
     stateVersion = "24.05";
     packages = with pkgs; [
