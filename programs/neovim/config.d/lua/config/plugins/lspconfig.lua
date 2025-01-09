@@ -67,7 +67,7 @@ return {
       jsonls = {},
       nixd = {},
       gopls = {},
-      typst_lsp = {},
+      tinymist = {},
       rust_analyzer = {},
       vtsls = {},
     }

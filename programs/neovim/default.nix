@@ -20,8 +20,8 @@
       skkDictionaries.jinmei
       skkDictionaries.l
       stylua
+      tinymist
       trash-cli
-      typst-lsp
       vscode-langservers-extracted
       vtsls
       yaml-language-server
