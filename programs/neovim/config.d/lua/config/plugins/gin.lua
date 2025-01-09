@@ -19,17 +19,6 @@ return {
       '--max-count=150',
     }
     vim.g.gin_proxy_apply_without_confirm = true
-    vim.api.nvim_create_autocmd('BufWinEnter', {
-      once = true,
-      callback = function()
-        vim.fn['denops#plugin#wait_async']('gin', function()
-          if vim.fn.bufname() ~= '' then
-            return
-          end
-          vim.cmd.GinStatus()
-        end)
-      end,
-    })
     vim.keymap.set('ca', 'cq', function()
       local cmdtype = vim.fn.getcmdtype()
       if cmdtype ~= ':' then
