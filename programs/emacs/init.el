@@ -456,8 +456,10 @@
   :doc "Quickly switch windows"
   :ensure t
   :bind ([remap other-window] . ace-window)
-  :custom ((ace-window-posframe-mode . `,(c/posframe-available-p))
-           (aw-keys . '(?a ?s ?d ?f ?g ?h ?j ?k ?l))))
+  :custom ((aw-keys . '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+  :defer-config
+  (when (c/posframe-available-p)
+    (ace-window-posframe-mode)))
 
 (leaf org-mode
   :doc "Outline-based notes management and organizer"
