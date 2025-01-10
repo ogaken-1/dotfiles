@@ -486,6 +486,9 @@
 (leaf dashboard
   :doc "A startup screen extracted from Spacemacs"
   :ensure t
+  :custom ((dashboard-items . '((projects . 5)
+                                (recents . 5)
+                                (bookmarks . 5))))
   :config (dashboard-setup-startup-hook))
 
 (leaf spacious-padding
