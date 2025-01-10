@@ -15,6 +15,8 @@
   (package-initialize)
   (leaf leaf-keywords
     :ensure t
+    :init
+    (leaf hydra :ensure t)
     :config
     (leaf-keywords-init)))
 
@@ -502,7 +504,21 @@
 (leaf git-gutter-fringe
   :doc "Fringe version of git-gutter.el"
   :ensure t
-  :global-minor-mode global-git-gutter-mode)
+  :global-minor-mode global-git-gutter-mode
+  :bind ("C-c g" . hydra-git-gutter/body)
+  :hydra (hydra-git-gutter (:hint nil)
+                           "
+Git gutter:
+  _n_: next hunk        _s_: stage hunk     _q_: quit
+  _p_: previous hunk    _u_: revert hunk
+                      _C-p_: popup hunk
+"
+                           ("n" git-gutter:next-hunk)
+                           ("p" git-gutter:previous-hunk)
+                           ("s" git-gutter:stage-hunk)
+                           ("u" git-gutter:revert-hunk)
+                           ("C-p" git-gutter:popup-hunk)
+                           ("q" nil :color blue)))
 
 (leaf reformatter
   :doc "Define commands which run reformatters on the current buffer"
