@@ -364,8 +364,12 @@
 
 (leaf zenburn-theme
   :doc "A low contrast color theme for Emacs"
+  :ensure t)
+
+(leaf catppuccin-theme
+  :doc "Catppuccin for Emacs - 🍄 Soothing pastel theme for Emacs"
   :ensure t
-  :config (load-theme 'zenburn t))
+  :config (load-theme 'catppuccin t))
 
 (leaf nix-mode
   :doc "Major mode for editing .nix files"
