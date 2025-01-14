@@ -69,6 +69,15 @@
             ;; 起動時にframeがresizeされるのが抑制されてちょっと動きがスッキリする
             (frame-inhibit-implied-resize . t)))
 
+(leaf face-remap
+  :doc "Functions for managing `face-remapping-alist'."
+  :tag "builtin"
+  :bind ("C-c +" . #'hydra-text-scale/body)
+  :hydra
+  (hydra-text-scale () "Text scale"
+                    ("i" #'text-scale-increase "increase")
+                    ("d" #'text-scale-decrease "decrease")))
+
 (leaf autorevert
   :doc "revert buffers when files on disk change"
   :tag "builtin"
