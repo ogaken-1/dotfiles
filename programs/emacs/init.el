@@ -379,16 +379,17 @@
   :doc "Major mode for editing web templates"
   :ensure t
   :custom ((web-mode-engines-alist . '(("razor" . "\\.razor\\'"))))
-  :config
-  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.cshtml?\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.razor?\\'" . web-mode)))
+  :mode
+  ("\\.html?\\'" . web-mode)
+  ("\\.cshtml?\\'" . web-mode)
+  ("\\.razor\\'" . web-mode))
 
 (leaf typescript-ts-mode
   :doc "tree sitter support for TypeScript"
   :tag "builtin"
-  :mode (("\\.tsx\\'" . tsx-ts-mode)
-         ("\\.ts\\'" . typescript-ts-mode))
+  :mode
+  ("\\.tsx\\'" . tsx-ts-mode)
+  ("\\.ts\\'" . typescript-ts-mode)
   :custom (typescript-ts-mode-indent-offset . 2))
 
 (leaf treesit
@@ -424,10 +425,7 @@
 (leaf basic-mode
   :doc "Major mode for editing BASIC code"
   :ensure t
-  :config
-  ;; デフォルトではvb.netのファイルをBASICだと認識してくれない
-  (autoload 'basic-generic-mode "basic-mode" "Major mode for editing BASIC code." t)
-  (add-to-list 'auto-mode-alist '("\\.vb\\'" . basic-generic-mode)))
+  :mode ("\\.vb\\'" . basic-generic-mode))
 
 (defun c/skk-jisyo-files ()
   "List SKK dictionary files in $SKK_DICT_DIRS."
