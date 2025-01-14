@@ -41,7 +41,7 @@
     "Check if posframe is available and can be used."
     (and (fboundp 'posframe-show)
          (display-graphic-p)))
-  :bind (("M-ESC ESC" . c/redraw-frame))
+  :bind (("M-ESC ESC" . #'c/redraw-frame))
   :custom '((user-full-name . "Kento Ogata")
             (user-mail-address . "k.ogata1013@gmail.com")
             (user-login-name . "ogaken")
@@ -119,8 +119,8 @@
   :doc "A universal on-the-fly syntax checker"
   :tag "builtin"
   :bind ((prog-mode-map
-          ("M-n" . flymake-goto-next-error)
-          ("M-p" . flymake-goto-prev-error))))
+          ("M-n" . #'flymake-goto-next-error)
+          ("M-p" . #'flymake-goto-prev-error))))
 
 (leaf which-key
   :doc "Display available keybindings in popup"
@@ -161,39 +161,39 @@
            (xref-show-definitions-function . #'consult-xref)
            (consult-line-start-from-top . t))
   :bind (;; C-c bindings (mode-specific-map)
-         ([remap switch-to-buffer] . consult-buffer)                 ; C-x b
-         ([remap project-switch-to-buffer] . consult-project-buffer) ; C-x p b
-         ([remap find-file-read-only] . consult-recent-file)         ; C-x C-r
+         ([remap switch-to-buffer] . #'consult-buffer)                 ; C-x b
+         ([remap project-switch-to-buffer] . #'consult-project-buffer) ; C-x p b
+         ([remap find-file-read-only] . #'consult-recent-file)         ; C-x C-r
 
          ;; M-b bindings (goto-map)
-         ([remap goto-line] . consult-goto-line) ; M-g g
-         ([remap imenu] . consult-imenu) ; M-g i
-         ("M-g f" . consult-flymake)
+         ([remap goto-line] . #'consult-goto-line) ; M-g g
+         ([remap imenu] . #'consult-imenu) ; M-g i
+         ("M-g f" . #'consult-flymake)
 
          ;; C-M-s bindings
-         ("C-s" . c/consult-line) ; isearch-forward
+         ("C-s" . #'c/consult-line) ; isearch-forward
          ("C-M-s" . nil) ; isearch-forward-regexp
-         ("C-M-s s" . isearch-forward)
-         ("C-M-s C-s" . isearch-forward-regexp)
-         ("C-M-s r" . consult-ripgrep)
+         ("C-M-s s" . #'isearch-forward)
+         ("C-M-s C-s" . #'isearch-forward-regexp)
+         ("C-M-s r" . #'consult-ripgrep)
 
          ;; minibuffer local bindings
          (minibuffer-local-map
           :package emacs
-          ("C-r" . consult-history)))
+          ("C-r" . #'consult-history)))
   :init
   (leaf consult-ghq
     :doc "Ghq interface using consult"
     :ensure t
-    :bind ([remap project-switch-project] . consult-ghq-switch-project)))
+    :bind ([remap project-switch-project] . #'consult-ghq-switch-project)))
 
 (leaf affe
   :doc "Asynchronous Fuzzy Finder for Emacs"
   :ensure t
-  :custom ((affe-highlight-function . 'orderless-highlight-matches)
-           (affe-regexp-function . 'orderless-pattern-compiler))
-  :bind (("C-M-s r" . affe-grep)
-         ("C-M-s f" . affe-find)))
+  :custom ((affe-highlight-function . #'orderless-highlight-matches)
+           (affe-regexp-function . #'orderless-pattern-compiler))
+  :bind (("C-M-s r" . #'affe-grep)
+         ("C-M-s f" . #'affe-find)))
 
 (leaf migemo
   :doc "Japanese incremental search through dynamic pattern expansion"
@@ -203,7 +203,7 @@
             (migemo-regex-dictionary . nil)
             (migemo-coding-system . 'utf-8-unix))
   :defun migemo-init migemo-get-pattern
-  :init (autoload 'migemo-get-pattern "migemo.el")
+  :init (autoload #'migemo-get-pattern "migemo")
   :defer-config (migemo-init))
 
 (leaf orderless
@@ -233,11 +233,11 @@
 (leaf embark
   :doc "Conveniently act on minibuffer completions."
   :ensure t
-  :bind (("C-." . embark-act)
+  :bind (("C-." . #'embark-act)
          (minibuffer-mode-map
           :package emacs
-          ("M-." . embark-dwim)
-          ("C-." . embark-act)))
+          ("M-." . #'embark-dwim)
+          ("C-." . #'embark-act)))
   :init
   (leaf embark-consult
     :doc "Consult integration for Embark"
@@ -253,7 +253,7 @@
            (corfu-auto-prefix . 1)
            (corfu-popupinfo-delay . nil)) ; manual
   :bind ((corfu-map
-          ("C-s" . corfu-insert-separator))))
+          ("C-s" . #'corfu-insert-separator))))
 
 (leaf cape
   :doc "Completion At Point Extensions"
@@ -267,8 +267,8 @@
   :hook (((csharp-ts-mode-hook typescript-ts-mode-hook tsx-ts-mode-hook nix-mode-hook) . eglot-ensure))
   :custom ((eldoc-echo-area-use-multiple-line-p . nil)
            (eglot-connect-timeout . 60))
-  :bind (("C-c r" . eglot-rename)
-         ("C-c ." . eglot-code-actions))
+  :bind (("C-c r" . #'eglot-rename)
+         ("C-c ." . #'eglot-code-actions))
   :defvar eglot-server-programs
   :defun eglot--server-info
   :config
@@ -328,13 +328,13 @@
          ;; ("M-)" . puni-syntactic-forward-punct)
          ;; ("C-M-u" . backward-up-list)
          ;; ("C-M-d" . backward-down-list)
-         ("C-<right>" . puni-slurp-forward)
-         ("C-<left>" . puni-barf-forward)
-         ("M-(" . puni-wrap-round)
-         ("M-s" . puni-splice)
-         ("M-r" . puni-raise)
-         ("M-U" . puni-splice-killing-backward)
-         ("M-z" . puni-squeeze)))
+         ("C-<right>" . #'puni-slurp-forward)
+         ("C-<left>" . #'puni-barf-forward)
+         ("M-(" . #'puni-wrap-round)
+         ("M-s" . #'puni-splice)
+         ("M-r" . #'puni-raise)
+         ("M-U" . #'puni-splice-killing-backward)
+         ("M-z" . #'puni-squeeze)))
 
 (leaf elec-pair
   :doc "Automatic parenthesis pairing"
@@ -344,7 +344,7 @@
 (leaf magit
   :doc "A Git porcelain inside Emacs."
   :ensure t
-  :bind ("C-x g" . magit-status))
+  :bind ("C-x g" . #'magit-status))
 
 (leaf direnv
   :doc "Direnv integration."
@@ -459,7 +459,7 @@
 (leaf ace-window
   :doc "Quickly switch windows"
   :ensure t
-  :bind ([remap other-window] . ace-window)
+  :bind ([remap other-window] . #'ace-window)
   :custom ((aw-keys . '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
   :defer-config
   (when (c/posframe-available-p)
@@ -514,7 +514,7 @@
   :doc "Fringe version of git-gutter.el"
   :ensure t
   :global-minor-mode global-git-gutter-mode
-  :bind ("C-c g" . hydra-git-gutter/body)
+  :bind ("C-c g" . #'hydra-git-gutter/body)
   :hydra (hydra-git-gutter (:hint nil)
                            "
 Git gutter:
@@ -522,11 +522,11 @@ Git gutter:
   _p_: previous hunk    _u_: revert hunk
                       _C-p_: popup hunk
 "
-                           ("n" git-gutter:next-hunk)
-                           ("p" git-gutter:previous-hunk)
-                           ("s" git-gutter:stage-hunk)
-                           ("u" git-gutter:revert-hunk)
-                           ("C-p" git-gutter:popup-hunk)
+                           ("n" #'git-gutter:next-hunk)
+                           ("p" #'git-gutter:previous-hunk)
+                           ("s" #'git-gutter:stage-hunk)
+                           ("u" #'git-gutter:revert-hunk)
+                           ("C-p" #'git-gutter:popup-hunk)
                            ("q" nil :color blue)))
 
 (leaf reformatter
