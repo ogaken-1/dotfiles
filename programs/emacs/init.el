@@ -10,14 +10,20 @@
 (eval-and-compile
   (customize-set-variable
    'package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+                       ("nongnu" . "https://elpa.nongnu.org/nongnu/")
                        ("melpa" . "https://melpa.org/packages/")
-                       ("org" . "https://orgmode.org/elpa/")))
+                       ("org" . "https://orgmode.org/elpa/"))))
+
+(eval-when-compile
   (package-initialize)
+  (use-package leaf
+    :ensure t))
+
+(eval-and-compile
   (leaf leaf-keywords
     :ensure t
-    :init
-    (leaf hydra :ensure t)
     :config
+    (leaf hydra :ensure t)
     (leaf-keywords-init)))
 
 (leaf leaf-convert
@@ -61,13 +67,7 @@
             (truncate-lines . t)
             (use-dialog-box . nil)
             (use-file-dialog . nil)
-            (menu-bar-mode . nil)
-            (tool-bar-mode . nil)
-            (scroll-bar-mode . nil)
-            (indent-tabs-mode . nil)
-            (show-trailing-whitespace . t)
-            ;; 起動時にframeがresizeされるのが抑制されてちょっと動きがスッキリする
-            (frame-inhibit-implied-resize . t)))
+            (show-trailing-whitespace . t)))
 
 (leaf face-remap
   :doc "Functions for managing `face-remapping-alist'."
@@ -365,11 +365,11 @@
   :tag "builtin"
   :global-minor-mode t)
 
-(set-language-environment "Japanese")
-;; Use nf patched cascadia code if avalilable.
-(let '(font "CaskaydiaCove NFM")
-  (if (fontp font)
-      (set-frame-font font)))
+(leaf mule-cmds
+  :doc "commands for multilingual environment."
+  :tag "builtin"
+  :config
+  (set-language-environment "Japanese"))
 
 (leaf zenburn-theme
   :doc "A low contrast color theme for Emacs"

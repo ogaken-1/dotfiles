@@ -1,6 +1,5 @@
 {
   pkgs,
-  lib,
   config,
   ...
 }:
@@ -13,26 +12,36 @@ let
     alwaysTangle = false;
     extraEmacsPackages =
       epkgs: with epkgs; [
-        leaf
         treesit-grammars.with-all-grammars
       ];
   };
+  byteCompile =
+    { src, name }:
+    pkgs.runCommand name
+      {
+        buildInputs = [ emacsPkg ];
+        XDG_DATA_HOME = "${config.xdg.dataHome}";
+      }
+      ''
+        cp ${src} src.el
+        emacs --batch \
+          --funcall batch-byte-compile src.el
+        cp src.elc $out
+      '';
 in
 {
   home.file = {
     "${config.xdg.configHome}/emacs/init.elc" = {
-      source =
-        pkgs.runCommand "init.elc"
-          {
-            buildInputs = [ emacsPkg ];
-            XDG_DATA_HOME = "${config.xdg.dataHome}";
-          }
-          ''
-            cp ${./init.el} init.el
-            emacs --batch \
-              --funcall batch-byte-compile init.el
-            cp init.elc $out
-          '';
+      source = byteCompile {
+        src = ./init.el;
+        name = "init.elc";
+      };
+    };
+    "${config.xdg.configHome}/emacs/early-init.elc" = {
+      source = byteCompile {
+        src = ./early-init.el;
+        name = "early-init.elc";
+      };
     };
   };
   home.packages = with pkgs; [
