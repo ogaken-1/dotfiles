@@ -546,6 +546,10 @@ Git gutter:
     :program "nixfmt" :args '("-"))
   :hook ((nix-mode-hook . nixfmt-on-save-mode)))
 
+(leaf ppp
+  :doc "Extended pretty printer for Emacs Lisp."
+  :ensure t)
+
 (provide 'init)
 
 ;; Local Variables:
