@@ -521,6 +521,7 @@
   :doc "Fringe version of git-gutter.el"
   :ensure t
   :global-minor-mode global-git-gutter-mode
+  :custom ((git-gutter:ask-p . nil))
   :bind ("C-c g" . #'hydra-git-gutter/body)
   :hydra (hydra-git-gutter (:hint nil)
                            "
