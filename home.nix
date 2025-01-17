@@ -21,12 +21,13 @@ in
       gnumake
       gnupg
       kubectl
+      nvd
       postgresql_16
       ripgrep
+      rustup
       tailscale
       vim
       wget
-      rustup
     ];
   };
   xdg.enable = true;
