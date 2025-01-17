@@ -556,6 +556,16 @@ Git gutter:
   :doc "Extended pretty printer for Emacs Lisp."
   :ensure t)
 
+(leaf evil
+  :doc "Extensible vi layer."
+  :ensure t
+  :hook
+  (evil-insert-state-exit-hook . corfu-quit)
+  :custom
+  (evil-want-C-u-scroll . t)
+  (evil-want-C-d-scroll . t)
+  (evil-want-Y-yank-to-eol . t))
+
 (provide 'init)
 
 ;; Local Variables:
