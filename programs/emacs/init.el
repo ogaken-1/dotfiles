@@ -73,10 +73,14 @@
   :doc "Functions for managing `face-remapping-alist'."
   :tag "builtin"
   :bind ("C-c +" . #'hydra-text-scale/body)
-  :hydra
-  (hydra-text-scale () "Text scale"
-                    ("i" #'text-scale-increase "increase")
-                    ("d" #'text-scale-decrease "decrease")))
+  :hydra (hydra-text-scale (:hint nil) "
+Text scale:
+  _i_: increase    _q_: quit
+  _d_: decrease
+"
+                           ("i" #'text-scale-increase)
+                           ("d" #'text-scale-decrease)
+                           ("q" nil :color blue)))
 
 (leaf autorevert
   :doc "revert buffers when files on disk change"
