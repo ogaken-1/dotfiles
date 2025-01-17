@@ -403,6 +403,7 @@ Text scale:
   :mode
   ("\\.tsx\\'" . tsx-ts-mode)
   ("\\.ts\\'" . typescript-ts-mode)
+  ("\\.mts\\'" . typescript-ts-mode)
   :custom (typescript-ts-mode-indent-offset . 2))
 
 (leaf treesit
