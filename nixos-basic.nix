@@ -22,15 +22,6 @@ in
     };
   };
 
-  wsl = {
-    enable = true;
-    defaultUser = username;
-    docker-desktop.enable = false;
-    interop = {
-      includePath = false;
-    };
-  };
-
   system.stateVersion = "24.05";
 
   fonts.packages = with pkgs; [
