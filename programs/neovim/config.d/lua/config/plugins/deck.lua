@@ -1,25 +1,6 @@
 return {
   'hrsh7th/nvim-deck',
   cmd = 'Deck',
-  init = function()
-    vim.keymap.set('n', '<Space>ff', function()
-      local deck = require 'deck'
-      deck.start {
-        require 'deck.builtin.source.files' {
-          root_dir = vim.fn.getcwd(),
-          ignore_globs = {
-            '**/node_modules/',
-            '**/.git/',
-            '**/bin/*',
-            '**/obj/*',
-          },
-        },
-      }
-    end)
-    vim.keymap.set('n', '<Space>gr', '<Cmd>Deck grep<CR>')
-    vim.keymap.set('n', '<Space>gi', '<Cmd>Deck git<CR>')
-    vim.keymap.set('n', '<Space>he', '<Cmd>Deck helpgrep<CR>')
-  end,
   config = function()
     require('deck.easy').setup()
     vim.api.nvim_create_autocmd('User', {
@@ -51,19 +32,5 @@ return {
         end)
       end,
     })
-
-    vim.keymap.set('n', '<Space>;', function()
-      local ctx = require('deck').get_history()[1]
-      if ctx then
-        ctx.show()
-      end
-    end)
-    vim.keymap.set('n', '<Space>n', function()
-      local ctx = require('deck').get_history()[1]
-      if ctx then
-        ctx.set_cursor(ctx.get_cursor() + 1)
-        ctx.do_action 'default'
-      end
-    end)
   end,
 }
