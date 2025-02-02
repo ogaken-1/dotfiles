@@ -1,0 +1,14 @@
+#!/usr/bin/env -S bash
+
+set -euo pipefail
+
+cd "$(git rev-parse --show-toplevel)" || exit;
+git restore --staged .
+profiles='/nix/var/nix/profiles'
+current_system="${profiles}/system"
+old_profile="${profiles}/$(readlink "$current_system")"
+nix flake update
+make # Switch current_system here
+new_profile="${profiles}/$(readlink "$current_system")"
+git add flake.lock
+nvd diff "$old_profile" "$new_profile" | sed '1,2d;s/\#//' | git commit --template=/dev/stdin
