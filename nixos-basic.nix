@@ -8,6 +8,9 @@ in
     vscode-server = {
       enable = true;
     };
+    tailscale = {
+      enable = true;
+    };
   };
 
   boot = {
