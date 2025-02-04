@@ -18,10 +18,12 @@
       gF = "git pull";
       gp = "git push";
       gpf = "git push --force-if-includes --force-with-lease";
-      gpu = "git push -u origin \"$(git branch --show-current)\"";
+      gpu = "git push --set-upstream origin \"$(git branch --show-current)\"";
       gs = "git status --short --branch -uall";
       gst = "git stash";
+      gstl = "git stash list";
       gsw = "git switch";
+      gswc = "git switch --create";
     };
     shellInit = ''
       if status --is-interactive && test -z $TMUX
