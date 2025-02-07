@@ -25,10 +25,21 @@
       };
       commit = {
         verbose = "true";
+        gpgSign = true;
+      };
+      tag = {
+        gpgSign = true;
+      };
+      gpg = {
+        format = "ssh";
+        ssh = {
+          allowedSignersFile = "~/.ssh/allowed_signers";
+        };
       };
       user = {
         name = "Kento Ogata";
-        # Use direnv to set email via $GIT_AUTHOR_EMAIL and $GIT_COMMITTER_EMAIL
+        # 1. Use direnv to set email via $GIT_AUTHOR_EMAIL and $GIT_COMMITTER_EMAIL.
+        # 2. Set `user.signingKey` by `git config` command.
       };
       pull = {
         rebase = true;
