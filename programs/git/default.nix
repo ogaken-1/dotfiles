@@ -46,6 +46,9 @@
       diff = {
         colorMoved = "default";
       };
+      rerere = {
+        enabled = true;
+      };
       delta = {
         navigate = true;
       };
