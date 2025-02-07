@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, ... }:
 {
   home.file = {
     "${config.xdg.configHome}/fish/functions/" = {
@@ -8,19 +8,6 @@
   };
   programs.fish = {
     enable = true;
-    plugins = [
-      # FIXME: You should run `emit enhancd_install` manually to enable enhancd.
-      # The state isn't managed by nix.
-      {
-        name = "enhancd";
-        src = pkgs.fetchFromGitHub {
-          owner = "babarot";
-          repo = "enhancd";
-          rev = "5afb4eb6ba36c15821de6e39c0a7bb9d6b0ba415";
-          hash = "sha256-pKQbwiqE0KdmRDbHQcW18WfxyJSsKfymWt/TboY2iic=";
-        };
-      }
-    ];
     shellAbbrs = {
       ga = "git add";
       gci = "git commit";
