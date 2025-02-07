@@ -5,9 +5,6 @@ let
 in
 {
   services = {
-    vscode-server = {
-      enable = true;
-    };
     tailscale = {
       enable = true;
     };

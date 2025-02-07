@@ -29,6 +29,12 @@ let
           emacs-unstable
         ];
       };
+      services = {
+        vscode-server = {
+          enable = true;
+          nodejsPackage = pkgs.nodejs;
+        };
+      };
     };
   homeConfig = {
     home-manager = {
