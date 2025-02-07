@@ -19,7 +19,7 @@ return {
       parser_install_dir = parser_install_dir,
       auto_install = true,
       highlight = {
-        enable = false,
+        enable = true,
       },
     }
   end,
