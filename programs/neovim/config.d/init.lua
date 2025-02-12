@@ -138,6 +138,7 @@ vim.cmd.colorscheme(vim.env.NVIM_COLORSCHEME or 'momiji')
 vim.filetype.add {
   extension = {
     tsp = 'typespec',
+    razor = 'razor',
   },
   filename = {
     ['Directory.Build.props'] = 'xml',
