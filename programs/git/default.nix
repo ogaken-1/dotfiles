@@ -20,6 +20,9 @@
       init = {
         defaultBranch = "main";
       };
+      log = {
+        follow = true;
+      };
       ghq = {
         root = "~/repos";
       };

@@ -21,6 +21,7 @@ in
       gnumake
       gnupg
       kubectl
+      lazygit
       nvd
       postgresql_16
       ripgrep
