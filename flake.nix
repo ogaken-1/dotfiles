@@ -61,5 +61,14 @@
           sechs = import ./hosts/sechs.nix { inherit inputs; };
         };
       };
+      perSystem =
+        { pkgs, ... }:
+        {
+          devShells.default = pkgs.mkShellNoCC {
+            packages = with pkgs; [
+              ruby
+            ];
+          };
+        };
     };
 }
