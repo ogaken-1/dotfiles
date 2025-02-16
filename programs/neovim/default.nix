@@ -44,6 +44,7 @@
           ]
         )
       );
+      MANPAGER = "${pkgs.neovim}/bin/nvim +Man!";
     };
   };
   programs.neovim = {
