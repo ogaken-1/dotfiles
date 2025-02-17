@@ -24,3 +24,5 @@ task :switch do
   command = "#{config[:rebuild]} switch --flake .##{config[:hostname]}"
   sh command
 end
+
+task default: "switch"
