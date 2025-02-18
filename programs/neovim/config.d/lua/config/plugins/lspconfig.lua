@@ -20,8 +20,22 @@ return {
     })
     local configs = {
       lua_ls = {
-        settings = {
-          Lua = {
+        ---@param client vim.lsp.Client
+        ---@return nil
+        on_init = function(client)
+          if client.workspace_folders then
+            local path = client.workspace_folders[1].name
+            if
+              path ~= vim.fn.stdpath 'config'
+              and (
+                vim.loop.fs_stat(vim.fs.joinpath(path, '.luarc.json'))
+                or vim.loop.fs_stat(vim.fs.joinpath(path, '.luarc.jsonc'))
+              )
+            then
+              return
+            end
+          end
+          client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
             runtime = {
               version = 'LuaJIT',
             },
@@ -33,11 +47,17 @@ return {
                 '${3rd}/busted/library',
                 plugin_path 'nvim-insx',
               },
+              ignoreDir = {
+                '**/.direnv',
+              },
             },
             format = {
               enable = false,
             },
-          },
+          })
+        end,
+        settings = {
+          Lua = {},
         },
       },
       omnisharp = {
