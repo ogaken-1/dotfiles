@@ -35,12 +35,14 @@ do
   local abbr_cmdline = require('config.cmdline').abbr_cmdline
   vim.keymap.set('n', ']q', '<Cmd>cnext<CR>')
   vim.keymap.set('n', '[q', '<Cmd>cprevious<CR>')
-  vim.keymap.set('n', '<A-,>', '<Cmd>edit $MYVIMRC<CR>')
   vim.keymap.set('n', '<C-n>', function()
     local search_word = vim.fn.getreg '/'
     -- When no matches found, :vimgrep cause error
     pcall(vim.cmd.vimgrep, { ('\'%s\''):format(search_word), '%' })
   end)
+  vim.keymap.set('n', 'U', '<C-r>')
+  vim.keymap.set('n', '<Space>a', '<Plug>(git)')
+  vim.keymap.set('n', '<Space>f', '<Plug>(ff)')
   -- cmdlineモードでの補完候補の選択には<Tab>を使うので<C-[pn]>は空けて良い。
   -- <Up>/<Down>はカーソル前の入力をリスペクトするのでそちらを使う。
   vim.keymap.set('c', '<C-p>', '<Up>')
@@ -66,16 +68,16 @@ do
     group = gid,
     callback = function(ctx)
       local opts = { buffer = ctx.buf }
-      vim.keymap.set('n', 'ma', '<Cmd>FzfLua lsp_code_actions<CR>', opts)
+      vim.keymap.set('n', 'ma', '<Cmd>lua vim.lsp.buf.code_action()<CR>', opts)
       vim.keymap.set('n', 'mr', '<Cmd>lua vim.lsp.buf.rename()<CR>', opts)
       if vim.fn.maparg('<Plug>(run-format)', 'n') == '' then
         vim.keymap.set('n', '<Plug>(run-format)', function()
           vim.lsp.buf.format { async = true }
         end, opts)
       end
-      vim.keymap.set('n', 'gr', '<Cmd>FzfLua lsp_references<CR>', opts)
+      vim.keymap.set('n', 'gr', '<Plug>(lsp-references)', opts)
       vim.keymap.set('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-      vim.keymap.set('n', 'gi', '<Cmd>FzfLua lsp_implementations<CR>', opts)
+      vim.keymap.set('n', 'gi', '<Plug>(lsp-implementations)', opts)
       vim.keymap.set('n', ']d', '<Cmd>lua vim.diagnostic.goto_next()<CR>', opts)
       vim.keymap.set('n', '[d', '<Cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
 

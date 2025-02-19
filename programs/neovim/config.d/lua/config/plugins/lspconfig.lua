@@ -46,6 +46,7 @@ return {
                 '${3rd}/luv/library',
                 '${3rd}/busted/library',
                 plugin_path 'nvim-insx',
+                plugin_path 'snacks.nvim',
               },
               ignoreDir = {
                 '**/.direnv',
