@@ -32,10 +32,6 @@ return {
   },
   config = function(_, opts)
     Snacks.setup(opts)
-    -- lazygit
-    vim.keymap.set('n', '<Plug>(git)a', Snacks.lazygit.open)
-    vim.keymap.set('n', '<Plug>(git)h', Snacks.lazygit.log)
-    vim.keymap.set('n', '<Plug>(git)H', Snacks.lazygit.log_file)
     -- explorer
     vim.keymap.set('n', '<Space>e', Snacks.picker.explorer)
     -- picker

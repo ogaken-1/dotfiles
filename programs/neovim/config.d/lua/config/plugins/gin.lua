@@ -5,9 +5,10 @@ return {
     'ogaken-1/nvim-gin-preview',
   },
   init = function()
-    local prefix = '<Space>a'
-    vim.keymap.set('n', prefix .. 'c', '<Cmd>Gin commit<CR>')
-    vim.keymap.set('n', prefix .. 'C', '<Cmd>Gin commit --amend<CR>')
+    vim.keymap.set('n', '<Plug>(git)c', '<Cmd>Gin commit<CR>')
+    vim.keymap.set('n', '<Plug>(git)C', '<Cmd>Gin commit --amend<CR>')
+    vim.keymap.set('n', '<Plug>(git)h', '<Cmd>GinLog --graph<CR>')
+    vim.keymap.set('n', '<Plug>(git)H', '<Cmd>GinLog --follow -- %<CR>')
     vim.g.gin_log_persistent_args = {
       '++emojify',
       '--format=%C(green)%h%C(reset) %s %C(bold yellow)%cr%C(reset) %C(bold magenta)<%an>%C(reset) %C(auto)%d%C(reset)',
