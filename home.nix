@@ -15,6 +15,7 @@ in
       azure-cli
       bat
       bc
+      docker-client
       fd
       gcc14
       ghq
