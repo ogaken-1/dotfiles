@@ -21,6 +21,7 @@ in
       ghq
       gnumake
       gnupg
+      jq
       kubectl
       nvd
       postgresql_16
