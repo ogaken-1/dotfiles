@@ -5,11 +5,14 @@ function fish_prompt
 
   if [ "$DEVBOX_SHELL_ENABLED" = "1" ]
     set -a components '(devbox)'
+  else if [ -n "$IN_NIX_SHELL"  ]
+    set -a components '(nix)'
   end
 
   if [ "$CHEZMOI" = '1' ]
     set -a components '(chezmoi)'
   end
+
 
   set -a components "$(sgr color:yellow "$USER")@$(sgr color:magenta "$hostname")"
 
@@ -18,25 +21,7 @@ function fish_prompt
   if [ $status -eq 0 ]
     set -l git_branch (sgr color:magenta (git branch --show-current))
     set -l git_repo_name (sgr color:cyan (basename "$git_repo"))
-
-    function _git_status
-      set -l git_status_row (git status -s | string sub -l 2 | sort | uniq)
-      for char in $git_status_row
-        if [ $char = ' M' ]
-          echo '!'
-        else if [ $char = '??' ]
-          echo '?'
-        else if [ $char = ' D' ]
-          echo 'x'
-        else if [ $char = 'M ' ]
-          echo '+'
-        else if [ $char = 'A ' ]
-          echo '+'
-        end
-      end
-    end
-
-    set -l git_status (sgr color:red "[$(string join '' (_git_status))]")
+    set -l git_status (sgr color:red "[$(git_status_prompt)]")
 
     set -a components "($git_repo_name:$git_branch $git_status)"
   end
