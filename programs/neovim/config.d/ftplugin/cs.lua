@@ -6,3 +6,5 @@ vim.api.nvim_buf_create_user_command(vim.api.nvim_get_current_buf(), 'OpenRazor'
   local razor_file_name = vim.fn.fnamemodify(csharp_file_name, ':r:r') .. '.razor'
   vim.cmd.edit(razor_file_name)
 end, {})
+vim.wo.foldmethod = 'expr'
+vim.wo.foldexpr = [=[v:lua.require('config.ft.cs').foldexpr(v:lnum)]=]
