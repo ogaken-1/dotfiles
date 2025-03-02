@@ -1,9 +1,7 @@
-local M = {}
-
 ---@param lhs string
 ---@param rhs string
 ---@return nil
-function M.abbr_cmdline(lhs, rhs)
+local function abbr_cmdline(lhs, rhs)
   vim.keymap.set('ca', lhs, function()
     local cmdtype = vim.fn.getcmdtype()
     if cmdtype ~= ':' then
@@ -14,4 +12,9 @@ function M.abbr_cmdline(lhs, rhs)
   end, { expr = true })
 end
 
-return M
+-- cmdlineモードでの補完候補の選択には<Tab>を使うので<C-[pn]>は空けて良い。
+-- <Up>/<Down>はカーソル前の入力をリスペクトするのでそちらを使う。
+vim.keymap.set('c', '<C-p>', '<Up>')
+vim.keymap.set('c', '<C-n>', '<Down>')
+abbr_cmdline('w', 'update')
+abbr_cmdline('wq', 'exit')
