@@ -38,5 +38,16 @@ return {
     -- lsp
     vim.keymap.set('n', '<Plug>(lsp-references)', Snacks.picker.lsp_references)
     vim.keymap.set('n', '<Plug>(lsp-implementations)', Snacks.picker.lsp_implementations)
+
+    local picker_actions = require 'snacks.picker.actions'
+    local function jump_or_qflist(picker, _, action)
+      local items = picker:selected()
+      if #items > 1 then
+        picker_actions.qflist(picker)
+        return
+      end
+      picker_actions.jump(picker, _, action)
+    end
+    picker_actions.confirm = jump_or_qflist
   end,
 }
