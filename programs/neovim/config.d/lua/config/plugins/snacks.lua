@@ -21,11 +21,16 @@ return {
     },
   },
   keys = {
-    '<Plug>(git)',
     '<Plug>(ff)',
     '<Plug>(lsp-references)',
     '<Plug>(lsp-implementations)',
   },
+  init = function()
+    ---@diagnostic disable-next-line: duplicate-set-field
+    vim.ui.select = function(...)
+      require('snacks.picker.select').select(...)
+    end
+  end,
   config = function(_, opts)
     Snacks.setup(opts)
     -- picker
