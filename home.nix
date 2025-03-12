@@ -1,7 +1,8 @@
 { inputs }:
 { pkgs, ... }:
 let
-  dirModules = dir: builtins.map (file: dir + "/${file}") (builtins.attrNames (builtins.readDir dir));
+  dirModules =
+    dir: builtins.readDir dir |> builtins.attrNames |> builtins.map (file: dir + "/${file}");
   programs = dirModules ./programs;
 in
 {

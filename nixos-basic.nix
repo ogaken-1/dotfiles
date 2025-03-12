@@ -38,7 +38,7 @@ in
       ];
     };
     extraOptions = ''
-      extra-experimental-features = nix-command flakes
+      extra-experimental-features = nix-command flakes pipe-operators
     '';
     gc = {
       automatic = true;

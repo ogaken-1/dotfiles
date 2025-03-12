@@ -9,7 +9,7 @@ in
   nix = {
     optimise.automatic = true;
     settings = {
-      extra-experimental-features = "nix-command flakes";
+      extra-experimental-features = "nix-command flakes pipe-operators";
     };
   };
   services.nix-daemon.enable = true;

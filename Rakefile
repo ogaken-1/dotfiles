@@ -1,4 +1,4 @@
-ENV["NIX_CONFIG"] = "extra-experimental-features = flakes"
+ENV["NIX_CONFIG"] = "extra-experimental-features = flakes pipe-operators"
 
 def os_config
   uname = `uname -s`.strip
