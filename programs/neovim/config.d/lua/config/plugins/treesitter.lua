@@ -26,7 +26,9 @@ return {
       },
     }
     require('treesitter-context').setup {
-      enable = true,
+      -- 普段から有効化しているとちょっとウザいので
+      -- 欲しいときに:TSContextEnableを使って有効化する
+      enable = false,
     }
   end,
 }
