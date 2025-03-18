@@ -1,0 +1,21 @@
+#!/usr/bin/env -S bash
+set -euo pipefail
+
+file="$1"
+
+if [ ! -f "$file"  ]; then
+  exit 0
+fi
+
+type="$(file --brief --dereference --mime -- "$file")"
+
+if [[ "$type" =~ charset=(.*-ascii|utf-8) ]]; then
+  bat \
+    --style="${BAT_STYLE:-numbers}" \
+    --color=always \
+    --pager=never \
+    --highlight-line=0 \
+    -- "$file"
+else
+  echo "$type"
+fi
