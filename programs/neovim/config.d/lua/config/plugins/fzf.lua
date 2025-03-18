@@ -1,3 +1,5 @@
+local os_cmd = require 'config.os_cmd'
+
 --- buffer, mrw, filesを結合して表示する
 local function smart_open()
   local fzf = require 'fzf-lua'
@@ -10,18 +12,21 @@ local function smart_open()
   }
   -- git statusの取得やiconのロードなど事前に済ませておく
   -- みたいな感じになってるぽい
-  fzf.make_entry.preprocess(opts)
-  local make_entry = function(path)
+  vim.schedule(function()
+    fzf.make_entry.preprocess(opts)
+  end)
+  local function make_entry(path)
     return fzf.make_entry.file(path, opts)
   end
   fzf.fzf_exec(function(next)
     -- 同じ候補を2個表示するようなことはしない
     local seen = {}
-    local function push_if_not_seen(path)
+    local function push_if_not_seen(path, resume)
       path = vim.fn.fnamemodify(path, ':.')
       if not seen[path] then
         seen[path] = true
-        next(make_entry(path))
+        next(make_entry(path), resume)
+        return true
       end
     end
 
@@ -43,10 +48,20 @@ local function smart_open()
     end
 
     -- 3. fdで取得して表示
-    for _, path in ipairs(vim.fn.systemlist { 'fd', '.', cwd }) do
-      push_if_not_seen(path)
-    end
-    next()
+    coroutine.wrap(function()
+      local co = coroutine.running()
+      for path in os_cmd.iter({ 'fd', '.', cwd }, { cwd = cwd }) do
+        local added = push_if_not_seen(path, function()
+          if coroutine.status(co) == 'suspended' then
+            coroutine.resume(co)
+          end
+        end)
+        if added then
+          coroutine.yield()
+        end
+      end
+      next()
+    end)()
   end, {
     prompt = 'files > ',
     actions = {
