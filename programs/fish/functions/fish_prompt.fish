@@ -29,7 +29,14 @@ function fish_prompt
   set -a components (path_shortn "$PWD")
 
   if [ -n "$PGHOST" ]
-    set -a components "$(sgr color:blue "PGHOST"):$PGHOST"
+    set pg_connection_info $PGHOST
+    if [ -n "$PGPORT" ]
+      set pg_connection_info "$pg_connection_info:$PGPORT"
+    end
+    if [ -n "$PGDATABASE" ]
+      set pg_connection_info "$pg_connection_info/$PGDATABASE"
+    end
+    set -a components "$(sgr color:blue "POSTGRES"):$pg_connection_info"
   end
 
   if [ "$previous_command_status" != '0' ]
