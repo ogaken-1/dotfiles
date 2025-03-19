@@ -14,3 +14,9 @@ vim.opt.shiftround = true
 vim.opt.scrolloff = 5
 vim.opt.nrformats:append 'unsigned'
 vim.opt.swapfile = false
+vim.opt.guicursor = {
+  'n-v-c:block',
+  'i-ci-ve:ver25',
+  'r-cr:hor20',
+  'o:hor50',
+}
