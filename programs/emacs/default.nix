@@ -7,7 +7,6 @@ let
   emacsPkg = pkgs.emacsWithPackagesFromUsePackage {
     config = ./init.el;
     defaultInitFile = false;
-    package = pkgs.emacs-unstable;
     alwaysEnsure = false;
     alwaysTangle = false;
     extraEmacsPackages =
