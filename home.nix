@@ -16,6 +16,7 @@ in
       azure-cli
       bc
       docker-client
+      eza
       fd
       gcc14
       ghq
