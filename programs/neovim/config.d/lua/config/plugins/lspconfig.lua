@@ -80,6 +80,7 @@ return {
             AnalyzeOpenDocumentsOnly = true,
           },
         },
+        root_dir = util.root_pattern { '*.sln', '*.slnx', '*.csproj', '*.vbproj' },
       },
       denols = {
         root_dir = util.root_pattern { 'deno.json', 'deno.jsonc', 'denops' },
