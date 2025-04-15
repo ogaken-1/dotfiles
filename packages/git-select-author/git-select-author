@@ -1,0 +1,7 @@
+#!/usr/bin/env -S bash
+
+# Usage: git commit --amend --author=$(git select-author)
+
+set -euo pipefail
+preview_cmd='git --no-pager log --author={} --oneline --color=always --color-words --format="%C(green)%h%C(reset) %C(yellow)%ad%C(reset) %s" --date=short | head -n 100'
+git log --format='%an <%ae>' | sort -u | fzf --preview "$preview_cmd"
