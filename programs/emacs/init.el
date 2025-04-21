@@ -227,21 +227,20 @@ Text scale:
            (completion-category-overrides . '((file (styles partial-completion))
                                               ;; consult-lineでorderless+migemoによるマッチを使う
                                               (consult-location (styles orderless+migemo)))))
+  :require orderless
   :config
-  (eval-and-compile
-    (require 'orderless)
-    (defun orderless-migemo (component)
-      "componentが2文字以上であればmigemoでパターンを作って返す"
-      (if (length< component 2) ; 短い文字数でmigemoするとregexpが複雑になりすぎてやばい
-          component
-        (let ((pattern (migemo-get-pattern component)))
-          (condition-case nil
-              (progn (string-match-p pattern "") pattern)
-            (invalid-regexp nil)))))
-    (orderless-define-completion-style orderless+migemo
-      (orderless-matching-styles '(orderless-literal
-                                   orderless-regexp
-                                   orderless-migemo)))))
+  (defun orderless-migemo (component)
+    "componentが2文字以上であればmigemoでパターンを作って返す"
+    (if (length< component 2) ; 短い文字数でmigemoするとregexpが複雑になりすぎてやばい
+        component
+      (let ((pattern (migemo-get-pattern component)))
+        (condition-case nil
+            (progn (string-match-p pattern "") pattern)
+          (invalid-regexp nil)))))
+  (orderless-define-completion-style orderless+migemo
+    (orderless-matching-styles '(orderless-literal
+                                 orderless-regexp
+                                 orderless-migemo))))
 
 (leaf embark
   :doc "Conveniently act on minibuffer completions."
@@ -285,28 +284,27 @@ Text scale:
   :defvar eglot-server-programs
   :defun eglot--server-info
   :config
-  (eval-and-compile
-    (defun c/eglot-server-configuration (server)
-      "workspace/didChangeConfigurationのparams.settingsに渡すオブジェクトを返す"
-      (pcase (plist-get (eglot--server-info server) :name)
-        ("OmniSharp"
-         '((:FormattingOptions . ((EnableEditorConfigSupport . t)
-                                  (OrganizeImports . :json-false)))
-           (:MsBuild . ((LoadProjectsOnDemand . :json-false)))
-           (:RoslynExtensionsOptions . ((EnableAnalyzersSupport . t)
-                                        (EnableImportCompletion . :json-false)
-                                        (AnalyzeOpenDocumentsOnly . t)))))
-        ("vtsls"
-         '((:typescript . ((updateImportsOnFileMove . "always")))
-           (:javascript . ((updateImportsOnFileMove . "always")))
-           (:vtsls . ((experimental . ((completion . ((entriesLimit . 500)))  ; 最大候補数を制限しないとけっこう遅い
-                                       (enableMoveToFileCodeAction . t)))))))))
-    (defun c/set-eglot-server-program (modes command-list)
-      "`eglot-server-programs'の一部を更新する"
-      (if (assoc modes eglot-server-programs #'equal)
-          (setf (alist-get modes eglot-server-programs nil nil #'equal)
-                command-list)
-        (add-to-list 'eglot-server-programs (cons modes command-list)))))
+  (defun c/eglot-server-configuration (server)
+    "workspace/didChangeConfigurationのparams.settingsに渡すオブジェクトを返す"
+    (pcase (plist-get (eglot--server-info server) :name)
+      ("OmniSharp"
+       '((:FormattingOptions . ((EnableEditorConfigSupport . t)
+                                (OrganizeImports . :json-false)))
+         (:MsBuild . ((LoadProjectsOnDemand . :json-false)))
+         (:RoslynExtensionsOptions . ((EnableAnalyzersSupport . t)
+                                      (EnableImportCompletion . :json-false)
+                                      (AnalyzeOpenDocumentsOnly . t)))))
+      ("vtsls"
+       '((:typescript . ((updateImportsOnFileMove . "always")))
+         (:javascript . ((updateImportsOnFileMove . "always")))
+         (:vtsls . ((experimental . ((completion . ((entriesLimit . 500)))  ; 最大候補数を制限しないとけっこう遅い
+                                     (enableMoveToFileCodeAction . t)))))))))
+  (defun c/set-eglot-server-program (modes command-list)
+    "`eglot-server-programs'の一部を更新する"
+    (if (assoc modes eglot-server-programs #'equal)
+        (setf (alist-get modes eglot-server-programs nil nil #'equal)
+              command-list)
+      (add-to-list 'eglot-server-programs (cons modes command-list))))
   (setq-default eglot-workspace-configuration #'c/eglot-server-configuration)
   (c/set-eglot-server-program
    '(csharp-ts-mode)

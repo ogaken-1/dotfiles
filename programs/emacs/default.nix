@@ -14,33 +14,14 @@ let
         treesit-grammars.with-all-grammars
       ];
   };
-  byteCompile =
-    { src, name }:
-    pkgs.runCommand name
-      {
-        buildInputs = [ emacsPkg ];
-        XDG_DATA_HOME = "${config.xdg.dataHome}";
-      }
-      ''
-        cp ${src} src.el
-        emacs --batch \
-          --funcall batch-byte-compile src.el
-        cp src.elc $out
-      '';
 in
 {
   home.file = {
-    "${config.xdg.configHome}/emacs/init.elc" = {
-      source = byteCompile {
-        src = ./init.el;
-        name = "init.elc";
-      };
+    "${config.xdg.configHome}/emacs/init.el" = {
+      source = ./init.el;
     };
-    "${config.xdg.configHome}/emacs/early-init.elc" = {
-      source = byteCompile {
-        src = ./early-init.el;
-        name = "early-init.elc";
-      };
+    "${config.xdg.configHome}/emacs/early-init.el" = {
+      source = ./early-init.el;
     };
   };
   home.packages = with pkgs; [
