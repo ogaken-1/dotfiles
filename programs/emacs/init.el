@@ -505,7 +505,12 @@ Text scale:
   :custom ((dashboard-items . '((projects . 5)
                                 (recents . 5)
                                 (bookmarks . 5))))
-  :config (dashboard-setup-startup-hook))
+  :config
+  ;; daemonのときはstartupでdashboardを表示しても意味ない
+  (dashboard-setup-startup-hook)
+  (if (daemonp)
+      (setq initial-buffer-choice
+            (lambda () (get-buffer-create dashboard-buffer-name)))))
 
 (leaf spacious-padding
   :doc "Increase the padding/spacing of frames and windows"
