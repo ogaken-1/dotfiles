@@ -441,14 +441,16 @@ Text scale:
   :ensure t
   :mode ("\\.vb\\'" . basic-generic-mode))
 
-(defun c/skk-jisyo-files ()
-  "List SKK dictionary files in $SKK_DICT_DIRS."
-  (let ((dict-dirs (split-string (or (getenv "SKK_DICT_DIRS") "") ":")))
-    (seq-mapcat
-     (lambda (dir)
-       (when (file-directory-p dir)
-         (directory-files-recursively dir "SKK-JISYO" t)))
-     dict-dirs)))
+(leaf f
+  :doc "Modern API for working with files and directories."
+  :commands f-join)
+
+(defun c/skk-jisyo-files (&optional dict-dir)
+  "List SKK dictionary files in `dict-dir'."
+  (let ((dict-dir (or dict-dir
+                      ;; home-managerで配置される場所がデフォルト
+                      (f-join (getenv "HOME") ".nix-profile/share/skk"))))
+    (directory-files dict-dir t "SKK-JISYO" t)))
 
 (leaf ddskk
   :doc "Simple Kana to Kanji conversion program"
@@ -456,7 +458,7 @@ Text scale:
   :bind ("C-x C-j" . skk-mode)
   :custom `((skk-use-azik . t)
             (skk-azik-keyboard-type . "us101")
-            (skk-jisyo . ,(string-join `(,(getenv "XDG_DATA_HOME") "skk" "user-jisyo") "/"))
+            (skk-jisyo . ,(f-join (getenv "XDG_DATA_HOME") "skk" "user-jisyo"))
             (skk-extra-jisyo-file-list . `,(c/skk-jisyo-files))
             (skk-jisyo-code . "utf-8")
             (skk-egg-like-newline . t)

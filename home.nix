@@ -33,6 +33,9 @@ in
       vim
       wget
       git-select-author
+      skkDictionaries.l
+      skkDictionaries.jinmei
+      skkDictionaries.geo
     ];
   };
   xdg.enable = true;

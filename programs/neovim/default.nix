@@ -27,16 +27,6 @@
       yaml-language-server
     ];
     sessionVariables = {
-      SKK_DICT_DIRS =
-
-        with pkgs.skkDictionaries;
-        [
-          l
-          jinmei
-          geo
-        ]
-        |> map (d: "${d}/share/skk")
-        |> builtins.concatStringsSep ":";
       MANPAGER = "${pkgs.neovim}/bin/nvim +Man!";
     };
   };
