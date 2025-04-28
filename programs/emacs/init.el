@@ -642,6 +642,11 @@ Git gutter:
   (add-to-list 'treesit-language-source-alist '(markdown "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown/src"))
   (add-to-list 'treesit-language-source-alist '(markdown-inline "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown-inline/src")))
 
+(leaf neotree
+  :doc "A tree plugin like NerdTree for Vim."
+  :added "2025-04-28"
+  :ensure t)
+
 (provide 'init)
 
 ;; Local Variables:
