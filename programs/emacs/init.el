@@ -373,14 +373,29 @@ Text scale:
   :config
   (set-language-environment "Japanese"))
 
-(leaf zenburn-theme
-  :doc "A low contrast color theme for Emacs"
-  :ensure t)
-
-(leaf catppuccin-theme
-  :doc "Catppuccin for Emacs - 🍄 Soothing pastel theme for Emacs"
-  :ensure t
-  :config (load-theme 'catppuccin t))
+(leaf theme
+  :doc "Color theme of emacs."
+  :added "2025-04-30"
+  :config
+  (leaf zenburn-theme
+    :doc "A low contrast color theme for Emacs"
+    :added "2024-12-07"
+    :ensure t)
+  (leaf catppuccin-theme
+    :doc "Catppuccin for Emacs - 🍄 Soothing pastel theme for Emacs"
+    :added "2025-01-11"
+    :ensure t)
+  ;; terminal環境の場合はzenburnを使う (catppuccinだと見えない)
+  (defun c/load-theme (&optional frame)
+    (with-selected-frame (or frame (selected-frame))
+      (load-theme
+       (if (display-graphic-p)
+           'catppuccin
+         'zenburn)
+       t)))
+  (if (daemonp)
+      (add-to-list 'after-make-frame-functions 'c/load-theme)
+    (c/load-theme)))
 
 (leaf nix-mode
   :doc "Major mode for editing .nix files"
