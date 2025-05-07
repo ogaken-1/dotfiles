@@ -271,6 +271,14 @@ Text scale:
   :bind ((corfu-map
           ("C-s" . #'corfu-insert-separator))))
 
+(leaf corfu-terminal
+  :doc "Corfu popup on terminal."
+  :added "2025-04-30"
+  :ensure t
+  :config
+  (unless (display-graphic-p)
+    (corfu-terminal-mode 1)))
+
 (leaf cape
   :doc "Completion At Point Extensions"
   :ensure t
