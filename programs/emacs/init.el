@@ -208,10 +208,14 @@ Text scale:
   :bind (("C-M-s r" . #'affe-grep)
          ("C-M-s f" . #'affe-find)))
 
+(leaf f
+  :doc "Modern API for working with files and directories."
+  :commands f-join)
+
 (leaf migemo
   :doc "Japanese incremental search through dynamic pattern expansion"
   :ensure t
-  :custom `((migemo-dictionary . `,(getenv "MIGEMO_UTF8_DICT"))
+  :custom `((migemo-dictionary . `,(f-join (getenv "HOME") ".nix-profile/share/migemo/utf-8/migemo-dict"))
             (migemo-user-dictionary . nil)
             (migemo-regex-dictionary . nil)
             (migemo-coding-system . 'utf-8-unix))
@@ -453,10 +457,6 @@ Text scale:
   :doc "Major mode for editing BASIC code"
   :ensure t
   :mode ("\\.vb\\'" . basic-generic-mode))
-
-(leaf f
-  :doc "Modern API for working with files and directories."
-  :commands f-join)
 
 (defun c/skk-jisyo-files (&optional dict-dir)
   "List SKK dictionary files in `dict-dir'."

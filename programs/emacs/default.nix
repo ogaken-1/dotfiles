@@ -29,9 +29,6 @@ in
     emacs-lsp-booster
     emacsPkg
   ];
-  home.sessionVariables = {
-    MIGEMO_UTF8_DICT = "${pkgs.cmigemo}/share/migemo/utf-8/migemo-dict";
-  };
   services.emacs = {
     enable = true;
     package = emacsPkg;
