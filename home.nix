@@ -28,6 +28,7 @@ in
       nvd
       postgresql_16
       ripgrep
+      ruby
       rustup
       tailscale
       vim

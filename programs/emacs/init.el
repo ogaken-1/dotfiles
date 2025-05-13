@@ -594,6 +594,28 @@ Git gutter:
   (evil-want-C-d-scroll . t)
   (evil-want-Y-yank-to-eol . t))
 
+(leaf inf-ruby
+  :doc "Run a Ruby process in a buffer."
+  :added "2025-04-30"
+  :ensure t
+  :hook ((ruby-mode-hook . inf-ruby-minor-mode)
+         (ruby-ts-mode-hook . inf-ruby-minor-mode)))
+
+(leaf rubocop
+  :doc "An Emacs interface for RuboCop."
+  :added "2025-04-30"
+  :ensure t
+  :hook ((ruby-mode-hook . rubocop-mode)
+         (ruby-ts-mode-hook . rubocop-mode)))
+
+(leaf ruby-electric
+  :doc "Minor mode for electrically editing ruby code."
+  :added "2025-04-30"
+  :ensure t
+  :hook ((ruby-mode-hook . ruby-electric-mode)
+         (ruby-ts-mode-hook . ruby-electric-mode))
+  :custom ((ruby-electric-expand-delimiters-list . nil)))
+
 (provide 'init)
 
 ;; Local Variables:
