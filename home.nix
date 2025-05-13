@@ -16,6 +16,7 @@ in
     packages = with pkgs; [
       azure-cli
       bc
+      devenv
       docker-client
       eza
       fd
