@@ -96,10 +96,10 @@ return {
     for name, config in pairs(configs) do
       lspconfig[name].setup(config)
     end
+    if 1 == vim.fn.executable 'biome' then
+      lspconfig.biome.setup {}
+    end
     if 1 == vim.fn.executable 'pnpm' then
-      lspconfig.biome.setup {
-        cmd = { 'pnpm', 'biome', 'lsp-proxy' },
-      }
       lspconfig.tsp_server.setup {
         cmd = { 'pnpm', 'tsp-server', '--stdio' },
       }
