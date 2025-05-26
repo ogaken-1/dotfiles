@@ -507,6 +507,22 @@ Text scale:
   :config
   (add-to-list 'org-babel-load-languages '(shell . t)))
 
+(leaf ox-typst
+  :doc "Typst Back-End for Org Export Engine."
+  :added "2025-05-26"
+  :ensure t
+  :after org
+  :config
+  (add-to-list 'org-export-backends 'typst))
+
+(leaf ox-hugo
+  :doc "Hugo Markdown Back-End for Org Export Engine."
+  :added "2025-05-26"
+  :ensure t
+  :after org
+  :config
+  (add-to-list 'org-export-backends 'hugo))
+
 (leaf org-modern
   :doc "Modern looks for Org."
   :ensure t
