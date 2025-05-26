@@ -34,7 +34,6 @@ if ok then
       },
     },
   }
-  vim.opt.cmdheight = 0
 end
 
 -- vim:ft=lua et ts=2 sw=2
