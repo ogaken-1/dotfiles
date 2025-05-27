@@ -526,6 +526,7 @@ Text scale:
 (leaf org-modern
   :doc "Modern looks for Org."
   :ensure t
+  :after org
   :global-minor-mode global-org-modern-mode)
 
 (leaf dashboard
