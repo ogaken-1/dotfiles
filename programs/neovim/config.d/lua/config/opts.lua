@@ -20,3 +20,5 @@ vim.opt.guicursor = {
   'r-cr:hor20',
   'o:hor50',
 }
+vim.opt.list = true
+vim.opt.listchars:prepend 'tab:-->'
