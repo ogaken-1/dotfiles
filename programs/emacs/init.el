@@ -507,6 +507,11 @@ Text scale:
   :config
   (add-to-list 'org-babel-load-languages '(shell . t)))
 
+(leaf org-pomodoro
+  :doc "Pomodoro implementation for org-mode."
+  :added "2025-05-27"
+  :ensure t)
+
 (leaf ox-typst
   :doc "Typst Back-End for Org Export Engine."
   :added "2025-05-26"
