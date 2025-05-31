@@ -72,7 +72,7 @@
 (leaf face-remap
   :doc "Functions for managing `face-remapping-alist'."
   :tag "builtin"
-  :bind ("C-c +" . #'hydra-text-scale/body)
+  :bind ("C-c +" . hydra-text-scale/body)
   :hydra (hydra-text-scale (:hint nil) "
 Text scale:
   _i_: increase    _q_: quit
