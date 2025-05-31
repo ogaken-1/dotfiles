@@ -628,6 +628,11 @@ Git gutter:
          (ruby-ts-mode-hook . ruby-electric-mode))
   :custom ((ruby-electric-expand-delimiters-list . nil)))
 
+(leaf typst-ts-mode
+  :doc "Tree Sitter support for Typst."
+  :added "2025-05-31"
+  :ensure t)
+
 (provide 'init)
 
 ;; Local Variables:
