@@ -1,3 +1,0 @@
-[dbContext]
-prefix = "using var dbContext"
-body = """using var dbContext = dbContextFactory.CreateDbContext();"""
