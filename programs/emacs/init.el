@@ -633,6 +633,15 @@ Git gutter:
   :added "2025-05-31"
   :ensure t)
 
+(leaf markdown-ts-mode
+  :doc "Major mode for Markdown using Treesitter"
+  :added "2025-04-24"
+  :ensure t
+  :mode ("\\.md\\'")
+  :config
+  (add-to-list 'treesit-language-source-alist '(markdown "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown/src"))
+  (add-to-list 'treesit-language-source-alist '(markdown-inline "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown-inline/src")))
+
 (provide 'init)
 
 ;; Local Variables:
