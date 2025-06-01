@@ -1,5 +1,5 @@
 return {
-  'hrsh7th/nvim-xi',
+  'hrsh7th/nvim-ix',
   dependencies = {
     'hrsh7th/nvim-cmp-kit',
   },
@@ -9,33 +9,37 @@ return {
   },
   config = function()
     vim.o.winborder = 'rounded'
-    local xi = require 'xi'
+    local ix = require 'ix'
     vim.lsp.config('*', {
-      capabilities = xi.get_capabilities(),
+      capabilities = ix.get_capabilities(),
     })
-    xi.setup()
+    ix.setup {
+      expand_snippet = function(snippet)
+        vim.snippet.expand(snippet)
+      end,
+    }
 
     -- menu
-    xi.charmap({ 'i', 'c' }, '<C-d>', xi.action.scroll(3))
-    xi.charmap({ 'i', 'c' }, '<C-u>', xi.action.scroll(-3))
+    ix.charmap({ 'i', 'c' }, '<C-d>', ix.action.scroll(3))
+    ix.charmap({ 'i', 'c' }, '<C-u>', ix.action.scroll(-3))
 
     -- cmdline completion
     -- xi.charmap('c', '<Tab>', xi.action.completion.complete())
-    xi.charmap('c', '<Tab>', xi.action.completion.select_next())
-    xi.charmap('c', '<S-Tab>', xi.action.completion.select_prev())
-    xi.charmap('c', '<CR>', xi.action.completion.commit_cmdline())
+    ix.charmap('c', '<Tab>', ix.action.completion.select_next())
+    ix.charmap('c', '<S-Tab>', ix.action.completion.select_prev())
+    ix.charmap('c', '<CR>', ix.action.completion.commit_cmdline())
 
     -- insert mode completion
-    xi.charmap('i', '<C-o>', xi.action.completion.complete())
-    xi.charmap('i', '<C-n>', xi.action.completion.select_next())
-    xi.charmap('i', '<C-p>', xi.action.completion.select_prev())
-    xi.charmap('i', '<CR>', xi.action.completion.commit { select_first = true, replace = true })
+    ix.charmap('i', '<C-o>', ix.action.completion.complete())
+    ix.charmap('i', '<C-n>', ix.action.completion.select_next())
+    ix.charmap('i', '<C-p>', ix.action.completion.select_prev())
+    ix.charmap('i', '<CR>', ix.action.completion.commit { select_first = true, replace = true })
 
-    xi.charmap({ 'i', 'c' }, '<C-e>', xi.action.completion.close())
+    ix.charmap({ 'i', 'c' }, '<C-e>', ix.action.completion.close())
 
     -- signature help
-    xi.charmap('i', '<C-o>', xi.action.signature_help.trigger())
-    xi.charmap('i', '<C-j>', xi.action.signature_help.select_next())
-    xi.charmap('i', '<C-k>', xi.action.signature_help.select_prev())
+    ix.charmap('i', '<C-o>', ix.action.signature_help.trigger())
+    ix.charmap('i', '<C-j>', ix.action.signature_help.select_next())
+    ix.charmap('i', '<C-k>', ix.action.signature_help.select_prev())
   end,
 }
