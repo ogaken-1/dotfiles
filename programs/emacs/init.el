@@ -369,6 +369,12 @@ Text scale:
   :ensure t
   :bind ("C-x g" . #'magit-status))
 
+(leaf magit-delta
+  :doc "Use Delta when displaying diffs in Magit."
+  :ensure t
+  :added "2025-06-06"
+  :hook (magit-mode-hook))
+
 (leaf direnv
   :doc "Direnv integration."
   :ensure t
