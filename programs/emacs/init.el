@@ -506,7 +506,7 @@ Text scale:
            (org-log-reschedule . 'note)
            (org-log-redeadline . 'note)
            (org-log-into-drawer . "LOGBOOK")
-           (org-startup-folded . t)
+           (org-startup-folded . 'content)
            (org-enforce-todo-dependencies . t)
            (org-enforce-todo-checkbox-dependencies . t))
   :defvar org-babel-load-languages
