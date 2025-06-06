@@ -22,3 +22,10 @@
   (let '(font "CaskaydiaCove NFM")
     (if (fontp font)
         (set-frame-font font))))
+
+(leaf tab-bar
+  :doc "frame-local tabs with named persistent window configurations."
+  :added "2025-06-04"
+  :tag "builtin"
+  :custom ((tab-bar-new-tab-choice . "*scratch*")
+           (tab-bar-mode . t)))
