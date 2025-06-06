@@ -330,7 +330,8 @@ Text scale:
    '((typescript-ts-mode :language-id "typescript")
      (tsx-ts-mode :language-id "typescriptreact"))
    '("vtsls" "--stdio"))
-  (c/set-eglot-server-program '(nix-mode) '("nixd")))
+  (c/set-eglot-server-program '(nix-mode) '("nixd"))
+  (c/set-eglot-server-program '(typst-ts-mode) '("tinymist")))
 
 (leaf eglot-booster
   :when (executable-find "emacs-lsp-booster")
