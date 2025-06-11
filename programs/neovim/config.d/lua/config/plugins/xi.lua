@@ -20,26 +20,26 @@ return {
     }
 
     -- menu
-    ix.charmap({ 'i', 'c' }, '<C-d>', ix.action.scroll(3))
-    ix.charmap({ 'i', 'c' }, '<C-u>', ix.action.scroll(-3))
+    vim.keymap.set({ 'i', 'c' }, '<C-d>', ix.action.scroll(3))
+    vim.keymap.set({ 'i', 'c' }, '<C-u>', ix.action.scroll(-3))
 
     -- cmdline completion
-    -- xi.charmap('c', '<Tab>', xi.action.completion.complete())
-    ix.charmap('c', '<Tab>', ix.action.completion.select_next())
-    ix.charmap('c', '<S-Tab>', ix.action.completion.select_prev())
-    ix.charmap('c', '<CR>', ix.action.completion.commit_cmdline())
+    -- vim.keymap.set('c', '<Tab>', xi.action.completion.complete())
+    vim.keymap.set('c', '<Tab>', ix.action.completion.select_next())
+    vim.keymap.set('c', '<S-Tab>', ix.action.completion.select_prev())
+    vim.keymap.set('c', '<CR>', ix.action.completion.commit_cmdline())
 
     -- insert mode completion
-    ix.charmap('i', '<C-o>', ix.action.completion.complete())
-    ix.charmap('i', '<C-n>', ix.action.completion.select_next())
-    ix.charmap('i', '<C-p>', ix.action.completion.select_prev())
-    ix.charmap('i', '<CR>', ix.action.completion.commit { select_first = true, replace = true })
+    vim.keymap.set('i', '<C-o>', ix.action.completion.complete())
+    vim.keymap.set('i', '<C-n>', ix.action.completion.select_next())
+    vim.keymap.set('i', '<C-p>', ix.action.completion.select_prev())
+    vim.keymap.set('i', '<CR>', ix.action.completion.commit { select_first = true, replace = true })
 
-    ix.charmap({ 'i', 'c' }, '<C-e>', ix.action.completion.close())
+    vim.keymap.set({ 'i', 'c' }, '<C-e>', ix.action.completion.close())
 
     -- signature help
-    ix.charmap('i', '<C-o>', ix.action.signature_help.trigger())
-    ix.charmap('i', '<C-j>', ix.action.signature_help.select_next())
-    ix.charmap('i', '<C-k>', ix.action.signature_help.select_prev())
+    vim.keymap.set('i', '<C-o>', ix.action.signature_help.trigger())
+    vim.keymap.set('i', '<C-j>', ix.action.signature_help.select_next())
+    vim.keymap.set('i', '<C-k>', ix.action.signature_help.select_prev())
   end,
 }
