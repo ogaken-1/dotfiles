@@ -404,7 +404,11 @@ Text scale:
     :doc "Catppuccin for Emacs - 🍄 Soothing pastel theme for Emacs"
     :added "2025-01-11"
     :ensure t)
-  (load-theme 'modus-operandi t))
+  (leaf doom-themes
+    :doc "An opinionated pack of modern color-themes."
+    :added "2025-06-04"
+    :ensure t)
+  (load-theme 'doom-homage-white t))
 
 (leaf nix-mode
   :doc "Major mode for editing .nix files"
