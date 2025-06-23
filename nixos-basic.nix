@@ -29,7 +29,17 @@ in
     rounded-mgenplus
     noto-fonts-color-emoji
   ];
-
+  environment = {
+    systemPackages = with pkgs; [
+      man-pages
+      man-pages-posix
+    ];
+  };
+  documentation = {
+    dev = {
+      enable = true;
+    };
+  };
   nix = {
     settings = {
       trusted-users = [
