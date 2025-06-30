@@ -17,6 +17,15 @@ return {
       expand_snippet = function(snippet)
         vim.snippet.expand(snippet)
       end,
+      attach = {
+        cmdline_mode = function()
+          local service = ix.get_completion_service { recreate = true }
+          if vim.fn.getcmdtype() == ':' then
+            service:register_source(ix.source.completion.path(), { group = 1 })
+            service:register_source(ix.source.completion.cmdline(), { group = 10 })
+          end
+        end,
+      },
     }
 
     -- menu
