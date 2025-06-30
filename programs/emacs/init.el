@@ -483,7 +483,7 @@ Text scale:
             (skk-jisyo . ,(f-join (getenv "XDG_DATA_HOME") "skk" "user-jisyo"))
             (skk-extra-jisyo-file-list . `,(c/skk-jisyo-files))
             (skk-jisyo-code . "utf-8")
-            (skk-egg-like-newline . t)
+            (skk-egg-like-newline . nil)
             (skk-dcomp-activate . t))
   :init
   (leaf ddskk-posframe

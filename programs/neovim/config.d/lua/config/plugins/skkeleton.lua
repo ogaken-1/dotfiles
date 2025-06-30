@@ -20,7 +20,7 @@ return {
       vim.fn['skkeleton#config'] {
         kanaTable = 'azik',
         completionRankFile = vim.fs.joinpath(vim.uv.os_getenv 'XDG_DATA_HOME', 'skk', 'rank.json'),
-        eggLikeNewline = true,
+        eggLikeNewline = false,
         globalDictionaries = read_dict(dict_dir),
         sources = { 'skk_dictionary' },
         userDictionary = vim.fs.joinpath(vim.uv.os_getenv 'XDG_DATA_HOME', 'skk', 'user-jisyo'),
