@@ -642,7 +642,8 @@ Git gutter:
 (leaf typst-ts-mode
   :doc "Tree Sitter support for Typst."
   :added "2025-05-31"
-  :ensure t)
+  :ensure t
+  :custom ((typst-ts-indent-offset . 2)))
 
 (leaf markdown-ts-mode
   :doc "Major mode for Markdown using Treesitter"
