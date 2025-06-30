@@ -23,17 +23,4 @@ vim.filetype.add {
   },
 }
 
-local ok, extui = pcall(require, 'vim._extui')
-if ok then
-  extui.enable {
-    enable = true,
-    msg = {
-      pos = 'cmd',
-      box = {
-        timeout = 5000,
-      },
-    },
-  }
-end
-
 -- vim:ft=lua et ts=2 sw=2
