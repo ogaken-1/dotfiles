@@ -22,22 +22,22 @@ in
       fd
       gcc14
       ghq
+      git-select-author
       gnumake
       gnupg
       jq
       kubectl
       nvd
-      postgresql_16
+      pgcli
       ripgrep
       ruby
       rustup
+      skkDictionaries.geo
+      skkDictionaries.jinmei
+      skkDictionaries.l
       tailscale
       vim
       wget
-      git-select-author
-      skkDictionaries.l
-      skkDictionaries.jinmei
-      skkDictionaries.geo
     ];
   };
   xdg.enable = true;
