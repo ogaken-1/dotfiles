@@ -10,9 +10,6 @@ return {
   config = function()
     vim.o.winborder = 'rounded'
     local ix = require 'ix'
-    vim.lsp.config('*', {
-      capabilities = ix.get_capabilities(),
-    })
     ix.setup {
       expand_snippet = function(snippet)
         vim.snippet.expand(snippet)
