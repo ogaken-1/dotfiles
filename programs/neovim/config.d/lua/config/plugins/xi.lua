@@ -3,7 +3,7 @@ return {
   dependencies = {
     'hrsh7th/nvim-cmp-kit',
   },
-  events = {
+  event = {
     'InsertEnter',
     'CmdlineEnter',
   },
