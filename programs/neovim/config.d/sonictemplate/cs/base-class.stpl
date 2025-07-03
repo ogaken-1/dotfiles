@@ -1,6 +1,0 @@
-namespace {{_expr_:config#sonictemplate#lang#cs#namespace()}};
-
-public class {{_expr_:config#sonictemplate#lang#cs#classname()}}
-{
-	{{_cursor_}}
-}
