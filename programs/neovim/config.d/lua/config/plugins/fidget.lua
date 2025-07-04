@@ -1,5 +1,5 @@
 return {
   'j-hui/fidget.nvim',
   opts = {},
-  events = { 'BufReadPost', 'BufNewFile' },
+  event = { 'BufReadPost', 'BufNewFile' },
 }

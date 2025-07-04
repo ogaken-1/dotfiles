@@ -1,6 +1,6 @@
 return {
   'mattn/vim-findroot',
-  events = { 'BufReadPost', 'BufNewFile' },
+  event = { 'BufReadPost', 'BufNewFile' },
   init = function()
     vim.g.findroot_patterns = {
       '.git/',

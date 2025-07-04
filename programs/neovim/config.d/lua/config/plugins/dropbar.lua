@@ -1,4 +1,4 @@
 return {
   'Bekaboo/dropbar.nvim',
-  events = { 'FileType' },
+  event = { 'FileType' },
 }
