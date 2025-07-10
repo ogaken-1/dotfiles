@@ -26,6 +26,7 @@ in
       gnupg
       jq
       kubectl
+      mermaid-cli
       nvd
       pgcli
       ripgrep

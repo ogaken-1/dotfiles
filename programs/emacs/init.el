@@ -539,6 +539,26 @@ Text scale:
   :config
   (add-to-list 'org-export-backends 'hugo))
 
+(leaf ob-mermaid
+  :doc "Org-babel support for mermaid evaluation."
+  :added "2025-07-05"
+  :ensure t
+  :commands org-babel-execute:mermaid
+  :init
+  (with-eval-after-load 'org-src
+    (add-to-list 'org-src-lang-modes '("mermaid" . mermaid))))
+
+(leaf mermaid-mode
+  :doc "Major mode for working with mermaid graphs."
+  :added "2025-07-05"
+  :ensure t
+  :mode ("\\.mermaid\\'" "\\.mmd\\'"))
+
+(leaf htmlize
+  :doc "Convert buffer text and decorations to HTML."
+  :added "2025-07-07"
+  :ensure t)
+
 (leaf org-modern
   :doc "Modern looks for Org."
   :ensure t
