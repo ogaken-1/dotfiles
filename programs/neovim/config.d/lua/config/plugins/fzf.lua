@@ -14,6 +14,12 @@ return {
       cwd_only = true,
       include_current_session = true,
     },
+    blines = {
+      fzf_opts = {
+        ['--exact'] = true,
+        ['--no-sort'] = true,
+      },
+    },
   },
   keys = {
     '<Plug>(ff)',
@@ -35,7 +41,7 @@ return {
     vim.keymap.set('n', '<Plug>(ff)f', require 'config.plugins.fzf.sources.smart-open')
     vim.keymap.set('n', '<Plug>(ff)b', '<Cmd>FzfLua buffers<CR>')
     vim.keymap.set('n', '<Plug>(ff)h', '<Cmd>FzfLua helptags<CR>')
-    vim.keymap.set('n', '<Plug>(ff)/', '<Cmd>FzfLua lines<CR>')
+    vim.keymap.set('n', '<Plug>(ff)/', '<Cmd>FzfLua blines<CR>')
     vim.keymap.set('n', '<Plug>(ff)?', '<Cmd>FzfLua live_grep<CR>')
 
     vim.keymap.set('n', '<Plug>(lsp-references)', '<Cmd>FzfLua lsp_references<CR>')
