@@ -484,7 +484,10 @@ Text scale:
             (skk-extra-jisyo-file-list . `,(c/skk-jisyo-files))
             (skk-jisyo-code . "utf-8")
             (skk-egg-like-newline . nil)
-            (skk-dcomp-activate . t))
+            (skk-dcomp-activate . t)
+            ;; vimのskkと個人辞書を共有しているため、頻繁に書き込みをしないと競合する。
+            ;; 人間の制約があるため、同時タイミングでの書き込みは発生し得ないので考慮しなくて良い。
+            (skk-save-jisyo-instantly . t))
   :init
   (leaf ddskk-posframe
     :doc "Show Henkan tooltip for ddskk via posframe"
