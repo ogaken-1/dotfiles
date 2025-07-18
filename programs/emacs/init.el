@@ -588,9 +588,7 @@ Text scale:
 (leaf dashboard
   :doc "A startup screen extracted from Spacemacs"
   :ensure t
-  :custom ((dashboard-items . '((projects . 5)
-                                (recents . 5)
-                                (bookmarks . 5))))
+  :custom ((dashboard-items . '((recents . 10))))
   :config
   ;; daemonのときはstartupでdashboardを表示しても意味ない
   (dashboard-setup-startup-hook)
