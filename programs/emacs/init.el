@@ -650,12 +650,23 @@ Git gutter:
 (leaf evil
   :doc "Extensible vi layer."
   :ensure t
-  :hook
-  (evil-insert-state-exit-hook . corfu-quit)
-  :custom
-  (evil-want-C-u-scroll . t)
-  (evil-want-C-d-scroll . t)
-  (evil-want-Y-yank-to-eol . t))
+  :custom ((evil-want-C-u-scroll . t)
+           (evil-want-C-d-scroll . t)
+           (evil-want-Y-yank-to-eol . t)
+           (evil-want-integeration . t)
+           (evil-want-keybinding . nil))
+  :global-minor-mode t)
+
+(leaf evil-collection
+  :doc "A set of keybindings for Evil mode."
+  :added "2025-07-18"
+  :ensure t
+  :after evil
+  :config
+  (evil-collection-init
+   '(calc calendar compile consult corfu csv custom dashboard debug
+          dired eglot elisp-mode embark eshell eww flymake ibuffer
+          imenu indent info magit man org-roam org w3m)))
 
 (leaf inf-ruby
   :doc "Run a Ruby process in a buffer."
