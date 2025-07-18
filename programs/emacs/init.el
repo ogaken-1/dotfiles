@@ -513,10 +513,30 @@ Text scale:
            (org-log-into-drawer . "LOGBOOK")
            (org-startup-folded . 'content)
            (org-enforce-todo-dependencies . t)
-           (org-enforce-todo-checkbox-dependencies . t))
+           (org-enforce-todo-checkbox-dependencies . t)
+           (org-src-preserve-indentation . t))
   :defvar org-babel-load-languages
   :config
   (add-to-list 'org-babel-load-languages '(shell . t)))
+
+(leaf org-super-agenda
+  :doc "Supercharge your agenda."
+  :added "2025-07-18"
+  :ensure t
+  :init
+  (with-eval-after-load 'org-agenda
+    (org-super-agenda-mode 1))
+  :custom (org-super-agenda-groups . '((:log t)
+                                       (:auto-group t)
+                                       (:name "Today:" :scheduled today)
+                                       (:name "Due Today:" :deadline today)
+                                       (:name "Overdue:" :deadline past)
+                                       (:name "Due Soon:" :deadline future)
+                                       (:name "TODO:" :todo "TODO")
+                                       (:name "PENDING:" :todo "PENDING")
+                                       (:name "SCHEDULED:" :todo "SCHEDULED")
+                                       (:name "DONE:" :todo "DONE")
+                                       (:discard (:anything t)))))
 
 (leaf org-pomodoro
   :doc "Pomodoro implementation for org-mode."
