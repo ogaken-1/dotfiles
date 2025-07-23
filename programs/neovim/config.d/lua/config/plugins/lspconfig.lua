@@ -92,6 +92,7 @@ return {
       tinymist = {},
       rust_analyzer = {},
       vtsls = {},
+      gitlab_ci_ls = {},
     }
     for name, config in pairs(configs) do
       lspconfig[name].setup(config)

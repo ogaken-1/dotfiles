@@ -10,6 +10,7 @@
     packages = with pkgs; [
       csharpier
       deno
+      gitlab-ci-ls
       gopls
       lua-language-server
       nixd
