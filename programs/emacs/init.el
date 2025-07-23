@@ -652,7 +652,11 @@ Text scale:
   :doc "A minimal and modern mode-line"
   :ensure t
   :hook (after-init-hook . doom-modeline-mode)
-  :custom ((nerd-icons-font-family . "CaskaydiaCove")))
+  :custom ((nerd-icons-font-family . "CaskaydiaCove")
+           (doom-modeline-buffer-file-name-style . 'truncate-with-project)
+           (doom-modeline-icon . t)
+           (doom-modeline-major-mode-icon . nil)
+           (doom-modeline-minor-modes . nil)))
 
 (leaf editorconfig
   :doc "EditorConfig Emacs Plugin"
