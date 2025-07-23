@@ -36,6 +36,11 @@
   :custom ((custom-file . `,(locate-user-emacs-file "custom.el")))
   :config (load custom-file))
 
+(defmacro c/with-hook (hook &rest body)
+  "`add-hook' の処理を `lambda' でアレするwrapper"
+  (declare (indent 1))
+  `(add-hook ',hook (lambda () ,@body)))
+
 (leaf cus-start
   :doc "define customization properties of builtins"
   :tag "builtin"
@@ -492,7 +497,13 @@ Text scale:
     :doc "Show Henkan tooltip for ddskk via posframe"
     :ensure t
     :when (c/posframe-available-p)
-    :global-minor-mode t))
+    :global-minor-mode t)
+  ;; :configでやろうとするとddskkという名前のシンボルになってしまうので
+  ;; :initの中で(eval-after-load 'skk)をマニュアルで定義する
+  (eval-after-load 'skk
+    (with-eval-after-load 'evil
+      (c/with-hook evil-insert-state-exit-hook
+        (skk-mode -1)))))
 
 (leaf c/C-j-dwim-mode
   :doc "C-jを入力したときにコメントや文字列の中であれば `skk-mode' を起動する."
