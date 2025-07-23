@@ -477,7 +477,6 @@ Text scale:
 (leaf ddskk
   :doc "Simple Kana to Kanji conversion program"
   :ensure t
-  :bind ("C-x C-j" . skk-mode)
   :custom `((skk-use-azik . t)
             (skk-azik-keyboard-type . "us101")
             (skk-jisyo . ,(f-join (getenv "XDG_DATA_HOME") "skk" "user-jisyo"))
@@ -494,6 +493,40 @@ Text scale:
     :ensure t
     :when (c/posframe-available-p)
     :global-minor-mode t))
+
+(leaf c/C-j-dwim-mode
+  :doc "C-jを入力したときにコメントや文字列の中であれば `skk-mode' を起動する."
+  :added "2025-07-23"
+  :init
+  (defun c/C-j-dwim ()
+    (interactive)
+    (let ((syntax-info (syntax-ppss)))
+      (cond
+       ;; `prog-mode' かつ (コメント内または文字列内) の場合は `skk-mode'
+       ((and (derived-mode-p 'prog-mode)
+             (or (nth 4 syntax-info)    ; コメント内
+                 (nth 3 syntax-info)))  ; 文字列内
+        (skk-mode 1))
+       ;; `text-mode' を継承している場合、常に `skk-mode'
+       ((derived-mode-p 'text-mode)
+        (skk-mode 1))
+       ;; `emacs-lisp-mode' では `eval-print-last-sexp'
+       ((derived-mode-p 'emacs-lisp-mode)
+        (eval-print-last-sexp))
+       ;; デフォルト動作: `newline-and-indent'
+       (t (newline-and-indent)))))
+  (defvar c/C-j-dwim-map (make-sparse-keymap)
+    "Smart C-j keymap.")
+  (define-key c/C-j-dwim-map (kbd "C-j") 'c/C-j-dwim)
+  (define-minor-mode c/C-j-dwim-mode
+    "Smart C-j minor mode."
+    :global t
+    :init-value t
+    :lighter ""
+    :keymap c/C-j-dwim-map)
+  (add-to-list 'emulation-mode-map-alists
+               `((c/C-j-dwim-mode . ,c/C-j-dwim-map)))
+  :global-minor-mode t)
 
 (leaf ace-window
   :doc "Quickly switch windows"
