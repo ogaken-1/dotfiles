@@ -579,10 +579,10 @@ Text scale:
                                        (:name "Due Today:" :deadline today)
                                        (:name "Overdue:" :deadline past)
                                        (:name "Due Soon:" :deadline future)
-                                       (:name "TODO:" :todo "TODO")
-                                       (:name "PENDING:" :todo "PENDING")
-                                       (:name "SCHEDULED:" :todo "SCHEDULED")
-                                       (:name "DONE:" :todo "DONE")
+                                       (:name "Schduled:" :todo "SCHEDULED")
+                                       (:name "Someday:" :todo "TODO")
+                                       (:name "Pending:" :todo "PENDING")
+                                       (:name "Done:" :todo "DONE")
                                        (:discard (:anything t)))))
 
 (leaf org-pomodoro
