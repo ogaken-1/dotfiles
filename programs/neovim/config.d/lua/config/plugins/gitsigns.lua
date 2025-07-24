@@ -15,5 +15,14 @@ return {
       vim.keymap.set('n', '<Space>hu', '<Cmd>Gitsigns reset_hunk<CR>', { buffer = bufnr })
     end,
     attach_to_untracked = true,
+    diff_opts = {
+      algorithm = 'histogram',
+      internal = true,
+      indent_heuristic = true,
+      linematch = 0,
+    },
+    preview_config = {
+      border = 'rounded',
+    },
   },
 }
