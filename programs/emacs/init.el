@@ -573,12 +573,26 @@ Text scale:
   :init
   (with-eval-after-load 'org-agenda
     (org-super-agenda-mode 1))
+  (defun c/org-agenda-format (item)
+    "`org-super-agenda' での1行の書式を決定する。"
+    (if-let* ((marker (get-text-property 0 'org-marker item))
+              (buffer (marker-buffer marker)))
+        (with-current-buffer buffer
+          (save-excursion
+            (goto-char marker)
+            (if-let ((deadline (org-entry-get (point) "DEADLINE")))
+                (format "%s\t[d:%s]"
+                        item
+                        (format-time-string "%Y-%m-%d"
+                                            (org-time-string-to-time deadline)))
+              item)))
+      item))
   :custom (org-super-agenda-groups . '((:log t)
                                        (:auto-group t)
                                        (:name "Today:" :scheduled today)
                                        (:name "Due Today:" :deadline today)
-                                       (:name "Overdue:" :deadline past)
-                                       (:name "Due Soon:" :deadline future)
+                                       (:name "Overdue:" :deadline past :transformer c/org-agenda-format)
+                                       (:name "Due Soon:" :deadline future :transformer c/org-agenda-format)
                                        (:name "Schduled:" :todo "SCHEDULED")
                                        (:name "Someday:" :todo "TODO")
                                        (:name "Pending:" :todo "PENDING")
