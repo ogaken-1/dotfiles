@@ -553,7 +553,10 @@ Text scale:
   :tag "builtin"
   :bind (("C-c c" . org-capture)
          ("C-c a" . org-agenda))
-  :custom ((org-todo-keywords . '((type "TODO(t)" "PENDING(p)" "SCHEDULED(s)" "REVIEW(r)" "ASSIGNED(a)" "|" "DONE(d)")))
+  :custom ((org-todo-keywords . '((type
+                                   "TODO(t)" "PENDING(p)" "SCHEDULED(s)" "REVIEW(r)" "ASSIGNED(a)"
+                                   "|"
+                                   "DONE(d)" "CANCELED(c@)")))
            (org-log-done . 'time)
            (org-log-reschedule . 'note)
            (org-log-redeadline . 'note)
