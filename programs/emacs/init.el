@@ -787,6 +787,26 @@ Git gutter:
   :added "2025-04-28"
   :ensure t)
 
+(leaf calendar
+  :doc "calendar functions."
+  :added "2025-07-31"
+  :tag "builtin"
+  :custom ((calendar-mark-holidays-flag . t)
+           (calendar-month-header . '(propertize
+                                      (format "%d年 %s月" year month)
+                                      'font-lock-face 'calendar-month-header))
+           (calendar-day-header-array . ["日" "月" "火" "水" "木" "金" "土"])
+           (calendar-day-name-array . ["日" "月" "火" "水" "木" "金" "土"])))
+
+(leaf japanese-holidays
+  :doc "Calendar functions for the Japanese calendar."
+  :added "2025-07-31"
+  :ensure t
+  :after calendar
+  :require t
+  :config
+  (setq calendar-holidays (append japanese-holidays holiday-local-holidays holiday-other-holidays)))
+
 (provide 'init)
 
 ;; Local Variables:
