@@ -589,28 +589,82 @@ Text scale:
   :ensure t
   :init
   (with-eval-after-load 'org-agenda
-    (org-super-agenda-mode 1))
-  (defun c/org-agenda-format (item)
-    "`org-super-agenda' での1行の書式を決定する。"
-    (if-let* ((marker (get-text-property 0 'org-marker item))
-              (buffer (marker-buffer marker)))
-        (with-current-buffer buffer
-          (save-excursion
-            (goto-char marker)
-            (if-let ((deadline (org-entry-get (point) "DEADLINE")))
-                (format "%s\t[d:%s]"
-                        item
-                        (format-time-string "%Y-%m-%d"
-                                            (org-time-string-to-time deadline)))
-              item)))
-      item))
+    (org-super-agenda-mode 1)
+    (defun c/org-agenda-format (item)
+      "`org-super-agenda' での1行の書式を決定する。"
+      (if-let* ((marker (get-text-property 0 'org-marker item))
+                (buffer (marker-buffer marker)))
+          (with-current-buffer buffer
+            (save-excursion
+              (goto-char marker)
+              (if-let* ((props (c/org-agenda-collect-properties))
+                        (formatter (c/org-agenda-make-formatter props)))
+                  (concat item "\t" formatter)
+                item)))
+        item))
+    (defun c/org-agenda-collect-properties ()
+      "現在位置のエントリからアジェンダ関連のプロパティを収集する。"
+      (seq-reduce
+       (lambda (acc prop-def)
+         (if-let* ((prop-name (plist-get prop-def :property))
+                   (prop-value (org-entry-get (point) prop-name)))
+             (plist-put acc (plist-get prop-def :key) prop-value)
+           acc))
+       c/org-agenda-property-definitions
+       '()))
+    (defun c/org-agenda-make-formatter (props)
+      "`props' (収集されたプロパティ) からフォーマット文字列を生成する。"
+      (when-let* ((parts (seq-keep
+                          (lambda (prop-def)
+                            (when-let* ((key (plist-get prop-def :key))
+                                        (value (plist-get props key))
+                                        (formatter (plist-get prop-def :formatter))
+                                        (label (plist-get prop-def :label)))
+                              (funcall formatter label value)))
+                          c/org-agenda-property-definitions))
+                  (parts))
+        (mapconcat 'identity parts " ")))
+    (defvar c/org-agenda-property-definitions
+      '((:property "SCHEDULED"
+                   :key :scheduled
+                   :label "s"
+                   :formatter c/org-agenda-format-date-label)
+        (:property "DEADLINE"
+                   :key :deadline
+                   :label "d"
+                   :formatter c/org-agenda-format-date-label))
+      "agenda itemのプロパティ定義。
+各定義は以下の要素を持つplist:
+- :property :: Orgプロパティ名
+- :key :: 内部で使用するキー
+- :label :: 表示用ラベル
+- :formatter :: (label value) を受け取り文字列を返す関数")
+    (defun c/org-agenda-format-date-label (label value)
+      "日付プロパティを [`label':`date'] 形式でフォーマットする。"
+      (when-let ((element (org-timestamp-from-string value)))
+        (let* ((year (org-element-property :year-start element))
+               (month (org-element-property :month-start element))
+               (day (org-element-property :day-start element))
+               (hour-start (org-element-property :hour-start element))
+               (minute-start (org-element-property :minute-start element))
+               (hour-end (org-element-property :hour-end element))
+               (minute-end (org-element-property :minute-end element))
+               (date-part (format "%04d-%02d-%02d" year month day))
+               (timestamp-text (cond
+                                ((and hour-start minute-start hour-end minute-end)
+                                 (format "%s %02d:%02d-%02d:%02d"
+                                         date-part hour-start minute-start hour-end minute-end))
+                                ((and hour-start minute-start)
+                                 (format "%s %02d:%02d" date-part hour-start minute-start))
+                                (t date-part))))
+          (format "[%s:%s]" label timestamp-text)))))
   :custom (org-super-agenda-groups . '((:log t)
                                        (:auto-group t)
                                        (:name "Today:" :scheduled today)
                                        (:name "Due Today:" :deadline today)
                                        (:name "Overdue:" :deadline past :transformer c/org-agenda-format)
                                        (:name "Due Soon:" :deadline future :transformer c/org-agenda-format)
-                                       (:name "Schduled:" :todo "SCHEDULED")
+                                       (:name "Schduled:" :scheduled future :transformer c/org-agenda-format)
                                        (:name "Someday:" :todo "TODO")
                                        (:name "Pending:" :todo "PENDING")
                                        (:name "Done:" :todo "DONE")
