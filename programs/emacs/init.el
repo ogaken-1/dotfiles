@@ -535,6 +535,9 @@ Text scale:
        ;; `emacs-lisp-mode' では `eval-print-last-sexp'
        ((derived-mode-p 'emacs-lisp-mode)
         (eval-print-last-sexp))
+       ;; org-mode no tag completion
+       ((eq major-mode #'minibuffer-mode)
+        (skk-mode 1))
        ;; デフォルト動作: `newline-and-indent'
        (t (newline-and-indent)))))
   (defvar c/C-j-dwim-map (make-sparse-keymap)
