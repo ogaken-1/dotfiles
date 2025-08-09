@@ -12,6 +12,7 @@ nix-darwin.lib.darwinSystem {
   };
   modules = [
     {
+      system.primaryUser = username;
       users.users.${username}.home = "/Users/${username}";
     }
     ../darwin-basic.nix

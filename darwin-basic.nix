@@ -7,12 +7,13 @@ let
 in
 {
   nix = {
+    enable = true;
     optimise.automatic = true;
     settings = {
       extra-experimental-features = "nix-command flakes pipe-operators";
     };
   };
-  services.nix-daemon.enable = true;
+  ids.gids.nixbld = 30000;
   system = {
     stateVersion = 5;
     defaults = {

@@ -1,16 +1,17 @@
-ENV["NIX_CONFIG"] = "extra-experimental-features = flakes pipe-operators"
+$nix_config = "extra-experimental-features = flakes pipe-operators"
+ENV["NIX_CONFIG"] = $nix_config
 
 def os_config
   uname = `uname -s`.strip
   case uname
   when "Darwin"
     {
-      rebuild: "nix run nix-darwin --",
+      rebuild: "sudo NIX_CONFIG='#{$nix_config}' nix run nix-darwin --",
       hostname: `scutil --get ComputerName`.strip,
     }
   when "Linux"
     {
-      rebuild: "sudo nixos-rebuild",
+      rebuild: "sudo NIX_CONFIG='#{$nix_config}' nixos-rebuild",
       hostname: `hostname`.strip,
     }
   else
