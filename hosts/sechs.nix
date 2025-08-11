@@ -3,6 +3,16 @@ let
   inherit (inputs) nix-darwin home-manager;
   system = "aarch64-darwin";
   username = "ogaken";
+  config =
+    { pkgs, ... }:
+    {
+      system.primaryUser = username;
+      users.users.${username} = {
+        home = "/Users/${username}";
+        shell = pkgs.fish;
+      };
+      programs.fish.enable = true;
+    };
 in
 nix-darwin.lib.darwinSystem {
   inherit system;
@@ -11,10 +21,7 @@ nix-darwin.lib.darwinSystem {
     inherit username;
   };
   modules = [
-    {
-      system.primaryUser = username;
-      users.users.${username}.home = "/Users/${username}";
-    }
+    config
     ../darwin-basic.nix
     home-manager.darwinModules.home-manager
     {

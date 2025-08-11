@@ -33,4 +33,38 @@ in
     rounded-mgenplus
     noto-fonts-color-emoji
   ];
+  environment = {
+    shells = with pkgs; [
+      fish
+    ];
+  };
+  homebrew = {
+    enable = true;
+    casks = [
+      "1password"
+      "alacritty"
+      "aquaskk"
+      "atok"
+      "claude"
+      "discord"
+      "ghostty"
+      "loop"
+      "nordvpn"
+      "notion"
+      "notion-calendar"
+      "orion"
+      "slack"
+      "spotify"
+      "steam"
+    ];
+    onActivation = {
+      autoUpdate = true;
+      cleanup = "uninstall";
+      upgrade = true;
+    };
+    taps = [
+      "homebrew/bundle"
+      "homebrew/core"
+    ];
+  };
 }
