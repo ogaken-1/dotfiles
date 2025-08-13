@@ -368,13 +368,13 @@ Text scale:
 (leaf paredit
   :doc "Minor mode for editing parentheses."
   :added "2025-07-31"
-  :ensure t)
+  :ensure t
+  :hook (lisp-mode-hook emacs-lisp-mode-hook))
 
 (leaf lispy
   :doc "Vi-like Paredit."
   :added "2025-07-31"
-  :ensure t
-  :hook (lisp-mode-hook emacs-lisp-mode-hook))
+  :ensure t)
 
 (leaf elec-pair
   :doc "Automatic parenthesis pairing"
