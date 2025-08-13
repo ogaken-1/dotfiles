@@ -36,6 +36,7 @@ in
       skkDictionaries.jinmei
       skkDictionaries.l
       tailscale
+      unzip
       vim
       wget
     ];
