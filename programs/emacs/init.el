@@ -788,7 +788,8 @@ Git gutter:
            (evil-want-C-d-scroll . t)
            (evil-want-Y-yank-to-eol . t)
            (evil-want-integeration . t)
-           (evil-want-keybinding . nil))
+           (evil-want-keybinding . nil)
+           (evil-undo-system . 'undo-fu))
   :global-minor-mode t)
 
 (leaf evil-collection
@@ -800,7 +801,8 @@ Git gutter:
   (evil-collection-init
    '(calc calendar compile consult corfu csv custom dashboard debug
           dired eglot elisp-mode embark eshell eww flymake ibuffer
-          imenu indent info magit man org-roam org w3m)))
+          imenu indent info magit man org-roam org outline vundo
+          w3m which-key)))
 
 (leaf inf-ruby
   :doc "Run a Ruby process in a buffer."
@@ -863,6 +865,19 @@ Git gutter:
   :require t
   :config
   (setq calendar-holidays (append japanese-holidays holiday-local-holidays holiday-other-holidays)))
+
+(leaf undo-fu
+  :doc "Undo helper with redo."
+  :added "2025-08-12"
+  :ensure t
+  :bind (([remap undo] . #'undo-fu-only-undo)
+         ([remap undo-redo] . #'undo-fu-only-redo)))
+
+(leaf vundo
+  :doc "Visual undo tree."
+  :added "2025-08-12"
+  :ensure t
+  :custom ((vundo-glyph-alist . vundo-unicode-symbols)))
 
 (provide 'init)
 
