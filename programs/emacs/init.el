@@ -660,7 +660,7 @@ Text scale:
           (format "[%s:%s]" label timestamp-text)))))
   :custom (org-super-agenda-groups . '((:log t)
                                        (:auto-group t)
-                                       (:name "Today:" :scheduled today)
+                                       (:name "Scheduled Today:" :scheduled today)
                                        (:name "Due Today:" :deadline today)
                                        (:name "Overdue:" :deadline past :transformer c/org-agenda-format)
                                        (:name "Due Soon:" :deadline future :transformer c/org-agenda-format)
