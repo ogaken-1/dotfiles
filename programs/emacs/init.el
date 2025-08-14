@@ -400,7 +400,15 @@ Text scale:
 (leaf recentf
   :doc "keep track of recently opened files"
   :tag "builtin"
-  :global-minor-mode t)
+  :global-minor-mode t
+  :preface
+  ;; recentfをMRWにする
+  ;; `org-agenda' する度にrecentfのリストが機能しなくなるのがつらい
+  (defun my-recentf-no-track-find-file-hook (&rest r)
+    "`recentf-mode'がファイルを開いたときにも記録してしまうのを止める"
+    (when recentf-mode
+      (remove-hook 'find-file-hook 'recentf-track-opened-file)))
+  (advice-add 'recentf-mode :after #'my-recentf-no-track-find-file-hook))
 
 (leaf mule-cmds
   :doc "commands for multilingual environment."
