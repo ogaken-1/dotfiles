@@ -885,6 +885,15 @@ Git gutter:
   :ensure t
   :custom ((vundo-glyph-alist . vundo-unicode-symbols)))
 
+(leaf highlight-indent-guides
+  :doc "Minor mode to highlight indentation."
+  :added "2025-08-17"
+  :ensure t
+  :hook (prog-mode-hook yaml-mode-hook)
+  :custom ((highlight-indent-guides-method . 'column)
+           (highlight-indent-guides-auto-enabled . t)
+           (highlight-indent-guides-responsive . t)))
+
 (provide 'init)
 
 ;; Local Variables:
