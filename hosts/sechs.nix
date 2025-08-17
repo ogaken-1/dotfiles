@@ -1,8 +1,9 @@
 { inputs }:
 let
-  inherit (inputs) nix-darwin home-manager;
+  inherit (inputs) nix-darwin home-manager mac-app-util;
   system = "aarch64-darwin";
   username = "ogaken";
+  homeConfiguration = (import ../home.nix { inherit inputs; });
   config =
     { pkgs, ... }:
     {
@@ -12,6 +13,11 @@ let
         shell = pkgs.fish;
       };
       programs.fish.enable = true;
+      home-manager.sharedModules = [
+        mac-app-util.homeManagerModules.default
+      ];
+      home-manager.useUserPackages = false;
+      home-manager.users.${username} = homeConfiguration;
     };
 in
 nix-darwin.lib.darwinSystem {
@@ -21,12 +27,8 @@ nix-darwin.lib.darwinSystem {
     inherit username;
   };
   modules = [
-    config
-    ../darwin-basic.nix
     home-manager.darwinModules.home-manager
-    {
-      home-manager.useUserPackages = false;
-      home-manager.users.${username} = import ../home.nix { inherit inputs; };
-    }
+    ../darwin-basic.nix
+    config
   ];
 }
