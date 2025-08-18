@@ -750,7 +750,8 @@ Text scale:
 
 (leaf editorconfig
   :doc "EditorConfig Emacs Plugin"
-  :ensure t)
+  :ensure t
+  :global-minor-mode t)
 
 (leaf git-gutter-fringe
   :doc "Fringe version of git-gutter.el"
