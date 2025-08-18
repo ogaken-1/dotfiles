@@ -156,11 +156,13 @@ Text scale:
 (leaf vertico
   :doc "VERTical Interactive COmpletion"
   :ensure t
+  :after minibuffer
   :global-minor-mode t)
 
 (leaf marginalia
   :doc "Enrich existing commands with completion annotations"
   :ensure t
+  :after vertico
   :global-minor-mode t)
 
 (leaf consult
@@ -279,10 +281,12 @@ Text scale:
 (leaf corfu-terminal
   :doc "Corfu popup on terminal."
   :added "2025-04-30"
+  ;; emacs31ではtuiでのchild framesがサポートされたので不要になる
+  :emacs< 31
   :ensure t
-  :config
-  (unless (display-graphic-p)
-    (corfu-terminal-mode 1)))
+  :unless (display-graphic-p)
+  :after corfu
+  :hook corfu-mode-hook)
 
 (leaf cape
   :doc "Completion At Point Extensions"
@@ -720,8 +724,7 @@ Text scale:
 (leaf org-modern
   :doc "Modern looks for Org."
   :ensure t
-  :after org
-  :global-minor-mode global-org-modern-mode)
+  :hook org-mode-hook)
 
 (leaf dashboard
   :doc "A startup screen extracted from Spacemacs"
