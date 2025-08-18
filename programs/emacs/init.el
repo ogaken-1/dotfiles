@@ -48,10 +48,6 @@
   (defun c/redraw-frame nil
     (interactive)
     (redraw-frame))
-  (defun c/posframe-available-p ()
-    "Check if posframe is available and can be used."
-    (and (fboundp 'posframe-show)
-         (display-graphic-p)))
   :bind (("M-ESC ESC" . #'c/redraw-frame))
   :custom '((user-full-name . "Kento Ogata")
             (user-mail-address . "k.ogata1013@gmail.com")
@@ -519,7 +515,7 @@ Text scale:
   (leaf ddskk-posframe
     :doc "Show Henkan tooltip for ddskk via posframe"
     :ensure t
-    :when (c/posframe-available-p)
+    :when (display-graphic-p)
     :global-minor-mode t)
   (eval-after-load 'evil
     (c/with-hook evil-insert-state-exit-hook
@@ -569,7 +565,7 @@ Text scale:
   :bind ([remap other-window] . #'ace-window)
   :custom ((aw-keys . '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
   :defer-config
-  (when (c/posframe-available-p)
+  (when (display-graphic-p)
     (ace-window-posframe-mode)))
 
 (leaf org-mode
