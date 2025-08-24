@@ -6,7 +6,7 @@ def os_config
   case uname
   when "Darwin"
     {
-      rebuild: "sudo NIX_CONFIG='#{$nix_config}' nix run nix-darwin --",
+      rebuild: "sudo NIX_CONFIG='#{$nix_config}' darwin-rebuild",
       hostname: `scutil --get ComputerName`.strip,
     }
   when "Linux"

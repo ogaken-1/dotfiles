@@ -7,7 +7,18 @@ let
   config =
     { pkgs, ... }:
     {
+      nixpkgs = {
+        overlays = [
+          nix-darwin.overlays.default
+        ];
+      };
       system.primaryUser = username;
+      environment.systemPackages = with pkgs; [
+        darwin-rebuild
+      ];
+      security.sudo.extraConfig = ''
+        admin ALL=(${username}) NOPASSWD: ${pkgs.darwin-rebuild}/bin/darwin-rebuild
+      '';
       users.users.${username} = {
         home = "/Users/${username}";
         shell = pkgs.fish;
