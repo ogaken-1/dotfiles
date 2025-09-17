@@ -242,6 +242,7 @@
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs",
         "systems": "systems",
+        "vim-overlay": "vim-overlay",
         "vscode-server": "vscode-server"
       }
     },
@@ -257,6 +258,44 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default",
+        "type": "github"
+      }
+    },
+    "vim-overlay": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "pre-commit-hooks": [],
+        "vim-src": "vim-src"
+      },
+      "locked": {
+        "lastModified": 1755578381,
+        "narHash": "sha256-WjV04N3KOXYf3ZyA7Mw8rE97rTqWC5uoO+r8/1d/fjI=",
+        "owner": "kawarimidoll",
+        "repo": "vim-overlay",
+        "rev": "00856d108d545c0bb131a104780a52213245c9e0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "kawarimidoll",
+        "repo": "vim-overlay",
+        "type": "github"
+      }
+    },
+    "vim-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1755547767,
+        "narHash": "sha256-F28lbs7nsLM/VU9whPk+d5JRICPcEwvg5GfNaBs2Ki8=",
+        "owner": "vim",
+        "repo": "vim",
+        "rev": "3e152c76adb9542af86760786d42a0beffe5354b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "vim",
+        "repo": "vim",
         "type": "github"
       }
     },

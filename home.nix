@@ -9,6 +9,7 @@ in
 {
   nixpkgs.overlays = with inputs; [
     emacs-overlay.overlay
+    vim-overlay.overlays.default
   ];
   home = {
     stateVersion = "24.05";
