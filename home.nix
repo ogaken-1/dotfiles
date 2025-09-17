@@ -22,6 +22,7 @@ in
       fd
       gcc14
       ghq
+      git-absorb
       git-select-author
       gnumake
       gnupg
