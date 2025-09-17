@@ -51,6 +51,7 @@
       inputs.systems.follows = "systems";
       inputs.flake-compat.follows = "flake-compat";
       inputs.flake-utils.follows = "flake-utils";
+      inputs.treefmt-nix.follows = "";
     };
   };
   outputs =
