@@ -807,8 +807,8 @@ Git gutter:
   (evil-collection-init
    '(calc calendar compile consult corfu csv custom dashboard debug
           dired eglot elisp-mode embark eshell eww flymake ibuffer
-          imenu indent info magit man org-roam org outline vundo
-          w3m which-key)))
+          imenu indent info neotree magit man org-roam org outline
+          vundo w3m which-key)))
 
 (leaf inf-ruby
   :doc "Run a Ruby process in a buffer."
