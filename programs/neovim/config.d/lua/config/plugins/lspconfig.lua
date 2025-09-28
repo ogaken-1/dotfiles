@@ -18,11 +18,15 @@ return {
       'rust_analyzer',
       'tinymist',
       'tsp_server',
-      'vtsls',
       'yamlls',
     }
     for _, name in ipairs(servers) do
       vim.lsp.enable(name)
+    end
+    if 1 == vim.fn.executable 'tsgo' then
+      vim.lsp.enable 'tsgo'
+    else
+      vim.lsp.enable 'vtsls'
     end
   end,
 }

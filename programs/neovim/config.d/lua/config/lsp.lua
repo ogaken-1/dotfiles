@@ -49,7 +49,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
         vim.lsp.buf.format {
           bufnr = ctx.buf,
           filter = function(client)
-            return client.name ~= 'vtsls' or client.name ~= 'omnisharp'
+            return client.name ~= 'vtsls' or client.name ~= 'omnisharp' or client.name ~= 'tsgo'
           end,
         }
       end,
