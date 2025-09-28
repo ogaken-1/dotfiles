@@ -12,6 +12,9 @@ in
     settings = {
       extra-experimental-features = "nix-command flakes pipe-operators";
     };
+    channel = {
+      enable = true;
+    };
   };
   ids.gids.nixbld = 30000;
   system = {
@@ -44,7 +47,6 @@ in
       "1password"
       "alacritty"
       "aquaskk"
-      "atok"
       "claude"
       "discord"
       "ghostty"
@@ -56,6 +58,8 @@ in
       "slack"
       "spotify"
       "steam"
+      "container"
+      "microsoft-edge"
     ];
     onActivation = {
       autoUpdate = true;
