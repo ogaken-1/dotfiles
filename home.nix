@@ -32,6 +32,7 @@ in
       mermaid-cli
       nvd
       pgcli
+      prisma-language-server
       ripgrep
       ruby
       rustup

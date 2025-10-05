@@ -8,13 +8,14 @@ return {
   config = function()
     local servers = {
       'biome',
-      'denols',
+      -- 'denols',
       'gitlab_ci_ls',
       'gopls',
       'jsonls',
       'lua_ls',
       'nixd',
       'omnisharp',
+      'prismals',
       'rust_analyzer',
       'tinymist',
       'tsp_server',
