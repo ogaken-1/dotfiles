@@ -46,10 +46,21 @@ vim.api.nvim_create_autocmd('LspAttach', {
       group = gid,
       buffer = ctx.buf,
       callback = function()
+        local servers = {
+          'vtsls',
+          'omnisharp',
+          'tsgo',
+          'jsonls',
+        }
         vim.lsp.buf.format {
           bufnr = ctx.buf,
           filter = function(client)
-            return client.name ~= 'vtsls' or client.name ~= 'omnisharp' or client.name ~= 'tsgo'
+            for _, server_name in ipairs(servers) do
+              if client.name == server_name then
+                return false
+              end
+            end
+            return true
           end,
         }
       end,
