@@ -98,7 +98,7 @@ local function smart_open()
     -- 3. fdで取得して表示
     coroutine.wrap(function()
       local co = coroutine.running()
-      for path in os_cmd.iter({ 'fd', '.', cwd }, { cwd = cwd }) do
+      for path in os_cmd.iter({ 'fd', '--hidden', '.', cwd }, { cwd = cwd }) do
         path = vim.fn.fnamemodify(path, ':.')
         if duplicate_checker.try_add(path) then
           next(make_entry(path), function()
