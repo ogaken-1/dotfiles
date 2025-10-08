@@ -20,7 +20,6 @@ in
       devenv
       docker-client
       eza
-      fd
       gcc14
       ghq
       git-absorb
