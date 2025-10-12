@@ -39,6 +39,7 @@ in
       skkDictionaries.jinmei
       skkDictionaries.l
       tailscale
+      tree-sitter
       unzip
       vim
       wget
