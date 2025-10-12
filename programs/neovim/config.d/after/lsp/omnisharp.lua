@@ -1,5 +1,4 @@
 return {
-  cmd = { 'OmniSharp' },
   handlers = {
     ['textDocument/definition'] = require('omnisharp_extended').handler,
   },
@@ -17,5 +16,6 @@ return {
       AnalyzeOpenDocumentsOnly = true,
     },
   },
+  root_dir = vim.NIL,
   root_markers = { '*.sln', '*.slnx', '*.csproj', '*.vbproj' },
 }
