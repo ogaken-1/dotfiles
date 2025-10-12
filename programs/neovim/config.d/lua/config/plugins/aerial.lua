@@ -2,12 +2,7 @@ return {
   'stevearc/aerial.nvim',
   cmd = { 'AerialOpen', 'AerialNext', 'AerialPrev' },
   init = function()
-    vim.keymap.set('n', '<Space>i', function()
-      vim.cmd.AerialOpen 'float'
-      -- workaround
-      -- see: https://github.com/stevearc/aerial.nvim/issues/331#issuecomment-1939760914
-      vim.cmd.doautocmd 'BufWinEnter'
-    end)
+    vim.keymap.set('n', '<Space>i', '<Cmd>AerialOpen float<CR>')
     vim.keymap.set('n', '<A-j>', '<Cmd>AerialNext<CR>')
     vim.keymap.set('n', '<A-k>', '<Cmd>AerialPrev<CR>')
     vim.api.nvim_create_autocmd('FileType', {
