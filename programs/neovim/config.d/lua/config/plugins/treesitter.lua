@@ -1,8 +1,5 @@
 return {
   'nvim-treesitter/nvim-treesitter',
-  dependencies = {
-    'nvim-treesitter/nvim-treesitter-context',
-  },
   event = { 'BufReadPost', 'FileType' },
   config = function()
     local parser_config = require('nvim-treesitter.parsers').get_parser_configs()
@@ -73,11 +70,6 @@ return {
       highlight = {
         enable = true,
       },
-    }
-    require('treesitter-context').setup {
-      -- 普段から有効化しているとちょっとウザいので
-      -- 欲しいときに:TSContextEnableを使って有効化する
-      enable = false,
     }
   end,
 }
