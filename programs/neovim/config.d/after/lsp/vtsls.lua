@@ -1,9 +1,9 @@
 return {
   root_dir = function(bufnr, resolve)
     local found_dirs = vim.fs.find({
-      'deno.json',
-      'deno.jsonc',
-      'denops',
+      'package.json',
+      'tsconfig.json',
+      'jsconfig.json',
     }, {
       upward = true,
       path = vim.fs.dirname(vim.fs.normalize(vim.api.nvim_buf_get_name(bufnr))),
