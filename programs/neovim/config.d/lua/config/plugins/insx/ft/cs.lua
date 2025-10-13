@@ -8,7 +8,14 @@ return {
     ---@param at string
     ---@param recipe insx.RecipeSource | fun(ctx: insx.Context) | string
     local function add(key, at, recipe)
-      insx.add(key, insx.with(u.normalize(recipe), { insx.with.filetype { 'cs', 'razor' }, insx.with.match(at) }))
+      insx.add(
+        key,
+        insx.with(u.normalize(recipe), {
+          insx.with.filetype { 'cs', 'razor' },
+          insx.with.match(at),
+          insx.with.in_comment(false),
+        })
+      )
     end
     add(';', [[\%#$\@!]], function(ctx)
       local row = ctx.row()
