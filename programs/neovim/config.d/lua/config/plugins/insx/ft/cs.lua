@@ -125,7 +125,7 @@ return {
       '>',
       insx.with(
         substitute {
-          pattern = [[<\(\w\+\).\{-}\%#]],
+          pattern = [[<\(\w\+\)[^>]*\%#]],
           replace = [[\0>\%#</\1>]],
         },
         {
