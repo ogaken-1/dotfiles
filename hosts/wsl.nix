@@ -40,6 +40,7 @@ let
     home-manager = {
       useUserPackages = false;
       users.${username} = import ../home.nix { inherit inputs; };
+      backupFileExtension = "backup";
     };
   };
   nixosConfig = import ../nixos-basic.nix {
