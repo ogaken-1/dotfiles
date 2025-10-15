@@ -40,6 +40,8 @@ return {
     },
     filter_kind = {
       'Class',
+      'Constant',
+      'Operator',
       'Constructor',
       'Enum',
       'Function',
