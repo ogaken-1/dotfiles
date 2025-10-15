@@ -53,17 +53,14 @@ return {
       'yaml',
     }
     local ts = require 'nvim-treesitter'
-    ts.setup()
+    local ts_dir = vim.fs.joinpath(vim.fn.stdpath 'data', 'nvim-treesitter')
+    ts.setup { install_dir = ts_dir }
+    vim.opt.runtimepath:prepend(ts_dir)
     ts.install(langs)
     local augroup = vim.api.nvim_create_augroup('config-treesitter', { clear = true })
     vim.api.nvim_create_autocmd('FileType', {
       group = augroup,
-      pattern = vim
-        .iter(langs)
-        :map(function(lang)
-          return '*.' .. lang
-        end)
-        :totable(),
+      pattern = vim.iter(langs):totable(),
       callback = function(ctx)
         vim.treesitter.start(ctx.buf)
       end,
