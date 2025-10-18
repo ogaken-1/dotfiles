@@ -13,7 +13,8 @@ vim.keymap.set({ 'n', 'x' }, '<Space>p', '"+p')
 vim.keymap.set('n', 'mf', '<Plug>(run-format)')
 for _, key in ipairs { 'i', 'a' } do
   vim.keymap.set('n', key, function()
-    if #fn.getline(fn.line '.') == 0 then
+    local line = fn.getline(fn.line '.')
+    if #line == 0 or line:match '^%s+$' then
       return '"_cc'
     else
       return key
