@@ -20,6 +20,7 @@ return {
       require('config.plugins.insx.ft.cs').add,
       require('config.plugins.insx.ft.lua').add,
       require('config.plugins.insx.ft.ruby').add,
+      require('config.plugins.insx.ft.xml').add,
     }
     for _, fn in ipairs(setups) do
       fn()
