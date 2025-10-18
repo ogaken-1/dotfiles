@@ -1,5 +1,5 @@
 function gcd -d 'Select git project and start a tmux session.'
-  set -l repo (__find_repos | fzf --prompt='Project >' --preview 'bat {}/README.md' --ansi)
+  set -l repo (__list_repos | fzf --prompt='Project >' --preview 'bat {}/README.md' --ansi)
 
   if [ -z "$repo" ]
     echoerr 'gcd: No projects selected.'
@@ -18,11 +18,16 @@ function gcd -d 'Select git project and start a tmux session.'
 end
 
 function __find_repos
-  if which ghq > /dev/null 2> /dev/null
-    ghq list --full-path
-    return
-  end
-  find ~/repos -name '.git' -type d | while read -l git_dir
+  find $argv -name '.git' -type d | while read -l git_dir
     dirname $git_dir
   end
+end
+
+function __list_repos 
+  if which ghq > /dev/null 2> /dev/null
+    ghq list --full-path
+  else
+    __find_repos ~/repos
+  end
+  __find_repos $XDG_DATA_HOME/nvim/lazy
 end
