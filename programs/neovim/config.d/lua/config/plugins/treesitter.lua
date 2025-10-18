@@ -60,7 +60,13 @@ return {
     local augroup = vim.api.nvim_create_augroup('config-treesitter', { clear = true })
     vim.api.nvim_create_autocmd('FileType', {
       group = augroup,
-      pattern = vim.iter(langs):totable(),
+      pattern = vim.list.unique(vim
+        .iter(langs)
+        :map(function(lang)
+          return vim.treesitter.language.get_filetypes(lang)
+        end)
+        :flatten()
+        :totable()),
       callback = function(ctx)
         vim.treesitter.start(ctx.buf)
       end,
