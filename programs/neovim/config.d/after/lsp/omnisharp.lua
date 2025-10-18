@@ -16,6 +16,14 @@ return {
       AnalyzeOpenDocumentsOnly = true,
     },
   },
-  root_dir = vim.NIL,
-  root_markers = { '*.sln', '*.slnx', '*.csproj', '*.vbproj' },
+  root_dir = function(bufnr, on_dir)
+    local util = require 'lspconfig.util'
+    local fname = vim.api.nvim_buf_get_name(bufnr)
+    on_dir(
+      util.root_pattern '*.sln'(fname)
+        or util.root_pattern '*.slnx'(fname)
+        or util.root_pattern 'omnisharp.json'(fname)
+        or util.root_pattern '*.csproj'(fname)
+    )
+  end,
 }
