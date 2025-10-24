@@ -1,7 +1,7 @@
 (section
   (heading
     (text) @name)
-  (#set! "kind" "Struct")) @symbol
+  (#set! "kind" "Interface")) @symbol
 
 (let
   pattern: (call
