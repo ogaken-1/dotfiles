@@ -6,7 +6,6 @@
       map-syntax = [
         "*.csproj:XML"
       ];
-      theme = "catppuccin";
       style = "numbers,changes";
     };
     themes = {
