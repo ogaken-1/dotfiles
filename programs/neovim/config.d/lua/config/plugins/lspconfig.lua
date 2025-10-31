@@ -8,6 +8,7 @@ return {
   config = function()
     local servers = {
       'biome',
+      'cssls',
       'denols',
       'gitlab_ci_ls',
       'gopls',
