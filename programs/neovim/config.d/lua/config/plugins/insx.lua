@@ -18,6 +18,7 @@ return {
       require('config.plugins.insx.bracket').add,
       require('config.plugins.insx.quote').add,
       require('config.plugins.insx.ft.cs').add,
+      require('config.plugins.insx.ft.razor').add,
       require('config.plugins.insx.ft.lua').add,
       require('config.plugins.insx.ft.ruby').add,
       require('config.plugins.insx.ft.xml').add,
