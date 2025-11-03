@@ -35,11 +35,7 @@
     neovim-overlay = {
       url = "github:/nix-community/neovim-nightly-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-compat.follows = "flake-compat";
       inputs.flake-parts.follows = "flake-parts";
-      inputs.git-hooks.follows = "";
-      inputs.hercules-ci-effects.follows = "";
-      inputs.treefmt-nix.follows = "";
     };
     nix-darwin = {
       url = "github:LnL7/nix-darwin";
