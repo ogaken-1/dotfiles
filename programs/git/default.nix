@@ -1,19 +1,16 @@
 {
   programs.git = {
     enable = true;
-    delta = {
-      enable = true;
-    };
     lfs.enable = true;
     ignores = [
       "**/.envrc"
       "**/.DS_Store"
       "**/.direnv"
     ];
-    aliases = {
-      clean-branches = "! git branch --format='%(refname:short) %(upstream:track)' | grep '\\[gone\\]' | awk '{ print $1 }' | xargs git branch -D";
-    };
-    extraConfig = {
+    settings = {
+      alias = {
+        clean-branches = "! git branch --format='%(refname:short) %(upstream:track)' | grep '\\[gone\\]' | awk '{ print $1 }' | xargs git branch -D";
+      };
       credential = {
         helper = "store";
       };
@@ -67,5 +64,8 @@
         navigate = true;
       };
     };
+  };
+  programs.delta = {
+    enable = true;
   };
 }
