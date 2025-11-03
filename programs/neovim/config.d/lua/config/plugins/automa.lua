@@ -7,6 +7,8 @@ return {
       mapping = {
         ['.'] = {
           queries = {
+            automa.query_v1 { 'n(V)', '!V(:)*', 'V(:)', '!c(<CR>)+', 'c(<CR>)#' }, -- visualでrange指定するExコマンド
+            automa.query_v1 { 'n(V)', 'V*' }, -- visualのあとrange取るコマンド
             automa.query_v1 { 'n+', 'no+', 'n(f,t)', '!c(<CR>)+', 'c(<CR>)#' }, -- sandwich(function, tag)
             automa.query_v1 { 'n', 'no+', 'n#' }, -- sandwich(add,replace,delete)
             automa.query_v1 { 'n', 'no+', 'i*' }, -- cgnとか
