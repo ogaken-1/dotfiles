@@ -3,9 +3,10 @@ return {
   event = 'VeryLazy',
   config = function()
     local automa = require 'automa'
-    local move_line_or_word_head_and_insert = automa.query_v1 { 'n(b,B,^,0)', 'n(i)', 'i*' }
+    local move_line_or_word_head_and_edit = automa.query_v1 { 'n(b,B,^,0)', 'n', 'no*', 'i*' }
     local move_line_head_and_insert_by_I = automa.query_v1 { 'n(I)', 'i*' }
-    local function word_or_line_head_insert_and_go_next_line(events)
+    --- 「ちょっと前に戻ってなんか編集」という動きをした後に.を押すと次の行で繰り返し実行する
+    local function edit_on_word_or_line_head_and_go_next_line(events)
       local function join_pre_j(query)
         local result = query(events)
         if result then
@@ -16,13 +17,13 @@ return {
           }
         end
       end
-      return join_pre_j(move_line_or_word_head_and_insert) or join_pre_j(move_line_head_and_insert_by_I)
+      return join_pre_j(move_line_head_and_insert_by_I) or join_pre_j(move_line_or_word_head_and_edit)
     end
     automa.setup {
       mapping = {
         ['.'] = {
           queries = {
-            word_or_line_head_insert_and_go_next_line,
+            edit_on_word_or_line_head_and_go_next_line,
             automa.query_v1 { 'n(:)', 'c+' },
             automa.query_v1 { 'n(V)', '!V(:)*', 'V(:)', '!c(<CR>)+', 'c(<CR>)#' }, -- visualでrange指定するExコマンド
             automa.query_v1 { 'n(V)', 'V*' }, -- visualのあとrange取るコマンド
