@@ -19,10 +19,28 @@ return {
       end
       return join_pre_j(move_line_head_and_insert_by_I) or join_pre_j(move_line_or_word_head_and_edit)
     end
+    --- cgnは便利だが「検索してちょっと移動して編集」という動作はリピートできない。そういうのもリピート対象にする
+    local gn_like = (function()
+      local query = automa.query_v1 { 'n(*,#,n,N)', 'n(h,j,k,l,b,B,w,W,e,E)*', 'n', 'no*', 'i*' }
+      return function(events)
+        -- */#で起動した場合はまた検索しても仕方がないのでn/Nに置換する
+        local result = query(events)
+        if not result then
+          return
+        end
+        if result.typed:sub(1, 1) == '*' then
+          result.typed = 'n' .. result.typed:sub(2)
+        elseif result.typed:sub(1, 1) == '#' then
+          result.typed = 'N' .. result.typed:sub(2)
+        end
+        return result
+      end
+    end)()
     automa.setup {
       mapping = {
         ['.'] = {
           queries = {
+            gn_like,
             edit_on_word_or_line_head_and_go_next_line,
             automa.query_v1 { 'n(:)', 'c+' },
             automa.query_v1 { 'n(V)', '!V(:)*', 'V(:)', '!c(<CR>)+', 'c(<CR>)#' }, -- visualでrange指定するExコマンド
