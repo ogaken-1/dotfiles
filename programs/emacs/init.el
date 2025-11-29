@@ -516,11 +516,7 @@ Text scale:
     :doc "Show Henkan tooltip for ddskk via posframe"
     :ensure t
     :when (display-graphic-p)
-    :global-minor-mode t)
-  (eval-after-load 'evil
-    (c/with-hook evil-insert-state-exit-hook
-      (when skk-mode
-        (skk-mode -1)))))
+    :global-minor-mode t))
 
 (leaf c/C-j-dwim-mode
   :doc "C-jを入力したときにコメントや文字列の中であれば `skk-mode' を起動する."
@@ -786,29 +782,6 @@ Git gutter:
 (leaf ppp
   :doc "Extended pretty printer for Emacs Lisp."
   :ensure t)
-
-(leaf evil
-  :doc "Extensible vi layer."
-  :ensure t
-  :custom ((evil-want-C-u-scroll . t)
-           (evil-want-C-d-scroll . t)
-           (evil-want-Y-yank-to-eol . t)
-           (evil-want-integeration . t)
-           (evil-want-keybinding . nil)
-           (evil-undo-system . 'undo-fu))
-  :global-minor-mode t)
-
-(leaf evil-collection
-  :doc "A set of keybindings for Evil mode."
-  :added "2025-07-18"
-  :ensure t
-  :after evil
-  :config
-  (evil-collection-init
-   '(calc calendar compile consult corfu csv custom dashboard debug
-          dired eglot elisp-mode embark eshell eww flymake ibuffer
-          imenu indent info neotree magit man org-roam org outline
-          vundo w3m which-key)))
 
 (leaf inf-ruby
   :doc "Run a Ruby process in a buffer."
