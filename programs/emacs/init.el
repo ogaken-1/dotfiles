@@ -290,59 +290,25 @@ Text scale:
   :config
   (add-to-list 'completion-at-point-functions #'cape-file))
 
-(leaf eglot
-  :doc "The Emacs Client for LSP servers"
+(leaf lsp-mode
+  :doc "Emacs client/library for the Language Server Protocol."
+  :added "2025-11-29"
   :ensure t
-  :hook (((csharp-ts-mode-hook typescript-ts-mode-hook tsx-ts-mode-hook nix-mode-hook) . eglot-ensure))
-  :custom ((eldoc-echo-area-use-multiple-line-p . nil)
-           (eglot-connect-timeout . 60))
-  :bind (("C-c r" . #'eglot-rename)
-         ("C-c ." . #'eglot-code-actions))
-  :defvar eglot-server-programs
-  :defun eglot--server-info
-  :config
-  (defun c/eglot-server-configuration (server)
-    "workspace/didChangeConfigurationのparams.settingsに渡すオブジェクトを返す"
-    (pcase (plist-get (eglot--server-info server) :name)
-      ("OmniSharp"
-       '((:FormattingOptions . ((EnableEditorConfigSupport . t)
-                                (OrganizeImports . :json-false)))
-         (:MsBuild . ((LoadProjectsOnDemand . :json-false)))
-         (:RoslynExtensionsOptions . ((EnableAnalyzersSupport . t)
-                                      (EnableImportCompletion . :json-false)
-                                      (AnalyzeOpenDocumentsOnly . t)))))
-      ("vtsls"
-       '((:typescript . ((updateImportsOnFileMove . "always")))
-         (:javascript . ((updateImportsOnFileMove . "always")))
-         (:vtsls . ((experimental . ((completion . ((entriesLimit . 500)))  ; 最大候補数を制限しないとけっこう遅い
-                                     (enableMoveToFileCodeAction . t)))))))))
-  (defun c/set-eglot-server-program (modes command-list)
-    "`eglot-server-programs'の一部を更新する"
-    (if (assoc modes eglot-server-programs #'equal)
-        (setf (alist-get modes eglot-server-programs nil nil #'equal)
-              command-list)
-      (add-to-list 'eglot-server-programs (cons modes command-list))))
-  (setq-default eglot-workspace-configuration #'c/eglot-server-configuration)
-  (c/set-eglot-server-program
-   '(csharp-ts-mode)
-   `("OmniSharp" ; nixpkgsで入るomnisharpのコマンドは何故かOmniSharpになっている
-     "--languageserver"
-     "--zero-based-indices"
-     "DotNet:enablePackageRestore=true"
-     "--encoding" "utf-8"
-     "--hostPID" ,(int-to-string (emacs-pid))))
-  (c/set-eglot-server-program
-   '((typescript-ts-mode :language-id "typescript")
-     (tsx-ts-mode :language-id "typescriptreact"))
-   '("vtsls" "--stdio"))
-  (c/set-eglot-server-program '(nix-mode) '("nixd"))
-  (c/set-eglot-server-program '(typst-ts-mode) '("tinymist")))
+  :hook (go-ts-mode-hook . lsp))
 
-(leaf eglot-booster
-  :when (executable-find "emacs-lsp-booster")
-  :after eglot
-  :vc (:url "https://github.com/jdtsmith/eglot-booster")
-  :global-minor-mode t)
+(leaf lsp-ui
+  :doc "UI modules for lsp-mode."
+  :added "2025-11-29"
+  :ensure t
+  :custom ((lsp-ui-peek-enable . t)
+           (lsp-ui-doc-enable . t)))
+
+(leaf yasnippet
+  :doc "Yet another snippet extension for Emacs."
+  :added "2025-12-02"
+  :hook (prog-mode-hook . yas-minor-mode)
+  :config
+  (yas-reload-all))
 
 (leaf puni
   :doc "Parentheses Universalistic"
