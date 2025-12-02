@@ -473,6 +473,12 @@ Text scale:
   :hook ((typescript-ts-mode tsx-ts-mode) . tree-sitter-hl-mode)
   :global-minor-mode global-tree-sitter-mode)
 
+(leaf go-ts-mode
+  :doc "tree-sitter support for Go."
+  :added "2025-12-02"
+  :tag "builtin" "go"
+  :mode ("\\.go\\'"))
+
 (leaf tree-sitter-langs
   :doc "Grammar bundle for tree-sitter"
   :ensure t
