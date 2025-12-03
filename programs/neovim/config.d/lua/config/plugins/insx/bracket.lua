@@ -9,8 +9,8 @@ return {
     local fast_wrap = require 'insx.recipe.fast_wrap'
     local fast_break = require 'insx.recipe.fast_break'
 
-    -- '(\%#)expr'.key('>') → '(expr)\%#'
-    insx.add('>', fast_wrap { close = ')' })
+    -- '(\%#)expr'.key('<C-]>') → '(expr)\%#'
+    insx.add('<C-]>', fast_wrap { close = ')' })
 
     for _, pair in ipairs {
       { '(', ')' },
