@@ -294,7 +294,15 @@ Text scale:
   :doc "Emacs client/library for the Language Server Protocol."
   :added "2025-11-29"
   :ensure t
-  :hook (go-ts-mode-hook . lsp))
+  :hook ((go-ts-mode-hook . lsp-deferred)
+         (typst-ts-mode-hook . lsp-deferred))
+  :config
+  (add-to-list 'lsp-language-id-configuration '(typst-ts-mode . "typst"))
+  (lsp-register-client
+   (make-lsp-client
+    :new-connection (lsp-stdio-connection "tinymist")
+    :activation-fn (lsp-activate-on "typst")
+    :server-id 'tinymist)))
 
 (leaf lsp-ui
   :doc "UI modules for lsp-mode."
