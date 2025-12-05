@@ -296,6 +296,7 @@ Text scale:
   :ensure t
   :hook ((go-ts-mode-hook . lsp-deferred)
          (typst-ts-mode-hook . lsp-deferred))
+  :custom (lsp-completion-provider . :none)  ; 補完でcorfuを動かす
   :config
   (add-to-list 'lsp-language-id-configuration '(typst-ts-mode . "typst"))
   (lsp-register-client
