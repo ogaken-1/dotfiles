@@ -16,11 +16,20 @@ local function jump_and_show_diagnostic(count)
   end
 end
 
+local format_disable_servers = {
+  'vtsls',
+  'omnisharp',
+  'tsgo',
+  'jsonls',
+}
+
 local gid = vim.api.nvim_create_augroup('config-lsp', { clear = false })
 vim.api.nvim_create_autocmd('LspAttach', {
   group = gid,
   callback = function(ctx)
-    local opts = { buffer = ctx.buf }
+    local bufnr = ctx.buf
+    local opts = { buffer = bufnr }
+
     vim.keymap.set('n', 'ma', '<Cmd>lua vim.lsp.buf.code_action()<CR>', opts)
     vim.keymap.set('n', 'mr', '<Cmd>lua vim.lsp.buf.rename()<CR>', opts)
     if vim.fn.maparg('<Plug>(run-format)', 'n') == '' then
@@ -39,32 +48,21 @@ vim.api.nvim_create_autocmd('LspAttach', {
       }
     end, opts)
 
-    if vim.bo[ctx.buf].filetype == 'cs' then
+    local client = vim.lsp.get_client_by_id(ctx.data.client_id)
+    if not client then
       return
     end
-    vim.api.nvim_create_autocmd('BufWritePre', {
-      group = gid,
-      buffer = ctx.buf,
-      callback = function()
-        local servers = {
-          'vtsls',
-          'omnisharp',
-          'tsgo',
-          'jsonls',
-        }
-        vim.lsp.buf.format {
-          bufnr = ctx.buf,
-          filter = function(client)
-            for _, server_name in ipairs(servers) do
-              if client.name == server_name then
-                return false
-              end
-            end
-            return true
-          end,
-        }
-      end,
-    })
+    if not vim.list_contains(format_disable_servers, client.name) then
+      vim.api.nvim_create_autocmd('BufWritePre', {
+        group = gid,
+        buffer = bufnr,
+        callback = function()
+          vim.lsp.buf.format {
+            bufnr = bufnr,
+          }
+        end,
+      })
+    end
   end,
 })
 vim.diagnostic.config {
