@@ -63,6 +63,11 @@ vim.api.nvim_create_autocmd('LspAttach', {
         end,
       })
     end
+    -- omnisharpはtextDocument/semanticTokens/rangeを呼び出すとハイライト壊れまくってやばい
+    -- どうせomnisharpでsemanticTokens highlightは期待してないので一切無効化する
+    if client.name == 'omnisharp' then
+      client.server_capabilities.semanticTokensProvider = nil
+    end
   end,
 })
 vim.diagnostic.config {
