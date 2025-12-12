@@ -1,5 +1,6 @@
 return {
   'hrsh7th/nvim-automa',
+  enabled = false,
   event = 'VeryLazy',
   config = function()
     local automa = require 'automa'
