@@ -11,15 +11,19 @@ let
   wslConfig =
     { pkgs, ... }:
     {
-      nixpkgs.overlays = [
-        inputs.emacs-overlay.overlay
-      ];
+      nixpkgs = {
+        overlays = [
+          inputs.emacs-overlay.overlay
+          (import ../overlays/wsl.nix)
+        ];
+      };
       wsl = {
         enable = true;
         defaultUser = username;
         docker-desktop.enable = false;
         interop = {
           includePath = false;
+          register = true;
         };
         # emacsclientをWindowsのランチャーから認識できるように/usr/share/applicationsに配置する
         startMenuLaunchers = true;
@@ -33,6 +37,25 @@ let
         vscode-server = {
           enable = true;
           nodejsPackage = pkgs.nodejs;
+        };
+      };
+      home-manager.users.${username} = {
+        home.sessionVariables = {
+          SSH_AUTH_SOCK = "\${XDG_RUNTIME_DIR}/ssh-agent.sock";
+        };
+        systemd.user.services.ssh-agent-relay = {
+          Unit = {
+            Description = "SSH Agent Relay to Windows";
+            StartLimitIntervalSec = 0;
+          };
+          Service = {
+            Type = "exec";
+            KillMode = "process";
+            ExecStart = "${pkgs.socat}/bin/socat UNIX-LISTEN:%t/ssh-agent.sock,fork EXEC:\"${pkgs.npiperelay}/bin/npiperelay.exe -ei -s //./pipe/openssh-ssh-agent\",nofork";
+          };
+          Install = {
+            WantedBy = [ "default.target" ];
+          };
         };
       };
     };
