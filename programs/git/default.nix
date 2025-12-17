@@ -39,7 +39,7 @@
       user = {
         name = "Kento Ogata";
         # 1. Use direnv to set email via $GIT_AUTHOR_EMAIL and $GIT_COMMITTER_EMAIL.
-        # 2. Set `user.signingKey` by `git config` command.
+        signingKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILjUKp0bTcWZOctvJtnXZsy7efQSpKO7xXDuVCehEA23";
       };
       pull = {
         rebase = true;
