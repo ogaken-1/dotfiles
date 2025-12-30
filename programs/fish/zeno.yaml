@@ -1,0 +1,49 @@
+snippets:
+  - name: git status
+    keyword: gs
+    snippet: git status --short --branch
+  - name: git add
+    keyword: ga
+    snippet: git add {{file}}
+  - name: git commit
+    keyword: gci
+    snippet: git commit
+  - name: git commit amend
+    keyword: gcia
+    snippet: git commit --amend
+  - name: git commit fixup
+    keyword: gcif
+    snippet: git commit --fixup={{commit_id}}
+  - name: git diff
+    keyword: gd
+    snippet: git diff {{branch}}
+  - name: git fetch
+    keyword: gf
+    snippet: git fetch
+  - name: git pull
+    keyword: gF
+    snippet: git pull
+  - name: git push
+    keyword: gp
+    snippet: git push
+  - name: git push force
+    keyword: gpf
+    snippet: git push --force-if-includes --force-with-lease
+  - name: git push upstream
+    keyword: gpf
+    snippet: git push --set-upstream origin "$(git branch --show-current)"
+  - name: git status
+    keyword: gs
+    snippet: git status --short --branch -uall
+  - name: git stash
+    keyword: gst
+    snippet: git stash
+  - name: git stash list
+    keyword: gstl
+    snippet: git stash list
+  - name: git switch
+    keyword: gsw
+    snippet: git switch {{branch}}
+  - name: git switch
+    keyword: gswc
+    snippet: git switch --create
