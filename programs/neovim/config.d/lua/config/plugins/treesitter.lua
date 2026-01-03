@@ -9,7 +9,6 @@ return {
       'c_sharp',
       'commonlisp',
       'css',
-      'csv',
       'diff',
       'dockerfile',
       'editorconfig',
