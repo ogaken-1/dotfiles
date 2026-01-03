@@ -1,7 +1,7 @@
 {
   description = "dotfiles";
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     systems.url = "github:nix-systems/default";
     flake-utils = {
       url = "github:numtide/flake-utils";
@@ -47,7 +47,19 @@
       inputs.systems.follows = "systems";
       inputs.flake-compat.follows = "flake-compat";
       inputs.flake-utils.follows = "flake-utils";
-      inputs.treefmt-nix.follows = "";
+      inputs.treefmt-nix.follows = "treefmt-nix";
+      inputs.cl-nix-lite.follows = "cl-nix-lite";
+    };
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    cl-nix-lite = {
+      url = "github:hraban/cl-nix-lite";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.systems.follows = "systems";
+      inputs.treefmt-nix.follows = "treefmt-nix";
     };
   };
   outputs =

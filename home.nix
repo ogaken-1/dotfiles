@@ -21,7 +21,6 @@ in
       docker-client
       eza
       fsautocomplete
-      gcc14
       ghq
       git-absorb
       git-select-author
