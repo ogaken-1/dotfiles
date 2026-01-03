@@ -3,9 +3,12 @@ let
   inherit (inputs) nix-darwin home-manager mac-app-util;
   system = "aarch64-darwin";
   username = "ogaken";
-  homeConfiguration = (import ../home.nix { inherit inputs; });
+  homeDirectory = "/Users/${username}";
+  homeConfiguration = {
+    home-manager.users.${username} = import ../home.nix { inherit inputs; };
+  };
   config =
-    { pkgs, ... }:
+    { pkgs, config, ... }:
     {
       nixpkgs = {
         overlays = [
@@ -20,15 +23,22 @@ let
         admin ALL=(${username}) NOPASSWD: ${pkgs.darwin-rebuild}/bin/darwin-rebuild
       '';
       users.users.${username} = {
-        home = "/Users/${username}";
+        home = homeDirectory;
         shell = pkgs.fish;
       };
       programs.fish.enable = true;
+      home-manager.backupFileExtension = "backup";
       home-manager.sharedModules = [
         mac-app-util.homeManagerModules.default
       ];
       home-manager.useUserPackages = false;
-      home-manager.users.${username} = homeConfiguration;
+      home-manager.users.${username} = {
+        home = {
+          sessionVariables = {
+            SSH_AUTH_SOCK = "${homeDirectory}/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock";
+          };
+        };
+      };
     };
 in
 nix-darwin.lib.darwinSystem {
@@ -41,5 +51,6 @@ nix-darwin.lib.darwinSystem {
     home-manager.darwinModules.home-manager
     ../darwin-basic.nix
     config
+    homeConfiguration
   ];
 }
