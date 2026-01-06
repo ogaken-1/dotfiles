@@ -1,4 +1,4 @@
-{ config, ... }:
+{ pkgs, config, ... }:
 {
   home.file = {
     "${config.xdg.configHome}/fish/functions/" = {
@@ -25,9 +25,19 @@
       gsw = "git switch";
       gswc = "git switch --create";
     };
-    shellInit = ''
-      if status --is-interactive && test -z $TMUX
-        bind \cqs 'tmux attach-session -t (tmux list-sessions -F \'#{session_name}\' 2> /dev/null | fzf --layout=reverse --border=block) > /dev/null 2> /dev/null'
+    functions = {
+      fzf_tmux_session = {
+        body = ''
+          ${pkgs.tmux}/bin/tmux attach-session -t (
+            ${pkgs.tmux}/bin/tmux list-sessions -F '#{session_name}' 2> /dev/null |
+              ${pkgs.fzf}/bin/fzf --layout=reverse --border=block
+          ) > /dev/null 2> /dev/null
+        '';
+      };
+    };
+    interactiveShellInit = ''
+      if [ -z "$TMUX" ]
+        bind \cqs fzf_tmux_session
       end
     '';
   };
