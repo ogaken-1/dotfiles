@@ -4,7 +4,7 @@ let
   dirModules =
     dir: builtins.readDir dir |> builtins.attrNames |> builtins.map (file: dir + "/${file}");
   programs = dirModules ./programs;
-  git-select-author = pkgs.callPackage (import ./packages/git-select-author) { };
+  git-select-author = pkgs.callPackage ./pkgs/git-select-author { };
 in
 {
   nixpkgs.overlays = with inputs; [

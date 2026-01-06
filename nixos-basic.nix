@@ -1,7 +1,7 @@
 { username, homeDirectory }:
 { pkgs, ... }:
 let
-  caskaydia-cove = pkgs.callPackage ./packages/caskaydia-cove/package.nix { };
+  caskaydia-cove = pkgs.callPackage ./pkgs/caskaydia-cove/package.nix { };
 in
 {
   services = {
