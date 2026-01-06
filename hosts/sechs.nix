@@ -8,7 +8,7 @@ let
     home-manager.users.${username} = import ../home.nix { inherit inputs; };
   };
   config =
-    { pkgs, config, ... }:
+    { pkgs, ... }:
     {
       nixpkgs = {
         overlays = [
@@ -33,11 +33,9 @@ let
       ];
       home-manager.useUserPackages = false;
       home-manager.users.${username} = {
-        home = {
-          sessionVariables = {
-            SSH_AUTH_SOCK = "${homeDirectory}/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock";
-          };
-        };
+        imports = [
+          ../modules/darwin-op-ssh.nix
+        ];
       };
     };
 in
