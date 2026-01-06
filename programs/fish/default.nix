@@ -39,6 +39,11 @@
       if [ -z "$TMUX" ]
         bind \cqs fzf_tmux_session
       end
+      set fish_color_command blue
+      set fish_color_keyword green
+      set fish_color_error red --bold
+      set fish_color_comment brblack
+      set fish_color_autosuggestion brblack
     '';
   };
 }
