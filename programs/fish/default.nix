@@ -44,6 +44,7 @@
       set fish_color_error red --bold
       set fish_color_comment brblack
       set fish_color_autosuggestion brblack
+      bind tab fzf_complete
     '';
   };
 }
