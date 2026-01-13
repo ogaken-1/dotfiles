@@ -104,7 +104,7 @@ function __fzf_git_try_complete
     or string match -rq '^git commit(?: .*)? --(?:(?:reuse:reedit)-message|squash)[= ]$' -- $cmd
     and not string match -rq ' -- ' -- $cmd
     set source $FZF_GIT_LOG_SOURCE
-    set -a -opts --no-sort --bind=$FZF_GIT_DEFAULT_BIND --preview=$FZF_GIT_LOG_PREVIEW --prompt='Git Commit> '
+    set -a opts --no-sort --bind=$FZF_GIT_DEFAULT_BIND --preview=$FZF_GIT_LOG_PREVIEW --prompt='Git Commit> '
     set callback __fzf_git_branch_log_tag_reflog_callback
 
     # git commit files
@@ -126,7 +126,7 @@ function __fzf_git_try_complete
     and not string match -rq ' -- ' -- $cmd
     and not string match -rq ' --(?:conflict|pathspec-from-file) $' -- $cmd
     set source $FZF_GIT_BRANCH_SOURCE
-    set -a opts --bind=$FZF_GIT_BRANCH_LOG_TAG_REFLOG_BIND --preview=FZF_GIT_BRANCH_LOG_TAG_REFLOG_PREVIEW --preview-window=down --header='C-b: branch, C-t: tag, C-r: reflog' --prompt='Git Checkout> '
+    set -a opts --bind=$FZF_GIT_BRANCH_LOG_TAG_REFLOG_BIND --preview=$FZF_GIT_BRANCH_LOG_TAG_REFLOG_PREVIEW --preview-window=down --header='C-b: branch, C-t: tag, C-r: reflog' --prompt='Git Checkout> '
     set callback __fzf_git_branch_log_tag_reflog_callback
 
     # git checkout files
@@ -179,13 +179,12 @@ function __fzf_git_try_complete
   else if string match -rq '^git restore(?=.* (?:-s |--source[= ])) .* $' -- $cmd
     set source $FZF_GIT_LS_FILES_SOURCE
     set -a opts --multi --read0 --bind=$FZF_GIT_DEFAULT_BIND --preview=$FZF_GIT_LS_FILES_PREVIEW --prompt='Git Restore Files> '
-    set callback __fzf_git_status_callback
 
     # git rebase branch
   else if string match -rq '^git rebase(?=.*(?<! (?:-[xsX]|--exec|--strategy(?:-options)?|--onto)) [^-]) .* $' -- $cmd
     set source $FZF_GIT_BRANCH_SOURCE
     set -a opts --bind=$FZF_GIT_BRANCH_LOG_TAG_REFLOG_BIND --preview=$FZF_GIT_BRANCH_LOG_TAG_REFLOG_PREVIEW --preview-window=down --header='C-b: branch, C-c: commit, C-t: tag, C-r: reflog' --prompt='Git Rebase Branch> '
-    set callback __fzf_git_status_callback
+    set callback __fzf_git_branch_log_tag_reflog_callback
 
     # git rebase
   else if string match -rq '^git rebase(?: .*)? (?:--onto[= ])?$' -- $cmd
