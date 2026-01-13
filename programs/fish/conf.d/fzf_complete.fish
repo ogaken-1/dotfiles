@@ -45,7 +45,7 @@ set -g FZF_GIT_DEFAULT_BIND 'ctrl-d:preview-half-page-down,ctrl-u:preview-half-p
 set -g FZF_GIT_REF_BIND "ctrl-d:preview-half-page-down,ctrl-u:preview-half-page-up,?:toggle-preview,ctrl-b:reload($FZF_GIT_BRANCH_SOURCE),ctrl-c:reload($FZF_GIT_LOG_SOURCE),ctrl-t:reload($FZF_GIT_TAG_SOURCE),ctrl-r:reload($FZF_GIT_REFLOG_SOURCE)"
 
 # === Common Options
-set -g FZF_GIT_COMMON_OPTS \
+set -g FZF_COMPLETE_COMMON_OPTS \
   --ansi \
   --expect=alt-enter \
   --height='80%' \
