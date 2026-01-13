@@ -5,6 +5,10 @@
       source = ./functions;
       recursive = true;
     };
+    "${config.xdg.configHome}/fish/conf.d/" = {
+      source = ./conf.d;
+      recursive = true;
+    };
   };
   programs.fish = {
     enable = true;
