@@ -51,16 +51,17 @@ set -g FZF_GIT_COMMON_OPTS \
 set -g FZF_GIT_DEFAULT_BIND 'ctrl-d:preview-half-page-down,ctrl-u:preview-half-page-up,?:toggle-preview'
 set -g FZF_GIT_REF_BIND "ctrl-d:preview-half-page-down,ctrl-u:preview-half-page-up,?:toggle-preview,ctrl-b:reload($FZF_GIT_BRANCH_SOURCE),ctrl-c:reload($FZF_GIT_LOG_SOURCE),ctrl-t:reload($FZF_GIT_TAG_SOURCE),ctrl-r:reload($FZF_GIT_REFLOG_SOURCE)"
 
-# === Callbacks ===
-function __fzf_git_status_callback
+# === Transformers ===
+# fzfでの選択結果をcommandline引数形式に変換
+function __fzf_git_status_to_arg
   string sub -s 4 -- $argv
 end
 
-function __fzf_git_ref_callback
+function __fzf_git_ref_to_arg
   string split \t -- $argv | head -1 | awk '{ print $2 }'
 end
 
-function __fzf_git_stash_callback
+function __fzf_git_stash_to_arg
   string split \t -- $argv | head -1 | awk '{ print $1 }'
 end
 
@@ -69,14 +70,14 @@ function __fzf_git_try_complete
   set -l cmd (commandline)
   set -l source ''
   set -l opts $FZF_GIT_COMMON_OPTS
-  set -l callback ''
+  set -l transformer ''
   set -l prompt ''
 
   # git add
   if string match -rq '^git add(?: .*)? $' -- $cmd
     set source $FZF_GIT_STATUS_SOURCE
     set -a opts --multi --no-sort --bind=$FZF_GIT_DEFAULT_BIND --preview=$FZF_GIT_STATUS_PREVIEW --prompt='Git Add Files> '
-    set callback __fzf_git_status_callback
+    set transformer __fzf_git_status_to_arg
 
     # git diff files (with --)
   else if string match -rq '^git diff(?=.* -- ) .* $' -- $cmd
@@ -84,7 +85,7 @@ function __fzf_git_try_complete
     and not string match -rq ' --no-index ' -- $cmd
     set source $FZF_GIT_STATUS_SOURCE
     set -a opts --multi --no-sort --bind=$FZF_GIT_DEFAULT_BIND --preview=$FZF_GIT_STATUS_PREVIEW --prompt='Git Diff Files> '
-    set callback __fzf_git_status_callback
+    set transformer __fzf_git_status_to_arg
 
     # git diff branch files
   else if string match -rq '^git diff(?=.* -- ) .* $' -- $cmd
@@ -96,7 +97,7 @@ function __fzf_git_try_complete
   else if string match -rq '^git diff(?: .*)? $' -- $cmd
     set source $FZF_GIT_BRANCH_SOURCE
     set -a opts --multi --bind=$FZF_GIT_REF_BIND --preview=$FZF_GIT_REF_PREVIEW --preview-window=down --header='C-b: branch, C-c: commit, C-t: tag, C-r: reflog' --prompt='Git Diff> '
-    set callback __fzf_git_ref_callback
+    set transformer __fzf_git_ref_to_arg
 
     # git commit -c/-C/--fixup/--squash
   else if string match -rq '^git commit(?: .*)? -[cC] $' -- $cmd
@@ -105,7 +106,7 @@ function __fzf_git_try_complete
     and not string match -rq ' -- ' -- $cmd
     set source $FZF_GIT_LOG_SOURCE
     set -a opts --no-sort --bind=$FZF_GIT_DEFAULT_BIND --preview=$FZF_GIT_LOG_PREVIEW --prompt='Git Commit> '
-    set callback __fzf_git_ref_callback
+    set transformer __fzf_git_ref_to_arg
 
     # git commit files
   else if string match -rq '^git commit(?: .*) $' -- $cmd
@@ -113,7 +114,7 @@ function __fzf_git_try_complete
     and not string match -rq ' --(?:author|date|template|trailer) $' -- $cmd
     set source $FZF_GIT_STATUS_SOURCE
     set -a opts --multi --no-sort --bind=$FZF_GIT_DEFAULT_BIND --preview=$FZF_GIT_STATUS_PREVIEW --prompt='Git Commit Files> '
-    set callback __fzf_git_status_callback
+    set transformer __fzf_git_status_to_arg
 
     # git checkout branch files
   else if string match -rq '^git checkout(?=.*(?<! (?:-[bBt]|--orphan|--track|--conflict|--pathspec-from-file)) [^-]) .* $' -- $cmd
@@ -127,21 +128,21 @@ function __fzf_git_try_complete
     and not string match -rq ' --(?:conflict|pathspec-from-file) $' -- $cmd
     set source $FZF_GIT_BRANCH_SOURCE
     set -a opts --bind=$FZF_GIT_REF_BIND --preview=$FZF_GIT_REF_PREVIEW --preview-window=down --header='C-b: branch, C-t: tag, C-r: reflog' --prompt='Git Checkout> '
-    set callback __fzf_git_ref_callback
+    set transformer __fzf_git_ref_to_arg
 
     # git checkout files
   else if string match -rq '^git checkout(?: .*)? $' -- $cmd
     and not string match -rq ' --(?:conflict|pathspec-from-file) $' -- $cmd
     set source $FZF_GIT_STATUS_SOURCE
     set -a opts --multi --no-sort --bind=$FZF_GIT_DEFAULT_BIND --preview=$FZF_GIT_STATUS_PREVIEW --prompt='Git Checkout Files> '
-    set callback __fzf_git_status_callback
+    set transformer __fzf_git_status_to_arg
 
     # git branch -d/-D
   else if string match -rq '^git branch (?:-d|-D)(?: .*)? $' -- $cmd
     and not string match -rq ' --(?:conflict|pathspec-from-file) $' -- $cmd
     set source $FZF_GIT_BRANCH_SOURCE
     set -a opts --multi --no-sort --bind=$FZF_GIT_DEFAULT_BIND --preview=$FZF_GIT_STATUS_PREVIEW --prompt='Git Delete Branch> '
-    set callback __fzf_git_ref_callback
+    set transformer __fzf_git_ref_to_arg
 
     # git reset branch files
   else if string match -rq '^git reset(?=.*(?<! --pathspec-from-file) [^-]) .* $' -- $cmd
@@ -155,7 +156,7 @@ function __fzf_git_try_complete
     and not string match -rq ' --pathspec-from-file $' -- $cmd
     set source $FZF_GIT_LOG_SOURCE
     set -a opts --bind=$FZF_GIT_REF_BIND --preview=$FZF_GIT_REF_PREVIEW --preview-window=down --header='C-b: branch, C-c: commit, C-t: tag, C-r: reflog' --prompt='Git Reset> '
-    set callback __fzf_git_ref_callback
+    set transformer __fzf_git_ref_to_arg
 
     # git reset files (fallback)
   else if string match -rq '^git reset(?: .*)? $' -- $cmd
@@ -173,7 +174,7 @@ function __fzf_git_try_complete
     and not string match -rq ' -- ' -- $cmd
     set source $FZF_GIT_BRANCH_SOURCE
     set -a opts --bind=$FZF_GIT_REF_BIND --preview=$FZF_GIT_REF_PREVIEW --preview-window=down --header='C-b: branch, C-c: commit, C-t: tag, C-r: reflog' --prompt='Git Restore Source> '
-    set callback __fzf_git_ref_callback
+    set transformer __fzf_git_ref_to_arg
 
     # git restore source files
   else if string match -rq '^git restore(?=.* (?:-s |--source[= ])) .* $' -- $cmd
@@ -184,7 +185,7 @@ function __fzf_git_try_complete
   else if string match -rq '^git rebase(?=.*(?<! (?:-[xsX]|--exec|--strategy(?:-options)?|--onto)) [^-]) .* $' -- $cmd
     set source $FZF_GIT_BRANCH_SOURCE
     set -a opts --bind=$FZF_GIT_REF_BIND --preview=$FZF_GIT_REF_PREVIEW --preview-window=down --header='C-b: branch, C-c: commit, C-t: tag, C-r: reflog' --prompt='Git Rebase Branch> '
-    set callback __fzf_git_ref_callback
+    set transformer __fzf_git_ref_to_arg
 
     # git rebase
   else if string match -rq '^git rebase(?: .*)? (?:--onto[= ])?$' -- $cmd
@@ -192,13 +193,13 @@ function __fzf_git_try_complete
     and not string match -rq ' --(?:exec|strategy(?:-option)?) $' -- $cmd
     set source $FZF_GIT_LOG_SOURCE
     set -a opts --bind=$FZF_GIT_REF_BIND --preview=$FZF_GIT_REF_PREVIEW --preview-window=down --header='C-b: branch, C-c: commit, C-t: tag, C-r: reflog' --prompt='Git Rebase Branch> '
-    set callback __fzf_git_ref_callback
+    set transformer __fzf_git_ref_to_arg
 
     # git merge --into-name
   else if string match -rq '^git merge(?: .*)? --into-name[= ]$' -- $cmd
     set source $FZF_GIT_BRANCH_SOURCE
     set -a opts --bind=$FZF_GIT_REF_BIND --preview=$FZF_GIT_REF_PREVIEW --preview-window=down --header='C-b: branch, C-c: commit, C-t: tag, C-r: reflog' --prompt='Git Merge Branch> '
-    set callback __fzf_git_ref_callback
+    set transformer __fzf_git_ref_to_arg
 
     # git merge
   else if string match -rq 'git merge(?: .*)? $' -- $cmd
@@ -206,26 +207,26 @@ function __fzf_git_try_complete
     and not string match -rq ' --(?:file|strategy(?:-option)?) $' -- $cmd
     set source $FZF_GIT_LOG_SOURCE
     set -a opts --bind=$FZF_GIT_REF_BIND --preview=$FZF_GIT_REF_PREVIEW --preview-window=down --header='C-b: branch, C-c: commit, C-t: tag, C-r: reflog' --prompt='Git Merge> '
-    set callback __fzf_git_ref_callback
+    set transformer __fzf_git_ref_to_arg
 
     # git stash apply/drop/pop/show
   else if string match -rq 'git stash (?:apply|drop|pop|show)(?: .*)? $' -- $cmd
     or string match -rq 'git stash branch(?=.* [^-]) .* $' -- $cmd
     set source $FZF_GIT_STASH_SOURCE
     set -a opts --bind=$FZF_GIT_DEFAULT_BIND --preview=$FZF_GIT_STASH_PREVIEW --prompt='Git Stash> '
-    set callback __fzf_git_stash_callback
+    set transformer __fzf_git_stash_to_arg
 
     # git stash branch
   else if string match -rq 'git stash branch(?: .*)? $' -- $cmd
     set source $FZF_GIT_BRANCH_SOURCE
     set -a opts --bind=$FZF_GIT_REF_BIND --preview=$FZF_GIT_REF_PREVIEW --preview-window=down --header='C-b: branch, C-c: commit, C-t: tag, C-r: reflog' --prompt='Git Stash Branch> '
-    set callback __fzf_git_ref_callback
+    set transformer __fzf_git_ref_to_arg
 
     # git stash push files
   else if string match -rq 'git stash push(?: .*)? $' -- $cmd
     set source $FZF_GIT_STATUS_SOURCE
     set -a opts --multi --no-sort --bind=$FZF_GIT_DEFAULT_BIND --preview=$FZF_GIT_STATUS_PREVIEW --prompt='Git Stash Push Files> '
-    set callback __fzf_git_status_callback
+    set transformer __fzf_git_status_to_arg
 
     # git log file
   else if string match -rq '^git log(?=.* -- ) .* $' -- $cmd
@@ -240,19 +241,19 @@ function __fzf_git_try_complete
     and not string match -rq ' --(?:min|max)-parents $' -- $cmd
     set source $FZF_GIT_BRANCH_SOURCE
     set -a opts --bind=$FZF_GIT_REF_BIND --preview=$FZF_GIT_REF_PREVIEW --preview-window=down --header='C-b: branch, C-c: commit, C-t: tag, C-r: reflog' --prompt='Git Log> '
-    set callback __fzf_git_ref_callback
+    set transformer __fzf_git_ref_to_arg
 
     # git tag list commit
   else if string match -rq '^git tag(?=.* (?:-l|--list) )(?: .*)? --(?:(?:no-)?(?:contains|merged)|points-at) $' -- $cmd
     set source $FZF_GIT_LOG_SOURCE
     set -a opts --bind=$FZF_GIT_REF_BIND --preview=$FZF_GIT_REF_PREVIEW --preview-window=down --header='C-b: branch, C-c: commit, C-t: tag, C-r: reflog' --prompt='Git Tag List Commit> '
-    set callback __fzf_git_ref_callback
+    set transformer __fzf_git_ref_to_arg
 
     # git tag delete
   else if string match -rq '^git tag(?=.* (?:-d|--delete) )(?: .*)? $' -- $cmd
     set source $FZF_GIT_TAG_SOURCE
     set -a opts --bind=$FZF_GIT_REF_BIND --preview=$FZF_GIT_REF_PREVIEW --preview-window=down --header='C-b: branch, C-c: commit, C-t: tag, C-r: reflog' --prompt='Git Tag Delete> '
-    set callback __fzf_git_ref_callback
+    set transformer __fzf_git_ref_to_arg
 
     # git tag
   else if string match -rq '^git tag(?: .*)? $' -- $cmd
@@ -260,7 +261,7 @@ function __fzf_git_try_complete
     and not string match -rq ' --(?:local-user|format) $' -- $cmd
     set source $FZF_GIT_TAG_SOURCE
     set -a opts --bind=$FZF_GIT_REF_BIND --preview=$FZF_GIT_REF_PREVIEW --preview-window=down --header='C-b: branch, C-c: commit, C-t: tag, C-r: reflog' --prompt='Git Tag> '
-    set callback __fzf_git_ref_callback
+    set transformer __fzf_git_ref_to_arg
 
     # git mv files
   else if string match -rq '^git mv(?: .*)? $' -- $cmd
@@ -277,13 +278,13 @@ function __fzf_git_try_complete
     and not string match -rq ' --(?:pretty|format) $' -- $cmd
     set source $FZF_GIT_LOG_SOURCE
     set -a opts --bind=$FZF_GIT_REF_BIND --preview=$FZF_GIT_REF_PREVIEW --preview-window=down --header='C-b: branch, C-c: commit, C-t: tag, C-r: reflog' --prompt='Git Show> '
-    set callback __fzf_git_ref_callback
+    set transformer __fzf_git_ref_to_arg
 
     # git revert
   else if string match -rq '^git revert(?: .*)? $' -- $cmd
     set source $FZF_GIT_LOG_SOURCE
     set -a opts --no-sort --bind=$FZF_GIT_DEFAULT_BIND --preview=$FZF_GIT_LOG_PREVIEW --prompt='Git Revert> '
-    set callback __fzf_git_ref_callback
+    set transformer __fzf_git_ref_to_arg
 
   else
     return 1
@@ -303,8 +304,8 @@ function __fzf_git_try_complete
 
   set -l results
   for sel in $selections
-    if [ -n "$callback" ]
-      set -a results ($callback $sel)
+    if [ -n "$transformer" ]
+      set -a results ($transformer $sel)
     else
       set -a results $sel
     end
