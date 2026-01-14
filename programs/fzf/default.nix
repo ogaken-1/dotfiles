@@ -8,7 +8,6 @@
       "--border=rounded"
       "--layout=reverse"
       "--height 40%"
-      "--preview='${./fzf-preview} {}'"
       "--preview-window=right:60%:border-rounded"
     ];
   };
