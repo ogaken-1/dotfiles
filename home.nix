@@ -44,6 +44,7 @@ in
       unzip
       vim
       wget
+      yq
     ];
   };
   xdg.enable = true;
