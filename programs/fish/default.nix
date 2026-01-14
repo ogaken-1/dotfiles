@@ -15,7 +15,7 @@
       ga = "git add";
       gci = "git commit";
       gcia = "git commit --amend";
-      gcif = "git commit --fixup=";
+      gcif = "git commit --fixup";
       gd = "git diff";
       gf = "git fetch";
       gF = "git pull";
@@ -28,7 +28,7 @@
       gsw = "git switch";
       gswc = "git switch --create";
       gb = "git branch";
-      gbd = "git branch -d";
+      gbd = "git branch --delete";
     };
     functions = {
       fzf_tmux_session = {
