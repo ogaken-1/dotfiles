@@ -28,6 +28,8 @@
       gstl = "git stash list";
       gsw = "git switch";
       gswc = "git switch --create";
+      gb = "git branch";
+      gbd = "git branch -d";
     };
     functions = {
       fzf_tmux_session = {
