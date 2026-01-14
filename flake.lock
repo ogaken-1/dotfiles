@@ -50,6 +50,21 @@
         "type": "github"
       }
     },
+    "fish-fzf-complete": {
+      "locked": {
+        "lastModified": 1768375537,
+        "narHash": "sha256-+GLYLuPuBZ5rcYYbw0Kf2hp09dqASC2HYgZl+Wz/K3A=",
+        "owner": "ogaken-1",
+        "repo": "fzf_complete.fish",
+        "rev": "a1150a4fb8c78bebb9d71d3346ea56f44f014c26",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ogaken-1",
+        "repo": "fzf_complete.fish",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "locked": {
         "lastModified": 1767039857,
@@ -293,6 +308,7 @@
       "inputs": {
         "cl-nix-lite": "cl-nix-lite",
         "emacs-overlay": "emacs-overlay",
+        "fish-fzf-complete": "fish-fzf-complete",
         "flake-compat": "flake-compat",
         "flake-parts": "flake-parts",
         "flake-utils": "flake-utils",

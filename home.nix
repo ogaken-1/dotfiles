@@ -11,6 +11,7 @@ in
     emacs-overlay.overlay
     vim-overlay.overlays.default
     neovim-overlay.overlays.default
+    fish-fzf-complete.overlays.default
   ];
   home = {
     stateVersion = "24.05";

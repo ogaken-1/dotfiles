@@ -61,6 +61,9 @@
       inputs.systems.follows = "systems";
       inputs.treefmt-nix.follows = "treefmt-nix";
     };
+    fish-fzf-complete = {
+      url = "github:ogaken-1/fzf_complete.fish";
+    };
   };
   outputs =
     { flake-parts, ... }@inputs:

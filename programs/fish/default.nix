@@ -5,11 +5,10 @@
       source = ./functions;
       recursive = true;
     };
-    "${config.xdg.configHome}/fish/conf.d/" = {
-      source = ./conf.d;
-      recursive = true;
-    };
   };
+  home.packages = [
+    pkgs.fishPlugins.fzf-complete
+  ];
   programs.fish = {
     enable = true;
     shellAbbrs = {
@@ -50,7 +49,6 @@
       set fish_color_error red --bold
       set fish_color_comment brblack
       set fish_color_autosuggestion brblack
-      bind tab fzf_complete
     '';
   };
 }
