@@ -52,6 +52,10 @@ set -g FZF_COMPLETE_COMMON_OPTS \
   --print0 \
   --no-separator
 
+# === Headers ===
+set -g FZF_GIT_REF_HEADER_FULL 'C-b: branch, C-c: commit, C-t: tag, C-r: reflog'
+set -g FZF_GIT_REF_HEADER_NO_COMMIT 'C-b: branch, C-t: tag, C-r: reflog'
+
 # === Preset Options ===
 set -g FZF_GIT_PRESET_STATUS \
   --multi --no-sort \
@@ -63,10 +67,14 @@ set -g FZF_GIT_PRESET_LS_FILES \
   --bind=$FZF_GIT_DEFAULT_BIND \
   --preview=$FZF_GIT_LS_FILES_PREVIEW
 
-set -g FZF_GIT_PRESET_REF \
+set -g FZF_GIT_PRESET_REF_NO_HEADER \
   --bind=$FZF_GIT_REF_BIND \
   --preview=$FZF_GIT_REF_PREVIEW \
   --preview-window=down
+
+set -g FZF_GIT_PRESET_REF \
+  $FZF_GIT_PRESET_REF_NO_HEADER \
+  --header=$FZF_GIT_REF_HEADER_FULL
 
 set -g FZF_GIT_PRESET_LOG_SIMPLE \
   --no-sort \
@@ -76,7 +84,3 @@ set -g FZF_GIT_PRESET_LOG_SIMPLE \
 set -g FZF_GIT_PRESET_STASH \
   --bind=$FZF_GIT_DEFAULT_BIND \
   --preview=$FZF_GIT_STASH_PREVIEW
-
-# === Headers ===
-set -g FZF_GIT_REF_HEADER_FULL 'C-b: branch, C-c: commit, C-t: tag, C-r: reflog'
-set -g FZF_GIT_REF_HEADER_NO_COMMIT 'C-b: branch, C-t: tag, C-r: reflog'

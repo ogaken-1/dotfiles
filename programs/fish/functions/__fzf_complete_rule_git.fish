@@ -50,7 +50,7 @@ function __fzf_complete_rule_git
     # git diff
   else if string match -rq '^git diff(?: .*)? $' -- $cmd
     set source $FZF_GIT_BRANCH_SOURCE
-    set -a opts $FZF_GIT_PRESET_REF --multi --header=$FZF_GIT_REF_HEADER_FULL --prompt='Git Diff> '
+    set -a opts $FZF_GIT_PRESET_REF --multi --prompt='Git Diff> '
     set transformer __fzf_git_ref_to_arg
 
     # git commit -c/-C/--fixup/--squash
@@ -81,7 +81,7 @@ function __fzf_complete_rule_git
     and not string match -rq ' -- ' -- $cmd
     and not string match -rq ' --(?:conflict|pathspec-from-file) $' -- $cmd
     set source $FZF_GIT_BRANCH_SOURCE
-    set -a opts $FZF_GIT_PRESET_REF --header=$FZF_GIT_REF_HEADER_NO_COMMIT --prompt='Git Checkout> '
+    set -a opts $FZF_GIT_PRESET_REF_NO_HEADER --header=$FZF_GIT_REF_HEADER_NO_COMMIT --prompt='Git Checkout> '
     set transformer __fzf_git_ref_to_arg
 
     # git checkout files
@@ -109,7 +109,7 @@ function __fzf_complete_rule_git
     and not string match -rq ' -- ' -- $cmd
     and not string match -rq ' --pathspec-from-file $' -- $cmd
     set source $FZF_GIT_LOG_SOURCE
-    set -a opts $FZF_GIT_PRESET_REF --header=$FZF_GIT_REF_HEADER_FULL --prompt='Git Reset> '
+    set -a opts $FZF_GIT_PRESET_REF --prompt='Git Reset> '
     set transformer __fzf_git_ref_to_arg
 
     # git reset files (fallback)
@@ -121,13 +121,13 @@ function __fzf_complete_rule_git
     # git switch
   else if string match -rq '^git switch(?: .*)? $' -- $cmd
     set source $FZF_GIT_BRANCH_SOURCE
-    set -a opts $FZF_GIT_PRESET_REF --header=$FZF_GIT_REF_HEADER_FULL --prompt='Git Switch> '
+    set -a opts $FZF_GIT_PRESET_REF --prompt='Git Switch> '
 
     # git restore --source
   else if string match -rq '^git restore(?: .*)? (?:-s |--source[= ])$' -- $cmd
     and not string match -rq ' -- ' -- $cmd
     set source $FZF_GIT_BRANCH_SOURCE
-    set -a opts $FZF_GIT_PRESET_REF --header=$FZF_GIT_REF_HEADER_FULL --prompt='Git Restore Source> '
+    set -a opts $FZF_GIT_PRESET_REF --prompt='Git Restore Source> '
     set transformer __fzf_git_ref_to_arg
 
     # git restore source files
@@ -138,7 +138,7 @@ function __fzf_complete_rule_git
     # git rebase branch
   else if string match -rq '^git rebase(?=.*(?<! (?:-[xsX]|--exec|--strategy(?:-options)?|--onto)) [^-]) .* $' -- $cmd
     set source $FZF_GIT_BRANCH_SOURCE
-    set -a opts $FZF_GIT_PRESET_REF --header=$FZF_GIT_REF_HEADER_FULL --prompt='Git Rebase Branch> '
+    set -a opts $FZF_GIT_PRESET_REF --prompt='Git Rebase Branch> '
     set transformer __fzf_git_ref_to_arg
 
     # git rebase
@@ -146,13 +146,13 @@ function __fzf_complete_rule_git
     and not string match -rq ' -[xsX] $' -- $cmd
     and not string match -rq ' --(?:exec|strategy(?:-option)?) $' -- $cmd
     set source $FZF_GIT_LOG_SOURCE
-    set -a opts $FZF_GIT_PRESET_REF --header=$FZF_GIT_REF_HEADER_FULL --prompt='Git Rebase Branch> '
+    set -a opts $FZF_GIT_PRESET_REF --prompt='Git Rebase Branch> '
     set transformer __fzf_git_ref_to_arg
 
     # git merge --into-name
   else if string match -rq '^git merge(?: .*)? --into-name[= ]$' -- $cmd
     set source $FZF_GIT_BRANCH_SOURCE
-    set -a opts $FZF_GIT_PRESET_REF --header=$FZF_GIT_REF_HEADER_FULL --prompt='Git Merge Branch> '
+    set -a opts $FZF_GIT_PRESET_REF --prompt='Git Merge Branch> '
     set transformer __fzf_git_ref_to_arg
 
     # git merge
@@ -160,7 +160,7 @@ function __fzf_complete_rule_git
     and not string match -rq ' -[mFsX] $' -- $cmd
     and not string match -rq ' --(?:file|strategy(?:-option)?) $' -- $cmd
     set source $FZF_GIT_LOG_SOURCE
-    set -a opts $FZF_GIT_PRESET_REF --header=$FZF_GIT_REF_HEADER_FULL --prompt='Git Merge> '
+    set -a opts $FZF_GIT_PRESET_REF --prompt='Git Merge> '
     set transformer __fzf_git_ref_to_arg
 
     # git stash apply/drop/pop/show
@@ -173,7 +173,7 @@ function __fzf_complete_rule_git
     # git stash branch
   else if string match -rq 'git stash branch(?: .*)? $' -- $cmd
     set source $FZF_GIT_BRANCH_SOURCE
-    set -a opts $FZF_GIT_PRESET_REF --header=$FZF_GIT_REF_HEADER_FULL --prompt='Git Stash Branch> '
+    set -a opts $FZF_GIT_PRESET_REF --prompt='Git Stash Branch> '
     set transformer __fzf_git_ref_to_arg
 
     # git stash push files
@@ -194,19 +194,19 @@ function __fzf_complete_rule_git
     and not string match -rq ' --grep(?:-reflog)? $' -- $cmd
     and not string match -rq ' --(?:min|max)-parents $' -- $cmd
     set source $FZF_GIT_BRANCH_SOURCE
-    set -a opts $FZF_GIT_PRESET_REF --header=$FZF_GIT_REF_HEADER_FULL --prompt='Git Log> '
+    set -a opts $FZF_GIT_PRESET_REF --prompt='Git Log> '
     set transformer __fzf_git_ref_to_arg
 
     # git tag list commit
   else if string match -rq '^git tag(?=.* (?:-l|--list) )(?: .*)? --(?:(?:no-)?(?:contains|merged)|points-at) $' -- $cmd
     set source $FZF_GIT_LOG_SOURCE
-    set -a opts $FZF_GIT_PRESET_REF --header=$FZF_GIT_REF_HEADER_FULL --prompt='Git Tag List Commit> '
+    set -a opts $FZF_GIT_PRESET_REF --prompt='Git Tag List Commit> '
     set transformer __fzf_git_ref_to_arg
 
     # git tag delete
   else if string match -rq '^git tag(?=.* (?:-d|--delete) )(?: .*)? $' -- $cmd
     set source $FZF_GIT_TAG_SOURCE
-    set -a opts $FZF_GIT_PRESET_REF --header=$FZF_GIT_REF_HEADER_FULL --prompt='Git Tag Delete> '
+    set -a opts $FZF_GIT_PRESET_REF --prompt='Git Tag Delete> '
     set transformer __fzf_git_ref_to_arg
 
     # git tag
@@ -214,7 +214,7 @@ function __fzf_complete_rule_git
     and not string match -rq ' -[umF] $' -- $cmd
     and not string match -rq ' --(?:local-user|format) $' -- $cmd
     set source $FZF_GIT_TAG_SOURCE
-    set -a opts $FZF_GIT_PRESET_REF --header=$FZF_GIT_REF_HEADER_FULL --prompt='Git Tag> '
+    set -a opts $FZF_GIT_PRESET_REF --prompt='Git Tag> '
     set transformer __fzf_git_ref_to_arg
 
     # git mv files
@@ -231,7 +231,7 @@ function __fzf_complete_rule_git
   else if string match -rq '^git show(?: .*)? $' -- $cmd
     and not string match -rq ' --(?:pretty|format) $' -- $cmd
     set source $FZF_GIT_LOG_SOURCE
-    set -a opts $FZF_GIT_PRESET_REF --header=$FZF_GIT_REF_HEADER_FULL --prompt='Git Show> '
+    set -a opts $FZF_GIT_PRESET_REF --prompt='Git Show> '
     set transformer __fzf_git_ref_to_arg
 
     # git revert
