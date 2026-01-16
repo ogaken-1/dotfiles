@@ -34,7 +34,8 @@
   :doc "tools for customizing Emacs and Lisp pacakges"
   :tag "builtin"
   :custom ((custom-file . `,(locate-user-emacs-file "custom.el")))
-  :config (load custom-file))
+  :config (if (file-exists-p custom-file)
+              (load custom-file)))
 
 (defmacro c/with-hook (hook &rest body)
   "`add-hook' の処理を `lambda' でアレするwrapper"
