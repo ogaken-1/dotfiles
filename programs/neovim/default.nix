@@ -14,7 +14,7 @@
       gopls
       lua-language-server
       nixd
-      nixfmt-rfc-style
+      nixfmt
       omnisharp-roslyn
       shellcheck
       skkDictionaries.geo
