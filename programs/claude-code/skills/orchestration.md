@@ -1,0 +1,217 @@
+---
+name: Orchestration
+description: This skill should be used for complex multi-agent tasks, parallel execution, cross-validation, or when orchestrating multiple sub-agents. Provides workflow patterns for agent coordination.
+---
+
+<skill>
+
+  <purpose>
+    Provide detailed workflow patterns for orchestrating multiple sub-agents in complex tasks.
+  </purpose>
+
+  <workflow>
+    <phase name="task_analysis">
+      <objective>Understand user request and plan delegation strategy</objective>
+      <step order="1">
+        <action>Analyze user request</action>
+        <tool>Parse user message</tool>
+        <output>Clear task description</output>
+      </step>
+      <step order="2">
+        <action>Identify best sub-agents</action>
+        <tool>Reference task_routing in CLAUDE.md</tool>
+        <output>Appropriate agent list</output>
+      </step>
+      <step order="3">
+        <action>Check existing patterns and memories</action>
+        <tool>serena list_memories, read_memory</tool>
+        <output>Related patterns and conventions</output>
+      </step>
+      <step order="4">
+        <action>Analyze task dependencies</action>
+        <tool>Task structure analysis</tool>
+        <output>Parallel or sequential dependency graph</output>
+      </step>
+    </phase>
+
+    <phase name="delegation">
+      <objective>Delegate tasks to appropriate sub-agents</objective>
+      <step order="1">
+        <action>Prioritize custom sub-agents (defined in agents/)</action>
+        <tool>Task tool for specific agent</tool>
+        <output>Task assignment to agent</output>
+      </step>
+      <step order="2">
+        <action>Use general sub-agents (subagent_type parameter)</action>
+        <tool>Task tool with subagent_type</tool>
+        <output>Task assignment to agent</output>
+      </step>
+      <step order="3">
+        <action>Execute independent tasks in parallel</action>
+        <tool>Multiple Task tool calls in single message</tool>
+        <output>Parallel execution results</output>
+      </step>
+    </phase>
+
+    <phase name="consolidation">
+      <objective>Verify and integrate sub-agent outputs</objective>
+      <step order="1">
+        <action>Verify sub-agent outputs for completeness</action>
+        <tool>Review agent responses</tool>
+        <output>Verification status</output>
+      </step>
+      <step order="2">
+        <action>Organize results into cohesive output</action>
+        <tool>Output integration and reorganization</tool>
+        <output>Integrated result</output>
+      </step>
+    </phase>
+
+    <phase name="cross_validation">
+      <objective>Validate outputs using multiple agents</objective>
+      <step order="1">
+        <action>For critical tasks, request analysis from 2+ agents</action>
+        <tool>Multiple Task tools</tool>
+        <output>Multiple agent outputs for comparison</output>
+      </step>
+      <step order="2">
+        <action>Delegate results to validator agent</action>
+        <tool>Task tool for validator agent</tool>
+        <output>Cross validation report</output>
+      </step>
+      <step order="3">
+        <action>If contradictions exist, request additional investigation or user decision</action>
+        <tool>AskUserQuestion or additional agents</tool>
+        <output>Contradiction resolution or user decision</output>
+      </step>
+    </phase>
+
+    <phase name="failure_handling">
+      <objective>Handle errors and edge cases appropriately</objective>
+      <step>
+        <when>Sub-agent fails</when>
+        <action>Review error, adjust instructions, retry with different agent</action>
+      </step>
+      <step>
+        <when>Memory not found</when>
+        <action>Document gap, continue investigation</action>
+      </step>
+      <step>
+        <when>Contradictory outputs</when>
+        <action>Integrate results, notify user of uncertainty</action>
+      </step>
+    </phase>
+  </workflow>
+
+  <parallelization>
+    <execution_strategy>
+      <max_parallel_agents>16</max_parallel_agents>
+      <timeout_per_agent>300000</timeout_per_agent>
+      <parallel_groups>
+        <group id="investigation" agents="explore,design,database,performance" independent="true" />
+        <group id="quality" agents="code-quality,security,test" independent="true" />
+        <group id="review" agents="quality-assurance,docs,fact-check" independent="true" />
+        <group id="validation" agents="validator" independent="false" depends_on="investigation,quality,review" />
+      </parallel_groups>
+    </execution_strategy>
+    <retry_policy>
+      <max_retries>2</max_retries>
+      <retry_conditions>
+        <condition>agent timeout</condition>
+        <condition>partial results returned</condition>
+        <condition>confidence score below 60</condition>
+      </retry_conditions>
+      <fallback_strategy>
+        <action>Use different agent in same parallel group</action>
+      </fallback_strategy>
+    </retry_policy>
+  </parallelization>
+
+  <consensus_mechanism>
+    <strategy>Weighted majority vote</strategy>
+    <weights>
+      <agent name="explore" weight="1.0" />
+      <agent name="design" weight="1.2" />
+      <agent name="database" weight="1.2" />
+      <agent name="performance" weight="1.2" />
+      <agent name="code-quality" weight="1.1" />
+      <agent name="security" weight="1.5" />
+      <agent name="test" weight="1.1" />
+      <agent name="docs" weight="1.0" />
+      <agent name="quality-assurance" weight="1.3" />
+      <agent name="fact-check" weight="1.4" />
+      <agent name="devops" weight="1.1" />
+      <agent name="validator" weight="2.0" />
+    </weights>
+    <threshold>0.7</threshold>
+    <on_disagreement>
+      <action>Prompt user review</action>
+      <action>Request additional investigation</action>
+    </on_disagreement>
+  </consensus_mechanism>
+
+  <decision_criteria>
+    <criterion name="confidence_calculation">
+      <factor name="task_understanding" weight="0.3">
+        <score range="90-100">Clear request with specific requirements</score>
+        <score range="70-89">Understood but some details unclear</score>
+        <score range="50-69">Ambiguous request, needs clarification</score>
+        <score range="0-49">Unclear request, cannot process</score>
+      </factor>
+      <factor name="agent_selection" weight="0.3">
+        <score range="90-100">Clear match with specialized agent</score>
+        <score range="70-89">Matching candidates with overlap</score>
+        <score range="50-69">Multiple agents applicable</score>
+        <score range="0-49">No matching agent</score>
+      </factor>
+      <factor name="context_availability" weight="0.4">
+        <score range="90-100">Relevant memory and patterns found</score>
+        <score range="70-89">Some context available</score>
+        <score range="50-69">Limited context</score>
+        <score range="0-49">No relevant context</score>
+      </factor>
+    </criterion>
+  </decision_criteria>
+
+  <enforcement>
+    <mandatory_behaviors>
+      <behavior id="ORCH-B001" priority="critical">
+        <trigger>Before implementation</trigger>
+        <action>Check Serena memories with list_memories</action>
+        <verification>Memory check recorded in output</verification>
+      </behavior>
+      <behavior id="ORCH-B002" priority="critical">
+        <trigger>For independent tasks</trigger>
+        <action>Execute in parallel using multiple Task tool calls</action>
+        <verification>Parallel execution confirmed in single message</verification>
+      </behavior>
+      <behavior id="ORCH-B003" priority="critical">
+        <trigger>After sub-agent completion</trigger>
+        <action>Verify outputs before integration</action>
+        <verification>Output verification status shown</verification>
+      </behavior>
+    </mandatory_behaviors>
+  </enforcement>
+
+  <error_escalation>
+    <level severity="low">
+      <example>Sub-agent returns partial results</example>
+      <action>Document gap, proceed with available data</action>
+    </level>
+    <level severity="medium">
+      <example>Memory patterns are outdated or contradictory</example>
+      <action>Document discrepancy, use AskUserQuestion for guidance</action>
+    </level>
+    <level severity="high">
+      <example>Critical dependency not found or unavailable</example>
+      <action>Stop, present impact analysis and options to user</action>
+    </level>
+    <level severity="critical">
+      <example>Security risk or destructive operation detected</example>
+      <action>Block operation, require explicit user approval</action>
+    </level>
+  </error_escalation>
+
+</skill>
+
+<!-- vim:set ft=xml: -->
