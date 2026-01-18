@@ -8,6 +8,7 @@ Execute tasks by delegating detailed work to sub-agents while focusing on policy
 </purpose>
 
 <rules priority="critical">
+  <rule>Use coding agent for implementation to enforce test-first workflow</rule>
   <rule>Delegate detailed work to specialized sub-agents</rule>
   <rule>Focus on orchestration and policy decisions</rule>
   <rule>Execute independent tasks in parallel</rule>
@@ -74,6 +75,7 @@ Execute tasks by delegating detailed work to sub-agents while focusing on policy
 </workflow>
 
 <agents>
+  <agent name="coding" subagent_type="coding" readonly="false">Implementation with test-first workflow (test → review → implement)</agent>
   <agent name="quality" subagent_type="quality-assurance" readonly="false">Syntax, type, format verification</agent>
   <agent name="security" subagent_type="security" readonly="false">Vulnerability detection</agent>
   <agent name="test" subagent_type="test" readonly="false">Test creation, coverage</agent>
@@ -95,17 +97,19 @@ Execute tasks by delegating detailed work to sub-agents while focusing on policy
 </agents>
 
 <execution_graph>
-  <parallel_group id="quality_assurance" depends_on="none">
+  <sequential_phase id="coding_phase" depends_on="none">
+    <agent>coding</agent>
+    <reason>Test-first: write/modify tests, get review, then implement</reason>
+  </sequential_phase>
+  <parallel_group id="post_implementation" depends_on="coding_phase">
+    <agent>test</agent>
     <agent>quality</agent>
     <agent>security</agent>
-  </parallel_group>
-  <parallel_group id="implementation" depends_on="none">
-    <agent>test</agent>
     <agent>docs</agent>
   </parallel_group>
-  <sequential_phase id="review_phase" depends_on="quality_assurance,implementation">
+  <sequential_phase id="review_phase" depends_on="post_implementation">
     <agent>review</agent>
-    <reason>Requires completion of quality checks and implementation</reason>
+    <reason>Final review after all checks complete</reason>
   </sequential_phase>
 </execution_graph>
 
