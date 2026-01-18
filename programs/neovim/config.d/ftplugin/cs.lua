@@ -8,3 +8,5 @@ vim.api.nvim_buf_create_user_command(vim.api.nvim_get_current_buf(), 'OpenRazor'
 end, {})
 vim.wo.foldmethod = 'expr'
 vim.wo.foldexpr = [=[v:lua.require('config.ft.cs').foldexpr(v:lnum)]=]
+vim.bo.expandtab = true
+vim.bo.shiftwidth = 4
