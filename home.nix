@@ -12,6 +12,7 @@ in
     vim-overlay.overlays.default
     neovim-overlay.overlays.default
     fish-fzf-complete.overlays.default
+    mcp-servers-nix.overlays.default
   ];
   home = {
     stateVersion = "24.05";

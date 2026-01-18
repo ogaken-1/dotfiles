@@ -6,6 +6,8 @@
       "**/.envrc"
       "**/.DS_Store"
       "**/.direnv"
+      "**/.serena"
+      "**/.claude"
     ];
     settings = {
       alias = {

@@ -64,6 +64,10 @@
     fish-fzf-complete = {
       url = "github:ogaken-1/fzf_complete.fish";
     };
+    mcp-servers-nix = {
+      url = "github:natsukium/mcp-servers-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
   outputs =
     { flake-parts, ... }@inputs:
