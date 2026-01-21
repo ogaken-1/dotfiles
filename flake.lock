@@ -52,11 +52,11 @@
     },
     "fish-fzf-complete": {
       "locked": {
-        "lastModified": 1768753273,
-        "narHash": "sha256-7/iPTZntk7FKL5luLAy21NQXklmxjwQiDCP+CNRnmrc=",
+        "lastModified": 1768997638,
+        "narHash": "sha256-RGD6U4HgAeLwxdc3qt+1mVqcLH3fngZc68elFSMKQfY=",
         "owner": "ogaken-1",
         "repo": "fzf_complete.fish",
-        "rev": "79acee9ea5473d84ed2c4c1aa756e2b664be404e",
+        "rev": "4072a93e57ffdb828bac6c0fddeb506c94750b3d",
         "type": "github"
       },
       "original": {
