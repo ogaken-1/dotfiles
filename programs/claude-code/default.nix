@@ -41,6 +41,11 @@
     skills = {
       serena-usage = builtins.readFile ./skills/serena-usage.md;
       context7-usage = builtins.readFile ./skills/context7-usage.md;
+      orchestration = builtins.readFile ./skills/orchestration.md;
+      execution-workflow = builtins.readFile skills/execution-workflow.md;
+      fact-check = builtins.readFile skills/fact-check.md;
+      investigation-patterns = builtins.readFile skills/investigation-patterns.md;
+      testing-patterns = builtins.readFile skills/testing-patterns.md;
     };
     mcpServers = {
       serena = {
