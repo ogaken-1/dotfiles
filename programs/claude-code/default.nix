@@ -52,6 +52,9 @@
         command = "${pkgs.serena}/bin/serena";
         args = [
           "start-mcp-server"
+          "--context"
+          "claude-code"
+          "--project-from-cwd"
         ];
         type = "stdio";
       };
