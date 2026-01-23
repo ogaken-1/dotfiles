@@ -1,9 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <skill>
-
   <purpose>
     Provide detailed workflow patterns for orchestrating multiple sub-agents in complex tasks.
   </purpose>
-
   <workflow>
     <phase name="task_analysis">
       <objective>Understand user request and plan delegation strategy</objective>
@@ -28,7 +27,6 @@
         <output>Parallel or sequential dependency graph</output>
       </step>
     </phase>
-
     <phase name="delegation">
       <objective>Delegate tasks to appropriate sub-agents</objective>
       <step order="1">
@@ -47,7 +45,6 @@
         <output>Parallel execution results</output>
       </step>
     </phase>
-
     <phase name="consolidation">
       <objective>Verify and integrate sub-agent outputs</objective>
       <step order="1">
@@ -61,7 +58,6 @@
         <output>Integrated result</output>
       </step>
     </phase>
-
     <phase name="cross_validation">
       <objective>Validate outputs using multiple agents</objective>
       <step order="1">
@@ -80,7 +76,6 @@
         <output>Contradiction resolution or user decision</output>
       </step>
     </phase>
-
     <phase name="failure_handling">
       <objective>Handle errors and edge cases appropriately</objective>
       <step>
@@ -97,16 +92,15 @@
       </step>
     </phase>
   </workflow>
-
   <parallelization>
     <execution_strategy>
       <max_parallel_agents>16</max_parallel_agents>
       <timeout_per_agent>300000</timeout_per_agent>
       <parallel_groups>
-        <group id="investigation" agents="explore,design,database,performance" independent="true" />
-        <group id="quality" agents="code-quality,security,test" independent="true" />
-        <group id="review" agents="quality-assurance,docs,fact-check" independent="true" />
-        <group id="validation" agents="validator" independent="false" depends_on="investigation,quality,review" />
+        <group id="investigation" agents="explore,design,database,performance" independent="true"/>
+        <group id="quality" agents="code-quality,security,test" independent="true"/>
+        <group id="review" agents="quality-assurance,docs,fact-check" independent="true"/>
+        <group id="validation" agents="validator" independent="false" depends_on="investigation,quality,review"/>
       </parallel_groups>
     </execution_strategy>
     <retry_policy>
@@ -121,22 +115,21 @@
       </fallback_strategy>
     </retry_policy>
   </parallelization>
-
   <consensus_mechanism>
     <strategy>Weighted majority vote</strategy>
     <weights>
-      <agent name="explore" weight="1.0" />
-      <agent name="design" weight="1.2" />
-      <agent name="database" weight="1.2" />
-      <agent name="performance" weight="1.2" />
-      <agent name="code-quality" weight="1.1" />
-      <agent name="security" weight="1.5" />
-      <agent name="test" weight="1.1" />
-      <agent name="docs" weight="1.0" />
-      <agent name="quality-assurance" weight="1.3" />
-      <agent name="fact-check" weight="1.4" />
-      <agent name="devops" weight="1.1" />
-      <agent name="validator" weight="2.0" />
+      <agent name="explore" weight="1.0"/>
+      <agent name="design" weight="1.2"/>
+      <agent name="database" weight="1.2"/>
+      <agent name="performance" weight="1.2"/>
+      <agent name="code-quality" weight="1.1"/>
+      <agent name="security" weight="1.5"/>
+      <agent name="test" weight="1.1"/>
+      <agent name="docs" weight="1.0"/>
+      <agent name="quality-assurance" weight="1.3"/>
+      <agent name="fact-check" weight="1.4"/>
+      <agent name="devops" weight="1.1"/>
+      <agent name="validator" weight="2.0"/>
     </weights>
     <threshold>0.7</threshold>
     <on_disagreement>
@@ -144,7 +137,6 @@
       <action>Request additional investigation</action>
     </on_disagreement>
   </consensus_mechanism>
-
   <decision_criteria>
     <criterion name="confidence_calculation">
       <factor name="task_understanding" weight="0.3">
@@ -167,7 +159,6 @@
       </factor>
     </criterion>
   </decision_criteria>
-
   <enforcement>
     <mandatory_behaviors>
       <behavior id="ORCH-B001" priority="critical">
@@ -187,7 +178,6 @@
       </behavior>
     </mandatory_behaviors>
   </enforcement>
-
   <error_escalation>
     <level severity="low">
       <example>Sub-agent returns partial results</example>
@@ -206,5 +196,4 @@
       <action>Block operation, require explicit user approval</action>
     </level>
   </error_escalation>
-
 </skill>
