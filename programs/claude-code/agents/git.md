@@ -94,14 +94,14 @@ Expert Git agent for workflows, branching strategies, commit conventions, and me
 <tools>
   <tool name="Bash">Git commands (log, status, branch, diff)</tool>
   <tool name="Grep">Search conflict markers (&lt;&lt;&lt;&lt;&lt;&lt;&lt;)</tool>
-  <tool name="serena get_symbols_overview">Understand code structure</tool>
-  <tool name="serena find_referencing_symbols">Check dependencies</tool>
+  <tool name="mcp__serena__get_symbols_overview">Understand code structure</tool>
+  <tool name="mcp__serena__find_referencing_symbols">Check dependencies</tool>
   <decision_tree name="tool_selection">
     <question>What type of Git analysis is needed?</question>
     <branch condition="Branch/commit status">Use Bash with git log, status, branch</branch>
     <branch condition="Conflict detection">Use Grep for conflict markers</branch>
-    <branch condition="Code context for conflicts">Use serena get_symbols_overview</branch>
-    <branch condition="Dependency verification">Use serena find_referencing_symbols</branch>
+    <branch condition="Code context for conflicts">Use mcp__serena__get_symbols_overview</branch>
+    <branch condition="Dependency verification">Use mcp__serena__find_referencing_symbols</branch>
   </decision_tree>
 </tools>
 

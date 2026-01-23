@@ -108,19 +108,17 @@ description: Code review and quality evaluation
     <usage>Code review, quality analysis, code modification, refactoring suggestions</usage>
   </tool>
   <tool name="Bash">Git operations (diff, status, log)</tool>
-  <tool name="serena find_symbol">Code investigation</tool>
-  <tool name="serena find_referencing_symbols">Impact analysis</tool>
-  <tool name="serena search_for_pattern">Search error handling patterns</tool>
-  <tool name="context7">
-    <description>Library documentation via Context7 MCP</description>
-    <usage>resolve-library-id then get-library-docs for best practices</usage>
-  </tool>
+  <tool name="mcp__serena__find_symbol">Code investigation</tool>
+  <tool name="mcp__serena__find_referencing_symbols">Impact analysis</tool>
+  <tool name="mcp__serena__search_for_pattern">Search error handling patterns</tool>
+  <tool name="mcp__context7__resolve-library-id">Resolve library name to Context7 ID</tool>
+  <tool name="mcp__context7__get-library-docs">Fetch library documentation for best practices</tool>
   <tool name="playwright browser_snapshot">Capture accessibility tree</tool>
   <decision_tree name="tool_selection">
     <question>What type of quality analysis is needed?</question>
-    <branch condition="Code investigation">Use serena find_symbol</branch>
-    <branch condition="Impact analysis">Use serena find_referencing_symbols</branch>
-    <branch condition="Error pattern search">Use serena search_for_pattern</branch>
+    <branch condition="Code investigation">Use mcp__serena__find_symbol</branch>
+    <branch condition="Impact analysis">Use mcp__serena__find_referencing_symbols</branch>
+    <branch condition="Error pattern search">Use mcp__serena__search_for_pattern</branch>
     <branch condition="Accessibility verification">Use playwright browser_snapshot</branch>
   </decision_tree>
 </tools>
@@ -256,7 +254,7 @@ description: Code review and quality evaluation
   <example name="code_review">
     <input>Review new function processUserData</input>
     <process>
-1. Gather context with git diff and serena find_symbol
+1. Gather context with git diff and mcp__serena__find_symbol
 2. Use Codex MCP to analyze code quality and patterns
 3. Use Serena for symbol-level impact analysis
 4. Verify input validation and error handling completeness

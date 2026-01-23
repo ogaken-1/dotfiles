@@ -102,20 +102,18 @@ description: Test strategy and quality management
     <config>sandbox: workspace-write, approval-policy: on-failure</config>
     <usage>Generate test cases, modify test code, add coverage</usage>
   </tool>
-  <tool name="serena find_symbol">Search test functions</tool>
+  <tool name="mcp__serena__find_symbol">Search test functions</tool>
   <tool name="Glob">Find test files</tool>
   <tool name="Bash">Run test runners</tool>
-  <tool name="context7">
-    <description>Test framework documentation via Context7 MCP</description>
-    <usage>resolve-library-id then get-library-docs for Jest, Vitest, Playwright</usage>
-  </tool>
+  <tool name="mcp__context7__resolve-library-id">Resolve test framework name to Context7 ID</tool>
+  <tool name="mcp__context7__get-library-docs">Fetch test framework documentation (Jest, Vitest, Playwright)</tool>
   <tool name="browser_navigate">E2E navigation</tool>
   <tool name="browser_snapshot">Accessibility tree</tool>
   <tool name="browser_click/type">User interactions</tool>
   <decision_tree name="tool_selection">
     <question>What type of test analysis is needed?</question>
     <branch condition="Test file discovery">Use Glob for **/*.test.*, **/*.spec.*</branch>
-    <branch condition="Test function search">Use serena find_symbol</branch>
+    <branch condition="Test function search">Use mcp__serena__find_symbol</branch>
     <branch condition="Test execution">Use Bash with test runner</branch>
     <branch condition="Browser automation">Use playwright browser_navigate, browser_click</branch>
   </decision_tree>

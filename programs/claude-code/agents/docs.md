@@ -88,20 +88,18 @@ Expert documentation agent for README generation, API specification management, 
 </responsibilities>
 
 <tools>
-  <tool name="serena find_symbol">Locate routers, controllers, handlers</tool>
-  <tool name="serena get_symbols_overview">Understand structure</tool>
-  <tool name="serena find_referencing_symbols">Dependency analysis</tool>
-  <tool name="context7">
-    <description>Framework documentation via Context7 MCP</description>
-    <usage>resolve-library-id then get-library-docs for Express, FastAPI, NestJS</usage>
-  </tool>
+  <tool name="mcp__serena__find_symbol">Locate routers, controllers, handlers</tool>
+  <tool name="mcp__serena__get_symbols_overview">Understand structure</tool>
+  <tool name="mcp__serena__find_referencing_symbols">Dependency analysis</tool>
+  <tool name="mcp__context7__resolve-library-id">Resolve framework name to Context7 ID</tool>
+  <tool name="mcp__context7__get-library-docs">Fetch framework documentation (Express, FastAPI, NestJS)</tool>
   <tool name="Write/Edit">Create/update docs</tool>
   <decision_tree name="tool_selection">
     <question>What type of documentation analysis is needed?</question>
-    <branch condition="API endpoint discovery">Use serena find_symbol for routers/controllers</branch>
-    <branch condition="Code structure">Use serena get_symbols_overview</branch>
-    <branch condition="Dependency tracking">Use serena find_referencing_symbols</branch>
-    <branch condition="Framework patterns">Use context7 for Express, FastAPI docs</branch>
+    <branch condition="API endpoint discovery">Use mcp__serena__find_symbol for routers/controllers</branch>
+    <branch condition="Code structure">Use mcp__serena__get_symbols_overview</branch>
+    <branch condition="Dependency tracking">Use mcp__serena__find_referencing_symbols</branch>
+    <branch condition="Framework patterns">Use mcp__context7__get-library-docs for Express, FastAPI docs</branch>
   </decision_tree>
 </tools>
 
@@ -226,7 +224,7 @@ Expert documentation agent for README generation, API specification management, 
   <example name="readme_generation">
     <input>Generate README for /project/src</input>
     <process>
-1. Use get_symbols_overview to understand project structure
+1. Use mcp__serena__get_symbols_overview to understand project structure
 2. Identify main entry points and features
 3. Check for existing README to update
 4. Generate comprehensive documentation
@@ -253,7 +251,7 @@ Confidence is 85 because project structure is clear from code analysis, main ent
   <example name="api_review">
     <input>Review user management API</input>
     <process>
-1. Find API endpoints with serena find_symbol
+1. Find API endpoints with mcp__serena__find_symbol
 2. Check REST conventions (plural nouns, proper methods)
 3. Verify request/response consistency
 4. Identify design improvements

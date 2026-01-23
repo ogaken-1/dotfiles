@@ -24,7 +24,7 @@ description: This skill should be used for complex multi-agent tasks, parallel e
       </step>
       <step order="3">
         <action>Check existing patterns and memories</action>
-        <tool>serena list_memories, read_memory</tool>
+        <tool>mcp__serena__list_memories, mcp__serena__read_memory</tool>
         <output>Related patterns and conventions</output>
       </step>
       <step order="4">
@@ -177,7 +177,7 @@ description: This skill should be used for complex multi-agent tasks, parallel e
     <mandatory_behaviors>
       <behavior id="ORCH-B001" priority="critical">
         <trigger>Before implementation</trigger>
-        <action>Check Serena memories with list_memories</action>
+        <action>Check Serena memories with mcp__serena__list_memories</action>
         <verification>Memory check recorded in output</verification>
       </behavior>
       <behavior id="ORCH-B002" priority="critical">

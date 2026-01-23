@@ -117,7 +117,7 @@ Execute tasks by delegating detailed work to sub-agents while focusing on policy
   <requirement>Specific scope and expected deliverables</requirement>
   <requirement>Target file paths</requirement>
   <requirement>Reference implementations (specific paths)</requirement>
-  <requirement>Memory check: `list_memories` for patterns</requirement>
+  <requirement>Memory check: `mcp__serena__list_memories` for patterns</requirement>
 </delegation>
 
 <codex_usage>

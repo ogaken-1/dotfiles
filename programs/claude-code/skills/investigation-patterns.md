@@ -60,10 +60,10 @@ description: This skill should be used when the user asks to "investigate code",
       <if_no>Start with source identification to locate relevant areas</if_no>
     </decision_tree>
     <example>
-      find_symbol: Locate specific symbols by name
-      get_symbols_overview: Understand file structure
-      find_referencing_symbols: Trace dependencies
-      search_for_pattern: Find patterns across codebase
+      mcp__serena__find_symbol: Locate specific symbols by name
+      mcp__serena__get_symbols_overview: Understand file structure
+      mcp__serena__find_referencing_symbols: Trace dependencies
+      mcp__serena__search_for_pattern: Find patterns across codebase
     </example>
   </pattern>
 
@@ -205,7 +205,7 @@ description: This skill should be used when the user asks to "investigate code",
 </constraints>
 
 <tools>
-  <tool name="find_symbol">
+  <tool name="mcp__serena__find_symbol">
     <description>Locate specific symbols by name in the codebase</description>
     <param name="name_path_pattern">Pattern to match symbol names</param>
     <param name="relative_path">Optional path to restrict search</param>
@@ -213,21 +213,21 @@ description: This skill should be used when the user asks to "investigate code",
     <use_case>Finding class, function, or variable definitions</use_case>
   </tool>
 
-  <tool name="get_symbols_overview">
+  <tool name="mcp__serena__get_symbols_overview">
     <description>Get high-level structure of a file</description>
     <param name="relative_path">Path to file to analyze</param>
     <param name="depth">Depth of symbol tree (default 0)</param>
     <use_case>Understanding file organization before detailed investigation</use_case>
   </tool>
 
-  <tool name="find_referencing_symbols">
+  <tool name="mcp__serena__find_referencing_symbols">
     <description>Find all references to a symbol</description>
     <param name="name_path">Symbol to find references for</param>
     <param name="relative_path">File containing the symbol</param>
     <use_case>Tracing dependencies and usage patterns</use_case>
   </tool>
 
-  <tool name="search_for_pattern">
+  <tool name="mcp__serena__search_for_pattern">
     <description>Search for regex patterns across codebase</description>
     <param name="substring_pattern">Regular expression to search</param>
     <param name="relative_path">Optional path to restrict search</param>

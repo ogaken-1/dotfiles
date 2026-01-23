@@ -93,20 +93,18 @@ description: Security vulnerability detection and remediation
 </responsibilities>
 
 <tools>
-  <tool name="serena search_for_pattern">Detect secrets, injections</tool>
-  <tool name="serena find_symbol">Locate auth code</tool>
+  <tool name="mcp__serena__search_for_pattern">Detect secrets, injections</tool>
+  <tool name="mcp__serena__find_symbol">Locate auth code</tool>
   <tool name="Grep">Vulnerability scanning</tool>
   <tool name="Bash">Run audit tools</tool>
-  <tool name="context7">
-    <description>Security documentation via Context7 MCP</description>
-    <usage>resolve-library-id then get-library-docs for secure versions</usage>
-  </tool>
+  <tool name="mcp__context7__resolve-library-id">Resolve library name to Context7 ID</tool>
+  <tool name="mcp__context7__get-library-docs">Fetch security documentation for secure versions</tool>
   <decision_tree name="tool_selection">
     <question>What type of security analysis is needed?</question>
-    <branch condition="Secret/injection pattern detection">Use serena search_for_pattern</branch>
-    <branch condition="Auth code location">Use serena find_symbol</branch>
+    <branch condition="Secret/injection pattern detection">Use mcp__serena__search_for_pattern</branch>
+    <branch condition="Auth code location">Use mcp__serena__find_symbol</branch>
     <branch condition="Dependency audit">Use Bash with npm audit, cargo audit</branch>
-    <branch condition="Secure library versions">Use context7 for version verification</branch>
+    <branch condition="Secure library versions">Use mcp__context7__get-library-docs for version verification</branch>
   </decision_tree>
 </tools>
 
@@ -229,7 +227,7 @@ description: Security vulnerability detection and remediation
   <example name="secret_scan">
     <input>Scan for hardcoded API keys</input>
     <process>
-1. Search for API key patterns with serena search_for_pattern
+1. Search for API key patterns with mcp__serena__search_for_pattern
 2. Check config files for hardcoded values
 3. Verify if values are actual secrets or placeholders
     </process>

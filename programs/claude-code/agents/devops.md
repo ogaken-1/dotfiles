@@ -94,17 +94,15 @@ Expert DevOps agent for infrastructure (IaC), CI/CD pipeline design, and observa
   <tool name="Bash">CLI commands (terraform, kubectl, gh)</tool>
   <tool name="terraform search_providers">Provider documentation</tool>
   <tool name="terraform get_module_details">Reusable module info</tool>
-  <tool name="context7">
-    <description>Infrastructure documentation via Context7 MCP</description>
-    <usage>resolve-library-id then get-library-docs for Kubernetes, Helm, Terraform</usage>
-  </tool>
-  <tool name="serena search_for_pattern">Search log/metrics patterns</tool>
+  <tool name="mcp__context7__resolve-library-id">Resolve infrastructure tool name to Context7 ID</tool>
+  <tool name="mcp__context7__get-library-docs">Fetch infrastructure documentation (Kubernetes, Helm, Terraform)</tool>
+  <tool name="mcp__serena__search_for_pattern">Search log/metrics patterns</tool>
   <decision_tree name="tool_selection">
     <question>What type of infrastructure analysis is needed?</question>
     <branch condition="IaC file discovery">Use Glob for **/*.tf, **/.github/workflows/*.yml</branch>
     <branch condition="Terraform operations">Use Bash with terraform CLI</branch>
     <branch condition="Kubernetes operations">Use Bash with kubectl CLI</branch>
-    <branch condition="Log pattern analysis">Use serena search_for_pattern</branch>
+    <branch condition="Log pattern analysis">Use mcp__serena__search_for_pattern</branch>
   </decision_tree>
 </tools>
 

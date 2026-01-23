@@ -23,12 +23,12 @@
       <objective>Identify optimization targets and understand code structure</objective>
       <step order="1">
         <action>What are the complexity metrics of target code?</action>
-        <tool>serena find_symbol, serena get_symbols_overview</tool>
+        <tool>mcp__serena__find_symbol, mcp__serena__get_symbols_overview</tool>
         <output>Complexity scores for each function/class</output>
       </step>
       <step order="2">
         <action>Are there unused functions/variables?</action>
-        <tool>serena find_referencing_symbols</tool>
+        <tool>mcp__serena__find_referencing_symbols</tool>
         <output>List of unreferenced symbols</output>
       </step>
       <step order="3">
@@ -51,17 +51,17 @@
       <objective>Collect code information and identify refactoring candidates</objective>
       <step order="1">
         <action>Identify optimization targets</action>
-        <tool>serena get_symbols_overview, Grep</tool>
+        <tool>mcp__serena__get_symbols_overview, Grep</tool>
         <output>List of files and symbols to analyze</output>
       </step>
       <step order="2">
         <action>Understand code structure</action>
-        <tool>serena find_symbol, Read</tool>
+        <tool>mcp__serena__find_symbol, Read</tool>
         <output>Control flow and structural patterns</output>
       </step>
       <step order="3">
         <action>Analyze dependencies</action>
-        <tool>serena find_referencing_symbols, Grep</tool>
+        <tool>mcp__serena__find_referencing_symbols, Grep</tool>
         <output>Dependency map and usage patterns</output>
       </step>
     </phase>
@@ -74,12 +74,12 @@
       <objective>Quantify code quality with metrics and identify issues</objective>
       <step order="1">
         <action>Measure complexity metrics</action>
-        <tool>codex, serena search_for_pattern</tool>
+        <tool>codex, mcp__serena__search_for_pattern</tool>
         <output>CC, CogC, depth, lines, params for each function</output>
       </step>
       <step order="2">
         <action>Detect dead code</action>
-        <tool>serena find_referencing_symbols</tool>
+        <tool>mcp__serena__find_referencing_symbols</tool>
         <output>List of unused symbols with zero references</output>
       </step>
       <step order="3">
@@ -107,7 +107,7 @@
       </step>
       <step order="2">
         <action>Refactor code</action>
-        <tool>codex, serena replace_symbol_body, Edit</tool>
+        <tool>codex, mcp__serena__replace_symbol_body, Edit</tool>
         <output>Refactored code with improved metrics</output>
       </step>
       <step order="3">
@@ -173,20 +173,18 @@
       <config>sandbox: workspace-write, approval-policy: on-failure</config>
       <usage>Complexity analysis, dead code detection, refactoring execution</usage>
     </tool>
-    <tool name="serena find_symbol">Identify target functions</tool>
-    <tool name="serena get_symbols_overview">File structure overview</tool>
-    <tool name="serena find_referencing_symbols">Reference count verification</tool>
-    <tool name="serena search_for_pattern">Search control structures, duplicates</tool>
+    <tool name="mcp__serena__find_symbol">Identify target functions</tool>
+    <tool name="mcp__serena__get_symbols_overview">File structure overview</tool>
+    <tool name="mcp__serena__find_referencing_symbols">Reference count verification</tool>
+    <tool name="mcp__serena__search_for_pattern">Search control structures, duplicates</tool>
     <tool name="Bash">Run quality tools</tool>
-    <tool name="context7">
-      <description>Library documentation via Context7 MCP</description>
-      <usage>resolve-library-id then get-library-docs for best practices</usage>
-    </tool>
+    <tool name="mcp__context7__resolve-library-id">Resolve library name to Context7 ID</tool>
+    <tool name="mcp__context7__get-library-docs">Fetch library documentation for best practices</tool>
     <decision_tree name="tool_selection">
       <question>What type of analysis is needed?</question>
-      <branch condition="Symbol structure analysis">Use serena get_symbols_overview</branch>
-      <branch condition="Reference counting">Use serena find_referencing_symbols</branch>
-      <branch condition="Pattern search (duplicates, loops)">Use serena search_for_pattern</branch>
+      <branch condition="Symbol structure analysis">Use mcp__serena__get_symbols_overview</branch>
+      <branch condition="Reference counting">Use mcp__serena__find_referencing_symbols</branch>
+      <branch condition="Pattern search (duplicates, loops)">Use mcp__serena__search_for_pattern</branch>
       <branch condition="Code modification">Use codex with sandbox configuration</branch>
     </decision_tree>
   </tools>
@@ -316,7 +314,7 @@
     <example name="complexity_analysis">
       <input>Analyze processOrder function complexity</input>
       <process>
-  1. Find symbol with serena find_symbol
+  1. Find symbol with mcp__serena__find_symbol
   2. Measure cyclomatic complexity (count branches)
   3. Measure cognitive complexity (nested structures)
   4. Identify refactoring opportunities

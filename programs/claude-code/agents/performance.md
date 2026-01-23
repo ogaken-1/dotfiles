@@ -96,17 +96,15 @@ Expert performance agent for bottleneck identification, algorithm optimization, 
     <config>sandbox: workspace-write, approval-policy: on-failure</config>
     <usage>Algorithm optimization, query optimization, code refactoring</usage>
   </tool>
-  <tool name="serena find_symbol">Code structure analysis</tool>
-  <tool name="serena search_for_pattern">Find loops, recursion, queries</tool>
+  <tool name="mcp__serena__find_symbol">Code structure analysis</tool>
+  <tool name="mcp__serena__search_for_pattern">Find loops, recursion, queries</tool>
   <tool name="Bash">Run benchmarks, profiling</tool>
-  <tool name="context7">
-    <description>Library documentation via Context7 MCP</description>
-    <usage>resolve-library-id then get-library-docs for optimization patterns</usage>
-  </tool>
+  <tool name="mcp__context7__resolve-library-id">Resolve library name to Context7 ID</tool>
+  <tool name="mcp__context7__get-library-docs">Fetch library documentation for optimization patterns</tool>
   <decision_tree name="tool_selection">
     <question>What type of performance analysis is needed?</question>
-    <branch condition="Code structure analysis">Use serena find_symbol</branch>
-    <branch condition="Loop/recursion detection">Use serena search_for_pattern</branch>
+    <branch condition="Code structure analysis">Use mcp__serena__find_symbol</branch>
+    <branch condition="Loop/recursion detection">Use mcp__serena__search_for_pattern</branch>
     <branch condition="Benchmark execution">Use Bash with profiling tools</branch>
     <branch condition="Code optimization">Use codex with sandbox configuration</branch>
   </decision_tree>
@@ -257,7 +255,7 @@ Confidence is 85 because algorithm complexity analysis is definitive (O(n^2) vs 
   <example name="n_plus_one_detection">
     <input>Profile database queries in user listing endpoint</input>
     <process>
-1. Search for query patterns with serena search_for_pattern
+1. Search for query patterns with mcp__serena__search_for_pattern
 2. Identify loops with database calls
 3. Measure query count before and after optimization
 4. Propose eager loading solution

@@ -97,20 +97,18 @@ Expert database agent for schema design, index optimization, query performance, 
 </responsibilities>
 
 <tools>
-  <tool name="serena find_symbol">Search ORM models</tool>
-  <tool name="serena search_for_pattern">Search query patterns</tool>
-  <tool name="serena find_referencing_symbols">Analyze dependencies</tool>
-  <tool name="context7">
-    <description>ORM documentation via Context7 MCP</description>
-    <usage>resolve-library-id then get-library-docs for Prisma, TypeORM, Drizzle</usage>
-  </tool>
-  <tool name="serena write_memory">Record migration patterns</tool>
+  <tool name="mcp__serena__find_symbol">Search ORM models</tool>
+  <tool name="mcp__serena__search_for_pattern">Search query patterns</tool>
+  <tool name="mcp__serena__find_referencing_symbols">Analyze dependencies</tool>
+  <tool name="mcp__context7__resolve-library-id">Resolve ORM library name to Context7 ID</tool>
+  <tool name="mcp__context7__get-library-docs">Fetch ORM documentation (Prisma, TypeORM, Drizzle)</tool>
+  <tool name="mcp__serena__write_memory">Record migration patterns</tool>
   <decision_tree name="tool_selection">
     <question>What type of database analysis is needed?</question>
-    <branch condition="ORM model search">Use serena find_symbol</branch>
-    <branch condition="Query pattern search">Use serena search_for_pattern</branch>
-    <branch condition="Dependency analysis">Use serena find_referencing_symbols</branch>
-    <branch condition="ORM documentation">Use context7 resolve-library-id then get-library-docs</branch>
+    <branch condition="ORM model search">Use mcp__serena__find_symbol</branch>
+    <branch condition="Query pattern search">Use mcp__serena__search_for_pattern</branch>
+    <branch condition="Dependency analysis">Use mcp__serena__find_referencing_symbols</branch>
+    <branch condition="ORM documentation">Use mcp__context7__resolve-library-id then mcp__context7__get-library-docs</branch>
   </decision_tree>
 </tools>
 
@@ -270,7 +268,7 @@ Confidence is 75 because schema structure is clear from Prisma files, query patt
   <example name="n_plus_one_detection">
     <input>Detect N+1 problems in user service</input>
     <process>
-1. Find query patterns with serena search_for_pattern
+1. Find query patterns with mcp__serena__search_for_pattern
 2. Identify loops with database calls
 3. Calculate query reduction potential
 4. Propose eager loading solution

@@ -8,15 +8,15 @@ description: This skill should be used when the user asks to "verify claims", "f
 </purpose>
 
 <tools>
-  <tool name="resolve-library-id">
+  <tool name="mcp__context7__resolve-library-id">
     <description>Resolve package name to Context7-compatible library ID</description>
     <param name="libraryName">Library name to search for</param>
-    <use_case>Must call before get-library-docs for library documentation claims</use_case>
+    <use_case>Must call before mcp__context7__get-library-docs for library documentation claims</use_case>
   </tool>
 
-  <tool name="get-library-docs">
+  <tool name="mcp__context7__get-library-docs">
     <description>Fetch documentation for a specific library to verify claims</description>
-    <param name="context7CompatibleLibraryID">Library ID from resolve-library-id</param>
+    <param name="context7CompatibleLibraryID">Library ID from mcp__context7__resolve-library-id</param>
     <param name="topic">Specific topic to verify</param>
     <param name="tokens">Max tokens to retrieve (default: 5000)</param>
     <use_case>Verify claims about library APIs, behavior, and best practices</use_case>
@@ -104,7 +104,7 @@ description: This skill should be used when the user asks to "verify claims", "f
     <description>Choose appropriate verification source based on claim type</description>
     <decision_tree name="when_to_use">
       <question>What type of claim needs verification?</question>
-      <branch condition="Library/framework API">Use Context7 with resolve-library-id then get-library-docs</branch>
+      <branch condition="Library/framework API">Use Context7 with mcp__context7__resolve-library-id then mcp__context7__get-library-docs</branch>
       <branch condition="Web standard/specification">Use WebSearch for official specification</branch>
       <branch condition="General technical fact">Use WebSearch with authoritative domain filter</branch>
       <branch condition="Specific documentation URL">Use WebFetch to retrieve and verify</branch>

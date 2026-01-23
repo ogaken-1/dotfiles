@@ -38,12 +38,12 @@ description: Implementation agent with test-first workflow
       </step>
       <step order="2">
         <action>Serenaメモリの確認</action>
-        <tool>serena list_memories, serena read_memory</tool>
+        <tool>mcp__serena__list_memories, mcp__serena__read_memory</tool>
         <output>関連するパターンと規約</output>
       </step>
       <step order="3">
         <action>既存コードとテストの調査</action>
-        <tool>Glob, serena find_symbol, serena get_symbols_overview</tool>
+        <tool>Glob, mcp__serena__find_symbol, mcp__serena__get_symbols_overview</tool>
         <output>関連する既存コードとテストファイル</output>
       </step>
       <step order="4">
@@ -57,7 +57,7 @@ description: Implementation agent with test-first workflow
       <objective>実装前にテストを変更/追加する</objective>
       <step order="1">
         <action>テストコードの変更/追加</action>
-        <tool>Edit, serena replace_symbol_body, serena insert_after_symbol</tool>
+        <tool>Edit, mcp__serena__replace_symbol_body, mcp__serena__insert_after_symbol</tool>
         <output>変更されたテストコード</output>
       </step>
       <step order="2">
@@ -97,7 +97,7 @@ description: Implementation agent with test-first workflow
       <condition>review_request フェーズでユーザーが承認した場合のみ実行</condition>
       <step order="1">
         <action>実装コードの変更</action>
-        <tool>Edit, serena replace_symbol_body</tool>
+        <tool>Edit, mcp__serena__replace_symbol_body</tool>
         <output>実装コード</output>
       </step>
       <step order="2">
@@ -134,23 +134,24 @@ description: Implementation agent with test-first workflow
   </workflow>
 
   <tools>
-    <tool name="serena list_memories">既存パターンとメモリの確認</tool>
-    <tool name="serena read_memory">メモリ内容の読み取り</tool>
-    <tool name="serena find_symbol">シンボルの検索</tool>
-    <tool name="serena get_symbols_overview">ファイル構造の確認</tool>
-    <tool name="serena replace_symbol_body">シンボル単位の置換</tool>
-    <tool name="serena insert_after_symbol">新規コードの挿入</tool>
-    <tool name="context7">ライブラリドキュメントの確認</tool>
+    <tool name="mcp__serena__list_memories">既存パターンとメモリの確認</tool>
+    <tool name="mcp__serena__read_memory">メモリ内容の読み取り</tool>
+    <tool name="mcp__serena__find_symbol">シンボルの検索</tool>
+    <tool name="mcp__serena__get_symbols_overview">ファイル構造の確認</tool>
+    <tool name="mcp__serena__replace_symbol_body">シンボル単位の置換</tool>
+    <tool name="mcp__serena__insert_after_symbol">新規コードの挿入</tool>
+    <tool name="mcp__context7__resolve-library-id">ライブラリ名をContext7 IDに解決</tool>
+    <tool name="mcp__context7__get-library-docs">ライブラリドキュメントの取得</tool>
     <tool name="Glob">ファイルの検索</tool>
     <tool name="Edit">コードの編集</tool>
     <tool name="Bash">テストランナーの実行</tool>
     <tool name="AskUserQuestion">レビュー依頼</tool>
     <decision_tree name="tool_selection">
       <question>現在のフェーズは？</question>
-      <branch condition="understand">serena list_memories, serena read_memory, Glob, serena find_symbol</branch>
-      <branch condition="test_first">Edit, serena, Bash</branch>
+      <branch condition="understand">mcp__serena__list_memories, mcp__serena__read_memory, Glob, mcp__serena__find_symbol</branch>
+      <branch condition="test_first">Edit, mcp__serena__replace_symbol_body, Bash</branch>
       <branch condition="review_request">AskUserQuestion</branch>
-      <branch condition="implement">Edit, serena, Bash, context7</branch>
+      <branch condition="implement">Edit, mcp__serena__replace_symbol_body, Bash, mcp__context7__get-library-docs</branch>
     </decision_tree>
   </tools>
 

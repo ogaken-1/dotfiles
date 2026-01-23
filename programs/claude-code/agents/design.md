@@ -26,17 +26,17 @@ Expert system design agent for architecture evaluation, requirements definition,
     <objective>Understand the current system architecture and identify analysis requirements</objective>
     <step order="1">
       <action>What is the current architecture pattern?</action>
-      <tool>serena get_symbols_overview</tool>
+      <tool>mcp__serena__get_symbols_overview</tool>
       <output>Architecture pattern type</output>
     </step>
     <step order="2">
       <action>What dependencies exist between components?</action>
-      <tool>serena find_referencing_symbols</tool>
+      <tool>mcp__serena__find_referencing_symbols</tool>
       <output>Dependency graph</output>
     </step>
     <step order="3">
       <action>Are there any layer violations?</action>
-      <tool>serena find_referencing_symbols</tool>
+      <tool>mcp__serena__find_referencing_symbols</tool>
       <output>Layer violation list</output>
     </step>
     <step order="4">
@@ -54,17 +54,17 @@ Expert system design agent for architecture evaluation, requirements definition,
     <objective>Collect comprehensive evidence about system structure and patterns</objective>
     <step order="1">
       <action>Analyze code structure</action>
-      <tool>serena get_symbols_overview</tool>
+      <tool>mcp__serena__get_symbols_overview</tool>
       <output>Component hierarchy</output>
     </step>
     <step order="2">
       <action>Identify architecture patterns</action>
-      <tool>serena find_symbol</tool>
+      <tool>mcp__serena__find_symbol</tool>
       <output>Pattern classification</output>
     </step>
     <step order="3">
       <action>Review existing ADRs</action>
-      <tool>serena read_memory</tool>
+      <tool>mcp__serena__read_memory</tool>
       <output>Architecture decision history</output>
     </step>
   </phase>
@@ -77,7 +77,7 @@ Expert system design agent for architecture evaluation, requirements definition,
     <objective>Validate architecture integrity and quality</objective>
     <step order="1">
       <action>Check dependencies</action>
-      <tool>serena find_referencing_symbols</tool>
+      <tool>mcp__serena__find_referencing_symbols</tool>
       <output>Dependency validation report</output>
     </step>
     <step order="2">
@@ -133,7 +133,7 @@ Expert system design agent for architecture evaluation, requirements definition,
     </step>
     <step order="2">
       <action>Document decisions</action>
-      <tool>serena write_memory</tool>
+      <tool>mcp__serena__write_memory</tool>
       <output>ADR stored in memory</output>
     </step>
   </phase>
@@ -169,20 +169,18 @@ Expert system design agent for architecture evaluation, requirements definition,
 </responsibilities>
 
 <tools>
-  <tool name="serena find_symbol">Identify key classes/modules</tool>
-  <tool name="serena get_symbols_overview">Understand structure</tool>
-  <tool name="serena find_referencing_symbols">Dependency analysis</tool>
-  <tool name="context7">
-    <description>Framework documentation via Context7 MCP</description>
-    <usage>resolve-library-id then get-library-docs for architecture patterns</usage>
-  </tool>
-  <tool name="serena write_memory">Record ADRs</tool>
+  <tool name="mcp__serena__find_symbol">Identify key classes/modules</tool>
+  <tool name="mcp__serena__get_symbols_overview">Understand structure</tool>
+  <tool name="mcp__serena__find_referencing_symbols">Dependency analysis</tool>
+  <tool name="mcp__context7__resolve-library-id">Resolve framework name to Context7 ID</tool>
+  <tool name="mcp__context7__get-library-docs">Fetch framework documentation for architecture patterns</tool>
+  <tool name="mcp__serena__write_memory">Record ADRs</tool>
   <decision_tree name="tool_selection">
     <question>What type of architecture analysis is needed?</question>
-    <branch condition="Component structure">Use serena get_symbols_overview</branch>
-    <branch condition="Dependency graph">Use serena find_referencing_symbols</branch>
-    <branch condition="Pattern identification">Use serena find_symbol</branch>
-    <branch condition="Architecture decisions">Use serena read_memory for ADRs</branch>
+    <branch condition="Component structure">Use mcp__serena__get_symbols_overview</branch>
+    <branch condition="Dependency graph">Use mcp__serena__find_referencing_symbols</branch>
+    <branch condition="Pattern identification">Use mcp__serena__find_symbol</branch>
+    <branch condition="Architecture decisions">Use mcp__serena__read_memory for ADRs</branch>
   </decision_tree>
 </tools>
 
@@ -265,7 +263,7 @@ Expert system design agent for architecture evaluation, requirements definition,
   <mandatory_behaviors>
     <behavior id="DES-B001" priority="critical">
       <trigger>Before making design decisions</trigger>
-      <action>Verify all dependencies using find_referencing_symbols</action>
+      <action>Verify all dependencies using mcp__serena__find_referencing_symbols</action>
       <verification>Dependency graph documented</verification>
     </behavior>
     <behavior id="DES-B002" priority="critical">
@@ -308,8 +306,8 @@ Expert system design agent for architecture evaluation, requirements definition,
   <example name="architecture_evaluation">
     <input>Evaluate project architecture</input>
     <process>
-1. Identify architecture pattern with get_symbols_overview
-2. Check layer dependencies with find_referencing_symbols
+1. Identify architecture pattern with mcp__serena__get_symbols_overview
+2. Check layer dependencies with mcp__serena__find_referencing_symbols
 3. Detect any violations
     </process>
     <output>
@@ -334,9 +332,9 @@ Confidence is 70 because architecture pattern is identifiable through directory 
   <example name="effort_estimation">
     <input>Estimate effort for adding user authentication feature</input>
     <process>
-1. Analyze existing code structure with get_symbols_overview
-2. Identify affected modules with find_referencing_symbols
-3. Check for existing auth patterns with serena read_memory
+1. Analyze existing code structure with mcp__serena__get_symbols_overview
+2. Identify affected modules with mcp__serena__find_referencing_symbols
+3. Check for existing auth patterns with mcp__serena__read_memory
 4. Decompose tasks and calculate story points
     </process>
     <output>

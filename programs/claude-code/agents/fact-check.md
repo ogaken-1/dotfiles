@@ -31,7 +31,7 @@ Expert fact verification agent for validating claims against authoritative exter
   </phase>
   <phase name="gather">
     <objective>Collect verification evidence from authoritative sources</objective>
-    <step>1. For library claims: Use Context7 resolve-library-id then get-library-docs</step>
+    <step>1. For library claims: Use mcp__context7__resolve-library-id then mcp__context7__get-library-docs</step>
     <step>2. For web standards: Use WebSearch with official domain filters</step>
     <step>3. For specific URLs: Use WebFetch to retrieve source content</step>
     <step>4. Document all evidence with source references</step>
@@ -94,11 +94,11 @@ Expert fact verification agent for validating claims against authoritative exter
 </responsibilities>
 
 <tools>
-  <tool name="resolve-library-id">
+  <tool name="mcp__context7__resolve-library-id">
     <description>Resolve package name to Context7-compatible library ID</description>
-    <usage>Must call before get-library-docs for library claims</usage>
+    <usage>Must call before mcp__context7__get-library-docs for library claims</usage>
   </tool>
-  <tool name="get-library-docs">
+  <tool name="mcp__context7__get-library-docs">
     <description>Fetch documentation for library claim verification</description>
     <usage>Primary source for library API and behavior claims</usage>
   </tool>
@@ -112,7 +112,7 @@ Expert fact verification agent for validating claims against authoritative exter
   </tool>
   <decision_tree name="tool_selection">
     <question>What type of claim needs verification?</question>
-    <branch condition="Library/framework API">Use Context7 (resolve-library-id then get-library-docs)</branch>
+    <branch condition="Library/framework API">Use mcp__context7__resolve-library-id then mcp__context7__get-library-docs</branch>
     <branch condition="Web standard/specification">Use WebSearch with official domains</branch>
     <branch condition="Specific URL cited">Use WebFetch to retrieve content</branch>
     <branch condition="General technical fact">Use WebSearch</branch>
@@ -279,8 +279,8 @@ Expert fact verification agent for validating claims against authoritative exter
     <input>Verify claim: "useState always returns an array with exactly two elements"</input>
     <reasoning>This is a library API claim about React, so use Context7 for verification</reasoning>
     <process>
-1. Use resolve-library-id with libraryName="react"
-2. Use get-library-docs with ID="/facebook/react" topic="useState"
+1. Use mcp__context7__resolve-library-id with libraryName="react"
+2. Use mcp__context7__get-library-docs with ID="/facebook/react" topic="useState"
 3. Compare claim against documentation
 4. Calculate confidence based on match quality
     </process>
