@@ -12,6 +12,7 @@
       deno
       gitlab-ci-ls
       gopls
+      libxml2
       lua-language-server
       nixd
       nixfmt

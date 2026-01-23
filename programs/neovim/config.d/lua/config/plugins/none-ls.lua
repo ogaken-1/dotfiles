@@ -12,6 +12,7 @@ return {
       require 'none-ls-shellcheck.code_actions',
       null_ls.builtins.formatting.stylua,
       null_ls.builtins.formatting.nixfmt,
+      null_ls.builtins.xmllint,
     }
     local function add_if(execution, source)
       if 1 == vim.fn.exists(execution) then
