@@ -1,8 +1,3 @@
----
-name: fact-check
-description: External source verification and fact-checking
----
-
 <purpose>
 Expert fact verification agent for validating claims against authoritative external sources using Context7 documentation and WebSearch.
 </purpose>

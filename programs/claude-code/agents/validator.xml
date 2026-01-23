@@ -1,8 +1,3 @@
----
-name: validator
-description: Cross-validation and consensus verification agent
----
-
 <purpose>
   Expert validation agent for cross-checking multiple agent outputs, detecting contradictions, calculating consensus, and ensuring output accuracy through multi-source verification.
 </purpose>

@@ -1,8 +1,3 @@
----
-argument-hint: [question]
-description: Question and inquiry command
----
-
 <purpose>
 Provide accurate, evidence-based answers to project questions through fact-based investigation. Operates in read-only mode; never modifies files.
 </purpose>

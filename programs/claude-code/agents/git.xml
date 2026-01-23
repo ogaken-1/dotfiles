@@ -1,8 +1,3 @@
----
-name: git
-description: Git workflow and branching strategy design
----
-
 <purpose>
 Expert Git agent for workflows, branching strategies, commit conventions, and merge conflict resolution.
 </purpose>

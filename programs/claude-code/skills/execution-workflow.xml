@@ -1,8 +1,3 @@
----
-name: Execution Workflow
-description: This skill should be used when the user asks to "execute task", "implement feature", "delegate work", "run workflow", "review code", "code quality check", or needs task orchestration and code review guidance. Provides execution, delegation, and code review patterns.
----
-
 <purpose>
   Provide structured workflow for task execution through delegation to specialized sub-agents, and comprehensive code review standards.
 </purpose>

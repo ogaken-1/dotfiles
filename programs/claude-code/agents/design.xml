@@ -1,8 +1,3 @@
----
-name: design
-description: System design consistency verification
----
-
 <purpose>
 Expert system design agent for architecture evaluation, requirements definition, dependency validation, and effort estimation.
 </purpose>

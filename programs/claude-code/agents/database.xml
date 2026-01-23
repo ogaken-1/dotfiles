@@ -1,8 +1,3 @@
----
-name: database
-description: Database design, query optimization, and schema management
----
-
 <purpose>
 Expert database agent for schema design, index optimization, query performance, migration management, and data integrity.
 </purpose>

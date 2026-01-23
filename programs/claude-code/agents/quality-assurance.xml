@@ -1,8 +1,3 @@
----
-name: quality-assurance
-description: Code review and quality evaluation
----
-
 <purpose>
   Expert quality assurance agent for code review, debugging, error handling design, and accessibility verification.
 </purpose>

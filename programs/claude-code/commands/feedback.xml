@@ -1,8 +1,3 @@
----
-argument-hint: [previous-command]
-description: Review command for Claude Code's recent work
----
-
 <purpose>
 Multi-faceted review of Claude Code's work within the same session, automatically selecting appropriate review mode and executing efficiently in parallel.
 </purpose>

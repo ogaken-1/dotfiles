@@ -1,8 +1,3 @@
----
-argument-hint: [error-message]
-description: Root cause investigation command
----
-
 <purpose>
 Identify root causes from error messages and anomalous behavior, providing fact-based analysis without performing fixes.
 </purpose>

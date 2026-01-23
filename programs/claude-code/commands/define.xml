@@ -1,8 +1,3 @@
----
-argument-hint: [message]
-description: Requirements definition command
----
-
 <purpose>
 Conduct detailed requirements definition before implementation, clarifying technical constraints, design policies, and specifications.
 </purpose>

@@ -1,8 +1,3 @@
----
-argument-hint: [task-description]
-description: Task execution command
----
-
 <purpose>
 Execute tasks by delegating detailed work to sub-agents while focusing on policy decisions and orchestration.
 </purpose>

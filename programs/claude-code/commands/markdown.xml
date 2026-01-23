@@ -1,8 +1,3 @@
----
-argument-hint: [file-path]
-description: Markdown text update command
----
-
 <purpose>
 Output results from other commands (/define, /ask, /bug, etc.) as markdown files.
 </purpose>

@@ -1,8 +1,3 @@
----
-name: test
-description: Test strategy and quality management
----
-
 <purpose>
   Expert test agent for unit/integration/E2E testing, coverage analysis, flaky test detection, browser automation, and performance analysis.
 </purpose>
