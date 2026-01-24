@@ -1,364 +1,362 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <skill>
-  <purpose>
-  Provide systematic patterns for codebase investigation and debugging, ensuring evidence-based analysis with proper confidence assessment.
-</purpose>
+  <purpose>適切な信頼度評価を伴う証拠に基づく分析を確保する、コードベース調査とデバッグの体系的なパターンを提供する。</purpose>
   <rules priority="critical">
-    <rule>Always provide file:line references for all findings using format path/to/file.ext:line_number</rule>
-    <rule>Rate confidence and coverage metrics for all investigation results</rule>
-    <rule>Complete investigation before proposing solutions</rule>
+    <rule>すべての発見事項にpath/to/file.ext:line_number形式でfile:line参照を常に提供</rule>
+    <rule>すべての調査結果に信頼度とカバレッジのメトリクスを評価</rule>
+    <rule>解決策を提案する前に調査を完了</rule>
   </rules>
   <rules priority="standard">
-    <rule>Use Serena symbol tools before reading entire files</rule>
-    <rule>Independently verify claims rather than confirming assumptions</rule>
-    <rule>Document information gaps and unclear points</rule>
-    <rule>Check multiple sources to increase confidence</rule>
-    <rule>Use systematic debugging phases (reproduce, isolate, investigate, hypothesize, fix)</rule>
+    <rule>ファイル全体を読む前にSerenaシンボルツールを使用</rule>
+    <rule>仮定を確認するのではなく、主張を独立して検証</rule>
+    <rule>情報のギャップと不明確な点を文書化</rule>
+    <rule>信頼度を高めるために複数のソースを確認</rule>
+    <rule>体系的なデバッグフェーズを使用（再現、分離、調査、仮説、修正）</rule>
   </rules>
   <patterns>
     <pattern name="scope_classification">
-      <description>Classify the question type to determine investigation approach</description>
+      <description>調査アプローチを決定するために質問タイプを分類</description>
       <decision_tree name="when_to_use">
-        <question>Does the question require understanding codebase structure or behavior?</question>
-        <if_yes>Apply scope classification to determine investigation depth and tools</if_yes>
-        <if_no>Consider requirements-definition skill for unclear requirements</if_no>
+        <question>質問はコードベースの構造または動作の理解を必要としますか？</question>
+        <if_yes>調査の深さとツールを決定するためにスコープ分類を適用</if_yes>
+        <if_no>不明確な要件には要件定義スキルを検討</if_no>
       </decision_tree>
       <example>
-      Architecture: System design, component relationships
-      Implementation: Specific code behavior, algorithm details
-      Debugging: Error causes, unexpected behavior
-      Design: Pattern usage, code organization
-    </example>
+        アーキテクチャ: システム設計、コンポーネント関係
+        実装: 特定のコード動作、アルゴリズム詳細
+        デバッグ: エラー原因、予期しない動作
+        設計: パターン使用、コード構成
+      </example>
     </pattern>
     <pattern name="source_identification">
-      <description>Identify relevant sources for investigation</description>
+      <description>調査のための関連ソースを特定</description>
       <decision_tree name="when_to_use">
-        <question>Is the codebase large or unfamiliar?</question>
-        <if_yes>Apply source identification to locate relevant evidence efficiently</if_yes>
-        <if_no>Directly examine known sources</if_no>
+        <question>コードベースは大規模または馴染みがないですか？</question>
+        <if_yes>関連する証拠を効率的に特定するためにソース特定を適用</if_yes>
+        <if_no>既知のソースを直接調査</if_no>
       </decision_tree>
       <example>
-      Code: Use Serena for symbol search and dependency analysis
-      Documentation: Check inline comments, README, API docs
-      History: Git log for context on changes
-      External: Context7 for library documentation
-    </example>
+        コード: シンボル検索と依存関係分析にSerenaを使用
+        ドキュメント: インラインコメント、README、APIドキュメントを確認
+        履歴: 変更のコンテキストのためにGitログを確認
+        外部: ライブラリドキュメントにContext7を使用
+      </example>
     </pattern>
     <pattern name="evidence_collection">
-      <description>Collect evidence systematically using appropriate tools</description>
+      <description>適切なツールを使用して体系的に証拠を収集</description>
       <decision_tree name="when_to_use">
-        <question>Do you have specific symbols or patterns to investigate?</question>
-        <if_yes>Apply evidence collection with symbol-level tools</if_yes>
-        <if_no>Start with source identification to locate relevant areas</if_no>
+        <question>調査する特定のシンボルまたはパターンがありますか？</question>
+        <if_yes>シンボルレベルツールで証拠収集を適用</if_yes>
+        <if_no>関連する領域を特定するためにソース特定から開始</if_no>
       </decision_tree>
       <example>
-      mcp__serena__find_symbol: Locate specific symbols by name
-      mcp__serena__get_symbols_overview: Understand file structure
-      mcp__serena__find_referencing_symbols: Trace dependencies
-      mcp__serena__search_for_pattern: Find patterns across codebase
-    </example>
+        mcp__serena__find_symbol: 名前で特定のシンボルを検索
+        mcp__serena__get_symbols_overview: ファイル構造を理解
+        mcp__serena__find_referencing_symbols: 依存関係を追跡
+        mcp__serena__search_for_pattern: コードベース全体でパターンを検索
+      </example>
     </pattern>
     <pattern name="synthesis">
-      <description>Synthesize findings with confidence metrics</description>
+      <description>信頼度メトリクスとともに発見事項を統合</description>
       <decision_tree name="when_to_use">
-        <question>Have you collected sufficient evidence from multiple sources?</question>
-        <if_yes>Apply synthesis to combine findings with confidence metrics</if_yes>
-        <if_no>Continue evidence collection to increase coverage</if_no>
+        <question>複数のソースから十分な証拠を収集しましたか？</question>
+        <if_yes>信頼度メトリクスとともに発見事項を組み合わせるために統合を適用</if_yes>
+        <if_no>カバレッジを増やすために証拠収集を続行</if_no>
       </decision_tree>
       <example>
-      Combine evidence from multiple sources
-      Rate confidence based on evidence quality (0-100)
-      Report coverage of relevant code examined (0-100)
-      Identify and document information gaps
-    </example>
+        複数のソースからの証拠を組み合わせる
+        証拠品質に基づいて信頼度を評価（0-100）
+        調査したコードのカバレッジを報告（0-100）
+        情報のギャップを特定し文書化
+      </example>
     </pattern>
     <pattern name="reproduce">
-      <description>Confirm the issue is reproducible</description>
+      <description>問題が再現可能であることを確認</description>
       <decision_tree name="when_to_use">
-        <question>Is this a bug or unexpected behavior investigation?</question>
-        <if_yes>Apply reproduce pattern to confirm issue before debugging</if_yes>
-        <if_no>Use other investigation patterns for analysis tasks</if_no>
+        <question>これはバグまたは予期しない動作の調査ですか？</question>
+        <if_yes>デバッグ前に問題を確認するために再現パターンを適用</if_yes>
+        <if_no>分析タスクには他の調査パターンを使用</if_no>
       </decision_tree>
       <example>
-      Gather exact steps to reproduce
-      Identify environment conditions
-      Determine consistency (always/sometimes fails)
-    </example>
+        再現するための正確な手順を収集
+        環境条件を特定
+        一貫性を判断（常に/時々失敗）
+      </example>
     </pattern>
     <pattern name="isolate">
-      <description>Narrow down the problem scope</description>
+      <description>問題のスコープを絞り込む</description>
       <decision_tree name="when_to_use">
-        <question>Is the bug reproducible but involves many components?</question>
-        <if_yes>Apply isolate pattern to narrow down the problem scope</if_yes>
-        <if_no>Proceed to investigate pattern if scope is clear</if_no>
+        <question>バグは再現可能だが多くのコンポーネントが関与していますか？</question>
+        <if_yes>問題のスコープを絞り込むために分離パターンを適用</if_yes>
+        <if_no>スコープが明確な場合は調査パターンに進む</if_no>
       </decision_tree>
       <example>
-      Identify when issue started (git bisect if needed)
-      Remove unrelated components
-      Create minimal reproduction case
-    </example>
+        問題がいつ始まったかを特定（必要に応じてgit bisect）
+        無関係なコンポーネントを除去
+        最小限の再現ケースを作成
+      </example>
     </pattern>
     <pattern name="investigate">
-      <description>Collect evidence systematically for debugging</description>
+      <description>デバッグのために体系的に証拠を収集</description>
       <decision_tree name="when_to_use">
-        <question>Has the issue been reproduced and isolated?</question>
-        <if_yes>Apply investigate pattern to collect debugging evidence</if_yes>
-        <if_no>Complete reproduce and isolate patterns first</if_no>
+        <question>問題は再現され分離されましたか？</question>
+        <if_yes>デバッグ証拠を収集するために調査パターンを適用</if_yes>
+        <if_no>最初に再現と分離パターンを完了</if_no>
       </decision_tree>
       <example>
-      Examine error messages and stack traces
-      Check logs at relevant timestamps
-      Use Serena for code path analysis
-      Trace data flow through the system
-    </example>
+        エラーメッセージとスタックトレースを調査
+        関連するタイムスタンプのログを確認
+        コードパス分析にSerenaを使用
+        システム全体のデータフローを追跡
+      </example>
     </pattern>
     <pattern name="hypothesize">
-      <description>Form and test hypotheses</description>
+      <description>仮説を形成しテスト</description>
       <decision_tree name="when_to_use">
-        <question>Have you collected sufficient debugging evidence?</question>
-        <if_yes>Apply hypothesize pattern to form and test root cause theories</if_yes>
-        <if_no>Continue investigate pattern to gather more evidence</if_no>
+        <question>十分なデバッグ証拠を収集しましたか？</question>
+        <if_yes>根本原因理論を形成しテストするために仮説パターンを適用</if_yes>
+        <if_no>より多くの証拠を収集するために調査パターンを続行</if_no>
       </decision_tree>
       <example>
-      List possible causes
-      Rank by likelihood
-      Design tests to confirm/refute each
-    </example>
+        考えられる原因をリストアップ
+        可能性でランク付け
+        各仮説を確認/反証するテストを設計
+      </example>
     </pattern>
     <pattern name="fix">
-      <description>Implement and verify solution</description>
+      <description>解決策を実装し検証</description>
       <decision_tree name="when_to_use">
-        <question>Has a hypothesis been confirmed as the root cause?</question>
-        <if_yes>Apply fix pattern to implement and verify solution</if_yes>
-        <if_no>Continue hypothesize pattern to test other theories</if_no>
+        <question>仮説が根本原因として確認されましたか？</question>
+        <if_yes>解決策を実装し検証するために修正パターンを適用</if_yes>
+        <if_no>他の理論をテストするために仮説パターンを続行</if_no>
       </decision_tree>
       <example>
-      Make minimal targeted change
-      Verify fix resolves the issue
-      Check for regressions
-      Add test to prevent recurrence
-    </example>
+        最小限のターゲット変更を行う
+        修正が問題を解決することを確認
+        リグレッションを確認
+        再発防止のためにテストを追加
+      </example>
     </pattern>
   </patterns>
   <workflow>
     <phase name="observe">
-      <objective>Gather initial observations</objective>
-      <step>1. Document the symptom or question clearly</step>
-      <step>2. Identify relevant entry points for investigation</step>
-      <step>3. Form initial hypotheses</step>
+      <objective>初期観察を収集</objective>
+      <step>1. 症状または質問を明確に文書化</step>
+      <step>2. 調査の関連するエントリーポイントを特定</step>
+      <step>3. 初期仮説を形成</step>
     </phase>
     <phase name="investigate">
-      <objective>Systematically explore evidence</objective>
-      <step>1. Use Serena tools to trace code paths</step>
-      <step>2. Build evidence chain from symptom to cause</step>
-      <step>3. Validate or invalidate hypotheses</step>
+      <objective>体系的に証拠を探索</objective>
+      <step>1. コードパスを追跡するためにSerenaツールを使用</step>
+      <step>2. 症状から原因への証拠チェーンを構築</step>
+      <step>3. 仮説を検証または無効化</step>
     </phase>
     <phase name="conclude">
-      <objective>Form evidence-based conclusions</objective>
-      <step>1. Synthesize findings into coherent explanation</step>
-      <step>2. Rate confidence based on evidence quality</step>
-      <step>3. Document for future reference</step>
+      <objective>証拠に基づく結論を形成</objective>
+      <step>1. 発見事項を一貫した説明に統合</step>
+      <step>2. 証拠品質に基づいて信頼度を評価</step>
+      <step>3. 将来の参照のために文書化</step>
     </phase>
   </workflow>
   <error_escalation>
     <level severity="low">
-      <example>Evidence trail incomplete</example>
-      <action>Note in report, proceed</action>
+      <example>証拠の追跡が不完全</example>
+      <action>レポートに記載し、続行</action>
     </level>
     <level severity="medium">
-      <example>Conflicting evidence found</example>
-      <action>Document issue, use AskUserQuestion for clarification</action>
+      <example>矛盾する証拠が見つかった</example>
+      <action>問題を文書化し、AskUserQuestionで明確化を求める</action>
     </level>
     <level severity="high">
-      <example>Root cause cannot be determined</example>
-      <action>STOP, present options to user</action>
+      <example>根本原因を特定できない</example>
+      <action>停止し、ユーザーに選択肢を提示</action>
     </level>
     <level severity="critical">
-      <example>Investigation reveals security issue</example>
-      <action>BLOCK operation, require explicit user acknowledgment</action>
+      <example>調査でセキュリティ問題が判明</example>
+      <action>操作をブロックし、明示的なユーザー確認を要求</action>
     </level>
   </error_escalation>
   <constraints>
-    <must>Build evidence chains before conclusions</must>
-    <must>Cite specific file:line references</must>
-    <must>State confidence levels explicitly</must>
-    <avoid>Speculation without evidence</avoid>
-    <avoid>Confirmation bias in hypothesis testing</avoid>
-    <avoid>Concluding without exploring alternatives</avoid>
+    <must>結論の前に証拠チェーンを構築</must>
+    <must>具体的なfile:line参照を引用</must>
+    <must>信頼度レベルを明示的に記載</must>
+    <avoid>証拠のない推測</avoid>
+    <avoid>仮説テストにおける確証バイアス</avoid>
+    <avoid>代替案を探索せずに結論を出す</avoid>
   </constraints>
   <tools>
     <tool name="mcp__serena__find_symbol">
-      <description>Locate specific symbols by name in the codebase</description>
-      <param name="name_path_pattern">Pattern to match symbol names</param>
-      <param name="relative_path">Optional path to restrict search</param>
-      <param name="depth">Depth to retrieve children (default 0)</param>
-      <use_case>Finding class, function, or variable definitions</use_case>
+      <description>コードベース内で名前によって特定のシンボルを検索</description>
+      <param name="name_path_pattern">シンボル名にマッチするパターン</param>
+      <param name="relative_path">検索を制限するオプションのパス</param>
+      <param name="depth">子を取得する深さ（デフォルト0）</param>
+      <use_case>クラス、関数、変数の定義を検索</use_case>
     </tool>
     <tool name="mcp__serena__get_symbols_overview">
-      <description>Get high-level structure of a file</description>
-      <param name="relative_path">Path to file to analyze</param>
-      <param name="depth">Depth of symbol tree (default 0)</param>
-      <use_case>Understanding file organization before detailed investigation</use_case>
+      <description>ファイルの高レベル構造を取得</description>
+      <param name="relative_path">分析するファイルへのパス</param>
+      <param name="depth">シンボルツリーの深さ（デフォルト0）</param>
+      <use_case>詳細調査前にファイル構成を理解</use_case>
     </tool>
     <tool name="mcp__serena__find_referencing_symbols">
-      <description>Find all references to a symbol</description>
-      <param name="name_path">Symbol to find references for</param>
-      <param name="relative_path">File containing the symbol</param>
-      <use_case>Tracing dependencies and usage patterns</use_case>
+      <description>シンボルへのすべての参照を検索</description>
+      <param name="name_path">参照を検索するシンボル</param>
+      <param name="relative_path">シンボルを含むファイル</param>
+      <use_case>依存関係と使用パターンを追跡</use_case>
     </tool>
     <tool name="mcp__serena__search_for_pattern">
-      <description>Search for regex patterns across codebase</description>
-      <param name="substring_pattern">Regular expression to search</param>
-      <param name="relative_path">Optional path to restrict search</param>
-      <param name="restrict_search_to_code_files">Limit to code files</param>
-      <use_case>Finding specific patterns or usage across files</use_case>
+      <description>コードベース全体で正規表現パターンを検索</description>
+      <param name="substring_pattern">検索する正規表現</param>
+      <param name="relative_path">検索を制限するオプションのパス</param>
+      <param name="restrict_search_to_code_files">コードファイルに制限</param>
+      <use_case>ファイル全体で特定のパターンまたは使用法を検索</use_case>
     </tool>
   </tools>
   <concepts>
     <concept name="evidence_standards">
-      <description>Standards for collecting and reporting evidence</description>
+      <description>証拠の収集と報告の基準</description>
       <example>
-      Citation: Always provide file:line references (path/to/file.ext:line_number)
+        引用: 常にfile:line参照を提供（path/to/file.ext:line_number）
 
-      Confidence levels:
+        信頼度レベル:
 
-      - 90-100: Direct code evidence, explicit documentation
-      - 70-89: Strong inference from multiple sources
-      - 50-69: Reasonable inference with some gaps
-      - 0-49: Speculation, insufficient evidence
+        - 90-100: 直接的なコード証拠、明示的なドキュメント
+        - 70-89: 複数のソースからの強い推論
+        - 50-69: いくつかのギャップを伴う合理的な推論
+        - 0-49: 推測、証拠不十分
 
-      Coverage levels:
+        カバレッジレベル:
 
-      - 90-100: All relevant files examined
-      - 70-89: Most relevant files examined
-      - 50-69: Key files examined, some gaps
-      - 0-49: Limited examination
-    </example>
+        - 90-100: すべての関連ファイルを調査
+        - 70-89: ほとんどの関連ファイルを調査
+        - 50-69: 主要ファイルを調査、いくつかのギャップ
+        - 0-49: 限定的な調査
+      </example>
     </concept>
     <concept name="null_reference">
-      <description>Null pointer or undefined reference errors</description>
+      <description>ヌルポインタまたは未定義参照エラー</description>
       <example>
-      Symptom: NullPointerException, undefined is not a function
-      Investigation: Check all paths to the null access
-      Fix: Add null checks or ensure initialization
-    </example>
+        症状: NullPointerException、undefined is not a function
+        調査: ヌルアクセスへのすべてのパスを確認
+        修正: ヌルチェックを追加または初期化を確保
+      </example>
     </concept>
     <concept name="race_condition">
-      <description>Concurrent access issues</description>
+      <description>並行アクセスの問題</description>
       <example>
-      Symptom: Intermittent failures, works sometimes
-      Investigation: Look for shared mutable state, async operations
-      Fix: Add synchronization or redesign for immutability
-    </example>
+        症状: 断続的な失敗、時々動作する
+        調査: 共有可変状態、非同期操作を探す
+        修正: 同期を追加または不変性のために再設計
+      </example>
     </concept>
     <concept name="off_by_one">
-      <description>Boundary condition errors</description>
+      <description>境界条件エラー</description>
       <example>
-      Symptom: Missing first/last element, index out of bounds
-      Investigation: Check loop boundaries and index calculations
-      Fix: Verify start/end conditions, use inclusive/exclusive correctly
-    </example>
+        症状: 最初/最後の要素が欠落、インデックス範囲外
+        調査: ループ境界とインデックス計算を確認
+        修正: 開始/終了条件を検証、inclusive/exclusiveを正しく使用
+      </example>
     </concept>
     <concept name="resource_leak">
-      <description>Unclosed resources accumulating over time</description>
+      <description>時間とともに蓄積するクローズされていないリソース</description>
       <example>
-      Symptom: Memory growth, connection exhaustion
-      Investigation: Check resource acquisition and release paths
-      Fix: Ensure cleanup in finally/defer, use resource management patterns
-    </example>
+        症状: メモリ増加、接続枯渇
+        調査: リソースの取得と解放パスを確認
+        修正: finally/deferでクリーンアップを確保、リソース管理パターンを使用
+      </example>
     </concept>
     <concept name="encoding_issue">
-      <description>Character encoding mismatches</description>
+      <description>文字エンコーディングの不一致</description>
       <example>
-      Symptom: Garbled text, unexpected characters
-      Investigation: Trace encoding at each transformation step
-      Fix: Ensure consistent encoding throughout pipeline
-    </example>
+        症状: 文字化けしたテキスト、予期しない文字
+        調査: 各変換ステップでエンコーディングを追跡
+        修正: パイプライン全体で一貫したエンコーディングを確保
+      </example>
     </concept>
     <concept name="five_whys">
-      <description>Ask "why" repeatedly to drill to root cause</description>
+      <description>根本原因に到達するまで「なぜ」を繰り返し問う</description>
       <example>
-      Why did the server crash? - Out of memory
-      Why out of memory? - Connection pool exhausted
-      Why exhausted? - Connections not being released
-      Why not released? - Exception bypasses cleanup
-      Root cause: Missing try-finally for connection release
-    </example>
+        なぜサーバーがクラッシュしたのか？ - メモリ不足
+        なぜメモリ不足なのか？ - 接続プールが枯渇
+        なぜ枯渇したのか？ - 接続が解放されていない
+        なぜ解放されないのか？ - 例外がクリーンアップをバイパス
+        根本原因: 接続解放のためのtry-finallyがない
+      </example>
     </concept>
     <concept name="timeline_analysis">
-      <description>Reconstruct sequence of events leading to failure</description>
+      <description>障害に至るイベントのシーケンスを再構築</description>
       <example>
-      Collect timestamps from logs
-      Order events chronologically
-      Identify divergence from expected behavior
-    </example>
+        ログからタイムスタンプを収集
+        イベントを時系列に並べる
+        期待される動作からの逸脱を特定
+      </example>
     </concept>
     <concept name="investigation_output">
-      <description>Standard format for investigation results</description>
+      <description>調査結果の標準フォーマット</description>
       <example>
-        <question>Restate the question for confirmation</question>
-        <investigation>Evidence-based findings with file:line references
-        - Source 1: path/to/file.ts:42 - finding description
-        - Source 2: path/to/other.ts:15 - finding description</investigation>
-        <conclusion>Direct answer based on evidence</conclusion>
+        <question>確認のために質問を再述</question>
+        <investigation>file:line参照付きの証拠に基づく発見事項
+        - ソース1: path/to/file.ts:42 - 発見の説明
+        - ソース2: path/to/other.ts:15 - 発見の説明</investigation>
+        <conclusion>証拠に基づく直接的な回答</conclusion>
         <metrics>
-        - Confidence: 0-100
-        - Evidence Coverage: 0-100</metrics>
-        <recommendations>Suggested actions without implementation</recommendations>
-        <unclear_points>Information gaps that would improve the answer</unclear_points>
+        - 信頼度: 0-100
+        - 証拠カバレッジ: 0-100</metrics>
+        <recommendations>実装なしの推奨アクション</recommendations>
+        <unclear_points>回答を改善する情報のギャップ</unclear_points>
       </example>
     </concept>
     <concept name="debugging_output">
-      <description>Standard format for debugging results</description>
+      <description>デバッグ結果の標準フォーマット</description>
       <example>
-        <problem_statement>Clear description of the issue</problem_statement>
-        <reproduction_steps>How to reproduce</reproduction_steps>
-        <investigation>Evidence collected with file:line references</investigation>
-        <root_cause>Identified cause with supporting evidence</root_cause>
-        <solution>Proposed fix with rationale</solution>
-        <verification>How to verify the fix works</verification>
-        <prevention>How to prevent recurrence</prevention>
+        <problem_statement>問題の明確な説明</problem_statement>
+        <reproduction_steps>再現方法</reproduction_steps>
+        <investigation>file:line参照付きで収集した証拠</investigation>
+        <root_cause>サポート証拠付きで特定された原因</root_cause>
+        <solution>根拠付きの提案修正</solution>
+        <verification>修正が機能することを検証する方法</verification>
+        <prevention>再発を防ぐ方法</prevention>
       </example>
     </concept>
   </concepts>
   <related_agents>
-    <agent name="bug">Use for root cause investigation when user reports bugs or errors</agent>
-    <agent name="ask">Use for answering questions about codebase architecture and implementation</agent>
-    <agent name="execute">Delegate to after investigation confirms implementation approach</agent>
+    <agent name="bug">ユーザーがバグやエラーを報告した場合の根本原因調査に使用</agent>
+    <agent name="ask">コードベースのアーキテクチャと実装に関する質問への回答に使用</agent>
+    <agent name="execute">調査で実装アプローチが確認された後に委任</agent>
   </related_agents>
   <related_skills>
-    <skill name="serena-usage">Use for memory operations and symbol-level code navigation</skill>
-    <skill name="execution-workflow">Use after investigation to implement fixes with proper delegation</skill>
-    <skill name="fact-check">Use to verify external documentation and library behavior</skill>
-    <skill name="testing-patterns">Use to add regression tests after fixing identified bugs</skill>
-    <skill name="requirements-definition">Use when investigation reveals unclear requirements</skill>
+    <skill name="serena-usage">メモリ操作とシンボルレベルのコードナビゲーションに使用</skill>
+    <skill name="execution-workflow">調査後に適切な委任で修正を実装するために使用</skill>
+    <skill name="fact-check">外部ドキュメントとライブラリ動作を検証するために使用</skill>
+    <skill name="testing-patterns">特定されたバグの修正後にリグレッションテストを追加するために使用</skill>
+    <skill name="requirements-definition">調査で不明確な要件が明らかになった場合に使用</skill>
   </related_skills>
   <anti_patterns>
     <avoid name="speculation">
-      <description>Guessing or making claims when evidence is insufficient</description>
-      <instead>Clearly state confidence levels and information gaps; request additional context if needed</instead>
+      <description>証拠が不十分な場合に推測したり主張したりする</description>
+      <instead>信頼度レベルと情報のギャップを明確に記載、必要に応じて追加コンテキストを要求</instead>
     </avoid>
     <avoid name="confirming_assumptions">
-      <description>Confirming user assumptions without independent verification</description>
-      <instead>Independently verify claims by examining code and collecting evidence</instead>
+      <description>独立した検証なしにユーザーの仮定を確認</description>
+      <instead>コードを調査し証拠を収集して主張を独立して検証</instead>
     </avoid>
     <avoid name="uncited_claims">
-      <description>Making claims without file:line references</description>
-      <instead>Always provide file:line citations for findings using format path/to/file.ext:line_number</instead>
+      <description>file:line参照なしに主張する</description>
+      <instead>path/to/file.ext:line_number形式で発見事項にfile:line引用を常に提供</instead>
     </avoid>
     <avoid name="premature_implementation">
-      <description>Implementing fixes instead of completing analysis</description>
-      <instead>Focus on investigation and analysis; provide recommendations without implementation</instead>
+      <description>分析を完了する代わりに修正を実装</description>
+      <instead>調査と分析に焦点を当て、実装なしで推奨事項を提供</instead>
     </avoid>
   </anti_patterns>
   <best_practices>
-    <practice priority="critical">Always provide file:line references for all findings using format path/to/file.ext:line_number</practice>
-    <practice priority="critical">Rate confidence and coverage metrics for all investigation results</practice>
-    <practice priority="critical">Complete investigation before proposing solutions</practice>
-    <practice priority="high">Use Serena symbol tools before reading entire files</practice>
-    <practice priority="high">Independently verify claims rather than confirming assumptions</practice>
-    <practice priority="high">Document information gaps and unclear points</practice>
-    <practice priority="medium">Check multiple sources to increase confidence</practice>
-    <practice priority="medium">Use systematic debugging phases (reproduce, isolate, investigate, hypothesize, fix)</practice>
+    <practice priority="critical">path/to/file.ext:line_number形式ですべての発見事項にfile:line参照を常に提供</practice>
+    <practice priority="critical">すべての調査結果に信頼度とカバレッジのメトリクスを評価</practice>
+    <practice priority="critical">解決策を提案する前に調査を完了</practice>
+    <practice priority="high">ファイル全体を読む前にSerenaシンボルツールを使用</practice>
+    <practice priority="high">仮定を確認するのではなく主張を独立して検証</practice>
+    <practice priority="high">情報のギャップと不明確な点を文書化</practice>
+    <practice priority="medium">信頼度を高めるために複数のソースを確認</practice>
+    <practice priority="medium">体系的なデバッグフェーズを使用（再現、分離、調査、仮説、修正）</practice>
   </best_practices>
 </skill>

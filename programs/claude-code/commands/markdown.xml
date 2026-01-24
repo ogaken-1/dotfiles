@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <command>
-  <purpose>
-Output results from other commands (/define, /ask, /bug, etc.) as markdown files.
-</purpose>
+  <purpose>他のコマンド（/define、/ask、/bug など）の結果をマークダウンファイルとして出力する。</purpose>
   <rules priority="critical">
-    <rule>Retrieve previous command execution results</rule>
-    <rule>Determine output filename based on context</rule>
-    <rule>Use specified file path if provided</rule>
-    <rule>Never include revision history or discussion process</rule>
+    <rule>前回のコマンド実行結果を取得する</rule>
+    <rule>コンテキストに基づいて出力ファイル名を決定する</rule>
+    <rule>指定されたファイルパスがあればそれを使用する</rule>
+    <rule>修正履歴や議論の過程は含めない</rule>
   </rules>
   <parallelization>
     <capability>
@@ -23,22 +21,22 @@ Output results from other commands (/define, /ask, /bug, etc.) as markdown files
   <decision_criteria>
     <criterion name="confidence_calculation">
       <factor name="content_accuracy" weight="0.4">
-        <score range="90-100">All content verified against source</score>
-        <score range="70-89">Core content verified</score>
-        <score range="50-69">Partial verification</score>
-        <score range="0-49">Unverified content</score>
+        <score range="90-100">すべてのコンテンツがソースに対して検証済み</score>
+        <score range="70-89">コアコンテンツが検証済み</score>
+        <score range="50-69">部分的に検証済み</score>
+        <score range="0-49">未検証のコンテンツ</score>
       </factor>
       <factor name="structure_quality" weight="0.3">
-        <score range="90-100">Clear hierarchy, proper formatting</score>
-        <score range="70-89">Good structure</score>
-        <score range="50-69">Basic structure</score>
-        <score range="0-49">Poor structure</score>
+        <score range="90-100">明確な階層構造、適切なフォーマット</score>
+        <score range="70-89">良好な構造</score>
+        <score range="50-69">基本的な構造</score>
+        <score range="0-49">構造が不十分</score>
       </factor>
       <factor name="completeness" weight="0.3">
-        <score range="90-100">All requested content included</score>
-        <score range="70-89">Main content included</score>
-        <score range="50-69">Partial content</score>
-        <score range="0-49">Incomplete</score>
+        <score range="90-100">要求されたすべてのコンテンツを含む</score>
+        <score range="70-89">主要なコンテンツを含む</score>
+        <score range="50-69">部分的なコンテンツ</score>
+        <score range="0-49">不完全</score>
       </factor>
     </criterion>
     <validation_tests>
@@ -46,157 +44,157 @@ Output results from other commands (/define, /ask, /bug, etc.) as markdown files
         <input>content_accuracy=95, structure_quality=90, completeness=95</input>
         <calculation>(95*0.4)+(90*0.3)+(95*0.3) = 38+27+28.5 = 93.5</calculation>
         <expected_status>success</expected_status>
-        <reasoning>Verified content with clear structure yields high confidence</reasoning>
+        <reasoning>明確な構造で検証済みのコンテンツは高い信頼度をもたらす</reasoning>
       </test>
       <test name="boundary_warning_79">
         <input>content_accuracy=80, structure_quality=75, completeness=80</input>
         <calculation>(80*0.4)+(75*0.3)+(80*0.3) = 32+22.5+24 = 78.5</calculation>
         <expected_status>warning</expected_status>
-        <reasoning>Core content verified but some structural issues results in 78.5, triggers warning</reasoning>
+        <reasoning>コアコンテンツは検証済みだが構造に問題があり、結果は78.5で警告をトリガー</reasoning>
       </test>
       <test name="boundary_success_80">
         <input>content_accuracy=85, structure_quality=75, completeness=80</input>
         <calculation>(85*0.4)+(75*0.3)+(80*0.3) = 34+22.5+24 = 80.5</calculation>
         <expected_status>success</expected_status>
-        <reasoning>Weighted average 80.5, meets success threshold</reasoning>
+        <reasoning>加重平均80.5、成功閾値を満たす</reasoning>
       </test>
       <test name="boundary_error_59">
         <input>content_accuracy=60, structure_quality=55, completeness=60</input>
         <calculation>(60*0.4)+(55*0.3)+(60*0.3) = 24+16.5+18 = 58.5</calculation>
         <expected_status>error</expected_status>
-        <reasoning>Weighted average 58.5 is below 60, triggers error</reasoning>
+        <reasoning>加重平均58.5は60未満でエラーをトリガー</reasoning>
       </test>
       <test name="unverified_content">
         <input>content_accuracy=50, structure_quality=55, completeness=45</input>
         <calculation>(50*0.4)+(55*0.3)+(45\*0.3) = 20+16.5+13.5 = 50</calculation>
         <expected_status>error</expected_status>
-        <reasoning>Unverified content with poor structure results in 50, triggers error</reasoning>
+        <reasoning>構造が不十分で未検証のコンテンツは50となりエラーをトリガー</reasoning>
       </test>
     </validation_tests>
   </decision_criteria>
   <workflow>
     <phase name="analyze">
-      <objective>Understand previous command output and context</objective>
-      <step>1. What was the previous command?</step>
-      <step>2. What is the appropriate output file?</step>
-      <step>3. Was a specific file path provided?</step>
-      <step>4. What content should be included/excluded?</step>
+      <objective>前回のコマンド出力とコンテキストを理解する</objective>
+      <step>1. 前回のコマンドは何だったか？</step>
+      <step>2. 適切な出力ファイルは何か？</step>
+      <step>3. 特定のファイルパスが指定されたか？</step>
+      <step>4. どのコンテンツを含め、どれを除外すべきか？</step>
     </phase>
     <reflection_checkpoint id="analyze_quality">
-      <question>Have I correctly identified the previous command and its output?</question>
-      <question>Do I understand what content needs to be documented?</question>
-      <threshold>If confidence less than 70, seek more evidence or ask user</threshold>
+      <question>前回のコマンドとその出力を正しく特定したか？</question>
+      <question>どのコンテンツを文書化する必要があるか理解しているか？</question>
+      <threshold>信頼度が70未満の場合、さらに証拠を収集するかユーザーに確認する</threshold>
     </reflection_checkpoint>
     <phase name="gather">
-      <objective>Retrieve all relevant information for documentation</objective>
-      <step>1. Retrieve previous command results</step>
-      <step>2. Collect relevant context</step>
+      <objective>ドキュメンテーションに必要なすべての関連情報を取得する</objective>
+      <step>1. 前回のコマンド結果を取得する</step>
+      <step>2. 関連するコンテキストを収集する</step>
     </phase>
     <reflection_checkpoint id="analysis_quality">
-      <question>Have I gathered sufficient evidence to proceed?</question>
-      <question>Are there gaps in my understanding?</question>
-      <threshold>If confidence less than 70, seek more evidence or ask user</threshold>
+      <question>十分な証拠を収集したか？</question>
+      <question>理解に不足がないか？</question>
+      <threshold>信頼度が70未満の場合、さらに証拠を収集するかユーザーに確認する</threshold>
     </reflection_checkpoint>
     <phase name="determine">
-      <objective>Decide on output file location and structure</objective>
-      <step>1. Determine output filename based on command type</step>
-      <step>2. Check if user specified file path</step>
+      <objective>出力ファイルの場所と構造を決定する</objective>
+      <step>1. コマンドタイプに基づいて出力ファイル名を決定する</step>
+      <step>2. ユーザーがファイルパスを指定したか確認する</step>
     </phase>
     <phase name="failure_handling">
-      <objective>Handle errors and edge cases gracefully</objective>
-      <step>1. If sub-agent fails: Log error, attempt alternative approach</step>
-      <step>2. If data unavailable: Document gap, proceed with partial analysis</step>
-      <step>3. If contradictory evidence: Flag uncertainty, request user clarification</step>
+      <objective>エラーとエッジケースを適切に処理する</objective>
+      <step>1. サブエージェントが失敗した場合：エラーをログに記録し、代替アプローチを試行する</step>
+      <step>2. データが利用できない場合：ギャップを文書化し、部分的な分析で続行する</step>
+      <step>3. 矛盾する証拠がある場合：不確実性をフラグし、ユーザーに確認を求める</step>
     </phase>
     <phase name="execute">
-      <objective>Write the documentation to file</objective>
-      <step>1. Write file using Write/Edit tool</step>
-      <step>2. Verify output format</step>
+      <objective>ドキュメントをファイルに書き込む</objective>
+      <step>1. Write/Editツールを使用してファイルを書き込む</step>
+      <step>2. 出力形式を確認する</step>
     </phase>
   </workflow>
   <agents>
-    <agent name="docs" subagent_type="docs" readonly="false">Documentation management</agent>
-    <agent name="memory" subagent_type="general-purpose" readonly="false">Knowledge base recording to Serena memory</agent>
+    <agent name="docs" subagent_type="docs" readonly="false">ドキュメンテーション管理</agent>
+    <agent name="memory" subagent_type="general-purpose" readonly="false">Serenaメモリへのナレッジベース記録</agent>
   </agents>
   <execution_graph>
     <sequential_phase id="output" depends_on="none">
       <agent>docs</agent>
-      <reason>Creates markdown file first</reason>
+      <reason>最初にマークダウンファイルを作成する</reason>
     </sequential_phase>
     <sequential_phase id="memory_recording" depends_on="output">
       <agent>memory</agent>
-      <reason>Records to knowledge base after file creation</reason>
+      <reason>ファイル作成後にナレッジベースに記録する</reason>
     </sequential_phase>
   </execution_graph>
   <output>
     <format>
       <markdown_file>
-        <header>Title based on command output</header>
-        <content>Cleaned, formatted output from previous command</content>
-        <footer>Optional: Related references</footer>
+        <header>コマンド出力に基づくタイトル</header>
+        <content>前回のコマンドからのクリーンでフォーマット済みの出力</content>
+        <footer>オプション：関連する参照</footer>
       </markdown_file>
     </format>
   </output>
   <enforcement>
     <mandatory_behaviors>
       <behavior id="MD-B001" priority="critical">
-        <trigger>Before writing documentation</trigger>
-        <action>Understand the source material</action>
-        <verification>Source analysis in output</verification>
+        <trigger>ドキュメンテーション作成前</trigger>
+        <action>ソース資料を理解する</action>
+        <verification>出力にソース分析を含める</verification>
       </behavior>
       <behavior id="MD-B002" priority="critical">
-        <trigger>When including code examples</trigger>
-        <action>Verify examples are correct and runnable</action>
-        <verification>Example validation noted</verification>
+        <trigger>コード例を含める場合</trigger>
+        <action>例が正確で実行可能であることを確認する</action>
+        <verification>例の検証を記録する</verification>
       </behavior>
     </mandatory_behaviors>
     <prohibited_behaviors>
       <behavior id="MD-P001" priority="critical">
-        <trigger>Always</trigger>
-        <action>Adding timestamps to documents</action>
-        <response>Block operation, timestamps are prohibited</response>
+        <trigger>常に</trigger>
+        <action>ドキュメントへのタイムスタンプ追加</action>
+        <response>操作をブロック、タイムスタンプは禁止されている</response>
       </behavior>
     </prohibited_behaviors>
   </enforcement>
   <error_escalation>
     <level severity="low">
-      <example>Minor formatting inconsistency in output</example>
-      <action>Note in report, proceed</action>
+      <example>出力の軽微なフォーマットの不整合</example>
+      <action>レポートに記録し、続行する</action>
     </level>
     <level severity="medium">
-      <example>Unclear output destination or ambiguous file mapping</example>
-      <action>Document issue, use AskUserQuestion for clarification</action>
+      <example>不明確な出力先または曖昧なファイルマッピング</example>
+      <action>問題を文書化し、AskUserQuestionを使用して確認する</action>
     </level>
     <level severity="high">
-      <example>File path conflict or overwrite risk</example>
-      <action>STOP, present options to user</action>
+      <example>ファイルパスの競合または上書きのリスク</example>
+      <action>停止し、ユーザーに選択肢を提示する</action>
     </level>
     <level severity="critical">
-      <example>Risk of overwriting critical documentation</example>
-      <action>BLOCK operation, require explicit user acknowledgment</action>
+      <example>重要なドキュメントを上書きするリスク</example>
+      <action>操作をブロックし、ユーザーの明示的な承認を要求する</action>
     </level>
   </error_escalation>
   <related_commands>
-    <command name="define">Primary source for EXECUTION.md output</command>
-    <command name="ask">Primary source for RESEARCH.md output</command>
-    <command name="bug">Primary source for RESEARCH.md output</command>
+    <command name="define">EXECUTION.md出力の主要なソース</command>
+    <command name="ask">RESEARCH.md出力の主要なソース</command>
+    <command name="bug">RESEARCH.md出力の主要なソース</command>
   </related_commands>
   <related_skills>
-    <skill name="technical-documentation">Formatting and structuring markdown output</skill>
-    <skill name="serena-usage">Recording knowledge to memory when appropriate</skill>
+    <skill name="technical-documentation">マークダウン出力のフォーマットと構造化</skill>
+    <skill name="serena-usage">必要に応じてメモリにナレッジを記録</skill>
   </related_skills>
   <file_mapping>
-    <default_output_dir>project root</default_output_dir>
+    <default_output_dir>プロジェクトルート</default_output_dir>
     <mapping command="/define" output="EXECUTION.md"/>
     <mapping command="/ask" output="RESEARCH.md"/>
     <mapping command="/bug" output="RESEARCH.md"/>
     <mapping command="other" output="MEMO.md"/>
-    <note>User-specified file path takes precedence</note>
+    <note>ユーザー指定のファイルパスが優先される</note>
   </file_mapping>
   <constraints>
-    <must>Use context-appropriate filename</must>
-    <must>Respect user-specified file path</must>
-    <avoid>Including revision history/change logs</avoid>
-    <avoid>Including consideration process/discussion history</avoid>
+    <must>コンテキストに適したファイル名を使用する</must>
+    <must>ユーザー指定のファイルパスを尊重する</must>
+    <avoid>修正履歴/変更ログを含める</avoid>
+    <avoid>検討過程/議論の履歴を含める</avoid>
   </constraints>
 </command>

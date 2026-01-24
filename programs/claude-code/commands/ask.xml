@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <command>
-  <purpose>
-Provide accurate, evidence-based answers to project questions through fact-based investigation. Operates in read-only mode; never modifies files.
-</purpose>
+  <purpose>事実に基づく調査を通じてプロジェクトに関する質問に正確でエビデンスベースの回答を提供する。読み取り専用モードで動作し、ファイルを変更しない。</purpose>
   <rules priority="critical">
-    <rule>NEVER modify, create, or delete files</rule>
-    <rule>NEVER implement fixes; provide analysis and suggestions only</rule>
-    <rule>ALWAYS base answers on factual investigation from code and documentation</rule>
-    <rule>ALWAYS report confidence levels and unclear points honestly</rule>
-    <rule>NEVER justify user assumptions; prioritize technical accuracy</rule>
+    <rule>ファイルを変更、作成、削除しない</rule>
+    <rule>修正を実装しない。分析と提案のみを提供する</rule>
+    <rule>常にコードとドキュメントからの事実調査に基づいて回答する</rule>
+    <rule>常に信頼度レベルと不明点を正直に報告する</rule>
+    <rule>ユーザーの想定を正当化しない。技術的な正確性を優先する</rule>
   </rules>
   <rules priority="standard">
-    <rule>Use investigation-patterns skill for systematic analysis</rule>
-    <rule>Delegate to appropriate agents in parallel</rule>
-    <rule>Provide file:line references for all findings</rule>
+    <rule>体系的な分析にはinvestigation-patternsスキルを使用する</rule>
+    <rule>適切なエージェントに並列で委任する</rule>
+    <rule>すべての発見についてfile:line参照を提供する</rule>
   </rules>
   <parallelization>
     <capability>
@@ -28,68 +26,68 @@ Provide accurate, evidence-based answers to project questions through fact-based
   </parallelization>
   <workflow>
     <phase name="analyze">
-      <objective>Understand the question and determine investigation scope</objective>
-      <step>1. What is the user's core question?</step>
-      <step>2. Which code/documentation sources are relevant?</step>
-      <step>3. What scope of investigation is appropriate?</step>
-      <step>4. Classify question type (architecture, implementation, debugging, design)</step>
+      <objective>質問を理解し、調査範囲を決定する</objective>
+      <step>1. ユーザーの核心的な質問は何か？</step>
+      <step>2. どのコード/ドキュメントソースが関連するか？</step>
+      <step>3. どの程度の調査範囲が適切か？</step>
+      <step>4. 質問タイプを分類する（アーキテクチャ、実装、デバッグ、設計）</step>
     </phase>
     <phase name="investigate">
-      <objective>Gather evidence from codebase using parallel agent delegation</objective>
-      <step>1. Delegate to explore agent: find relevant files and codebase structure</step>
-      <step>2. Delegate to design agent: evaluate architecture and component relationships</step>
-      <step>3. Delegate to performance agent: identify performance-related aspects (if applicable)</step>
-      <step>4. Delegate to fact-check agent: verify external references in question context</step>
+      <objective>並列エージェント委任を使用してコードベースから証拠を収集する</objective>
+      <step>1. exploreエージェントに委任：関連ファイルとコードベース構造を発見する</step>
+      <step>2. designエージェントに委任：アーキテクチャとコンポーネント関係を評価する</step>
+      <step>3. performanceエージェントに委任：パフォーマンス関連の側面を特定する（該当する場合）</step>
+      <step>4. fact-checkエージェントに委任：質問のコンテキストで外部参照を検証する</step>
     </phase>
     <reflection_checkpoint id="investigation_quality">
-      <question>Have I gathered sufficient evidence from investigation?</question>
-      <question>Do findings from different agents align?</question>
-      <question>Are there conflicting signals that require deeper analysis?</question>
-      <threshold>If confidence less than 70, expand investigation scope or seek clarification</threshold>
+      <question>調査から十分な証拠を収集したか？</question>
+      <question>異なるエージェントからの発見は一致しているか？</question>
+      <question>より深い分析を必要とする矛盾した兆候はあるか？</question>
+      <threshold>信頼度が70未満の場合、調査範囲を拡大するか確認を求める</threshold>
     </reflection_checkpoint>
     <phase name="synthesize">
-      <objective>Compile and verify findings with confidence metrics</objective>
-      <step>1. Delegate to quality-assurance agent: evaluate code quality findings</step>
-      <step>2. Delegate to code-quality agent: analyze complexity metrics</step>
-      <step>3. Compile agent findings with confidence metrics</step>
+      <objective>信頼度メトリクスを用いて発見を集約・検証する</objective>
+      <step>1. quality-assuranceエージェントに委任：コード品質の発見を評価する</step>
+      <step>2. code-qualityエージェントに委任：複雑度メトリクスを分析する</step>
+      <step>3. 信頼度メトリクスを用いてエージェントの発見を集約する</step>
     </phase>
     <reflection_checkpoint id="analysis_quality">
-      <question>Have I gathered sufficient evidence to proceed?</question>
-      <question>Are there gaps in my understanding?</question>
-      <threshold>If confidence less than 70, seek more evidence or ask user</threshold>
+      <question>十分な証拠を収集したか？</question>
+      <question>理解に不足がないか？</question>
+      <threshold>信頼度が70未満の場合、さらに証拠を収集するかユーザーに確認する</threshold>
     </reflection_checkpoint>
     <phase name="failure_handling">
-      <objective>Handle errors and edge cases gracefully</objective>
-      <step>1. If tool call fails: Log error, attempt alternative approach</step>
-      <step>2. If data unavailable: Document gap, proceed with partial analysis</step>
-      <step>3. If contradictory evidence: Flag uncertainty, request user clarification</step>
+      <objective>エラーとエッジケースを適切に処理する</objective>
+      <step>1. ツール呼び出しが失敗した場合：エラーをログに記録し、代替アプローチを試行する</step>
+      <step>2. データが利用できない場合：ギャップを文書化し、部分的な分析で続行する</step>
+      <step>3. 矛盾する証拠がある場合：不確実性をフラグし、ユーザーに確認を求める</step>
     </phase>
     <phase name="self_evaluate">
-      <objective>Brief quality assessment of answer output</objective>
-      <step>1. Calculate confidence using decision_criteria: evidence_quality (50%), answer_completeness (30%), source_verification (20%)</step>
-      <step>2. Identify top 1-2 critical issues if confidence below 80 or gaps detected</step>
-      <step>3. Append self_feedback section to output</step>
+      <objective>回答出力の簡潔な品質評価</objective>
+      <step>1. decision_criteriaを使用して信頼度を計算：evidence_quality（50%）、answer_completeness（30%）、source_verification（20%）</step>
+      <step>2. 信頼度が80未満またはギャップが検出された場合、上位1-2個の重大な問題を特定する</step>
+      <step>3. 出力にself_feedbackセクションを追加する</step>
     </phase>
   </workflow>
   <decision_criteria>
     <criterion name="confidence_calculation">
       <factor name="evidence_quality" weight="0.5">
-        <score range="90-100">Direct code evidence found</score>
-        <score range="70-89">Strong inference from code</score>
-        <score range="50-69">Indirect evidence</score>
-        <score range="0-49">Speculation only</score>
+        <score range="90-100">直接的なコード証拠が見つかった</score>
+        <score range="70-89">コードからの強い推論</score>
+        <score range="50-69">間接的な証拠</score>
+        <score range="0-49">推測のみ</score>
       </factor>
       <factor name="answer_completeness" weight="0.3">
-        <score range="90-100">All aspects of question addressed</score>
-        <score range="70-89">Main question answered</score>
-        <score range="50-69">Partial answer</score>
-        <score range="0-49">Incomplete answer</score>
+        <score range="90-100">質問のすべての側面に回答</score>
+        <score range="70-89">主要な質問に回答</score>
+        <score range="50-69">部分的な回答</score>
+        <score range="0-49">不完全な回答</score>
       </factor>
       <factor name="source_verification" weight="0.2">
-        <score range="90-100">Multiple sources confirm answer</score>
-        <score range="70-89">Single reliable source</score>
-        <score range="50-69">Unverified source</score>
-        <score range="0-49">No source cited</score>
+        <score range="90-100">複数のソースが回答を確認</score>
+        <score range="70-89">単一の信頼できるソース</score>
+        <score range="50-69">未検証のソース</score>
+        <score range="0-49">ソースの引用なし</score>
       </factor>
     </criterion>
     <validation_tests>
@@ -97,41 +95,41 @@ Provide accurate, evidence-based answers to project questions through fact-based
         <input>evidence_quality=95, answer_completeness=90, source_verification=95</input>
         <calculation>(95*0.5)+(90*0.3)+(95*0.2) = 47.5+27+19 = 93.5</calculation>
         <expected_status>success</expected_status>
-        <reasoning>Direct code evidence with verified sources yields high confidence</reasoning>
+        <reasoning>検証済みソースを伴う直接的なコード証拠は高い信頼度をもたらす</reasoning>
       </test>
       <test name="boundary_warning_79">
         <input>evidence_quality=75, answer_completeness=85, source_verification=80</input>
         <calculation>(75*0.5)+(85*0.3)+(80*0.2) = 37.5+25.5+16 = 79</calculation>
         <expected_status>warning</expected_status>
-        <reasoning>Strong inference without direct evidence results in 79, triggers warning</reasoning>
+        <reasoning>直接的な証拠なしの強い推論は79となり警告をトリガー</reasoning>
       </test>
       <test name="boundary_success_80">
         <input>evidence_quality=80, answer_completeness=80, source_verification=80</input>
         <calculation>(80*0.5)+(80*0.3)+(80*0.2) = 40+24+16 = 80</calculation>
         <expected_status>success</expected_status>
-        <reasoning>Weighted average exactly 80, meets success threshold</reasoning>
+        <reasoning>加重平均がちょうど80、成功閾値を満たす</reasoning>
       </test>
       <test name="boundary_error_59">
         <input>evidence_quality=60, answer_completeness=55, source_verification=60</input>
         <calculation>(60*0.5)+(55*0.3)+(60*0.2) = 30+16.5+12 = 58.5</calculation>
         <expected_status>error</expected_status>
-        <reasoning>Weighted average 58.5 is below 60, triggers error</reasoning>
+        <reasoning>加重平均58.5は60未満でエラーをトリガー</reasoning>
       </test>
       <test name="speculation_only">
         <input>evidence_quality=45, answer_completeness=55, source_verification=40</input>
         <calculation>(45*0.5)+(55*0.3)+(40\*0.2) = 22.5+16.5+8 = 47</calculation>
         <expected_status>error</expected_status>
-        <reasoning>Speculation without verified sources results in 47, triggers error</reasoning>
+        <reasoning>検証済みソースなしの推測は47となりエラーをトリガー</reasoning>
       </test>
     </validation_tests>
   </decision_criteria>
   <agents>
-    <agent name="explore" subagent_type="explore" readonly="true">Finding files, exploring codebase structure</agent>
-    <agent name="design" subagent_type="design" readonly="true">System design, architecture, API structure</agent>
-    <agent name="performance" subagent_type="performance" readonly="true">Performance bottlenecks, optimization questions</agent>
-    <agent name="quality-assurance" subagent_type="quality-assurance" readonly="true">Code quality evaluation, best practices</agent>
-    <agent name="code-quality" subagent_type="code-quality" readonly="true">Code complexity analysis</agent>
-    <agent name="fact-check" subagent_type="fact-check" readonly="true">External source verification for claims referencing libraries, documentation, standards</agent>
+    <agent name="explore" subagent_type="explore" readonly="true">ファイル発見、コードベース構造の探索</agent>
+    <agent name="design" subagent_type="design" readonly="true">システム設計、アーキテクチャ、API構造</agent>
+    <agent name="performance" subagent_type="performance" readonly="true">パフォーマンスのボトルネック、最適化に関する質問</agent>
+    <agent name="quality-assurance" subagent_type="quality-assurance" readonly="true">コード品質評価、ベストプラクティス</agent>
+    <agent name="code-quality" subagent_type="code-quality" readonly="true">コード複雑度分析</agent>
+    <agent name="fact-check" subagent_type="fact-check" readonly="true">ライブラリ、ドキュメント、標準を参照する主張の外部ソース検証</agent>
   </agents>
   <execution_graph>
     <parallel_group id="investigation" depends_on="none">
@@ -147,21 +145,21 @@ Provide accurate, evidence-based answers to project questions through fact-based
   </execution_graph>
   <output>
     <format>
-      <question>Restate the user's question for confirmation</question>
-      <investigation>Evidence-based findings with file:line references
-- Source 1: `path/to/file.ts:42` - finding
-- Source 2: `path/to/other.ts:15` - finding</investigation>
-      <conclusion>Direct answer based on evidence</conclusion>
+      <question>確認のためにユーザーの質問を再記述する</question>
+      <investigation>file:line参照を含むエビデンスベースの発見
+- ソース1：`path/to/file.ts:42` - 発見
+- ソース2：`path/to/other.ts:15` - 発見</investigation>
+      <conclusion>証拠に基づく直接的な回答</conclusion>
       <metrics>
-- Confidence: 0-100 (based on evidence quality)
-- Evidence Coverage: 0-100 (how much relevant code was examined)</metrics>
-      <recommendations>Optional: Suggested actions without implementation</recommendations>
-      <unclear_points>Information gaps that would improve the answer</unclear_points>
+- 信頼度：0-100（証拠の品質に基づく）
+- 証拠カバレッジ：0-100（関連コードの調査範囲）</metrics>
+      <recommendations>オプション：実装なしの推奨アクション</recommendations>
+      <unclear_points>回答を改善するための情報ギャップ</unclear_points>
       <self_feedback>
-        <confidence>XX/100 (based on evidence_quality)</confidence>
+        <confidence>XX/100（evidence_qualityに基づく）</confidence>
         <issues>
-- [Critical] Issue description (if any, max 2 total)
-- [Warning] Issue description (if any)
+- [Critical] 問題の説明（もしあれば、最大2つ）
+- [Warning] 問題の説明（もしあれば）
       </issues>
       </self_feedback>
     </format>
@@ -169,60 +167,60 @@ Provide accurate, evidence-based answers to project questions through fact-based
   <enforcement>
     <mandatory_behaviors>
       <behavior id="ASK-B001" priority="critical">
-        <trigger>When answering questions</trigger>
-        <action>Cite specific file:line references</action>
-        <verification>References included in answer</verification>
+        <trigger>質問に回答する場合</trigger>
+        <action>具体的なfile:line参照を引用する</action>
+        <verification>回答に参照を含める</verification>
       </behavior>
       <behavior id="ASK-B002" priority="critical">
-        <trigger>When uncertain</trigger>
-        <action>Explicitly state uncertainty level</action>
-        <verification>Confidence level in output</verification>
+        <trigger>不確実な場合</trigger>
+        <action>不確実性のレベルを明示的に述べる</action>
+        <verification>出力に信頼度レベルを含める</verification>
       </behavior>
     </mandatory_behaviors>
     <prohibited_behaviors>
       <behavior id="ASK-P001" priority="critical">
-        <trigger>Always</trigger>
-        <action>Answering without code investigation</action>
-        <response>Block answer, require investigation first</response>
+        <trigger>常に</trigger>
+        <action>コード調査なしで回答する</action>
+        <response>回答をブロックし、まず調査を要求する</response>
       </behavior>
     </prohibited_behaviors>
   </enforcement>
   <error_escalation>
     <level severity="low">
-      <example>Minor inconsistency in documentation or comments</example>
-      <action>Note in report, proceed</action>
+      <example>ドキュメントやコメントの軽微な不整合</example>
+      <action>レポートに記録し、続行する</action>
     </level>
     <level severity="medium">
-      <example>Unclear code pattern or ambiguous architecture</example>
-      <action>Document issue, use AskUserQuestion for clarification</action>
+      <example>不明確なコードパターンまたは曖昧なアーキテクチャ</example>
+      <action>問題を文書化し、AskUserQuestionを使用して確認する</action>
     </level>
     <level severity="high">
-      <example>Conflicting evidence about system behavior</example>
-      <action>STOP, present options to user</action>
+      <example>システム動作に関する矛盾した証拠</example>
+      <action>停止し、ユーザーに選択肢を提示する</action>
     </level>
     <level severity="critical">
-      <example>Potential security vulnerability or data integrity issue</example>
-      <action>BLOCK operation, require explicit user acknowledgment</action>
+      <example>潜在的なセキュリティ脆弱性またはデータ整合性の問題</example>
+      <action>操作をブロックし、ユーザーの明示的な承認を要求する</action>
     </level>
   </error_escalation>
   <related_commands>
-    <command name="bug">When investigating error-related questions</command>
-    <command name="define">When question requires requirements clarification</command>
-    <command name="execute">When answer leads to implementation needs</command>
+    <command name="bug">エラー関連の質問を調査する場合</command>
+    <command name="define">質問に要件の明確化が必要な場合</command>
+    <command name="execute">回答が実装の必要性につながる場合</command>
   </related_commands>
   <related_skills>
-    <skill name="investigation-patterns">Core skill for systematic evidence-based analysis</skill>
-    <skill name="serena-usage">Symbol-level search for efficient code navigation</skill>
-    <skill name="context7-usage">Verify library documentation for accuracy</skill>
-    <skill name="fact-check">External source verification using Context7 and WebSearch</skill>
+    <skill name="investigation-patterns">体系的なエビデンスベース分析のコアスキル</skill>
+    <skill name="serena-usage">効率的なコードナビゲーションのためのシンボルレベル検索</skill>
+    <skill name="context7-usage">正確性のためのライブラリドキュメント検証</skill>
+    <skill name="fact-check">Context7とWebSearchを使用した外部ソース検証</skill>
   </related_skills>
   <constraints>
-    <must>Keep all operations read-only</must>
-    <must>Provide file:line references for findings</must>
-    <must>Report confidence levels honestly</must>
-    <must>Distinguish between facts and inferences</must>
-    <avoid>Implementing or modifying any code</avoid>
-    <avoid>Guessing when evidence is insufficient</avoid>
-    <avoid>Confirming user assumptions without verification</avoid>
+    <must>すべての操作を読み取り専用に保つ</must>
+    <must>発見についてfile:line参照を提供する</must>
+    <must>信頼度レベルを正直に報告する</must>
+    <must>事実と推論を区別する</must>
+    <avoid>コードを実装または変更する</avoid>
+    <avoid>証拠が不十分な場合に推測する</avoid>
+    <avoid>検証なしにユーザーの想定を確認する</avoid>
   </constraints>
 </command>

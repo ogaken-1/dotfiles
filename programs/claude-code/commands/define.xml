@@ -1,187 +1,185 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <command>
-  <purpose>
-Conduct detailed requirements definition before implementation, clarifying technical constraints, design policies, and specifications.
-</purpose>
+  <purpose>実装前に詳細な要件定義を行い、技術的制約、設計方針、仕様を明確にする。</purpose>
   <rules priority="critical">
-    <rule>Never modify, create, or delete files</rule>
-    <rule>Never implement code; requirements definition only</rule>
-    <rule>Clearly identify technically impossible requests</rule>
-    <rule>Prioritize technical validity over user preferences</rule>
-    <rule>Technical evidence over speculation</rule>
+    <rule>ファイルを変更、作成、削除しない</rule>
+    <rule>コードを実装しない。要件定義のみ</rule>
+    <rule>技術的に不可能な要求を明確に特定する</rule>
+    <rule>ユーザーの希望より技術的妥当性を優先する</rule>
+    <rule>推測より技術的証拠</rule>
   </rules>
   <rules priority="standard">
-    <rule>Use requirements-definition skill for methodology</rule>
-    <rule>Delegate investigations to sub-agents</rule>
-    <rule>Ask questions without limit until requirements are clear</rule>
-    <rule>Investigate and question before concluding</rule>
-    <rule>Always include a (Recommended) option when presenting choices via AskUserQuestion</rule>
+    <rule>方法論にはrequirements-definitionスキルを使用する</rule>
+    <rule>調査をサブエージェントに委任する</rule>
+    <rule>要件が明確になるまで制限なく質問する</rule>
+    <rule>結論を出す前に調査して質問する</rule>
+    <rule>AskUserQuestionで選択肢を提示する際は常に（推奨）オプションを含める</rule>
   </rules>
   <workflow>
     <phase name="analyze">
-      <objective>Understand the user's request and identify technical constraints</objective>
+      <objective>ユーザーの要求を理解し、技術的制約を特定する</objective>
       <step number="1">
-        <action>Parse user request to extract core requirements</action>
-        <tool>Text analysis</tool>
-        <output>Initial requirements list</output>
+        <action>ユーザーの要求を解析してコア要件を抽出する</action>
+        <tool>テキスト分析</tool>
+        <output>初期要件リスト</output>
       </step>
       <step number="2">
-        <action>Identify technical constraints from request context</action>
-        <tool>Codebase knowledge</tool>
-        <output>Constraint list</output>
+        <action>要求のコンテキストから技術的制約を特定する</action>
+        <tool>コードベース知識</tool>
+        <output>制約リスト</output>
       </step>
       <step number="3">
-        <action>Determine design decisions requiring user input</action>
-        <tool>Requirements analysis</tool>
-        <output>Question candidates list</output>
+        <action>ユーザー入力が必要な設計決定を判断する</action>
+        <tool>要件分析</tool>
+        <output>質問候補リスト</output>
       </step>
       <step number="4">
-        <action>Assess technical feasibility at high level</action>
-        <tool>Technical knowledge</tool>
-        <output>Initial feasibility assessment</output>
+        <action>ハイレベルで技術的実現可能性を評価する</action>
+        <tool>技術知識</tool>
+        <output>初期実現可能性評価</output>
       </step>
     </phase>
     <phase name="investigate">
-      <objective>Gather evidence from codebase and analyze architecture impact</objective>
+      <objective>コードベースから証拠を収集し、アーキテクチャへの影響を分析する</objective>
       <step number="1">
-        <action>Delegate to explore agent: find relevant files and existing patterns</action>
-        <tool>Sub-agent delegation</tool>
-        <output>File paths, patterns, code samples</output>
+        <action>exploreエージェントに委任：関連ファイルと既存パターンを発見する</action>
+        <tool>サブエージェント委任</tool>
+        <output>ファイルパス、パターン、コードサンプル</output>
       </step>
       <step number="2">
-        <action>Delegate to design agent: evaluate architecture consistency and dependencies</action>
-        <tool>Sub-agent delegation</tool>
-        <output>Architecture analysis, dependency graph</output>
+        <action>designエージェントに委任：アーキテクチャの一貫性と依存関係を評価する</action>
+        <tool>サブエージェント委任</tool>
+        <output>アーキテクチャ分析、依存関係グラフ</output>
       </step>
       <step number="3">
-        <action>Delegate to database agent: analyze database design (if applicable)</action>
-        <tool>Sub-agent delegation</tool>
-        <output>Schema analysis, query patterns</output>
+        <action>databaseエージェントに委任：データベース設計を分析する（該当する場合）</action>
+        <tool>サブエージェント委任</tool>
+        <output>スキーマ分析、クエリパターン</output>
       </step>
       <step number="4">
-        <action>Delegate to general-purpose agent: analyze requirements and estimate effort</action>
-        <tool>Sub-agent delegation</tool>
-        <output>Effort estimation, risk analysis</output>
+        <action>general-purposeエージェントに委任：要件を分析し工数を見積もる</action>
+        <tool>サブエージェント委任</tool>
+        <output>工数見積もり、リスク分析</output>
       </step>
       <step number="5">
-        <action>Delegate to fact-check agent: verify external documentation and standard references</action>
-        <tool>Sub-agent delegation</tool>
-        <output>Verification report, flagged claims</output>
+        <action>fact-checkエージェントに委任：外部ドキュメントと標準参照を検証する</action>
+        <tool>サブエージェント委任</tool>
+        <output>検証レポート、フラグ付きの主張</output>
       </step>
     </phase>
     <reflection_checkpoint id="investigation_complete" after="investigate">
       <questions>
-        <question weight="0.4">Have all relevant files and patterns been identified?</question>
-        <question weight="0.3">Is the scope clearly understood?</question>
-        <question weight="0.3">Are there any technical blockers identified?</question>
+        <question weight="0.4">すべての関連ファイルとパターンが特定されたか？</question>
+        <question weight="0.3">スコープは明確に理解されているか？</question>
+        <question weight="0.3">技術的なブロッカーが特定されたか？</question>
       </questions>
       <threshold min="70" action="proceed">
-        <below_threshold>Expand investigation scope or ask user</below_threshold>
+        <below_threshold>調査範囲を拡大するかユーザーに確認する</below_threshold>
       </threshold>
     </reflection_checkpoint>
     <reflection_checkpoint id="analysis_quality">
-      <question>Have I gathered sufficient evidence to proceed?</question>
-      <question>Are there gaps in my understanding?</question>
-      <threshold>If confidence less than 70, seek more evidence or ask user</threshold>
+      <question>十分な証拠を収集したか？</question>
+      <question>理解に不足がないか？</question>
+      <threshold>信頼度が70未満の場合、さらに証拠を収集するかユーザーに確認する</threshold>
     </reflection_checkpoint>
     <phase name="clarify">
-      <objective>Resolve ambiguities through structured user interaction</objective>
+      <objective>構造化されたユーザーインタラクションを通じて曖昧さを解決する</objective>
       <step number="1">
-        <action>Score questions by: design branching, irreversibility, investigation impossibility, effort impact (1-5 each)</action>
-        <tool>Question scoring algorithm</tool>
-        <output>Prioritized question list</output>
+        <action>質問をスコアリング：設計分岐、不可逆性、調査不可能性、工数影響（各1-5）</action>
+        <tool>質問スコアリングアルゴリズム</tool>
+        <output>優先順位付けされた質問リスト</output>
       </step>
       <step number="2">
-        <action>Classify questions: spec confirmation, design choice, constraint, scope, priority</action>
-        <tool>Question taxonomy</tool>
-        <output>Categorized questions</output>
+        <action>質問を分類：仕様確認、設計選択、制約、スコープ、優先度</action>
+        <tool>質問分類</tool>
+        <output>カテゴリ分けされた質問</output>
       </step>
       <step number="3">
-        <action>Use AskUserQuestion tool for all user interactions (2-4 structured options per question)</action>
+        <action>すべてのユーザーインタラクションにAskUserQuestionツールを使用する（質問ごとに2-4の構造化された選択肢）</action>
         <tool>AskUserQuestion</tool>
-        <output>User responses</output>
+        <output>ユーザーの回答</output>
       </step>
       <step number="4">
-        <action>For follow-up clarifications, continue using AskUserQuestion tool rather than plain text</action>
+        <action>フォローアップの確認には、プレーンテキストではなくAskUserQuestionツールを使い続ける</action>
         <tool>AskUserQuestion</tool>
-        <output>Additional user responses</output>
+        <output>追加のユーザー回答</output>
       </step>
       <step number="5">
-        <action>Present high-score questions first; do not proceed without clear answers</action>
-        <tool>Priority ordering</tool>
-        <output>Confirmed requirements</output>
+        <action>高スコアの質問を最初に提示する。明確な回答なしに進めない</action>
+        <tool>優先順位付け</tool>
+        <output>確認済み要件</output>
       </step>
     </phase>
     <phase name="verify">
-      <objective>Validate user decisions against technical evidence</objective>
+      <objective>技術的証拠に対してユーザーの決定を検証する</objective>
       <step number="1">
-        <action>Verify constraints from answers using agent findings</action>
-        <tool>Cross-reference analysis</tool>
-        <output>Validated constraints</output>
+        <action>エージェントの発見を使用して回答からの制約を検証する</action>
+        <tool>クロスリファレンス分析</tool>
+        <output>検証済み制約</output>
       </step>
       <step number="2">
-        <action>Check implementations related to chosen approach</action>
-        <tool>Code analysis</tool>
-        <output>Implementation validation</output>
+        <action>選択されたアプローチに関連する実装を確認する</action>
+        <tool>コード分析</tool>
+        <output>実装の検証</output>
       </step>
     </phase>
     <phase name="failure_handling">
-      <objective>Handle errors and edge cases gracefully</objective>
+      <objective>エラーとエッジケースを適切に処理する</objective>
       <step number="1">
-        <action>If tool call fails: Log error, attempt alternative approach</action>
-        <tool>Error handling</tool>
-        <output>Fallback results or error report</output>
+        <action>ツール呼び出しが失敗した場合：エラーをログに記録し、代替アプローチを試行する</action>
+        <tool>エラー処理</tool>
+        <output>フォールバック結果またはエラーレポート</output>
       </step>
       <step number="2">
-        <action>If data unavailable: Document gap, proceed with partial analysis</action>
-        <tool>Gap documentation</tool>
-        <output>Partial analysis with gaps noted</output>
+        <action>データが利用できない場合：ギャップを文書化し、部分的な分析で続行する</action>
+        <tool>ギャップ文書化</tool>
+        <output>ギャップを記録した部分的な分析</output>
       </step>
       <step number="3">
-        <action>If contradictory evidence: Flag uncertainty, request user clarification</action>
-        <tool>Conflict resolution</tool>
-        <output>Clarification questions</output>
+        <action>矛盾する証拠がある場合：不確実性をフラグし、ユーザーに確認を求める</action>
+        <tool>競合解決</tool>
+        <output>確認のための質問</output>
       </step>
     </phase>
     <phase name="document">
-      <objective>Create comprehensive requirements documentation and task breakdown</objective>
+      <objective>包括的な要件ドキュメントとタスク分解を作成する</objective>
       <step number="1">
-        <action>Create comprehensive requirements document</action>
-        <tool>Requirements template</tool>
-        <output>Complete requirements specification</output>
+        <action>包括的な要件ドキュメントを作成する</action>
+        <tool>要件テンプレート</tool>
+        <output>完全な要件仕様</output>
       </step>
       <step number="2">
-        <action>Break down tasks for /execute handoff</action>
-        <tool>Task decomposition</tool>
-        <output>Phased task list with dependencies</output>
+        <action>/executeへのハンドオフのためにタスクを分解する</action>
+        <tool>タスク分解</tool>
+        <output>依存関係を含むフェーズ別タスクリスト</output>
       </step>
     </phase>
     <phase name="self_evaluate">
-      <objective>Brief quality assessment of requirements output</objective>
+      <objective>要件出力の簡潔な品質評価</objective>
       <step number="1">
-        <action>Calculate confidence using decision_criteria: requirement_clarity (40%), technical_feasibility (30%), stakeholder_alignment (30%)</action>
-        <tool>Decision criteria evaluation</tool>
-        <output>Confidence score</output>
+        <action>decision_criteriaを使用して信頼度を計算：requirement_clarity（40%）、technical_feasibility（30%）、stakeholder_alignment（30%）</action>
+        <tool>決定基準評価</tool>
+        <output>信頼度スコア</output>
       </step>
       <step number="2">
-        <action>Identify top 1-2 critical issues if confidence below 80 or requirement gaps detected</action>
-        <tool>Gap analysis</tool>
-        <output>Issue list</output>
+        <action>信頼度が80未満または要件ギャップが検出された場合、上位1-2個の重大な問題を特定する</action>
+        <tool>ギャップ分析</tool>
+        <output>問題リスト</output>
       </step>
       <step number="3">
-        <action>Append self_feedback section to output</action>
-        <tool>Output formatting</tool>
-        <output>Self-feedback section</output>
+        <action>出力にself_feedbackセクションを追加する</action>
+        <tool>出力フォーマット</tool>
+        <output>セルフフィードバックセクション</output>
       </step>
     </phase>
   </workflow>
   <agents>
-    <agent name="design" subagent_type="design" readonly="true">Architecture consistency, dependency analysis, API design</agent>
-    <agent name="database" subagent_type="database" readonly="true">Database design and optimization</agent>
-    <agent name="general-purpose" subagent_type="general-purpose" readonly="true">Requirements analysis, estimation, dependency analysis</agent>
-    <agent name="explore" subagent_type="explore" readonly="true">Finding relevant files and existing patterns</agent>
-    <agent name="validator" subagent_type="validator" readonly="true">Cross-validation and consensus verification</agent>
-    <agent name="fact-check" subagent_type="fact-check" readonly="true">External source verification for claims referencing libraries, documentation, standards</agent>
+    <agent name="design" subagent_type="design" readonly="true">アーキテクチャの一貫性、依存関係分析、API設計</agent>
+    <agent name="database" subagent_type="database" readonly="true">データベース設計と最適化</agent>
+    <agent name="general-purpose" subagent_type="general-purpose" readonly="true">要件分析、見積もり、依存関係分析</agent>
+    <agent name="explore" subagent_type="explore" readonly="true">関連ファイルと既存パターンの発見</agent>
+    <agent name="validator" subagent_type="validator" readonly="true">クロスバリデーションとコンセンサス検証</agent>
+    <agent name="fact-check" subagent_type="fact-check" readonly="true">ライブラリ、ドキュメント、標準を参照する主張の外部ソース検証</agent>
   </agents>
   <execution_graph>
     <parallel_group id="investigation" depends_on="none">
@@ -195,10 +193,10 @@ Conduct detailed requirements definition before implementation, clarifying techn
     </parallel_group>
   </execution_graph>
   <delegation>
-    <requirement>Scope overview</requirement>
-    <requirement>Target file paths</requirement>
-    <requirement>Explicit edit prohibition</requirement>
-    <requirement>Sub-agents must use AskUserQuestion tool for any user interactions</requirement>
+    <requirement>スコープの概要</requirement>
+    <requirement>対象ファイルパス</requirement>
+    <requirement>明示的な編集禁止</requirement>
+    <requirement>サブエージェントはユーザーインタラクションにAskUserQuestionツールを使用する必要がある</requirement>
   </delegation>
   <parallelization>
     <capability>
@@ -214,22 +212,22 @@ Conduct detailed requirements definition before implementation, clarifying techn
   <decision_criteria>
     <criterion name="confidence_calculation">
       <factor name="requirement_clarity" weight="0.4">
-        <score range="90-100">All requirements clear and documented</score>
-        <score range="70-89">Core requirements clear</score>
-        <score range="50-69">Some ambiguity remains</score>
-        <score range="0-49">Many unclear requirements</score>
+        <score range="90-100">すべての要件が明確で文書化済み</score>
+        <score range="70-89">コア要件が明確</score>
+        <score range="50-69">一部曖昧さが残る</score>
+        <score range="0-49">不明確な要件が多い</score>
       </factor>
       <factor name="technical_feasibility" weight="0.3">
-        <score range="90-100">Feasibility confirmed with evidence</score>
-        <score range="70-89">Likely feasible</score>
-        <score range="50-69">Uncertain feasibility</score>
-        <score range="0-49">Likely infeasible</score>
+        <score range="90-100">証拠で実現可能性を確認</score>
+        <score range="70-89">おそらく実現可能</score>
+        <score range="50-69">実現可能性が不確実</score>
+        <score range="0-49">おそらく実現不可能</score>
       </factor>
       <factor name="stakeholder_alignment" weight="0.3">
-        <score range="90-100">All questions answered by user</score>
-        <score range="70-89">Most questions answered</score>
-        <score range="50-69">Some questions pending</score>
-        <score range="0-49">Many questions unanswered</score>
+        <score range="90-100">すべての質問にユーザーが回答済み</score>
+        <score range="70-89">ほとんどの質問に回答済み</score>
+        <score range="50-69">一部の質問が保留中</score>
+        <score range="0-49">未回答の質問が多い</score>
       </factor>
     </criterion>
     <validation_tests>
@@ -237,127 +235,127 @@ Conduct detailed requirements definition before implementation, clarifying techn
         <input>requirement_clarity=95, technical_feasibility=90, stakeholder_alignment=95</input>
         <calculation>(95*0.4)+(90*0.3)+(95*0.3) = 38+27+28.5 = 93.5</calculation>
         <expected_status>success</expected_status>
-        <reasoning>All requirements documented with confirmed feasibility yields high confidence</reasoning>
+        <reasoning>実現可能性が確認されたすべての文書化済み要件は高い信頼度をもたらす</reasoning>
       </test>
       <test name="boundary_warning_79">
         <input>requirement_clarity=80, technical_feasibility=75, stakeholder_alignment=80</input>
         <calculation>(80*0.4)+(75*0.3)+(80*0.3) = 32+22.5+24 = 78.5</calculation>
         <expected_status>warning</expected_status>
-        <reasoning>Core requirements clear but some questions pending results in 78.5, triggers warning</reasoning>
+        <reasoning>コア要件は明確だが一部の質問が保留中で、結果は78.5で警告をトリガー</reasoning>
       </test>
       <test name="boundary_success_80">
         <input>requirement_clarity=85, technical_feasibility=75, stakeholder_alignment=80</input>
         <calculation>(85*0.4)+(75*0.3)+(80*0.3) = 34+22.5+24 = 80.5</calculation>
         <expected_status>success</expected_status>
-        <reasoning>Weighted average 80.5 meets success threshold</reasoning>
+        <reasoning>加重平均80.5、成功閾値を満たす</reasoning>
       </test>
       <test name="boundary_error_59">
         <input>requirement_clarity=60, technical_feasibility=55, stakeholder_alignment=60</input>
         <calculation>(60*0.4)+(55*0.3)+(60*0.3) = 24+16.5+18 = 58.5</calculation>
         <expected_status>error</expected_status>
-        <reasoning>Weighted average 58.5 is below 60, triggers error</reasoning>
+        <reasoning>加重平均58.5は60未満でエラーをトリガー</reasoning>
       </test>
       <test name="ambiguous_requirements">
         <input>requirement_clarity=50, technical_feasibility=55, stakeholder_alignment=45</input>
         <calculation>(50*0.4)+(55*0.3)+(45\*0.3) = 20+16.5+13.5 = 50</calculation>
         <expected_status>error</expected_status>
-        <reasoning>Many unclear requirements with unanswered questions results in 50, triggers error</reasoning>
+        <reasoning>未回答の質問を伴う不明確な要件が多く50となりエラーをトリガー</reasoning>
       </test>
     </validation_tests>
   </decision_criteria>
   <enforcement>
     <mandatory_behaviors>
       <behavior id="DEF-B001" priority="critical">
-        <trigger>Before requirements documentation</trigger>
-        <action>Investigate existing codebase patterns</action>
-        <verification>Codebase analysis in output</verification>
+        <trigger>要件ドキュメント作成前</trigger>
+        <action>既存のコードベースパターンを調査する</action>
+        <verification>出力にコードベース分析を含める</verification>
       </behavior>
       <behavior id="DEF-B002" priority="critical">
-        <trigger>For design decisions</trigger>
-        <action>Use AskUserQuestion tool with structured options</action>
-        <verification>User responses recorded</verification>
+        <trigger>設計決定の場合</trigger>
+        <action>構造化された選択肢とともにAskUserQuestionツールを使用する</action>
+        <verification>ユーザーの回答を記録する</verification>
       </behavior>
     </mandatory_behaviors>
     <prohibited_behaviors>
       <behavior id="DEF-P001" priority="critical">
-        <trigger>Always</trigger>
-        <action>Modifying or creating code files</action>
-        <response>Block operation, this is read-only command</response>
+        <trigger>常に</trigger>
+        <action>コードファイルを変更または作成する</action>
+        <response>操作をブロック、これは読み取り専用コマンド</response>
       </behavior>
       <behavior id="DEF-P002" priority="critical">
-        <trigger>Always</trigger>
-        <action>Proceeding without answering critical questions</action>
-        <response>Block operation, require clarification first</response>
+        <trigger>常に</trigger>
+        <action>重要な質問に回答せずに進める</action>
+        <response>操作をブロック、まず確認を要求する</response>
       </behavior>
     </prohibited_behaviors>
   </enforcement>
   <output>
     <format>
       <requirements_document>
-        <summary>One-sentence request, background, expected outcomes</summary>
-        <current_state>Existing system, tech stack</current_state>
-        <functional_requirements>FR-001 format (mandatory/optional)</functional_requirements>
-        <non_functional_requirements>Performance, security, maintainability</non_functional_requirements>
-        <technical_specifications>Design policies, impact scope, decisions</technical_specifications>
+        <summary>一文の要求、背景、期待される成果</summary>
+        <current_state>既存システム、技術スタック</current_state>
+        <functional_requirements>FR-001形式（必須/任意）</functional_requirements>
+        <non_functional_requirements>パフォーマンス、セキュリティ、保守性</non_functional_requirements>
+        <technical_specifications>設計方針、影響範囲、決定事項</technical_specifications>
         <metrics>
           <metric name="feasibility">0-100</metric>
           <metric name="objectivity">0-100</metric>
         </metrics>
-        <constraints>Technical, operational</constraints>
-        <test_requirements>Unit, integration, acceptance criteria</test_requirements>
-        <outstanding_issues>Unresolved questions</outstanding_issues>
+        <constraints>技術的、運用上の制約</constraints>
+        <test_requirements>ユニット、結合、受け入れ基準</test_requirements>
+        <outstanding_issues>未解決の質問</outstanding_issues>
       </requirements_document>
       <task_breakdown>
-        <dependency_graph>Task dependencies visualization</dependency_graph>
-        <phased_tasks>Files, overview, dependencies per phase</phased_tasks>
-        <execute_handoff>Decisions, references, constraints</execute_handoff>
+        <dependency_graph>タスク依存関係の可視化</dependency_graph>
+        <phased_tasks>フェーズごとのファイル、概要、依存関係</phased_tasks>
+        <execute_handoff>決定事項、参照、制約</execute_handoff>
       </task_breakdown>
       <self_feedback>
-        <confidence>XX/100 (based on requirement_clarity)</confidence>
+        <confidence>XX/100（requirement_clarityに基づく）</confidence>
         <issues>
-- [Critical] Issue description (if any, max 2 total)
-- [Warning] Issue description (if any)
+- [Critical] 問題の説明（もしあれば、最大2つ）
+- [Warning] 問題の説明（もしあれば）
       </issues>
       </self_feedback>
     </format>
   </output>
   <error_escalation>
     <level severity="low">
-      <example>Minor ambiguity in non-critical feature detail</example>
-      <action>Note in report, proceed</action>
+      <example>重要でない機能の詳細における軽微な曖昧さ</example>
+      <action>レポートに記録し、続行する</action>
     </level>
     <level severity="medium">
-      <example>Unclear requirement or ambiguous scope</example>
-      <action>Document issue, use AskUserQuestion for clarification</action>
+      <example>不明確な要件または曖昧なスコープ</example>
+      <action>問題を文書化し、AskUserQuestionを使用して確認する</action>
     </level>
     <level severity="high">
-      <example>Technically infeasible request or breaking change</example>
-      <action>STOP, present options to user</action>
+      <example>技術的に実現不可能な要求または破壊的変更</example>
+      <action>停止し、ユーザーに選択肢を提示する</action>
     </level>
     <level severity="critical">
-      <example>Request violates security policy or data integrity</example>
-      <action>BLOCK operation, require explicit user acknowledgment</action>
+      <example>セキュリティポリシーまたはデータ整合性に違反する要求</example>
+      <action>操作をブロックし、ユーザーの明示的な承認を要求する</action>
     </level>
   </error_escalation>
   <related_commands>
-    <command name="ask">When requirements raise technical questions</command>
-    <command name="bug">When defining fix requirements for known issues</command>
-    <command name="execute">Handoff point after requirements are defined</command>
+    <command name="ask">要件で技術的な質問が発生した場合</command>
+    <command name="bug">既知の問題の修正要件を定義する場合</command>
+    <command name="execute">要件定義後のハンドオフポイント</command>
   </related_commands>
   <related_skills>
-    <skill name="requirements-definition">Core methodology for specification</skill>
-    <skill name="investigation-patterns">Evidence gathering for feasibility</skill>
-    <skill name="serena-usage">Check existing patterns and memories</skill>
-    <skill name="fact-check">External source verification using Context7 and WebSearch</skill>
+    <skill name="requirements-definition">仕様のコア方法論</skill>
+    <skill name="investigation-patterns">実現可能性のための証拠収集</skill>
+    <skill name="serena-usage">既存パターンとメモリを確認する</skill>
+    <skill name="fact-check">Context7とWebSearchを使用した外部ソース検証</skill>
   </related_skills>
   <constraints>
-    <must>Keep all operations read-only</must>
-    <must>Delegate detailed investigation to sub-agents</must>
-    <must>Use AskUserQuestion tool for structured user interactions</must>
-    <must>Present questions before making assumptions</must>
-    <avoid>Implementing or modifying code</avoid>
-    <avoid>Justifying user requests over technical validity</avoid>
-    <avoid>Proceeding without clear answers to critical questions</avoid>
-    <avoid>Using plain text output for questions instead of AskUserQuestion tool</avoid>
+    <must>すべての操作を読み取り専用に保つ</must>
+    <must>詳細な調査をサブエージェントに委任する</must>
+    <must>構造化されたユーザーインタラクションにAskUserQuestionツールを使用する</must>
+    <must>想定を立てる前に質問を提示する</must>
+    <avoid>コードを実装または変更する</avoid>
+    <avoid>技術的妥当性よりユーザーの要求を正当化する</avoid>
+    <avoid>重要な質問への明確な回答なしに進める</avoid>
+    <avoid>AskUserQuestionツールの代わりにプレーンテキストで質問する</avoid>
   </constraints>
 </command>

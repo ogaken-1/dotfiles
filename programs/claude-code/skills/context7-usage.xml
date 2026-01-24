@@ -1,53 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <skill>
-  <purpose>
-  Provide patterns for effective use of Context7 MCP for retrieving up-to-date library documentation.
-</purpose>
+  <purpose>最新のライブラリドキュメントを取得するためのContext7 MCPの効果的な使用パターンを提供する。</purpose>
   <tools>
     <tool name="mcp__context7__resolve-library-id">
-      <description>Resolve package name to Context7-compatible library ID</description>
-      <param name="libraryName">Library name to search for</param>
-      <use_case>Must call before mcp__context7__get-library-docs unless ID is known</use_case>
-      <note>Returns list of matching libraries with IDs, trust scores, snippet counts</note>
+      <description>パッケージ名をContext7互換のライブラリIDに解決</description>
+      <param name="libraryName">検索するライブラリ名</param>
+      <use_case>IDが分かっていない場合、mcp__context7__get-library-docsの前に必ず呼び出す</use_case>
+      <note>マッチするライブラリのリスト（ID、信頼スコア、スニペット数を含む）を返す</note>
     </tool>
     <tool name="mcp__context7__get-library-docs">
-      <description>Fetch documentation for a specific library</description>
-      <param name="context7CompatibleLibraryID">Library ID from mcp__context7__resolve-library-id</param>
-      <param name="topic">Optional topic to focus on (e.g., "hooks", "routing")</param>
-      <param name="tokens">Max tokens to retrieve (default: 5000)</param>
-      <use_case>Retrieve up-to-date documentation snippets with code examples</use_case>
+      <description>特定のライブラリのドキュメントを取得</description>
+      <param name="context7CompatibleLibraryID">mcp__context7__resolve-library-idから取得したライブラリID</param>
+      <param name="topic">フォーカスするオプションのトピック（例: "hooks"、"routing"）</param>
+      <param name="tokens">取得する最大トークン数（デフォルト: 5000）</param>
+      <use_case>コード例を含む最新のドキュメントスニペットを取得</use_case>
     </tool>
   </tools>
   <concepts>
     <concept name="library_identifiers">
-      <description>Common Context7-compatible library IDs: React=/facebook/react, Next.js=/vercel/next.js, TypeScript=/microsoft/typescript, NixOS=/nixos/nixpkgs, Home Manager=/nix-community/home-manager</description>
+      <description>一般的なContext7互換ライブラリID: React=/facebook/react、Next.js=/vercel/next.js、TypeScript=/microsoft/typescript、NixOS=/nixos/nixpkgs、Home Manager=/nix-community/home-manager</description>
     </concept>
     <concept name="token_allocation">
-      <description>Quick lookup: 2000-3000 tokens; Standard queries: 5000 (default); Comprehensive topics: 8000-10000 tokens</description>
+      <description>クイック検索: 2000-3000トークン、標準クエリ: 5000（デフォルト）、包括的なトピック: 8000-10000トークン</description>
     </concept>
     <concept name="trust_score">
-      <description>Quality indicator (1-10); prefer libraries with scores 7+ for reliable documentation</description>
+      <description>品質指標（1-10）、信頼性の高いドキュメントにはスコア7以上のライブラリを優先</description>
     </concept>
     <concept name="snippet_count">
-      <description>Indicator of documentation completeness; higher counts suggest more comprehensive coverage</description>
+      <description>ドキュメントの完全性の指標、カウントが高いほどより包括的なカバレッジを示唆</description>
     </concept>
   </concepts>
   <patterns>
     <pattern name="specific_feature">
-      <description>Use topic parameter to narrow documentation focus and reduce token usage</description>
-      <example scenario="For authentication-related documentation">
+      <description>ドキュメントのフォーカスを絞り、トークン使用量を削減するためにtopicパラメータを使用</description>
+      <example scenario="認証関連のドキュメント">
         <call tool="mcp__context7__get-library-docs">
           <param name="context7CompatibleLibraryID">/supabase/supabase</param>
           <param name="topic">authentication</param>
         </call>
       </example>
-      <example scenario="For React hooks documentation">
+      <example scenario="React hooksのドキュメント">
         <call tool="mcp__context7__get-library-docs">
           <param name="context7CompatibleLibraryID">/facebook/react</param>
           <param name="topic">hooks</param>
         </call>
       </example>
-      <example scenario="For routing documentation">
+      <example scenario="ルーティングのドキュメント">
         <call tool="mcp__context7__get-library-docs">
           <param name="context7CompatibleLibraryID">/vercel/next.js</param>
           <param name="topic">routing</param>
@@ -55,28 +53,28 @@
       </example>
     </pattern>
     <pattern name="getting_started">
-      <description>Omit topic parameter for general overview and getting started documentation</description>
-      <example scenario="Get React overview">
+      <description>一般的な概要と入門ドキュメントにはtopicパラメータを省略</description>
+      <example scenario="Reactの概要を取得">
         <call tool="mcp__context7__get-library-docs">
           <param name="context7CompatibleLibraryID">/facebook/react</param>
         </call>
       </example>
     </pattern>
     <pattern name="api_reference">
-      <description>Use topic parameter with specific API names for focused reference documentation</description>
-      <example scenario="For specific React hook">
+      <description>フォーカスされたリファレンスドキュメントには特定のAPI名をtopicパラメータに使用</description>
+      <example scenario="特定のReact hook">
         <call tool="mcp__context7__get-library-docs">
           <param name="context7CompatibleLibraryID">/facebook/react</param>
           <param name="topic">useState</param>
         </call>
       </example>
-      <example scenario="For specific Next.js API">
+      <example scenario="特定のNext.js API">
         <call tool="mcp__context7__get-library-docs">
           <param name="context7CompatibleLibraryID">/vercel/next.js</param>
           <param name="topic">getServerSideProps</param>
         </call>
       </example>
-      <example scenario="For specific TypeScript utility type">
+      <example scenario="特定のTypeScriptユーティリティ型">
         <call tool="mcp__context7__get-library-docs">
           <param name="context7CompatibleLibraryID">/microsoft/typescript</param>
           <param name="topic">Partial</param>
@@ -84,144 +82,144 @@
       </example>
     </pattern>
     <pattern name="verify_usage">
-      <description>Verify codebase usage against latest documentation by combining Serena and Context7</description>
-      <example scenario="Verify useState usage against latest React docs">
-        <step order="1" description="Use Serena to find current library usage in codebase">
+      <description>SerenaとContext7を組み合わせて、コードベースの使用法を最新のドキュメントと照合</description>
+      <example scenario="useStateの使用法を最新のReactドキュメントと照合">
+        <step order="1" description="Serenaを使用してコードベース内の現在のライブラリ使用を検索">
           <call tool="mcp__serena__find_symbol">
             <param name="name_path_pattern">useState</param>
           </call>
         </step>
-        <step order="2" description="Use Context7 to get latest documentation">
+        <step order="2" description="Context7を使用して最新のドキュメントを取得">
           <call tool="mcp__context7__get-library-docs">
             <param name="context7CompatibleLibraryID">/facebook/react</param>
             <param name="topic">useState</param>
           </call>
         </step>
-        <step order="3" description="Compare current usage with documented best practices">
-          <note>Manual comparison step</note>
+        <step order="3" description="現在の使用法を文書化されたベストプラクティスと比較">
+          <note>手動比較ステップ</note>
         </step>
       </example>
     </pattern>
     <pattern name="update_dependencies">
-      <description>Plan dependency updates with API migration by checking latest documentation</description>
-      <example scenario="Plan Next.js migration">
-        <step order="1" description="Use Context7 to check latest API changes">
+      <description>最新のドキュメントを確認してAPIマイグレーションを伴う依存関係更新を計画</description>
+      <example scenario="Next.jsマイグレーションを計画">
+        <step order="1" description="Context7を使用して最新のAPI変更を確認">
           <call tool="mcp__context7__get-library-docs">
             <param name="context7CompatibleLibraryID">/vercel/next.js</param>
             <param name="topic">migration</param>
           </call>
         </step>
-        <step order="2" description="Use Serena to find all usages of changed APIs">
+        <step order="2" description="Serenaを使用して変更されたAPIのすべての使用箇所を検索">
           <call tool="mcp__serena__find_referencing_symbols">
             <param name="name_path">getStaticProps</param>
             <param name="relative_path">src</param>
           </call>
         </step>
-        <step order="3" description="Plan migration based on documentation">
-          <note>Manual planning step based on documentation analysis</note>
+        <step order="3" description="ドキュメントに基づいてマイグレーションを計画">
+          <note>ドキュメント分析に基づく手動計画ステップ</note>
         </step>
       </example>
     </pattern>
     <decision_tree name="tool_selection">
-      <question>What type of operation is needed?</question>
-      <branch condition="Library name unknown">Use mcp__context7__resolve-library-id to find library</branch>
-      <branch condition="Library ID known">Use mcp__context7__get-library-docs directly</branch>
-      <branch condition="Specific API/feature">Use mcp__context7__get-library-docs with topic parameter</branch>
-      <branch condition="General overview">Use mcp__context7__get-library-docs without topic</branch>
-      <branch condition="Quick lookup">Use mcp__context7__get-library-docs with 2000-3000 tokens</branch>
-      <branch condition="Comprehensive search">Use mcp__context7__get-library-docs with 8000-10000 tokens</branch>
+      <question>どのような操作が必要ですか？</question>
+      <branch condition="ライブラリ名が不明">mcp__context7__resolve-library-idを使用してライブラリを検索</branch>
+      <branch condition="ライブラリIDが既知">mcp__context7__get-library-docsを直接使用</branch>
+      <branch condition="特定のAPI/機能">topicパラメータ付きでmcp__context7__get-library-docsを使用</branch>
+      <branch condition="一般的な概要">topicなしでmcp__context7__get-library-docsを使用</branch>
+      <branch condition="クイック検索">2000-3000トークンでmcp__context7__get-library-docsを使用</branch>
+      <branch condition="包括的な検索">8000-10000トークンでmcp__context7__get-library-docsを使用</branch>
     </decision_tree>
   </patterns>
   <anti_patterns>
     <avoid name="skipping_resolution">
-      <description>Calling mcp__context7__get-library-docs without resolving library ID first</description>
-      <instead>Always call mcp__context7__resolve-library-id to get the correct Context7-compatible library ID</instead>
+      <description>最初にライブラリIDを解決せずにmcp__context7__get-library-docsを呼び出す</description>
+      <instead>正しいContext7互換ライブラリIDを取得するために常にmcp__context7__resolve-library-idを呼び出す</instead>
     </avoid>
     <avoid name="excessive_tokens">
-      <description>Requesting maximum tokens for simple queries</description>
-      <instead>Use specific topics and appropriate token limits (2000-3000 for quick lookups, 5000 for standard queries)</instead>
+      <description>簡単なクエリに最大トークンを要求</description>
+      <instead>特定のトピックと適切なトークン制限を使用（クイック検索には2000-3000、標準クエリには5000）</instead>
     </avoid>
     <avoid name="ignoring_trust_scores">
-      <description>Using libraries with low trust scores or snippet counts</description>
-      <instead>Prefer libraries with trust scores 7-10 and higher snippet counts for better documentation quality</instead>
+      <description>信頼スコアやスニペット数が低いライブラリを使用</description>
+      <instead>より良いドキュメント品質のために信頼スコア7-10とより高いスニペット数のライブラリを優先</instead>
     </avoid>
     <avoid name="wrong_library_name">
-      <description>Using incorrect or outdated library names (e.g., "react-query" vs "tanstack/query")</description>
-      <instead>Try alternative names or broader search terms if library not found</instead>
+      <description>不正確または古いライブラリ名を使用（例: "react-query"と"tanstack/query"）</description>
+      <instead>ライブラリが見つからない場合は、代替名またはより広い検索語を試す</instead>
     </avoid>
   </anti_patterns>
   <workflow>
     <phase name="identify">
-      <objective>Identify documentation needs</objective>
-      <step>1. Determine which library needs documentation</step>
-      <step>2. Check if library ID is known or needs resolution</step>
+      <objective>ドキュメントのニーズを特定</objective>
+      <step>1. ドキュメントが必要なライブラリを決定</step>
+      <step>2. ライブラリIDが既知か解決が必要かを確認</step>
     </phase>
     <phase name="resolve">
-      <objective>Resolve library identifier</objective>
-      <step>1. Use mcp__context7__resolve-library-id to find the library</step>
-      <step>2. Verify the resolved ID matches intended library</step>
+      <objective>ライブラリ識別子を解決</objective>
+      <step>1. mcp__context7__resolve-library-idを使用してライブラリを検索</step>
+      <step>2. 解決されたIDが意図したライブラリと一致することを確認</step>
     </phase>
     <phase name="fetch">
-      <objective>Fetch relevant documentation</objective>
-      <step>1. Use mcp__context7__get-library-docs with resolved ID</step>
-      <step>2. Specify topic if known for focused results</step>
-      <step>3. Adjust tokens parameter for detail level</step>
+      <objective>関連するドキュメントを取得</objective>
+      <step>1. 解決されたIDでmcp__context7__get-library-docsを使用</step>
+      <step>2. フォーカスされた結果のために既知の場合はtopicを指定</step>
+      <step>3. 詳細レベルに応じてtokensパラメータを調整</step>
     </phase>
   </workflow>
   <best_practices>
-    <practice priority="critical">Always resolve library ID before fetching documentation</practice>
-    <practice priority="critical">Prefer libraries with trust scores 7-10 for better documentation quality</practice>
-    <practice priority="high">Use specific topics to reduce token usage and increase relevance</practice>
-    <practice priority="high">Check snippet count as indicator of documentation completeness</practice>
-    <practice priority="medium">Use versioned IDs when available for specific version documentation</practice>
+    <practice priority="critical">ドキュメントを取得する前に常にライブラリIDを解決</practice>
+    <practice priority="critical">より良いドキュメント品質のために信頼スコア7-10のライブラリを優先</practice>
+    <practice priority="high">トークン使用量を削減し関連性を高めるために特定のトピックを使用</practice>
+    <practice priority="high">ドキュメントの完全性の指標としてスニペット数を確認</practice>
+    <practice priority="medium">特定バージョンのドキュメントには利用可能な場合はバージョン付きIDを使用</practice>
   </best_practices>
   <rules priority="critical">
-    <rule>Always resolve library ID before fetching documentation</rule>
-    <rule>Verify trust score is 7 or higher before using library documentation</rule>
+    <rule>ドキュメントを取得する前に常にライブラリIDを解決</rule>
+    <rule>ライブラリドキュメントを使用する前に信頼スコアが7以上であることを確認</rule>
   </rules>
   <rules priority="standard">
-    <rule>Use specific topics to reduce token usage</rule>
-    <rule>Check snippet count for documentation quality indicators</rule>
-    <rule>Use versioned IDs when available for specific versions</rule>
-    <rule>Combine with Serena for codebase verification workflows</rule>
+    <rule>トークン使用量を削減するために特定のトピックを使用</rule>
+    <rule>ドキュメント品質指標としてスニペット数を確認</rule>
+    <rule>特定バージョンには利用可能な場合はバージョン付きIDを使用</rule>
+    <rule>コードベース検証ワークフローにはSerenaと組み合わせる</rule>
   </rules>
   <error_escalation>
     <level severity="low">
-      <example>Library not found with exact name</example>
-      <action>Note in report, try alternative names, proceed</action>
+      <example>正確な名前でライブラリが見つからない</example>
+      <action>レポートに記載し、代替名を試し、続行</action>
     </level>
     <level severity="medium">
-      <example>Documentation not available for topic</example>
-      <action>Document issue, use AskUserQuestion for clarification</action>
+      <example>トピックのドキュメントが利用できない</example>
+      <action>問題を文書化し、AskUserQuestionで明確化を求める</action>
     </level>
     <level severity="high">
-      <example>Context7 service unavailable</example>
-      <action>STOP, present options to user</action>
+      <example>Context7サービスが利用不可</example>
+      <action>停止し、ユーザーに選択肢を提示</action>
     </level>
     <level severity="critical">
-      <example>Conflicting documentation versions</example>
-      <action>BLOCK operation, require explicit user acknowledgment</action>
+      <example>ドキュメントバージョンの矛盾</example>
+      <action>操作をブロックし、明示的なユーザー確認を要求</action>
     </level>
   </error_escalation>
   <related_agents>
-    <agent name="design">Uses Context7 for architecture documentation and API design</agent>
-    <agent name="execute">Uses Context7 to verify latest library patterns before implementation</agent>
-    <agent name="bug">Uses Context7 to check for known issues and migration guides</agent>
-    <agent name="ask">Uses Context7 to answer library-specific questions</agent>
+    <agent name="design">アーキテクチャドキュメントとAPI設計にContext7を使用</agent>
+    <agent name="execute">実装前に最新のライブラリパターンを確認するためにContext7を使用</agent>
+    <agent name="bug">既知の問題とマイグレーションガイドを確認するためにContext7を使用</agent>
+    <agent name="ask">ライブラリ固有の質問に回答するためにContext7を使用</agent>
   </related_agents>
   <related_skills>
-    <skill name="serena-usage">Combines with Context7 for codebase verification workflows</skill>
-    <skill name="investigation-patterns">Uses Context7 for documentation research</skill>
-    <skill name="nix-ecosystem">Uses Context7 for NixOS and Home Manager documentation</skill>
-    <skill name="typescript-ecosystem">Uses Context7 for TypeScript and framework documentation</skill>
-    <skill name="golang-ecosystem">Uses Context7 for Go library documentation</skill>
-    <skill name="rust-ecosystem">Uses Context7 for Rust crate documentation</skill>
+    <skill name="serena-usage">コードベース検証ワークフローでContext7と組み合わせる</skill>
+    <skill name="investigation-patterns">ドキュメント調査にContext7を使用</skill>
+    <skill name="nix-ecosystem">NixOSとHome ManagerのドキュメントにContext7を使用</skill>
+    <skill name="typescript-ecosystem">TypeScriptとフレームワークのドキュメントにContext7を使用</skill>
+    <skill name="golang-ecosystem">GoライブラリのドキュメントにContext7を使用</skill>
+    <skill name="rust-ecosystem">RustクレートのドキュメントにContext7を使用</skill>
   </related_skills>
   <constraints>
-    <must>Verify library ID before fetching documentation</must>
-    <must>Specify topic when known for focused results</must>
-    <must>Check documentation version matches project requirements</must>
-    <avoid>Fetching documentation without verifying library identity</avoid>
-    <avoid>Using outdated documentation for current implementations</avoid>
+    <must>ドキュメント取得前にライブラリIDを確認</must>
+    <must>フォーカスされた結果のために既知の場合はtopicを指定</must>
+    <must>ドキュメントバージョンがプロジェクト要件と一致することを確認</must>
+    <avoid>ライブラリアイデンティティを確認せずにドキュメントを取得</avoid>
+    <avoid>現在の実装に古いドキュメントを使用</avoid>
   </constraints>
 </skill>

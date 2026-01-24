@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <command>
-  <purpose>
-Multi-faceted review of Claude Code's work within the same session, automatically selecting appropriate review mode and executing efficiently in parallel.
-</purpose>
+  <purpose>同一セッション内でClaude Codeの作業を多面的にレビューし、適切なレビューモードを自動選択して並列で効率的に実行する。</purpose>
   <rules priority="critical">
-    <rule>Launch all Task tools simultaneously in one message (timeout avoidance)</rule>
-    <rule>Auto-select mode based on previous command</rule>
-    <rule>Review only changed code in execute mode, not existing issues</rule>
-    <rule>Provide concrete fix proposals, not abstract theories</rule>
+    <rule>すべてのTaskツールを1つのメッセージで同時に起動する（タイムアウト回避）</rule>
+    <rule>前回のコマンドに基づいてモードを自動選択する</rule>
+    <rule>executeモードでは変更されたコードのみをレビューし、既存の問題はレビューしない</rule>
+    <rule>抽象的な理論ではなく具体的な修正提案を提供する</rule>
   </rules>
   <rules priority="standard">
-    <rule>Use execution-workflow skill for code review methodology</rule>
-    <rule>Check Serena memories for existing patterns</rule>
-    <rule>Target session operations, not git diff</rule>
+    <rule>コードレビュー方法論にはexecution-workflowスキルを使用する</rule>
+    <rule>既存パターンについてSerenaメモリを確認する</rule>
+    <rule>git diffではなくセッション操作を対象とする</rule>
   </rules>
   <parallelization>
     <capability>
@@ -27,68 +25,68 @@ Multi-faceted review of Claude Code's work within the same session, automaticall
   </parallelization>
   <workflow>
     <phase name="analyze">
-      <objective>Determine review scope and appropriate mode selection</objective>
-      <step>1. What was the previous command? (/define, /execute, /bug, /ask, other)</step>
-      <step>2. What files/work need to be reviewed?</step>
-      <step>3. Which agents should run in parallel?</step>
-      <step>4. What metrics are relevant for this mode?</step>
+      <objective>レビュー範囲と適切なモード選択を決定する</objective>
+      <step>1. 前回のコマンドは何だったか？（/define、/execute、/bug、/ask、その他）</step>
+      <step>2. どのファイル/作業をレビューする必要があるか？</step>
+      <step>3. どのエージェントを並列実行すべきか？</step>
+      <step>4. このモードに関連するメトリクスは何か？</step>
     </phase>
     <phase name="select">
-      <objective>Select review mode and configure appropriate agents</objective>
-      <step>1. Determine mode based on previous command</step>
-      <step>2. After /define: Execution plan feedback</step>
-      <step>3. After /execute: Work content feedback</step>
-      <step>4. After /bug: Investigation quality feedback</step>
-      <step>5. After /ask: Answer accuracy feedback</step>
-      <step>6. Other: Recent work feedback</step>
+      <objective>レビューモードを選択し、適切なエージェントを構成する</objective>
+      <step>1. 前回のコマンドに基づいてモードを決定する</step>
+      <step>2. /define後：実行計画のフィードバック</step>
+      <step>3. /execute後：作業内容のフィードバック</step>
+      <step>4. /bug後：調査品質のフィードバック</step>
+      <step>5. /ask後：回答精度のフィードバック</step>
+      <step>6. その他：最近の作業のフィードバック</step>
     </phase>
     <reflection_checkpoint id="analysis_quality">
-      <question>Have I gathered sufficient evidence to proceed?</question>
-      <question>Are there gaps in my understanding?</question>
-      <threshold>If confidence less than 70, seek more evidence or ask user</threshold>
+      <question>十分な証拠を収集したか？</question>
+      <question>理解に不足がないか？</question>
+      <threshold>信頼度が70未満の場合、さらに証拠を収集するかユーザーに確認する</threshold>
     </reflection_checkpoint>
     <phase name="execute">
-      <objective>Execute parallel review analysis across selected agents</objective>
-      <step>1. Launch all agents in parallel</step>
-      <step>2. Collect agent results</step>
+      <objective>選択されたエージェント間で並列レビュー分析を実行する</objective>
+      <step>1. すべてのエージェントを並列で起動する</step>
+      <step>2. エージェントの結果を収集する</step>
     </phase>
     <reflection_checkpoint id="review_quality">
-      <question>Did all agents complete successfully?</question>
-      <question>Is the feedback specific and actionable?</question>
-      <question>Have I assigned priority levels to all issues?</question>
-      <threshold>If confidence less than 70, gather additional context or re-run agents</threshold>
+      <question>すべてのエージェントが正常に完了したか？</question>
+      <question>フィードバックは具体的で実行可能か？</question>
+      <question>すべての問題に優先度レベルを割り当てたか？</question>
+      <threshold>信頼度が70未満の場合、追加のコンテキストを収集するかエージェントを再実行する</threshold>
     </reflection_checkpoint>
     <phase name="failure_handling">
-      <objective>Handle execution failures and incomplete data gracefully</objective>
-      <step>1. If tool call fails: Log error, attempt alternative approach</step>
-      <step>2. If data unavailable: Document gap, proceed with partial analysis</step>
-      <step>3. If contradictory evidence: Flag uncertainty, request user clarification</step>
+      <objective>実行失敗と不完全なデータを適切に処理する</objective>
+      <step>1. ツール呼び出しが失敗した場合：エラーをログに記録し、代替アプローチを試行する</step>
+      <step>2. データが利用できない場合：ギャップを文書化し、部分的な分析で続行する</step>
+      <step>3. 矛盾する証拠がある場合：不確実性をフラグし、ユーザーに確認を求める</step>
     </phase>
     <phase name="synthesize">
-      <objective>Compile comprehensive feedback report with actionable recommendations</objective>
-      <step>1. Compile feedback with metrics</step>
-      <step>2. Generate actionable recommendations</step>
+      <objective>実行可能な推奨事項を含む包括的なフィードバックレポートを集約する</objective>
+      <step>1. メトリクスを含むフィードバックを集約する</step>
+      <step>2. 実行可能な推奨事項を生成する</step>
     </phase>
   </workflow>
   <decision_criteria>
     <criterion name="confidence_calculation">
       <factor name="review_depth" weight="0.4">
-        <score range="90-100">All code paths and edge cases reviewed</score>
-        <score range="70-89">Main code paths reviewed</score>
-        <score range="50-69">Surface level review</score>
-        <score range="0-49">Minimal review</score>
+        <score range="90-100">すべてのコードパスとエッジケースをレビュー済み</score>
+        <score range="70-89">主要なコードパスをレビュー済み</score>
+        <score range="50-69">表面的なレビュー</score>
+        <score range="0-49">最小限のレビュー</score>
       </factor>
       <factor name="feedback_actionability" weight="0.3">
-        <score range="90-100">All feedback is specific and actionable</score>
-        <score range="70-89">Most feedback actionable</score>
-        <score range="50-69">Some vague feedback</score>
-        <score range="0-49">Mostly vague feedback</score>
+        <score range="90-100">すべてのフィードバックが具体的で実行可能</score>
+        <score range="70-89">ほとんどのフィードバックが実行可能</score>
+        <score range="50-69">一部曖昧なフィードバック</score>
+        <score range="0-49">ほとんど曖昧なフィードバック</score>
       </factor>
       <factor name="issue_prioritization" weight="0.3">
-        <score range="90-100">Clear priority levels with rationale</score>
-        <score range="70-89">Priority levels assigned</score>
-        <score range="50-69">Partial prioritization</score>
-        <score range="0-49">No prioritization</score>
+        <score range="90-100">根拠を含む明確な優先度レベル</score>
+        <score range="70-89">優先度レベルが割り当て済み</score>
+        <score range="50-69">部分的な優先順位付け</score>
+        <score range="0-49">優先順位付けなし</score>
       </factor>
     </criterion>
     <validation_tests>
@@ -96,186 +94,186 @@ Multi-faceted review of Claude Code's work within the same session, automaticall
         <input>review_depth=95, feedback_actionability=90, issue_prioritization=95</input>
         <calculation>(95*0.4)+(90*0.3)+(95*0.3) = 38+27+28.5 = 93.5</calculation>
         <expected_status>success</expected_status>
-        <reasoning>Deep code analysis with actionable, prioritized feedback yields high confidence</reasoning>
+        <reasoning>実行可能で優先順位付けされたフィードバックを伴う深いコード分析は高い信頼度をもたらす</reasoning>
       </test>
       <test name="boundary_warning_79">
         <input>review_depth=80, feedback_actionability=75, issue_prioritization=80</input>
         <calculation>(80*0.4)+(75*0.3)+(80*0.3) = 32+22.5+24 = 78.5</calculation>
         <expected_status>warning</expected_status>
-        <reasoning>Major issues found with partial prioritization results in 78.5, triggers warning</reasoning>
+        <reasoning>部分的な優先順位付けで重大な問題が見つかり、結果は78.5で警告をトリガー</reasoning>
       </test>
       <test name="boundary_success_80">
         <input>review_depth=85, feedback_actionability=75, issue_prioritization=80</input>
         <calculation>(85*0.4)+(75*0.3)+(80*0.3) = 34+22.5+24 = 80.5</calculation>
         <expected_status>success</expected_status>
-        <reasoning>Weighted average 80.5 meets success threshold</reasoning>
+        <reasoning>加重平均80.5、成功閾値を満たす</reasoning>
       </test>
       <test name="boundary_error_59">
         <input>review_depth=60, feedback_actionability=55, issue_prioritization=60</input>
         <calculation>(60*0.4)+(55*0.3)+(60*0.3) = 24+16.5+18 = 58.5</calculation>
         <expected_status>error</expected_status>
-        <reasoning>Weighted average 58.5 is below 60, triggers error</reasoning>
+        <reasoning>加重平均58.5は60未満でエラーをトリガー</reasoning>
       </test>
       <test name="superficial_review">
         <input>review_depth=50, feedback_actionability=45, issue_prioritization=50</input>
         <calculation>(50*0.4)+(45*0.3)+(50\*0.3) = 20+13.5+15 = 48.5</calculation>
         <expected_status>error</expected_status>
-        <reasoning>Surface level review with vague feedback results in 48.5, triggers error</reasoning>
+        <reasoning>曖昧なフィードバックを伴う表面的なレビューは48.5となりエラーをトリガー</reasoning>
       </test>
     </validation_tests>
   </decision_criteria>
   <modes>
     <mode name="define">
-      <target>Execution plan from conversation history</target>
-      <aspects>Step granularity, dependencies, risk identification, completeness, feasibility</aspects>
+      <target>会話履歴からの実行計画</target>
+      <aspects>ステップ粒度、依存関係、リスク特定、完全性、実現可能性</aspects>
       <agents>
-        <agent name="plan" subagent_type="Plan" readonly="true">Execution plan review</agent>
-        <agent name="estimation" subagent_type="general-purpose" readonly="true">Estimation validity review</agent>
-        <agent name="fact-check" subagent_type="fact-check" readonly="true">External source verification</agent>
+        <agent name="plan" subagent_type="Plan" readonly="true">実行計画レビュー</agent>
+        <agent name="estimation" subagent_type="general-purpose" readonly="true">見積もり妥当性レビュー</agent>
+        <agent name="fact-check" subagent_type="fact-check" readonly="true">外部ソース検証</agent>
       </agents>
-      <execution>All agents in parallel</execution>
+      <execution>すべてのエージェントを並列実行</execution>
     </mode>
     <mode name="execute">
-      <target>Files modified via Edit/Write tools</target>
+      <target>Edit/Writeツールで変更されたファイル</target>
       <agents>
-        <agent name="quality" subagent_type="quality-assurance" readonly="true">Naming, DRY, readability</agent>
-        <agent name="security" subagent_type="security" readonly="true">OWASP Top 10, input validation, auth</agent>
-        <agent name="design" subagent_type="design" readonly="true">Architecture consistency, patterns</agent>
-        <agent name="docs" subagent_type="docs" readonly="true">Accuracy, structure, completeness</agent>
-        <agent name="performance" subagent_type="performance" readonly="true">Performance review</agent>
-        <agent name="test" subagent_type="test" readonly="true">Test coverage review</agent>
-        <agent name="fact-check" subagent_type="fact-check" readonly="true">External source verification</agent>
+        <agent name="quality" subagent_type="quality-assurance" readonly="true">命名、DRY、可読性</agent>
+        <agent name="security" subagent_type="security" readonly="true">OWASP Top 10、入力検証、認証</agent>
+        <agent name="design" subagent_type="design" readonly="true">アーキテクチャ整合性、パターン</agent>
+        <agent name="docs" subagent_type="docs" readonly="true">正確性、構造、完全性</agent>
+        <agent name="performance" subagent_type="performance" readonly="true">パフォーマンスレビュー</agent>
+        <agent name="test" subagent_type="test" readonly="true">テストカバレッジレビュー</agent>
+        <agent name="fact-check" subagent_type="fact-check" readonly="true">外部ソース検証</agent>
       </agents>
-      <execution>All agents in parallel</execution>
+      <execution>すべてのエージェントを並列実行</execution>
     </mode>
     <mode name="general">
-      <target>Recent Claude Code work</target>
+      <target>最近のClaude Code作業</target>
       <agents>
-        <agent name="review" subagent_type="quality-assurance" readonly="true">Comprehensive work review</agent>
-        <agent name="complexity" subagent_type="code-quality" readonly="true">Code complexity review</agent>
-        <agent name="memory" subagent_type="general-purpose" readonly="true">Consistency check with existing patterns</agent>
-        <agent name="fact-check" subagent_type="fact-check" readonly="true">External source verification</agent>
+        <agent name="review" subagent_type="quality-assurance" readonly="true">包括的な作業レビュー</agent>
+        <agent name="complexity" subagent_type="code-quality" readonly="true">コード複雑度レビュー</agent>
+        <agent name="memory" subagent_type="general-purpose" readonly="true">既存パターンとの整合性チェック</agent>
+        <agent name="fact-check" subagent_type="fact-check" readonly="true">外部ソース検証</agent>
       </agents>
-      <execution>All agents in parallel</execution>
+      <execution>すべてのエージェントを並列実行</execution>
     </mode>
     <mode name="bug">
-      <target>Investigation results from conversation history</target>
-      <aspects>Evidence collection, hypothesis validity, root cause accuracy, log utilization</aspects>
-      <metrics>Confidence (0-100), Log Utilization (0-100), Objectivity (0-100)</metrics>
+      <target>会話履歴からの調査結果</target>
+      <aspects>証拠収集、仮説の妥当性、根本原因の正確性、ログ活用度</aspects>
+      <metrics>信頼度（0-100）、ログ活用度（0-100）、客観性（0-100）</metrics>
       <agents>
-        <agent name="quality-assurance" subagent_type="quality-assurance" readonly="true">Investigation methodology evaluation</agent>
-        <agent name="general-purpose" subagent_type="general-purpose" readonly="true">Log analysis and dependency investigation evaluation</agent>
-        <agent name="explore" subagent_type="explore" readonly="true">Code path coverage evaluation</agent>
-        <agent name="fact-check" subagent_type="fact-check" readonly="true">External source verification</agent>
+        <agent name="quality-assurance" subagent_type="quality-assurance" readonly="true">調査方法論の評価</agent>
+        <agent name="general-purpose" subagent_type="general-purpose" readonly="true">ログ分析と依存関係調査の評価</agent>
+        <agent name="explore" subagent_type="explore" readonly="true">コードパスカバレッジの評価</agent>
+        <agent name="fact-check" subagent_type="fact-check" readonly="true">外部ソース検証</agent>
       </agents>
-      <execution>All agents in parallel</execution>
+      <execution>すべてのエージェントを並列実行</execution>
     </mode>
     <mode name="ask">
-      <target>Answer and evidence from conversation history</target>
-      <aspects>Evidence citation quality, conclusion validity, reference accuracy, confidence calibration</aspects>
-      <metrics>Confidence (0-100), Evidence Coverage (0-100)</metrics>
-      <note>Subset of ask.md agents focused on answer evaluation; design/performance agents omitted as they evaluate questions, not answers</note>
+      <target>会話履歴からの回答と証拠</target>
+      <aspects>証拠引用の品質、結論の妥当性、参照の正確性、信頼度の校正</aspects>
+      <metrics>信頼度（0-100）、証拠カバレッジ（0-100）</metrics>
+      <note>回答評価に焦点を当てたaskエージェントのサブセット。design/performanceエージェントは質問を評価するため省略</note>
       <agents>
-        <agent name="explore" subagent_type="explore" readonly="true">Evidence gathering evaluation</agent>
-        <agent name="quality-assurance" subagent_type="quality-assurance" readonly="true">Answer accuracy assessment</agent>
-        <agent name="code-quality" subagent_type="code-quality" readonly="true">Reference precision and conclusion validity</agent>
-        <agent name="fact-check" subagent_type="fact-check" readonly="true">External source verification</agent>
+        <agent name="explore" subagent_type="explore" readonly="true">証拠収集の評価</agent>
+        <agent name="quality-assurance" subagent_type="quality-assurance" readonly="true">回答精度の評価</agent>
+        <agent name="code-quality" subagent_type="code-quality" readonly="true">参照精度と結論の妥当性</agent>
+        <agent name="fact-check" subagent_type="fact-check" readonly="true">外部ソース検証</agent>
       </agents>
-      <execution>All agents in parallel</execution>
+      <execution>すべてのエージェントを並列実行</execution>
     </mode>
   </modes>
   <output>
     <format>
-      <feedback_results mode="{Mode}">
+      <feedback_results mode="{モード}">
         <evaluation_scores>
-- {Metric1}: XX/100
-- {Metric2}: XX/100
-- Overall: XX/100</evaluation_scores>
-        <critical>Immediate Fix Required
-- [Category] Issue: Location
-- Problem: Description
-- Fix: Proposal</critical>
-        <warning>Fix Recommended
-- [Category] Issue: Location
-- Problem: Description
-- Recommendation: Proposal</warning>
-        <good_practice>[Category] Commendable aspects</good_practice>
+- {メトリクス1}: XX/100
+- {メトリクス2}: XX/100
+- 総合: XX/100</evaluation_scores>
+        <critical>即座に修正が必要
+- [カテゴリ] 問題: 場所
+- 問題点: 説明
+- 修正: 提案</critical>
+        <warning>修正を推奨
+- [カテゴリ] 問題: 場所
+- 問題点: 説明
+- 推奨: 提案</warning>
+        <good_practice>[カテゴリ] 称賛すべき点</good_practice>
         <fact_check_results>
-          <verified_claims>Claims confirmed against external sources (Context7, WebSearch)</verified_claims>
-          <flagged_claims>Claims with verification confidence below 80
-- Claim: {claim}
-- Source referenced: {source}
-- Verification result: {result}
-- Confidence: {XX}/100
-- Evidence: {evidence}
-- Recommendation: {correction}</flagged_claims>
-          <unverifiable_claims>Claims that could not be checked due to unavailable sources</unverifiable_claims>
+          <verified_claims>外部ソース（Context7、WebSearch）に対して確認された主張</verified_claims>
+          <flagged_claims>検証信頼度が80未満の主張
+- 主張: {主張}
+- 参照されたソース: {ソース}
+- 検証結果: {結果}
+- 信頼度: {XX}/100
+- 証拠: {証拠}
+- 推奨: {修正}</flagged_claims>
+          <unverifiable_claims>ソースが利用できず確認できなかった主張</unverifiable_claims>
         </fact_check_results>
         <recommended_actions>
-- [High] Action
-- [Medium] Action
-- [Low] Action</recommended_actions>
+- [High] アクション
+- [Medium] アクション
+- [Low] アクション</recommended_actions>
       </feedback_results>
     </format>
   </output>
   <enforcement>
     <mandatory_behaviors>
       <behavior id="FB-B001" priority="critical">
-        <trigger>When providing feedback</trigger>
-        <action>Include specific file:line references</action>
-        <verification>References in all feedback items</verification>
+        <trigger>フィードバックを提供する場合</trigger>
+        <action>具体的なfile:line参照を含める</action>
+        <verification>すべてのフィードバック項目に参照を含める</verification>
       </behavior>
       <behavior id="FB-B002" priority="critical">
-        <trigger>When identifying issues</trigger>
-        <action>Provide suggested improvements</action>
-        <verification>Suggestions for each issue</verification>
+        <trigger>問題を特定する場合</trigger>
+        <action>改善提案を提供する</action>
+        <verification>各問題に対する提案を含める</verification>
       </behavior>
     </mandatory_behaviors>
     <prohibited_behaviors>
       <behavior id="FB-P001" priority="critical">
-        <trigger>Always</trigger>
-        <action>Providing feedback without code analysis</action>
-        <response>Block feedback, require analysis first</response>
+        <trigger>常に</trigger>
+        <action>コード分析なしでフィードバックを提供する</action>
+        <response>フィードバックをブロックし、まず分析を要求する</response>
       </behavior>
     </prohibited_behaviors>
   </enforcement>
   <error_escalation>
     <level severity="low">
-      <example>Minor code quality issue in reviewed work</example>
-      <action>Note in report, proceed</action>
+      <example>レビュー対象作業における軽微なコード品質の問題</example>
+      <action>レポートに記録し、続行する</action>
     </level>
     <level severity="medium">
-      <example>Unclear quality metric or missing test coverage</example>
-      <action>Document issue, use AskUserQuestion for clarification</action>
+      <example>不明確な品質メトリクスまたは欠落したテストカバレッジ</example>
+      <action>問題を文書化し、AskUserQuestionを使用して確認する</action>
     </level>
     <level severity="high">
-      <example>Critical security flaw or major design issue in reviewed work</example>
-      <action>STOP, present options to user</action>
+      <example>レビュー対象作業における重大なセキュリティ欠陥または主要な設計問題</example>
+      <action>停止し、ユーザーに選択肢を提示する</action>
     </level>
     <level severity="critical">
-      <example>Data loss risk or security breach in reviewed work</example>
-      <action>BLOCK operation, require explicit user acknowledgment</action>
+      <example>レビュー対象作業におけるデータ損失リスクまたはセキュリティ侵害</example>
+      <action>操作をブロックし、ユーザーの明示的な承認を要求する</action>
     </level>
   </error_escalation>
   <related_commands>
-    <command name="execute">Primary target for feedback after implementation</command>
-    <command name="define">Feedback on execution plans</command>
-    <command name="bug">Feedback on investigation quality</command>
-    <command name="ask">Feedback on answer accuracy</command>
-    <command name="upstream">Review before submitting upstream PR</command>
+    <command name="execute">実装後のフィードバックの主要ターゲット</command>
+    <command name="define">実行計画へのフィードバック</command>
+    <command name="bug">調査品質へのフィードバック</command>
+    <command name="ask">回答精度へのフィードバック</command>
+    <command name="upstream">上流PRを提出する前のレビュー</command>
   </related_commands>
   <related_skills>
-    <skill name="execution-workflow">Understanding work review methodology</skill>
-    <skill name="investigation-patterns">Evaluating evidence quality in investigations</skill>
-    <skill name="testing-patterns">Assessing test coverage and quality</skill>
-    <skill name="fact-check">Verifying external source claims</skill>
+    <skill name="execution-workflow">作業レビュー方法論の理解</skill>
+    <skill name="investigation-patterns">調査における証拠品質の評価</skill>
+    <skill name="testing-patterns">テストカバレッジと品質の評価</skill>
+    <skill name="fact-check">外部ソースの主張の検証</skill>
   </related_skills>
   <constraints>
-    <must>Launch all agents simultaneously (no sequential execution)</must>
-    <must>Review only changed code in execute mode</must>
-    <must>Provide concrete, actionable feedback</must>
-    <avoid>Abstract theories without specific proposals</avoid>
-    <avoid>Reviewing existing code quality issues</avoid>
-    <avoid>Sequential agent execution (causes timeout)</avoid>
+    <must>すべてのエージェントを同時に起動する（逐次実行なし）</must>
+    <must>executeモードでは変更されたコードのみをレビューする</must>
+    <must>具体的で実行可能なフィードバックを提供する</must>
+    <avoid>具体的な提案なしの抽象的な理論</avoid>
+    <avoid>既存のコード品質問題のレビュー</avoid>
+    <avoid>逐次的なエージェント実行（タイムアウトの原因）</avoid>
   </constraints>
 </command>

@@ -1,94 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <skill>
-  <purpose>
-    Provide detailed workflow patterns for orchestrating multiple sub-agents in complex tasks.
-  </purpose>
+  <purpose>複雑なタスクで複数のサブエージェントをオーケストレーションするための詳細なワークフローパターンを提供する。</purpose>
   <workflow>
     <phase name="task_analysis">
-      <objective>Understand user request and plan delegation strategy</objective>
+      <objective>ユーザーリクエストを理解し委任戦略を計画</objective>
       <step order="1">
-        <action>Analyze user request</action>
-        <tool>Parse user message</tool>
-        <output>Clear task description</output>
+        <action>ユーザーリクエストを分析</action>
+        <tool>ユーザーメッセージを解析</tool>
+        <output>明確なタスク記述</output>
       </step>
       <step order="2">
-        <action>Identify best sub-agents</action>
-        <tool>Reference task_routing in CLAUDE.md</tool>
-        <output>Appropriate agent list</output>
+        <action>最適なサブエージェントを特定</action>
+        <tool>CLAUDE.mdのtask_routingを参照</tool>
+        <output>適切なエージェントリスト</output>
       </step>
       <step order="3">
-        <action>Check existing patterns and memories</action>
-        <tool>mcp__serena__list_memories, mcp__serena__read_memory</tool>
-        <output>Related patterns and conventions</output>
+        <action>既存のパターンとメモリを確認</action>
+        <tool>mcp__serena__list_memories、mcp__serena__read_memory</tool>
+        <output>関連するパターンと規約</output>
       </step>
       <step order="4">
-        <action>Analyze task dependencies</action>
-        <tool>Task structure analysis</tool>
-        <output>Parallel or sequential dependency graph</output>
+        <action>タスクの依存関係を分析</action>
+        <tool>タスク構造分析</tool>
+        <output>並列または順次の依存関係グラフ</output>
       </step>
     </phase>
     <phase name="delegation">
-      <objective>Delegate tasks to appropriate sub-agents</objective>
+      <objective>適切なサブエージェントにタスクを委任</objective>
       <step order="1">
-        <action>Prioritize custom sub-agents (defined in agents/)</action>
-        <tool>Task tool for specific agent</tool>
-        <output>Task assignment to agent</output>
+        <action>カスタムサブエージェント（agents/で定義）を優先</action>
+        <tool>特定エージェント用のTaskツール</tool>
+        <output>エージェントへのタスク割り当て</output>
       </step>
       <step order="2">
-        <action>Use general sub-agents (subagent_type parameter)</action>
-        <tool>Task tool with subagent_type</tool>
-        <output>Task assignment to agent</output>
+        <action>汎用サブエージェント（subagent_typeパラメータ）を使用</action>
+        <tool>subagent_type付きのTaskツール</tool>
+        <output>エージェントへのタスク割り当て</output>
       </step>
       <step order="3">
-        <action>Execute independent tasks in parallel</action>
-        <tool>Multiple Task tool calls in single message</tool>
-        <output>Parallel execution results</output>
+        <action>独立したタスクを並列実行</action>
+        <tool>単一メッセージで複数のTaskツール呼び出し</tool>
+        <output>並列実行結果</output>
       </step>
     </phase>
     <phase name="consolidation">
-      <objective>Verify and integrate sub-agent outputs</objective>
+      <objective>サブエージェント出力を検証し統合</objective>
       <step order="1">
-        <action>Verify sub-agent outputs for completeness</action>
-        <tool>Review agent responses</tool>
-        <output>Verification status</output>
+        <action>サブエージェント出力の完全性を検証</action>
+        <tool>エージェント応答をレビュー</tool>
+        <output>検証ステータス</output>
       </step>
       <step order="2">
-        <action>Organize results into cohesive output</action>
-        <tool>Output integration and reorganization</tool>
-        <output>Integrated result</output>
+        <action>結果を一貫した出力に整理</action>
+        <tool>出力の統合と再編成</tool>
+        <output>統合された結果</output>
       </step>
     </phase>
     <phase name="cross_validation">
-      <objective>Validate outputs using multiple agents</objective>
+      <objective>複数エージェントを使用して出力を検証</objective>
       <step order="1">
-        <action>For critical tasks, request analysis from 2+ agents</action>
-        <tool>Multiple Task tools</tool>
-        <output>Multiple agent outputs for comparison</output>
+        <action>重要なタスクでは2つ以上のエージェントに分析を依頼</action>
+        <tool>複数のTaskツール</tool>
+        <output>比較用の複数エージェント出力</output>
       </step>
       <step order="2">
-        <action>Delegate results to validator agent</action>
-        <tool>Task tool for validator agent</tool>
-        <output>Cross validation report</output>
+        <action>結果をバリデーターエージェントに委任</action>
+        <tool>バリデーターエージェント用のTaskツール</tool>
+        <output>クロスバリデーションレポート</output>
       </step>
       <step order="3">
-        <action>If contradictions exist, request additional investigation or user decision</action>
-        <tool>AskUserQuestion or additional agents</tool>
-        <output>Contradiction resolution or user decision</output>
+        <action>矛盾がある場合、追加調査またはユーザー判断を要求</action>
+        <tool>AskUserQuestionまたは追加エージェント</tool>
+        <output>矛盾解決またはユーザー判断</output>
       </step>
     </phase>
     <phase name="failure_handling">
-      <objective>Handle errors and edge cases appropriately</objective>
+      <objective>エラーとエッジケースを適切に処理</objective>
       <step>
-        <when>Sub-agent fails</when>
-        <action>Review error, adjust instructions, retry with different agent</action>
+        <when>サブエージェントが失敗した場合</when>
+        <action>エラーをレビューし、指示を調整し、別のエージェントで再試行</action>
       </step>
       <step>
-        <when>Memory not found</when>
-        <action>Document gap, continue investigation</action>
+        <when>メモリが見つからない場合</when>
+        <action>ギャップを文書化し、調査を続行</action>
       </step>
       <step>
-        <when>Contradictory outputs</when>
-        <action>Integrate results, notify user of uncertainty</action>
+        <when>出力が矛盾する場合</when>
+        <action>結果を統合し、不確実性をユーザーに通知</action>
       </step>
     </phase>
   </workflow>
@@ -106,17 +104,17 @@
     <retry_policy>
       <max_retries>2</max_retries>
       <retry_conditions>
-        <condition>agent timeout</condition>
-        <condition>partial results returned</condition>
-        <condition>confidence score below 60</condition>
+        <condition>エージェントタイムアウト</condition>
+        <condition>部分的な結果が返された</condition>
+        <condition>信頼スコアが60未満</condition>
       </retry_conditions>
       <fallback_strategy>
-        <action>Use different agent in same parallel group</action>
+        <action>同じ並列グループの別のエージェントを使用</action>
       </fallback_strategy>
     </retry_policy>
   </parallelization>
   <consensus_mechanism>
-    <strategy>Weighted majority vote</strategy>
+    <strategy>重み付き多数決</strategy>
     <weights>
       <agent name="explore" weight="1.0"/>
       <agent name="design" weight="1.2"/>
@@ -133,67 +131,67 @@
     </weights>
     <threshold>0.7</threshold>
     <on_disagreement>
-      <action>Prompt user review</action>
-      <action>Request additional investigation</action>
+      <action>ユーザーレビューを促す</action>
+      <action>追加調査を要求</action>
     </on_disagreement>
   </consensus_mechanism>
   <decision_criteria>
     <criterion name="confidence_calculation">
       <factor name="task_understanding" weight="0.3">
-        <score range="90-100">Clear request with specific requirements</score>
-        <score range="70-89">Understood but some details unclear</score>
-        <score range="50-69">Ambiguous request, needs clarification</score>
-        <score range="0-49">Unclear request, cannot process</score>
+        <score range="90-100">具体的な要件を持つ明確なリクエスト</score>
+        <score range="70-89">理解したが一部の詳細が不明確</score>
+        <score range="50-69">曖昧なリクエスト、明確化が必要</score>
+        <score range="0-49">不明確なリクエスト、処理不可</score>
       </factor>
       <factor name="agent_selection" weight="0.3">
-        <score range="90-100">Clear match with specialized agent</score>
-        <score range="70-89">Matching candidates with overlap</score>
-        <score range="50-69">Multiple agents applicable</score>
-        <score range="0-49">No matching agent</score>
+        <score range="90-100">専門エージェントとの明確なマッチ</score>
+        <score range="70-89">重複するマッチング候補</score>
+        <score range="50-69">複数のエージェントが適用可能</score>
+        <score range="0-49">マッチするエージェントなし</score>
       </factor>
       <factor name="context_availability" weight="0.4">
-        <score range="90-100">Relevant memory and patterns found</score>
-        <score range="70-89">Some context available</score>
-        <score range="50-69">Limited context</score>
-        <score range="0-49">No relevant context</score>
+        <score range="90-100">関連するメモリとパターンが見つかった</score>
+        <score range="70-89">一部のコンテキストが利用可能</score>
+        <score range="50-69">限られたコンテキスト</score>
+        <score range="0-49">関連するコンテキストなし</score>
       </factor>
     </criterion>
   </decision_criteria>
   <enforcement>
     <mandatory_behaviors>
       <behavior id="ORCH-B001" priority="critical">
-        <trigger>Before implementation</trigger>
-        <action>Check Serena memories with mcp__serena__list_memories</action>
-        <verification>Memory check recorded in output</verification>
+        <trigger>実装前</trigger>
+        <action>mcp__serena__list_memoriesでSerenaメモリを確認</action>
+        <verification>出力にメモリ確認が記録されている</verification>
       </behavior>
       <behavior id="ORCH-B002" priority="critical">
-        <trigger>For independent tasks</trigger>
-        <action>Execute in parallel using multiple Task tool calls</action>
-        <verification>Parallel execution confirmed in single message</verification>
+        <trigger>独立したタスク</trigger>
+        <action>複数のTaskツール呼び出しで並列実行</action>
+        <verification>単一メッセージで並列実行が確認されている</verification>
       </behavior>
       <behavior id="ORCH-B003" priority="critical">
-        <trigger>After sub-agent completion</trigger>
-        <action>Verify outputs before integration</action>
-        <verification>Output verification status shown</verification>
+        <trigger>サブエージェント完了後</trigger>
+        <action>統合前に出力を検証</action>
+        <verification>出力検証ステータスが表示されている</verification>
       </behavior>
     </mandatory_behaviors>
   </enforcement>
   <error_escalation>
     <level severity="low">
-      <example>Sub-agent returns partial results</example>
-      <action>Document gap, proceed with available data</action>
+      <example>サブエージェントが部分的な結果を返す</example>
+      <action>ギャップを文書化し、利用可能なデータで続行</action>
     </level>
     <level severity="medium">
-      <example>Memory patterns are outdated or contradictory</example>
-      <action>Document discrepancy, use AskUserQuestion for guidance</action>
+      <example>メモリパターンが古いまたは矛盾している</example>
+      <action>不一致を文書化し、AskUserQuestionでガイダンスを求める</action>
     </level>
     <level severity="high">
-      <example>Critical dependency not found or unavailable</example>
-      <action>Stop, present impact analysis and options to user</action>
+      <example>重要な依存関係が見つからないまたは利用不可</example>
+      <action>停止し、影響分析と選択肢をユーザーに提示</action>
     </level>
     <level severity="critical">
-      <example>Security risk or destructive operation detected</example>
-      <action>Block operation, require explicit user approval</action>
+      <example>セキュリティリスクまたは破壊的操作が検出された</example>
+      <action>操作をブロックし、明示的なユーザー承認を要求</action>
     </level>
   </error_escalation>
 </skill>

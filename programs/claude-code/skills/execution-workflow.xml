@@ -1,257 +1,255 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <skill>
-  <purpose>
-  Provide structured workflow for task execution through delegation to specialized sub-agents, and comprehensive code review standards.
-</purpose>
+  <purpose>専門サブエージェントへの委任によるタスク実行の構造化ワークフローと、包括的なコードレビュー基準を提供する。</purpose>
   <tools>
-    <tool name="agent_groups">Specialized sub-agents: quality_assurance (quality, security - parallel), implementation (test, refactor, docs - parallel if independent), review (sequential after implementation)</tool>
-    <tool name="delegation">Provide scope, file paths, Serena/Context7 tool instructions, reference implementations, memory checks</tool>
-    <tool name="tool_selection">Coding: Codex MCP → Serena MCP → Context7 → Basic tools; Non-coding: Serena MCP → Context7 → Basic tools</tool>
+    <tool name="agent_groups">専門サブエージェント: quality_assurance（quality、security - 並列）、implementation（test、refactor、docs - 独立している場合は並列）、review（implementation後に順次）</tool>
+    <tool name="delegation">スコープ、ファイルパス、Serena/Context7ツール指示、リファレンス実装、メモリ確認を提供</tool>
+    <tool name="tool_selection">コーディング: Codex MCP → Serena MCP → Context7 → 基本ツール、非コーディング: Serena MCP → Context7 → 基本ツール</tool>
   </tools>
   <concepts>
-    <concept name="parallel_execution">Execute independent tasks concurrently; quality+security can run in parallel, test+docs can run in parallel when independent</concept>
-    <concept name="sequential_dependencies">Tasks with data dependencies must run in order; verify outputs before dependent tasks start</concept>
-    <concept name="delegation_context">Sub-agents need: specific scope, file paths, tool usage instructions, reference implementations, memory patterns</concept>
-    <concept name="review_phases">Four phases: Initial scan (syntax), Deep analysis (logic), Context evaluation (impact), Standards compliance (naming/docs)</concept>
+    <concept name="parallel_execution">独立したタスクを並行実行、quality+securityは並列実行可能、test+docsは独立している場合は並列実行可能</concept>
+    <concept name="sequential_dependencies">データ依存関係のあるタスクは順序通りに実行、依存タスク開始前に出力を検証</concept>
+    <concept name="delegation_context">サブエージェントには以下が必要: 具体的なスコープ、ファイルパス、ツール使用指示、リファレンス実装、メモリパターン</concept>
+    <concept name="review_phases">4つのフェーズ: 初期スキャン（構文）、深い分析（ロジック）、コンテキスト評価（影響）、標準準拠（命名/ドキュメント）</concept>
   </concepts>
   <patterns>
     <pattern name="code_review_phases">
-      <description>Systematic code review process</description>
+      <description>体系的なコードレビュープロセス</description>
       <decision_tree name="when_to_use">
-        <question>Has code been modified or newly created?</question>
-        <if_yes>Apply code review phases systematically to ensure quality</if_yes>
-        <if_no>Skip review and proceed to next task</if_no>
+        <question>コードが変更または新規作成されましたか？</question>
+        <if_yes>品質を確保するためにコードレビューフェーズを体系的に適用</if_yes>
+        <if_no>レビューをスキップして次のタスクに進む</if_no>
       </decision_tree>
       <example>
-      Phase 1 - Initial Scan:
-      - Syntax errors and typos
-      - Missing imports or dependencies
-      - Obvious logic errors
-      - Code style violations
+      フェーズ1 - 初期スキャン:
+      - 構文エラーとタイプミス
+      - 不足しているインポートまたは依存関係
+      - 明らかなロジックエラー
+      - コードスタイル違反
 
-      Phase 2 - Deep Analysis:
+      フェーズ2 - 深い分析:
 
-      - Algorithm correctness
-      - Edge case handling
-      - Error handling completeness
-      - Resource management
+      - アルゴリズムの正確性
+      - エッジケースの処理
+      - エラー処理の完全性
+      - リソース管理
 
-      Phase 3 - Context Evaluation:
+      フェーズ3 - コンテキスト評価:
 
-      - Breaking changes to public APIs
-      - Side effects on existing functionality
-      - Dependency compatibility
+      - パブリックAPIへの破壊的変更
+      - 既存機能への副作用
+      - 依存関係の互換性
 
-      Phase 4 - Standards Compliance:
+      フェーズ4 - 標準準拠:
 
-      - Naming conventions
-      - Documentation requirements
-      - Test coverage
+      - 命名規約
+      - ドキュメント要件
+      - テストカバレッジ
     </example>
     </pattern>
     <pattern name="quality_criteria">
-      <description>Evaluation criteria for code quality</description>
+      <description>コード品質の評価基準</description>
       <decision_tree name="when_to_use">
-        <question>Is this a code review or quality assessment task?</question>
-        <if_yes>Apply quality criteria across all dimensions</if_yes>
-        <if_no>Focus on implementation patterns instead</if_no>
+        <question>これはコードレビューまたは品質評価タスクですか？</question>
+        <if_yes>すべての次元で品質基準を適用</if_yes>
+        <if_no>代わりに実装パターンに焦点を当てる</if_no>
       </decision_tree>
       <example>
-      Correctness:
-      - Logic matches requirements
-      - Edge cases handled
-      - Error conditions covered
+      正確性:
+      - ロジックが要件と一致
+      - エッジケースが処理されている
+      - エラー条件がカバーされている
 
-      Security:
+      セキュリティ:
 
-      - Input validation
-      - Authentication/authorization
-      - Data sanitization
-      - Secrets handling
+      - 入力検証
+      - 認証/認可
+      - データサニタイズ
+      - シークレット処理
 
-      Performance:
+      パフォーマンス:
 
-      - Algorithm efficiency
-      - Resource usage
-      - Memory leaks
-      - N+1 queries
+      - アルゴリズム効率
+      - リソース使用量
+      - メモリリーク
+      - N+1クエリ
 
-      Maintainability:
+      保守性:
 
-      - Clear naming
-      - Appropriate comments
-      - Single responsibility
-      - DRY principle
+      - 明確な命名
+      - 適切なコメント
+      - 単一責任
+      - DRY原則
 
-      Testability:
+      テスタビリティ:
 
-      - Test coverage adequate
-      - Tests meaningful
-      - Edge cases tested
+      - テストカバレッジが適切
+      - テストが意味のあるもの
+      - エッジケースがテストされている
     </example>
     </pattern>
     <pattern name="feedback_categories">
-      <description>Categorization of review feedback by priority</description>
+      <description>優先度によるレビューフィードバックの分類</description>
       <decision_tree name="when_to_use">
-        <question>Have you identified issues during code review?</question>
-        <if_yes>Apply feedback categories to prioritize by severity</if_yes>
-        <if_no>Continue code review phases</if_no>
+        <question>コードレビュー中に問題を特定しましたか？</question>
+        <if_yes>深刻度で優先順位付けするためにフィードバックカテゴリを適用</if_yes>
+        <if_no>コードレビューフェーズを続行</if_no>
       </decision_tree>
       <example>
-      Critical: Must fix before merge
-      - Security vulnerabilities
-      - Data corruption risks
-      - Breaking changes
+      クリティカル: マージ前に修正必須
+      - セキュリティ脆弱性
+      - データ破損リスク
+      - 破壊的変更
 
-      Important: Should fix before merge
+      重要: マージ前に修正すべき
 
-      - Logic errors
-      - Missing error handling
-      - Performance issues
+      - ロジックエラー
+      - エラー処理の欠如
+      - パフォーマンス問題
 
-      Suggestion: Nice to have improvements
+      提案: あると良い改善
 
-      - Code style
-      - Refactoring opportunities
-      - Documentation
+      - コードスタイル
+      - リファクタリング機会
+      - ドキュメント
 
-      Positive: What was done well
+      ポジティブ: 良かった点
 
-      - Good patterns
-      - Clever solutions
-      - Thorough testing
+      - 良いパターン
+      - 賢いソリューション
+      - 徹底したテスト
     </example>
     </pattern>
     <pattern name="review_output_format">
-      <description>Standard format for code review results</description>
+      <description>コードレビュー結果の標準フォーマット</description>
       <decision_tree name="when_to_use">
-        <question>Is it time to communicate code review findings?</question>
-        <if_yes>Apply review output format for structured communication</if_yes>
-        <if_no>Continue analyzing code through review phases</if_no>
+        <question>コードレビューの発見事項を伝える時ですか？</question>
+        <if_yes>構造化されたコミュニケーションのためにレビュー出力フォーマットを適用</if_yes>
+        <if_no>レビューフェーズを通じてコードの分析を続行</if_no>
       </decision_tree>
       <example>
-        <summary>Overall assessment and recommendation</summary>
-        <critical_issues>Must-fix items with file:line references</critical_issues>
-        <important_issues>Should-fix items</important_issues>
-        <suggestions>Optional improvements</suggestions>
-        <positive_feedback>Good practices observed</positive_feedback>
-        <questions>Clarifications needed</questions>
+        <summary>全体的な評価と推奨事項</summary>
+        <critical_issues>file:line参照付きの修正必須項目</critical_issues>
+        <important_issues>修正すべき項目</important_issues>
+        <suggestions>オプションの改善</suggestions>
+        <positive_feedback>観察された良いプラクティス</positive_feedback>
+        <questions>必要な明確化</questions>
       </example>
     </pattern>
   </patterns>
   <anti_patterns>
     <avoid name="nitpicking_style">
-      <description>Focusing on code style issues when functionality is broken</description>
-      <instead>Address critical and important issues first, style suggestions last</instead>
+      <description>機能が壊れているときにコードスタイルの問題に焦点を当てる</description>
+      <instead>最初にクリティカルと重要な問題に対処し、スタイル提案は最後に</instead>
     </avoid>
     <avoid name="rubber_stamping">
-      <description>Approving changes without thorough review</description>
-      <instead>Systematically review all phases: scan, deep analysis, context, standards</instead>
+      <description>徹底したレビューなしに変更を承認</description>
+      <instead>すべてのフェーズを体系的にレビュー: スキャン、深い分析、コンテキスト、標準</instead>
     </avoid>
     <avoid name="only_negatives">
-      <description>Providing only critical feedback without acknowledging good work</description>
-      <instead>Balance feedback with positive observations of good practices</instead>
+      <description>良い仕事を認めずに批判的なフィードバックのみを提供</description>
+      <instead>良いプラクティスのポジティブな観察でフィードバックのバランスを取る</instead>
     </avoid>
     <avoid name="vague_feedback">
-      <description>Giving feedback without specific, actionable suggestions</description>
-      <instead>Provide file:line references and concrete improvement suggestions</instead>
+      <description>具体的で実行可能な提案なしにフィードバックを与える</description>
+      <instead>file:line参照と具体的な改善提案を提供</instead>
     </avoid>
     <avoid name="sequential_when_parallel">
-      <description>Executing independent tasks sequentially</description>
-      <instead>Identify and execute independent tasks in parallel for efficiency</instead>
+      <description>独立したタスクを順次実行</description>
+      <instead>効率のために独立したタスクを特定し並列実行</instead>
     </avoid>
     <avoid name="parallel_when_dependent">
-      <description>Attempting to parallelize tasks with data dependencies</description>
-      <instead>Analyze dependencies and execute dependent tasks sequentially</instead>
+      <description>データ依存関係のあるタスクを並列化しようとする</description>
+      <instead>依存関係を分析し、依存タスクを順次実行</instead>
     </avoid>
   </anti_patterns>
   <workflow>
     <phase name="analyze">
-      <description>Understand requirements and identify scope</description>
-      <step>Parse task description for key objectives</step>
-      <step>Identify affected files and components</step>
-      <step>Check Serena memories for existing patterns</step>
+      <description>要件を理解しスコープを特定</description>
+      <step>主要な目標のためにタスク記述を解析</step>
+      <step>影響を受けるファイルとコンポーネントを特定</step>
+      <step>既存のパターンのためにSerenaメモリを確認</step>
     </phase>
     <phase name="break_down">
-      <description>Split into manageable units</description>
-      <step>Identify atomic tasks</step>
-      <step>Estimate complexity of each task</step>
-      <step>Assign to appropriate sub-agents</step>
+      <description>管理可能な単位に分割</description>
+      <step>アトミックタスクを特定</step>
+      <step>各タスクの複雑性を見積もる</step>
+      <step>適切なサブエージェントに割り当て</step>
     </phase>
     <phase name="organize">
-      <description>Identify parallel vs sequential execution</description>
-      <step>Map task dependencies</step>
-      <step>Group independent tasks for parallel execution</step>
-      <step>Order dependent tasks sequentially</step>
+      <description>並列vs順次実行を特定</description>
+      <step>タスク依存関係をマップ</step>
+      <step>並列実行のために独立したタスクをグループ化</step>
+      <step>依存タスクを順次に順序付け</step>
     </phase>
     <phase name="delegate">
-      <description>Assign to sub-agents with detailed instructions</description>
-      <step>Provide specific scope and expected deliverables</step>
-      <step>Include target file paths</step>
-      <step>Specify MCP tool usage instructions</step>
-      <step>Reference existing implementations</step>
+      <description>詳細な指示でサブエージェントに割り当て</description>
+      <step>具体的なスコープと期待される成果物を提供</step>
+      <step>ターゲットファイルパスを含める</step>
+      <step>MCPツール使用指示を指定</step>
+      <step>既存の実装を参照</step>
     </phase>
     <phase name="integrate">
-      <description>Verify and combine results</description>
-      <step>Review sub-agent outputs</step>
-      <step>Resolve conflicts between outputs</step>
-      <step>Ensure consistency across changes</step>
+      <description>結果を検証し組み合わせる</description>
+      <step>サブエージェント出力をレビュー</step>
+      <step>出力間の矛盾を解決</step>
+      <step>変更間の一貫性を確保</step>
     </phase>
   </workflow>
   <best_practices>
-    <practice priority="critical">Analyze task dependencies before execution to determine parallel vs sequential execution model</practice>
-    <practice priority="critical">Provide comprehensive context to sub-agents including file paths, tool usage, and reference implementations</practice>
-    <practice priority="critical">Systematically review all phases: initial scan, deep analysis, context evaluation, standards compliance</practice>
-    <practice priority="high">Balance critical feedback with positive observations of good practices</practice>
-    <practice priority="high">Provide file:line references and concrete improvement suggestions</practice>
-    <practice priority="medium">Check Serena memories for existing patterns before delegating implementation tasks</practice>
+    <practice priority="critical">並列vs順次実行モデルを決定するために実行前にタスク依存関係を分析</practice>
+    <practice priority="critical">ファイルパス、ツール使用、リファレンス実装を含む包括的なコンテキストをサブエージェントに提供</practice>
+    <practice priority="critical">すべてのフェーズを体系的にレビュー: 初期スキャン、深い分析、コンテキスト評価、標準準拠</practice>
+    <practice priority="high">良いプラクティスのポジティブな観察で批判的フィードバックのバランスを取る</practice>
+    <practice priority="high">file:line参照と具体的な改善提案を提供</practice>
+    <practice priority="medium">実装タスクを委任する前にSerenaメモリで既存のパターンを確認</practice>
   </best_practices>
   <rules priority="critical">
-    <rule>Execute independent tasks in parallel</rule>
-    <rule>Never parallelize tasks with data dependencies</rule>
-    <rule>Verify sub-agent outputs before integration</rule>
-    <rule>Run quality checks after changes</rule>
+    <rule>独立したタスクを並列実行</rule>
+    <rule>データ依存関係のあるタスクは並列化しない</rule>
+    <rule>統合前にサブエージェント出力を検証</rule>
+    <rule>変更後に品質チェックを実行</rule>
   </rules>
   <rules priority="standard">
-    <rule>quality + security: Concurrent checks</rule>
-    <rule>test + docs: Simultaneous creation when independent</rule>
-    <rule>Ensure no regression in existing functionality</rule>
-    <rule>Confirm all acceptance criteria met</rule>
+    <rule>quality + security: 並行チェック</rule>
+    <rule>test + docs: 独立している場合は同時作成</rule>
+    <rule>既存機能にリグレッションがないことを確認</rule>
+    <rule>すべての受け入れ基準が満たされていることを確認</rule>
   </rules>
   <error_escalation>
     <level severity="low">
-      <example>Sub-agent returns partial results</example>
-      <action>Note in report, proceed</action>
+      <example>サブエージェントが部分的な結果を返す</example>
+      <action>レポートに記載し、続行</action>
     </level>
     <level severity="medium">
-      <example>Sub-agent task fails</example>
-      <action>Document issue, use AskUserQuestion for clarification</action>
+      <example>サブエージェントタスクが失敗</example>
+      <action>問題を文書化し、AskUserQuestionで明確化を求める</action>
     </level>
     <level severity="high">
-      <example>Critical task cannot be completed</example>
-      <action>STOP, present options to user</action>
+      <example>重要なタスクが完了できない</example>
+      <action>停止し、ユーザーに選択肢を提示</action>
     </level>
     <level severity="critical">
-      <example>Sub-agent introduces breaking change</example>
-      <action>BLOCK operation, require explicit user acknowledgment</action>
+      <example>サブエージェントが破壊的変更を導入</example>
+      <action>操作をブロックし、明示的なユーザー確認を要求</action>
     </level>
   </error_escalation>
   <related_agents>
-    <agent name="execute">Primary agent for implementing features with sub-agent delegation</agent>
-    <agent name="feedback">Use for post-implementation code review and quality assessment</agent>
-    <agent name="bug">Delegate debugging tasks when critical issues are identified during review</agent>
+    <agent name="execute">サブエージェント委任による機能実装の主要エージェント</agent>
+    <agent name="feedback">実装後のコードレビューと品質評価に使用</agent>
+    <agent name="bug">レビュー中に重大な問題が特定された場合のデバッグタスクに委任</agent>
   </related_agents>
   <related_skills>
-    <skill name="serena-usage">Use for memory checks and symbol operations during delegation</skill>
-    <skill name="investigation-patterns">Use when code review reveals unclear implementation details</skill>
-    <skill name="testing-patterns">Use to verify test coverage and quality during review</skill>
+    <skill name="serena-usage">委任中のメモリ確認とシンボル操作に使用</skill>
+    <skill name="investigation-patterns">コードレビューで不明確な実装詳細が明らかになった場合に使用</skill>
+    <skill name="testing-patterns">レビュー中のテストカバレッジと品質の検証に使用</skill>
   </related_skills>
   <constraints>
-    <must>Delegate detailed work to sub-agents</must>
-    <must>Execute independent tasks in parallel</must>
-    <must>Verify outputs before integration</must>
-    <avoid>Implementing detailed logic directly</avoid>
-    <avoid>Sequential execution of independent tasks</avoid>
-    <avoid>Skipping verification of sub-agent outputs</avoid>
+    <must>詳細な作業をサブエージェントに委任</must>
+    <must>独立したタスクを並列実行</must>
+    <must>統合前に出力を検証</must>
+    <avoid>詳細なロジックを直接実装</avoid>
+    <avoid>独立したタスクの順次実行</avoid>
+    <avoid>サブエージェント出力の検証をスキップ</avoid>
   </constraints>
 </skill>

@@ -1,87 +1,85 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <skill>
-  <purpose>
-  Provide testing patterns and strategies for comprehensive test coverage and maintainable test suites.
-</purpose>
+  <purpose>包括的なテストカバレッジと保守可能なテストスイートのためのテストパターンと戦略を提供する。</purpose>
   <concept name="unit">
-    <description>Test individual functions/methods in isolation</description>
-    <scope>Single function, class, or module</scope>
-    <characteristics>Fast, isolated, deterministic</characteristics>
-    <when>Business logic, utility functions, transformations</when>
+    <description>個々の関数/メソッドを分離してテスト</description>
+    <scope>単一の関数、クラス、またはモジュール</scope>
+    <characteristics>高速、分離、決定論的</characteristics>
+    <when>ビジネスロジック、ユーティリティ関数、変換</when>
   </concept>
   <concept name="integration">
-    <description>Test interaction between components</description>
-    <scope>Multiple components working together</scope>
-    <characteristics>Slower, may use real dependencies</characteristics>
-    <when>API endpoints, database operations, service interactions</when>
+    <description>コンポーネント間の相互作用をテスト</description>
+    <scope>連携する複数のコンポーネント</scope>
+    <characteristics>より遅い、実際の依存関係を使用する場合がある</characteristics>
+    <when>APIエンドポイント、データベース操作、サービス間の相互作用</when>
   </concept>
   <concept name="e2e">
-    <description>Test complete user workflows</description>
-    <scope>Full application stack</scope>
-    <characteristics>Slowest, tests real user scenarios</characteristics>
-    <when>Critical user journeys, smoke tests</when>
+    <description>完全なユーザーワークフローをテスト</description>
+    <scope>フルアプリケーションスタック</scope>
+    <characteristics>最も遅い、実際のユーザーシナリオをテスト</characteristics>
+    <when>重要なユーザージャーニー、スモークテスト</when>
   </concept>
   <pattern name="arrange_act_assert">
-    <description>Three-phase test structure for clear test organization</description>
+    <description>明確なテスト構成のための3フェーズテスト構造</description>
     <decision_tree name="when_to_use">
-      <question>Are you writing unit or integration tests?</question>
-      <if_yes>Apply arrange-act-assert pattern for clear test structure</if_yes>
-      <if_no>Consider given-when-then for BDD-style tests</if_no>
+      <question>ユニットテストまたは結合テストを書いていますか？</question>
+      <if_yes>明確なテスト構造のためにarrange-act-assertパターンを適用</if_yes>
+      <if_no>BDDスタイルのテストにはgiven-when-thenを検討</if_no>
     </decision_tree>
-    <example><test_phase>Arrange: Set up test data and preconditions</test_phase>
+    <example><test_phase>Arrange: テストデータと前提条件をセットアップ</test_phase>
     user = User.new(name: "John")
     cart = ShoppingCart.new(user)
 
-    <test_phase>Act: Execute the code under test</test_phase>
+    <test_phase>Act: テスト対象のコードを実行</test_phase>
 
     total = cart.calculate_total
 
-    <test_phase>Assert: Verify expected outcomes</test_phase>
+    <test_phase>Assert: 期待される結果を検証</test_phase>
 
     assert_equal 0, total
   </example>
-    <note>Separates setup, execution, and verification into distinct phases</note>
+    <note>セットアップ、実行、検証を明確なフェーズに分離</note>
   </pattern>
   <pattern name="given_when_then">
-    <description>BDD-style test structure focusing on behavior</description>
+    <description>動作に焦点を当てたBDDスタイルのテスト構造</description>
     <decision_tree name="when_to_use">
-      <question>Is the test focused on business behavior rather than technical implementation?</question>
-      <if_yes>Apply given-when-then pattern for BDD-style tests</if_yes>
-      <if_no>Use arrange-act-assert for technical unit tests</if_no>
+      <question>テストは技術的な実装よりもビジネス動作に焦点を当てていますか？</question>
+      <if_yes>BDDスタイルのテストにはgiven-when-thenパターンを適用</if_yes>
+      <if_no>技術的なユニットテストにはarrange-act-assertを使用</if_no>
     </decision_tree>
-    <example><bdd_step>Given: Initial context (preconditions)</bdd_step>
+    <example><bdd_step>Given: 初期コンテキスト（前提条件）</bdd_step>
     given_a_user_with_an_empty_cart
 
-    <bdd_step>When: Action or trigger</bdd_step>
+    <bdd_step>When: アクションまたはトリガー</bdd_step>
 
     when_the_user_calculates_total
 
-    <bdd_step>Then: Expected outcome</bdd_step>
+    <bdd_step>Then: 期待される結果</bdd_step>
 
     then_the_total_should_be_zero
   </example>
-    <note>Emphasizes business behavior over technical implementation</note>
+    <note>技術的な実装よりもビジネス動作を強調</note>
   </pattern>
   <pattern name="stub">
-    <description>Provide canned responses for dependencies</description>
+    <description>依存関係に対して定型の応答を提供</description>
     <decision_tree name="when_to_use">
-      <question>Does the test need dependency responses but not interaction verification?</question>
-      <if_yes>Apply stub pattern for canned responses</if_yes>
-      <if_no>Use mock if interaction verification is needed</if_no>
+      <question>テストは依存関係の応答が必要だが相互作用の検証は不要ですか？</question>
+      <if_yes>定型応答のためにstubパターンを適用</if_yes>
+      <if_no>相互作用検証が必要な場合はmockを使用</if_no>
     </decision_tree>
     <example>
     api_client = stub(
       fetch_user: { id: 1, name: "John" }
     )
   </example>
-    <use_case>Replace slow/unreliable dependencies</use_case>
+    <use_case>遅い/信頼性の低い依存関係を置き換え</use_case>
   </pattern>
   <pattern name="mock">
-    <description>Verify interactions occurred with dependencies</description>
+    <description>依存関係との相互作用が発生したことを検証</description>
     <decision_tree name="when_to_use">
-      <question>Does the test need to verify specific interactions occurred?</question>
-      <if_yes>Apply mock pattern to verify method calls and arguments</if_yes>
-      <if_no>Use stub if only canned responses are needed</if_no>
+      <question>テストは特定の相互作用が発生したことを検証する必要がありますか？</question>
+      <if_yes>メソッド呼び出しと引数を検証するためにmockパターンを適用</if_yes>
+      <if_no>定型応答のみ必要な場合はstubを使用</if_no>
     </decision_tree>
     <example>
     email_service = mock()
@@ -89,28 +87,28 @@
     user_service.register(email_service)
     email_service.verify
   </example>
-    <use_case>Ensure methods called with correct arguments</use_case>
+    <use_case>正しい引数でメソッドが呼び出されたことを確認</use_case>
   </pattern>
   <pattern name="spy">
-    <description>Record calls while using real implementation</description>
+    <description>実際の実装を使用しながら呼び出しを記録</description>
     <decision_tree name="when_to_use">
-      <question>Does the test need real behavior plus interaction verification?</question>
-      <if_yes>Apply spy pattern to record calls while using real implementation</if_yes>
-      <if_no>Use stub for canned responses or mock for behavior replacement</if_no>
+      <question>テストは実際の動作に加えて相互作用の検証が必要ですか？</question>
+      <if_yes>実際の実装を使用しながら呼び出しを記録するためにspyパターンを適用</if_yes>
+      <if_no>定型応答にはstub、動作置換にはmockを使用</if_no>
     </decision_tree>
     <example>
     logger = spy(Logger.new)
     service.process(logger)
     assert_called logger, :log, with: "Processing complete"
   </example>
-    <use_case>Verify side effects without changing behavior</use_case>
+    <use_case>動作を変更せずに副作用を検証</use_case>
   </pattern>
   <pattern name="fake">
-    <description>Working implementation suitable for testing</description>
+    <description>テストに適した動作する実装</description>
     <decision_tree name="when_to_use">
-      <question>Does the test need a simplified but working implementation?</question>
-      <if_yes>Apply fake pattern for lightweight working implementation</if_yes>
-      <if_no>Use stub for simple canned responses</if_no>
+      <question>テストは簡略化されているが動作する実装が必要ですか？</question>
+      <if_yes>軽量で動作する実装のためにfakeパターンを適用</if_yes>
+      <if_no>単純な定型応答にはstubを使用</if_no>
     </decision_tree>
     <example>
     class FakeDatabase
@@ -127,40 +125,40 @@
       end
     end
   </example>
-    <use_case>In-memory database, fake file system</use_case>
+    <use_case>インメモリデータベース、フェイクファイルシステム</use_case>
   </pattern>
   <pattern name="descriptive_naming">
-    <description>Test names that clearly describe scenario and outcome</description>
+    <description>シナリオと結果を明確に記述するテスト名</description>
     <decision_tree name="when_to_use">
-      <question>Is this a technical unit test for a specific method?</question>
-      <if_yes>Apply descriptive naming with method-scenario-result format</if_yes>
-      <if_no>Consider should naming for BDD-style tests</if_no>
+      <question>これは特定のメソッドの技術的なユニットテストですか？</question>
+      <if_yes>method-scenario-result形式で説明的な命名を適用</if_yes>
+      <if_no>BDDスタイルのテストにはshould命名を検討</if_no>
     </decision_tree>
     <example>
     test_calculateTotal_withEmptyCart_returnsZero
     test_calculateTotal_withMultipleItems_returnsSumOfPrices
     test_calculateTotal_withDiscount_appliesDiscountCorrectly
   </example>
-    <note>Format: test_[method]_[scenario]_[expected_result]</note>
+    <note>形式: test_[メソッド]_[シナリオ]_[期待される結果]</note>
   </pattern>
   <pattern name="should_naming">
-    <description>BDD-style naming that reads like natural language</description>
+    <description>自然言語のように読めるBDDスタイルの命名</description>
     <decision_tree name="when_to_use">
-      <question>Is this a behavior-focused test readable by non-technical stakeholders?</question>
-      <if_yes>Apply should naming for natural language readability</if_yes>
-      <if_no>Use descriptive naming for technical unit tests</if_no>
+      <question>これは非技術的なステークホルダーが読める動作に焦点を当てたテストですか？</question>
+      <if_yes>自然言語の可読性のためにshould命名を適用</if_yes>
+      <if_no>技術的なユニットテストには説明的な命名を使用</if_no>
     </decision_tree>
     <example>
     calculateTotal_should_returnZero_when_cartIsEmpty
     calculateTotal_should_applyDiscount_when_couponIsValid
     calculateTotal_should_throwError_when_pricesAreNegative
   </example>
-    <note>Format: [method]_should_[expected_behavior]_when_[condition]</note>
+    <note>形式: [メソッド]_should_[期待される動作]_when_[条件]</note>
   </pattern>
   <best_practices>
     <practice priority="critical">
-      <name>Test happy path first</name>
-      <description>Start with the normal, expected flow before edge cases</description>
+      <name>最初にハッピーパスをテスト</name>
+      <description>エッジケースの前に正常な期待されるフローから開始</description>
       <example>
       test_userLogin_withValidCredentials_succeeds
       test_userLogin_withInvalidPassword_fails
@@ -168,23 +166,23 @@
     </example>
     </practice>
     <practice priority="critical">
-      <name>Test edge cases</name>
-      <description>Test boundary conditions and limits</description>
+      <name>エッジケースをテスト</name>
+      <description>境界条件と制限をテスト</description>
       <example>
-      Empty inputs, maximum values, null values, zero values, negative numbers
+      空の入力、最大値、null値、ゼロ値、負の数
     </example>
     </practice>
     <practice priority="critical">
-      <name>Test error cases</name>
-      <description>Verify error handling paths work correctly</description>
+      <name>エラーケースをテスト</name>
+      <description>エラー処理パスが正しく機能することを確認</description>
       <example>
-      Invalid inputs, network failures, permission errors, timeout scenarios
+      無効な入力、ネットワーク障害、権限エラー、タイムアウトシナリオ
     </example>
     </practice>
     <practice priority="high">
-      <name>Isolate tests</name>
-      <description>Each test should be independent</description>
-      <example><note>Use setup/teardown to reset state</note>
+      <name>テストを分離</name>
+      <description>各テストは独立しているべき</description>
+      <example><note>状態をリセットするためにsetup/teardownを使用</note>
       def setup
         @database = TestDatabase.new
         @service = UserService.new(@database)
@@ -196,26 +194,26 @@
     </example>
     </practice>
     <practice priority="high">
-      <name>Make tests readable</name>
-      <description>Tests serve as documentation</description>
-      <example><note>Good: Clear and descriptive</note>
+      <name>テストを読みやすく</name>
+      <description>テストはドキュメントとして機能する</description>
+      <example><note>良い: 明確で説明的</note>
       test_userRegistration_withExistingEmail_returnsError
 
-      <note>Bad: Unclear purpose</note>
+      <note>悪い: 目的が不明確</note>
 
       test_user_reg_1
     </example>
     </practice>
     <practice priority="high">
-      <name>One assertion per concept</name>
-      <description>Each test should verify one logical concept</description>
-      <example><note>Good: Single concept</note>
+      <name>1つのコンセプトにつき1つのアサーション</name>
+      <description>各テストは1つの論理的なコンセプトを検証すべき</description>
+      <example><note>良い: 単一のコンセプト</note>
       test_userCreation_setsDefaultRole
         user = create_user
         assert_equal "member", user.role
       end
 
-      <note>Avoid: Multiple unrelated assertions</note>
+      <note>避ける: 無関係な複数のアサーション</note>
 
       test_userCreation
         user = create_user
@@ -226,9 +224,9 @@
     </example>
     </practice>
     <practice priority="medium">
-      <name>Use test fixtures and factories</name>
-      <description>Extract common test data setup</description>
-      <example><note>Create reusable test data</note>
+      <name>テストフィクスチャとファクトリを使用</name>
+      <description>共通のテストデータセットアップを抽出</description>
+      <example><note>再利用可能なテストデータを作成</note>
       def create_test_user(overrides = {})
         defaults = {
           name: "Test User",
@@ -240,9 +238,9 @@
     </example>
     </practice>
     <practice priority="medium">
-      <name>Avoid magic numbers</name>
-      <description>Use named constants for test values</description>
-      <example><good_example>Good</good_example>
+      <name>マジックナンバーを避ける</name>
+      <description>テスト値には名前付き定数を使用</description>
+      <example><good_example>良い</good_example>
       VALID_USER_AGE = 25
       MINIMUM_AGE = 18
       test_userValidation_withValidAge_succeeds
@@ -250,7 +248,7 @@
         assert user.valid?
       end
 
-      <bad_example>Bad</bad_example>
+      <bad_example>悪い</bad_example>
 
       test_userValidation_withValidAge_succeeds
         user = User.new(age: 25)
@@ -259,107 +257,107 @@
     </example>
     </practice>
     <practice priority="medium">
-      <name>Test corner cases</name>
-      <description>Test unusual combinations and scenarios</description>
+      <name>コーナーケースをテスト</name>
+      <description>異常な組み合わせとシナリオをテスト</description>
       <example>
-      Concurrent access, timezone edge cases, leap years, DST transitions
+      並行アクセス、タイムゾーンエッジケース、うるう年、夏時間の移行
     </example>
     </practice>
   </best_practices>
   <concept name="line_coverage">
-    <description>Percentage of code lines executed during tests</description>
-    <guidance>Measures which lines of code are exercised</guidance>
+    <description>テスト中に実行されたコード行の割合</description>
+    <guidance>どの行のコードが実行されたかを測定</guidance>
   </concept>
   <concept name="branch_coverage">
-    <description>Percentage of code branches (if/else, switch) taken during tests</description>
-    <guidance>More thorough than line coverage as it measures decision paths</guidance>
+    <description>テスト中に取られたコード分岐（if/else、switch）の割合</description>
+    <guidance>決定パスを測定するため行カバレッジより徹底的</guidance>
   </concept>
   <concept name="function_coverage">
-    <description>Percentage of functions/methods called during tests</description>
-    <guidance>Identifies untested functions</guidance>
+    <description>テスト中に呼び出された関数/メソッドの割合</description>
+    <guidance>テストされていない関数を特定</guidance>
   </concept>
   <rules priority="standard">
-    <rule>Aim for high coverage but prioritize meaningful tests over coverage numbers</rule>
-    <rule>80%+ coverage is a good target for critical code paths</rule>
-    <rule>100% coverage does not guarantee bug-free code</rule>
-    <rule>Focus on testing behavior, not achieving coverage metrics</rule>
+    <rule>高いカバレッジを目指すが、カバレッジ数値より意味のあるテストを優先</rule>
+    <rule>重要なコードパスには80%以上のカバレッジが良い目標</rule>
+    <rule>100%カバレッジはバグのないコードを保証しない</rule>
+    <rule>カバレッジメトリクスの達成よりも動作のテストに焦点を当てる</rule>
   </rules>
   <related_agents>
-    <agent name="execute">Primary agent for implementing tests alongside feature code</agent>
-    <agent name="feedback">Use for reviewing test quality and coverage</agent>
-    <agent name="bug">Delegate to when tests reveal unexpected failures</agent>
+    <agent name="execute">機能コードとともにテストを実装する主要エージェント</agent>
+    <agent name="feedback">テスト品質とカバレッジのレビューに使用</agent>
+    <agent name="bug">テストで予期しない失敗が明らかになった場合に委任</agent>
   </related_agents>
   <related_skills>
-    <skill name="requirements-definition">Use to define test requirements and acceptance criteria</skill>
-    <skill name="execution-workflow">Use to implement tests as part of feature development workflow</skill>
-    <skill name="investigation-patterns">Use when debugging test failures or flaky tests</skill>
+    <skill name="requirements-definition">テスト要件と受け入れ基準の定義に使用</skill>
+    <skill name="execution-workflow">機能開発ワークフローの一部としてテストを実装するために使用</skill>
+    <skill name="investigation-patterns">テスト失敗や不安定なテストのデバッグ時に使用</skill>
   </related_skills>
   <anti_patterns>
     <avoid name="testing_implementation">
-      <description>Testing implementation details instead of behavior</description>
-      <instead>Focus on testing observable behavior and outcomes, not internal implementation details. Test what the code does, not how it does it.</instead>
+      <description>動作ではなく実装詳細をテスト</description>
+      <instead>内部実装詳細ではなく、観察可能な動作と結果のテストに焦点を当てる。コードが何をするかをテストし、どのように行うかではない。</instead>
     </avoid>
     <avoid name="excessive_mocking">
-      <description>Over-mocking dependencies throughout test suites</description>
-      <instead>Use real implementations where practical; excessive mocking often indicates poor design. Only mock external dependencies or slow operations.</instead>
+      <description>テストスイート全体で依存関係を過度にモック</description>
+      <instead>実用的な場合は実際の実装を使用。過度なモックはしばしば設計の悪さを示唆。外部依存関係または遅い操作のみをモック。</instead>
     </avoid>
     <avoid name="flaky_tests">
-      <description>Tests that sometimes pass and sometimes fail</description>
-      <instead>Ensure tests are deterministic by controlling time, randomness, and async operations. Use fixed timestamps, seeded random generators, and proper async handling.</instead>
+      <description>時々パスし時々失敗するテスト</description>
+      <instead>時間、ランダム性、非同期操作を制御してテストを決定論的に。固定タイムスタンプ、シード付き乱数生成器、適切な非同期処理を使用。</instead>
     </avoid>
     <avoid name="slow_tests">
-      <description>Tests that take too long to run</description>
-      <instead>Use unit tests for fast feedback; reserve slow integration/e2e tests for critical paths. Unit tests should run in milliseconds, not seconds.</instead>
+      <description>実行に時間がかかりすぎるテスト</description>
+      <instead>高速なフィードバックにはユニットテストを使用。遅い結合/E2Eテストは重要なパスに限定。ユニットテストはミリ秒単位で実行されるべき、秒単位ではない。</instead>
     </avoid>
     <avoid name="test_interdependence">
-      <description>Tests that depend on execution order or shared state</description>
-      <instead>Make each test independent with proper setup/teardown and isolated state. Each test should create its own test data.</instead>
+      <description>実行順序または共有状態に依存するテスト</description>
+      <instead>適切なsetup/teardownと分離された状態で各テストを独立させる。各テストは独自のテストデータを作成すべき。</instead>
     </avoid>
   </anti_patterns>
   <workflow>
     <phase name="analyze">
-      <objective>Analyze testing requirements</objective>
-      <step>1. Identify code to be tested</step>
-      <step>2. Review existing test patterns in project</step>
-      <step>3. Determine appropriate test types</step>
+      <objective>テスト要件を分析</objective>
+      <step>1. テスト対象のコードを特定</step>
+      <step>2. プロジェクトの既存のテストパターンをレビュー</step>
+      <step>3. 適切なテストタイプを決定</step>
     </phase>
     <phase name="design">
-      <objective>Design test strategy</objective>
-      <step>1. Identify test scenarios and edge cases</step>
-      <step>2. Plan unit, integration, and e2e coverage</step>
-      <step>3. Design mocking strategy</step>
+      <objective>テスト戦略を設計</objective>
+      <step>1. テストシナリオとエッジケースを特定</step>
+      <step>2. ユニット、結合、E2Eカバレッジを計画</step>
+      <step>3. モック戦略を設計</step>
     </phase>
     <phase name="implement">
-      <objective>Implement and verify tests</objective>
-      <step>1. Write tests following project patterns</step>
-      <step>2. Run tests to verify they pass</step>
-      <step>3. Verify coverage meets requirements</step>
+      <objective>テストを実装し検証</objective>
+      <step>1. プロジェクトパターンに従ってテストを作成</step>
+      <step>2. テストを実行してパスすることを確認</step>
+      <step>3. カバレッジが要件を満たすことを確認</step>
     </phase>
   </workflow>
   <error_escalation>
     <level severity="low">
-      <example>Minor coverage gap in non-critical path</example>
-      <action>Note in report, proceed</action>
+      <example>非重要パスでの軽微なカバレッジギャップ</example>
+      <action>レポートに記載し、続行</action>
     </level>
     <level severity="medium">
-      <example>Test flakiness detected</example>
-      <action>Document issue, use AskUserQuestion for clarification</action>
+      <example>テストの不安定さが検出された</example>
+      <action>問題を文書化し、AskUserQuestionで明確化を求める</action>
     </level>
     <level severity="high">
-      <example>Critical path lacks test coverage</example>
-      <action>STOP, present options to user</action>
+      <example>重要なパスにテストカバレッジがない</example>
+      <action>停止し、ユーザーに選択肢を提示</action>
     </level>
     <level severity="critical">
-      <example>Tests reveal security vulnerability</example>
-      <action>BLOCK operation, require explicit user acknowledgment</action>
+      <example>テストでセキュリティ脆弱性が判明</example>
+      <action>操作をブロックし、明示的なユーザー確認を要求</action>
     </level>
   </error_escalation>
   <constraints>
-    <must>Follow project test patterns</must>
-    <must>Run tests after creation</must>
-    <must>Cover critical paths first</must>
-    <avoid>Creating tests without understanding implementation</avoid>
-    <avoid>Writing flaky or non-deterministic tests</avoid>
-    <avoid>Ignoring existing test conventions</avoid>
+    <must>プロジェクトのテストパターンに従う</must>
+    <must>作成後にテストを実行</must>
+    <must>最初に重要なパスをカバー</must>
+    <avoid>実装を理解せずにテストを作成</avoid>
+    <avoid>不安定または非決定論的なテストを作成</avoid>
+    <avoid>既存のテスト規約を無視</avoid>
   </constraints>
 </skill>
