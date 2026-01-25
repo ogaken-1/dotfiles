@@ -27,15 +27,17 @@ let
         shell = pkgs.fish;
       };
       programs.fish.enable = true;
-      home-manager.backupFileExtension = "backup";
-      home-manager.sharedModules = [
-        mac-app-util.homeManagerModules.default
-      ];
-      home-manager.useUserPackages = false;
-      home-manager.users.${username} = {
-        imports = [
-          ../modules/darwin-op-ssh.nix
+      home-manager = {
+        backupFileExtension = "backup";
+        sharedModules = [
+          mac-app-util.homeManagerModules.default
         ];
+        useUserPackages = false;
+        users.${username} = {
+          imports = [
+            ../modules/darwin-op-ssh.nix
+          ];
+        };
       };
     };
 in
