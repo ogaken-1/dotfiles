@@ -10,28 +10,10 @@ let
       "\"${value}\"";
 
   # Convert an attribute set to YAML front-matter lines
-  # Optional `order` parameter specifies key ordering; remaining keys are appended alphabetically
   toYaml =
-    {
-      attrs,
-      order ? null,
-    }:
-    let
-      allKeys = builtins.attrNames attrs;
-      orderedKeys =
-        if order == null then
-          allKeys
-        else
-          let
-            # Filter order list to only include keys that exist in attrs
-            existingOrderedKeys = builtins.filter (k: builtins.hasAttr k attrs) order;
-            # Get remaining keys not in order list, sorted alphabetically
-            remainingKeys = builtins.filter (k: !(builtins.elem k order)) allKeys;
-          in
-          existingOrderedKeys ++ remainingKeys;
-    in
+    attrs:
     builtins.concatStringsSep "\n" (
-      map (name: "${name}: ${toYamlValue (builtins.getAttr name attrs)}") orderedKeys
+      map (name: "${name}: ${toYamlValue (builtins.getAttr name attrs)}") (builtins.attrNames attrs)
     );
 in
 {
@@ -42,19 +24,14 @@ in
   #   buildMarkdown {
   #     front-matter = { name = "Example"; user-invocable = true; };
   #     body = ./path/to/content.xml;
-  #     order = [ "name" "user-invocable" ];  # optional key ordering
   #   }
   buildMarkdown =
     {
       front-matter,
       body,
-      order ? null,
     }:
     let
-      yaml = toYaml {
-        attrs = front-matter;
-        inherit order;
-      };
+      yaml = toYaml front-matter;
       bodyContent = builtins.readFile body;
     in
     "---\n${yaml}\n---\n\n${bodyContent}";
