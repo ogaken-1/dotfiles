@@ -1,8 +1,5 @@
 { inputs }:
 { pkgs, ... }:
-let
-  git-select-author = pkgs.callPackage ./pkgs/git-select-author { };
-in
 {
   nixpkgs.overlays = with inputs; [
     emacs-overlay.overlay
@@ -22,7 +19,6 @@ in
       fsautocomplete
       ghq
       git-absorb
-      git-select-author
       gnumake
       gnupg
       jq
