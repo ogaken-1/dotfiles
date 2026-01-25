@@ -12,9 +12,9 @@ let
   # Convert an attribute set to YAML front-matter lines
   toYaml =
     attrs:
-    builtins.concatStringsSep "\n" (
-      map (name: "${name}: ${toYamlValue (builtins.getAttr name attrs)}") (builtins.attrNames attrs)
-    );
+    builtins.attrNames attrs
+    |> map (name: "${name}: ${toYamlValue (builtins.getAttr name attrs)}")
+    |> builtins.concatStringsSep "\n";
 in
 {
   inherit toYamlValue toYaml;
