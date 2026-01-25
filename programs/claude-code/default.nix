@@ -99,13 +99,6 @@ in
         };
         body = ./skills/context7-usage.xml;
       };
-      orchestration = lib.buildMarkdown {
-        front-matter = {
-          name = "Orchestration";
-          description = "This skill should be used for complex multi-agent tasks, parallel execution, cross-validation, or when orchestrating multiple sub-agents. Provides workflow patterns for agent coordination.";
-        };
-        body = ./skills/orchestration.xml;
-      };
       execution-workflow = lib.buildMarkdown {
         front-matter = {
           name = "Execution Workflow";

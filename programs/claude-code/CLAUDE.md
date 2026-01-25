@@ -27,7 +27,6 @@
     <behavior>ユーザー指示なしのGit操作 → ユーザー指示を待つ</behavior>
   </prohibited_behaviors>
   <related_skills>
-    <skill name="orchestration">複雑なタスクの詳細ワークフロー</skill>
     <skill name="serena-usage">Serena MCPツールの使用パターン</skill>
     <skill name="context7-usage">Context7 MCPツールの使用パターン</skill>
   </related_skills>
