@@ -27,8 +27,16 @@
       gstl = "git stash list";
       gsw = "git switch";
       gswc = "git switch --create";
+      gt = "git tag";
+      gtd = "git tag --delete";
+      gr = "git restore";
+      gR = "git reset";
+      gRs = "git reset --soft";
+      gRm = "git reset --mixed";
+      gRh = "git reset --hard";
       gb = "git branch";
       gbd = "git branch --delete";
+      gl = "git log";
     };
     functions = {
       fzf_tmux_session = {
