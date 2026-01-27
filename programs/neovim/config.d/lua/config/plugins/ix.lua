@@ -44,8 +44,8 @@ return {
     ix.charmap.set({ 'i', 'c' }, '<C-e>', ix.action.completion.close())
 
     -- signature help
-    ix.charmap.set('i', '<C-o>', ix.action.signature_help.trigger())
-    ix.charmap.set('i', '<C-j>', ix.action.signature_help.select_next())
-    ix.charmap.set('i', '<C-k>', ix.action.signature_help.select_prev())
+    ix.charmap.set('i', '<M-o>', ix.action.signature_help.trigger())
+    ix.charmap.set('i', '<M-j>', ix.action.signature_help.select_next())
+    ix.charmap.set('i', '<M-k>', ix.action.signature_help.select_prev())
   end,
 }
