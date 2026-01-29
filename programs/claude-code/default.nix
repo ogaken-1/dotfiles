@@ -19,20 +19,104 @@ in
       };
     };
     agents = {
-      code-quality = builtins.readFile ./agents/code-quality.xml;
-      coding = builtins.readFile ./agents/coding.xml;
-      database = builtins.readFile ./agents/database.xml;
-      design = builtins.readFile ./agents/design.xml;
-      devops = builtins.readFile ./agents/devops.xml;
-      docs = builtins.readFile ./agents/docs.xml;
-      explore = builtins.readFile ./agents/explore.xml;
-      fact-check = builtins.readFile ./agents/fact-check.xml;
-      git = builtins.readFile ./agents/git.xml;
-      performance = builtins.readFile ./agents/performance.xml;
-      quality-assurance = builtins.readFile ./agents/quality-assurance.xml;
-      security = builtins.readFile ./agents/security.xml;
-      test = builtins.readFile ./agents/test.xml;
-      validator = builtins.readFile ./agents/validator.xml;
+      code-quality = lib.buildMarkdown {
+        front-matter = {
+          name = "code-quality";
+          description = "Code quality analysis and refactoring recommendations. Use proactively after code changes.";
+        };
+        body = ./agents/code-quality.xml;
+      };
+      coding = lib.buildMarkdown {
+        front-matter = {
+          name = "coding";
+          description = "Test-first workflow implementation (test → review → implement). Use proactively for code implementation tasks.";
+        };
+        body = ./agents/coding.xml;
+      };
+      database = lib.buildMarkdown {
+        front-matter = {
+          name = "database";
+          description = "Database design, optimization, and query analysis. Use for database-related tasks.";
+        };
+        body = ./agents/database.xml;
+      };
+      design = lib.buildMarkdown {
+        front-matter = {
+          name = "design";
+          description = "System architecture and API design analysis. Use for architectural decisions.";
+        };
+        body = ./agents/design.xml;
+      };
+      devops = lib.buildMarkdown {
+        front-matter = {
+          name = "devops";
+          description = "Infrastructure, CI/CD, and observability. Use for DevOps-related tasks.";
+        };
+        body = ./agents/devops.xml;
+      };
+      docs = lib.buildMarkdown {
+        front-matter = {
+          name = "docs";
+          description = "Documentation updates and maintenance. Use proactively after code changes.";
+        };
+        body = ./agents/docs.xml;
+      };
+      explore = lib.buildMarkdown {
+        front-matter = {
+          name = "explore";
+          description = "Codebase exploration and file discovery. Use for understanding code structure.";
+        };
+        body = ./agents/explore.xml;
+      };
+      fact-check = lib.buildMarkdown {
+        front-matter = {
+          name = "fact-check";
+          description = "External source verification for claims about libraries, docs, and standards.";
+        };
+        body = ./agents/fact-check.xml;
+      };
+      git = lib.buildMarkdown {
+        front-matter = {
+          name = "git";
+          description = "Git workflow design and operations. Use for version control tasks.";
+        };
+        body = ./agents/git.xml;
+      };
+      performance = lib.buildMarkdown {
+        front-matter = {
+          name = "performance";
+          description = "Performance analysis and optimization. Use for performance-related tasks.";
+        };
+        body = ./agents/performance.xml;
+      };
+      quality-assurance = lib.buildMarkdown {
+        front-matter = {
+          name = "quality-assurance";
+          description = "Code review and quality validation. Use proactively after implementation.";
+        };
+        body = ./agents/quality-assurance.xml;
+      };
+      security = lib.buildMarkdown {
+        front-matter = {
+          name = "security";
+          description = "Security vulnerability detection and analysis. Use proactively for security review.";
+        };
+        body = ./agents/security.xml;
+      };
+      test = lib.buildMarkdown {
+        front-matter = {
+          name = "test";
+          description = "Test creation, coverage analysis, and test execution. Use for testing tasks.";
+        };
+        body = ./agents/test.xml;
+      };
+      validator = lib.buildMarkdown {
+        front-matter = {
+          name = "validator";
+          description = "Cross-validation and consensus verification. Use for verifying agent outputs.";
+        };
+        body = ./agents/validator.xml;
+      };
     };
     commands = {
       markdown = lib.buildMarkdown {
