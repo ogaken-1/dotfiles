@@ -209,6 +209,13 @@ in
         };
         body = ./skills/testing-patterns.xml;
       };
+      nvim-ix-source = lib.buildMarkdown {
+        front-matter = {
+          name = "nvim-ix Source";
+          description = "This skill should be used when the user asks to \"create nvim-ix source\", \"nvim-ix completion\", \"cmp-kit source\", \"neovim completion source\", or needs guidance on implementing custom completion sources for nvim-ix/nvim-cmp-kit. Provides interface specifications and implementation patterns.";
+        };
+        body = ./skills/nvim-ix-source.xml;
+      };
     };
     mcpServers = {
       serena = {

@@ -1,0 +1,665 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skill>
+  <purpose>nvim-ixにカスタム補完SourceおよびシグネチャヘルプSourceを追加するためのガイダンスを提供する。</purpose>
+  <architecture>
+    <overview>
+      <description>nvim-ixはnvim-cmp-kitをラップするファサードパターンを採用</description>
+      <component name="nvim-ix">ユーザー向けAPI、設定管理、ファサード</component>
+      <component name="nvim-cmp-kit">Source実装の実体、LSP 3.17.0準拠</component>
+    </overview>
+    <source_code_reference>
+      <description>ソースコードを直接参照する必要がある場合</description>
+      <step order="1">ghq list --full-path | grep -E "(nvim-cmp-kit|nvim-ix)" でパスを特定</step>
+      <step order="2">見つからない場合: ghq get hrsh7th/nvim-cmp-kit &amp;&amp; ghq get hrsh7th/nvim-ix でクローン</step>
+      <step order="3">Readツールで該当ファイルを参照</step>
+    </source_code_reference>
+    <warning>APIはまだ安定していない（READMEに警告あり）</warning>
+  </architecture>
+  <interfaces>
+    <interface name="cmp-kit.completion.CompletionSource">
+      <description>補完Sourceの基本インターフェース</description>
+      <field name="name" type="string" required="true">ソース名</field>
+      <field name="complete" type="function" required="true">
+        <signature>fun(self, completion_context: cmp-kit.kit.LSP.CompletionContext, callback: fun(err?: unknown, response?: cmp-kit.kit.LSP.TextDocumentCompletionResponse))</signature>
+        <description>補完候補を生成する関数</description>
+        <callback_response>cmp-kit.kit.LSP.CompletionList | cmp-kit.kit.LSP.CompletionItem[] | nil</callback_response>
+      </field>
+      <field name="get_configuration" type="function" required="false">
+        <signature>fun(self): Configuration</signature>
+        <description>Source固有の設定を返す</description>
+      </field>
+      <field name="resolve" type="function" required="false">
+        <signature>fun(self, item: CompletionItem, callback: fun(err?: unknown, response?: cmp-kit.kit.LSP.CompletionItem))</signature>
+        <description>補完アイテムの詳細情報を解決</description>
+      </field>
+      <field name="execute" type="function" required="false">
+        <signature>fun(self, command, callback)</signature>
+        <description>コマンド実行（LSP executeCommand相当）</description>
+      </field>
+      <field name="capable" type="function" required="false">
+        <signature>fun(self): boolean</signature>
+        <description>Sourceが有効かどうかを判定</description>
+      </field>
+    </interface>
+    <interface name="cmp-kit.signature_help.SignatureHelpSource">
+      <description>シグネチャヘルプSourceの基本インターフェース</description>
+      <field name="name" type="string" required="true">ソース名</field>
+      <field name="fetch" type="function" required="true">
+        <signature>fun(self, context: cmp-kit.kit.LSP.SignatureHelpContext, callback: fun(err?: unknown, response?: cmp-kit.kit.LSP.TextDocumentSignatureHelpResponse))</signature>
+        <description>シグネチャヘルプ情報を取得する関数</description>
+      </field>
+      <field name="get_configuration" type="function" required="false">
+        <signature>fun(self): SignatureHelpSource.Configuration</signature>
+        <description>Source固有の設定を返す（trigger_characters, retrigger_characters, position_encoding_kind）</description>
+      </field>
+      <field name="capable" type="function" required="false">
+        <signature>fun(self): boolean</signature>
+        <description>Sourceが有効かどうかを判定</description>
+      </field>
+    </interface>
+  </interfaces>
+  <registration>
+    <method name="register_source">
+      <description>CompletionServiceにSourceを登録</description>
+      <signature>service:register_source(source, params)</signature>
+      <params>
+        <param name="group" type="integer" required="true">優先度グループ（小さいほど高優先）</param>
+        <param name="priority" type="integer" required="false">グループ内優先度</param>
+        <param name="dedup" type="boolean" required="false">重複排除</param>
+        <param name="item_count" type="integer" required="false">最大項目数</param>
+        <param name="keyword_length" type="integer" required="false">最小キーワード長</param>
+      </params>
+    </method>
+    <method name="register_source (SignatureHelpService)">
+      <description>SignatureHelpServiceにSourceを登録</description>
+      <signature>service:register_source(source, params)</signature>
+      <params>
+        <param name="priority" type="integer" required="false">優先度（大きいほど高優先、デフォルト0）</param>
+      </params>
+      <note>CompletionServiceと異なり、groupパラメータはなく、priorityのみ</note>
+    </method>
+  </registration>
+  <builtin_sources>
+    <source name="ix.source.completion.github()">GitHub補完</source>
+    <source name="ix.source.completion.buffer()">バッファ単語</source>
+    <source name="ix.source.completion.path()">ファイルパス</source>
+    <source name="ix.source.completion.calc()">数式評価</source>
+    <source name="ix.source.completion.emoji()">絵文字</source>
+    <source name="ix.source.completion.cmdline()">Vimコマンド</source>
+  </builtin_sources>
+  <helper_functions>
+    <function name="ix.source.completion.attach_lsp">
+      <description>LSP completion sourceをサービスにアタッチするヘルパー関数</description>
+      <signature>ix.source.completion.attach_lsp(completion_service, option)</signature>
+      <note>他のsource関数と異なり、Sourceオブジェクトを返さず、直接サービスに登録する</note>
+      <example><![CDATA[
+ix.source.completion.attach_lsp(service, {
+  default = { group = 20, priority = 1 },
+  servers = {},
+})
+]]></example>
+    </function>
+    <function name="ix.source.signature_help.attach_lsp">
+      <description>LSP signature help sourceをサービスにアタッチするヘルパー関数</description>
+      <signature>ix.source.signature_help.attach_lsp(signature_help_service, option)</signature>
+      <note>completion.attach_lspと同様、Sourceオブジェクトを返さず、直接サービスに登録する</note>
+      <example><![CDATA[
+ix.source.signature_help.attach_lsp(service, {
+  bufnr = vim.api.nvim_get_current_buf(),
+  priority = 100,
+})
+]]></example>
+    </function>
+  </helper_functions>
+  <patterns>
+    <pattern name="create_custom_source">
+      <description>カスタム補完Sourceの作成パターン</description>
+      <example scenario="シンプルなカスタムSourceを作成">
+        <code language="lua" location="lua/cmp-kit/completion/ext/source/custom.lua"><![CDATA[
+---@return cmp-kit.completion.CompletionSource
+return function(option)
+  option = option or {}
+
+  return {
+    name = 'custom',
+
+    ---@param self unknown
+    ---@param completion_context cmp-kit.kit.LSP.CompletionContext
+    ---@param callback fun(err?: unknown, response?: cmp-kit.kit.LSP.TextDocumentCompletionResponse)
+    complete = function(self, completion_context, callback)
+      -- success: callback(nil, response)
+      -- error: callback(err, nil)
+      callback(nil, {
+        {
+          label = 'example',
+          kind = 1, -- Text
+          detail = 'Example completion',
+        },
+      })
+    end,
+
+    ---@param callback fun(err?: unknown, response?: cmp-kit.kit.LSP.CompletionItem)
+    resolve = function(self, item, callback)
+      item.documentation = 'Full documentation here'
+      callback(nil, item)
+    end,
+  }
+end
+]]></code>
+      </example>
+    </pattern>
+    <pattern name="register_source_in_setup">
+      <description>ix.setupでSourceを登録するパターン</description>
+      <example scenario="カスタムSourceをix.setupで登録">
+        <code language="lua"><![CDATA[
+local ix = require('ix')
+
+ix.setup({
+  attach = {
+    insert_mode = function()
+      local service = ix.get_completion_service({ recreate = true })
+
+      -- LSP source (special helper function)
+      ix.source.completion.attach_lsp(service, {
+        default = { group = 1, priority = 1 },
+        servers = {},
+      })
+
+      -- Built-in sources
+      service:register_source(ix.source.completion.path(), { group = 2 })
+      service:register_source(ix.source.completion.buffer(), { group = 3 })
+
+      -- Custom source
+      local custom_source = require('path.to.custom_source')()
+      service:register_source(custom_source, {
+        group = 2,
+        priority = 100,
+        dedup = true,
+        item_count = 10,
+        keyword_length = 2,
+      })
+    end,
+  },
+})
+]]></code>
+      </example>
+    </pattern>
+    <pattern name="async_source">
+      <description>非同期処理を行うSourceパターン</description>
+      <example scenario="外部APIを呼び出す非同期Source">
+        <code language="lua"><![CDATA[
+---@return cmp-kit.completion.CompletionSource
+return function(option)
+  option = option or {}
+
+  return {
+    name = 'async_source',
+
+    complete = function(self, completion_context, callback)
+      -- Async operation using vim.schedule or coroutine
+      vim.schedule(function()
+        -- Perform async work here (API call, file read, etc.)
+        local results = {}
+        -- ... populate results ...
+        callback(nil, results)
+      end)
+    end,
+
+    capable = function(self)
+      -- Return false to disable this source conditionally
+      return vim.bo.filetype == 'lua'
+    end,
+  }
+end
+]]></code>
+      </example>
+    </pattern>
+    <pattern name="completion_item_structure">
+      <description>LSP CompletionItemの構造</description>
+      <example scenario="よく使用するCompletionItemフィールド">
+        <code language="lua"><![CDATA[
+{
+  label = 'completion_text',        -- Required: displayed text
+  kind = 6,                         -- CompletionItemKind (1=Text, 2=Method, 3=Function, 6=Variable, etc.)
+  detail = 'string',                -- Short description
+  documentation = 'string',         -- Full documentation (or MarkupContent)
+  insertText = 'text_to_insert',    -- Text to insert (defaults to label)
+  insertTextFormat = 1,             -- 1=PlainText, 2=Snippet
+  filterText = 'filter_by_this',    -- Text to filter by
+  sortText = 'sort_by_this',        -- Text to sort by
+  preselect = false,                -- Whether to preselect this item
+  deprecated = false,               -- Mark as deprecated
+  data = {},                        -- Custom data for resolve
+}
+]]></code>
+      </example>
+    </pattern>
+    <pattern name="create_signature_help_source">
+      <description>カスタムシグネチャヘルプSourceの作成パターン</description>
+      <example scenario="シンプルなシグネチャヘルプSourceを作成">
+        <code language="lua"><![CDATA[
+---@return cmp-kit.signature_help.SignatureHelpSource
+return function(option)
+  option = option or {}
+
+  return {
+    name = 'custom_signature_help',
+
+    ---@param self unknown
+    ---@param context cmp-kit.kit.LSP.SignatureHelpContext
+    ---@param callback fun(err?: unknown, response?: cmp-kit.kit.LSP.TextDocumentSignatureHelpResponse)
+    fetch = function(self, context, callback)
+      -- success: callback(nil, response)
+      -- error: callback(err, nil)
+      callback(nil, {
+        signatures = {
+          {
+            label = 'function_name(param1: string, param2: number)',
+            documentation = 'Function description',
+            parameters = {
+              { label = 'param1: string', documentation = 'First parameter' },
+              { label = 'param2: number', documentation = 'Second parameter' },
+            },
+          },
+        },
+        activeSignature = 0,
+        activeParameter = 0,
+      })
+    end,
+
+    get_configuration = function(self)
+      return {
+        trigger_characters = { '(', ',' },
+        retrigger_characters = { ')' },
+      }
+    end,
+
+    capable = function(self)
+      return vim.bo.filetype == 'lua'
+    end,
+  }
+end
+]]></code>
+      </example>
+    </pattern>
+    <pattern name="register_signature_help_in_setup">
+      <description>ix.setupでSignatureHelpServiceにSourceを登録するパターン</description>
+      <example scenario="シグネチャヘルプSourceをix.setupで登録">
+        <code language="lua"><![CDATA[
+local ix = require('ix')
+
+ix.setup({
+  attach = {
+    insert_mode = function()
+      -- Completion service
+      local completion_service = ix.get_completion_service({ recreate = true })
+      -- ... register completion sources ...
+
+      -- Signature help service
+      local signature_help_service = ix.get_signature_help_service({ recreate = true })
+
+      -- LSP signature help (helper function)
+      ix.source.signature_help.attach_lsp(signature_help_service, {
+        priority = 100,
+      })
+
+      -- Custom signature help source
+      local custom_source = require('path.to.custom_signature_help')()
+      signature_help_service:register_source(custom_source, {
+        priority = 50,
+      })
+    end,
+  },
+})
+]]></code>
+      </example>
+    </pattern>
+    <pattern name="signature_help_response_structure">
+      <description>LSP SignatureHelpレスポンスの構造</description>
+      <example scenario="SignatureHelpレスポンスのフィールド">
+        <code language="lua"><![CDATA[
+{
+  signatures = {                    -- SignatureInformation[] (必須)
+    {
+      label = 'func(a, b, c)',      -- string (必須): シグネチャ全体のラベル
+      documentation = 'string',     -- string | MarkupContent (オプション)
+      parameters = {                -- ParameterInformation[] (オプション)
+        {
+          label = 'a',              -- string | [number, number]: パラメータ名または位置
+          documentation = 'string', -- string | MarkupContent (オプション)
+        },
+      },
+      activeParameter = 0,          -- number (オプション): アクティブなパラメータのインデックス
+    },
+  },
+  activeSignature = 0,              -- number (オプション): アクティブなシグネチャのインデックス
+  activeParameter = 0,              -- number (オプション): アクティブなパラメータのインデックス
+}
+]]></code>
+      </example>
+    </pattern>
+  </patterns>
+  <lsp_completion_item_kinds>
+    <kind value="1">Text</kind>
+    <kind value="2">Method</kind>
+    <kind value="3">Function</kind>
+    <kind value="4">Constructor</kind>
+    <kind value="5">Field</kind>
+    <kind value="6">Variable</kind>
+    <kind value="7">Class</kind>
+    <kind value="8">Interface</kind>
+    <kind value="9">Module</kind>
+    <kind value="10">Property</kind>
+    <kind value="11">Unit</kind>
+    <kind value="12">Value</kind>
+    <kind value="13">Enum</kind>
+    <kind value="14">Keyword</kind>
+    <kind value="15">Snippet</kind>
+    <kind value="16">Color</kind>
+    <kind value="17">File</kind>
+    <kind value="18">Reference</kind>
+    <kind value="19">Folder</kind>
+    <kind value="20">EnumMember</kind>
+    <kind value="21">Constant</kind>
+    <kind value="22">Struct</kind>
+    <kind value="23">Event</kind>
+    <kind value="24">Operator</kind>
+    <kind value="25">TypeParameter</kind>
+  </lsp_completion_item_kinds>
+  <best_practices>
+    <practice priority="critical">completeコールバックは必ず呼び出す（nilでも可）</practice>
+    <practice priority="critical">resolveコールバックは必ず呼び出す（変更なしでも元のitemを返す）</practice>
+    <practice priority="critical">fetchコールバックは必ず呼び出す（nilでも可）</practice>
+    <practice priority="high">capableメソッドで不要な状況ではSourceを無効化</practice>
+    <practice priority="high">非同期処理にはvim.scheduleまたはcoroutineを使用</practice>
+    <practice priority="medium">重い処理はキャッシュを活用</practice>
+    <practice priority="medium">適切なCompletionItemKindを設定してアイコン表示を最適化</practice>
+  </best_practices>
+  <rules priority="critical">
+    <rule>completeコールバックは必ず呼び出す（成功時: callback(nil, response)、エラー時: callback(err, nil)）</rule>
+    <rule>fetchコールバックは必ず呼び出す（成功時: callback(nil, response)、エラー時: callback(err, nil)）</rule>
+    <rule>resolveコールバックは必ず呼び出す（変更なしでも元のitemを返す）</rule>
+  </rules>
+  <rules priority="standard">
+    <rule>capableメソッドで不要な状況ではSourceを無効化</rule>
+    <rule>非同期処理にはvim.scheduleまたはcoroutineを使用</rule>
+    <rule>重い処理はキャッシュを活用</rule>
+  </rules>
+  <anti_patterns>
+    <avoid name="blocking_complete">
+      <description>completeメソッド内でブロッキング処理を行う</description>
+      <instead>vim.scheduleやcoroutineで非同期化</instead>
+    </avoid>
+    <avoid name="blocking_fetch">
+      <description>fetchメソッド内でブロッキング処理を行う</description>
+      <instead>vim.scheduleやcoroutineで非同期化</instead>
+    </avoid>
+    <avoid name="missing_callback">
+      <description>コールバックを呼び出さない</description>
+      <instead>エラー時もnilでコールバックを呼び出す</instead>
+    </avoid>
+    <avoid name="large_item_count">
+      <description>大量の補完候補を返す</description>
+      <instead>item_countパラメータで制限、または事前にフィルタリング</instead>
+    </avoid>
+  </anti_patterns>
+  <error_escalation>
+    <level severity="low">
+      <example>補完候補が空で返される</example>
+      <action>capableメソッドとフィルタ条件を確認</action>
+    </level>
+    <level severity="medium">
+      <example>非同期処理がタイムアウト</example>
+      <action>問題を文書化し、AskUserQuestionで明確化を求める</action>
+    </level>
+    <level severity="high">
+      <example>Source実装がエラーをスロー</example>
+      <action>停止し、ユーザーに選択肢を提示</action>
+    </level>
+    <level severity="critical">
+      <example>コールバック未呼び出しによる補完UIハング</example>
+      <action>操作をブロックし、明示的なユーザー確認を要求</action>
+    </level>
+  </error_escalation>
+  <constraints>
+    <must>completeコールバックを必ず呼び出す（err-first形式）</must>
+    <must>fetchコールバックを必ず呼び出す（err-first形式）</must>
+    <must>resolveコールバックを必ず呼び出す</must>
+    <must>CompletionSourceまたはSignatureHelpSourceインターフェースに従って実装</must>
+    <avoid>completeメソッド内でブロッキング処理を行う</avoid>
+    <avoid>fetchメソッド内でブロッキング処理を行う</avoid>
+    <avoid>コールバックを呼び出さない</avoid>
+    <avoid>大量の補完候補を返す</avoid>
+  </constraints>
+  <workflow>
+    <phase name="design">
+      <objective>Sourceの仕様を決定</objective>
+      <step>1. 補完候補のデータソースを特定</step>
+      <step>2. 同期/非同期の要件を決定</step>
+      <step>3. capableの条件を決定（filetype、特定のバッファなど）</step>
+      <step>4. resolveが必要かどうかを決定</step>
+    </phase>
+    <phase name="implement">
+      <objective>Sourceを実装</objective>
+      <step>1. lua/配下に新しいSourceファイルを作成</step>
+      <step>2. CompletionSourceまたはSignatureHelpSourceインターフェースに従って実装</step>
+      <step>3. 型アノテーションを追加</step>
+    </phase>
+    <phase name="test">
+      <objective>Sourceのテストを作成</objective>
+      <step>1. lua/配下に.spec.luaファイルを作成</step>
+      <step>2. specヘルパーを使用してテスト環境をセットアップ</step>
+      <step>3. 正常系・異常系のテストケースを実装</step>
+      <step>4. vustedでテストを実行</step>
+    </phase>
+    <phase name="integrate">
+      <objective>ix.setupに統合</objective>
+      <step>1. ix.setupのattach.insert_mode内でSourceを登録</step>
+      <step>2. 適切なgroup、priorityを設定</step>
+      <step>3. 動作確認</step>
+    </phase>
+  </workflow>
+  <testing>
+    <framework>
+      <name>vusted</name>
+      <description>bustedベースのNeovimテストフレームワーク</description>
+      <run>nix-shell -p luajitPackages.vusted --run 'vusted --output=gtest --pattern=.spec ./lua'</run>
+    </framework>
+    <shell_nix>
+      <description>ローカル開発用のshell.nix</description>
+      <example><![CDATA[
+{ pkgs ? import <nixpkgs> {} }:
+pkgs.mkShell {
+  buildInputs = with pkgs; [
+    neovim
+    luajitPackages.vusted
+  ];
+}
+]]></example>
+      <usage>nix-shell --run 'vusted --output=gtest --pattern=.spec ./lua'</usage>
+    </shell_nix>
+    <file_naming>
+      <convention>{source_name}.spec.lua</convention>
+      <location>テスト対象ファイルと同じディレクトリ</location>
+      <example>lua/my-plugin/source/custom.lua → lua/my-plugin/source/custom.spec.lua</example>
+    </file_naming>
+    <spec_helper>
+      <description>nvim-cmp-kitはcmp-kit.specヘルパーを提供</description>
+      <functions>
+        <function name="spec.setup(option)">テスト環境のセットアップ</function>
+        <function name="spec.reset()">テスト環境のリセット</function>
+        <function name="spec.assert(buffer_text)">バッファ状態とカーソル位置のアサート</function>
+      </functions>
+      <setup_option_fields>
+        <field name="buffer_text" type="string[]">バッファの初期テキスト（|でカーソル位置を指定）</field>
+        <field name="mode" type="'i'|'c'">モード（デフォルト: 'i'）</field>
+        <field name="input" type="string">補完リクエスト後に挿入するテキスト</field>
+        <field name="items" type="CompletionItem[]">返す補完候補</field>
+        <field name="keyword_pattern" type="string">キーワードパターン</field>
+        <field name="is_incomplete" type="boolean">isIncompleteフラグ</field>
+      </setup_option_fields>
+    </spec_helper>
+    <test_patterns>
+      <pattern name="basic_completion_test">
+        <description>基本的な補完Sourceのテストパターン</description>
+        <example><![CDATA[
+local my_source = require('my-plugin.source.custom')
+local spec = require('cmp-kit.spec')
+local LSP = require('cmp-kit.kit.LSP')
+local Async = require('cmp-kit.kit.Async')
+
+describe('my-plugin.source.custom', function()
+  local source = my_source()
+
+  ---@param text string
+  ---@param expected_labels string[]
+  local function assert_completion(text, expected_labels)
+    spec.setup({ buffer_text = { text } })
+    local response = Async.new(function(resolve, reject)
+      source:complete({ triggerKind = LSP.CompletionTriggerKind.Invoked }, function(err, res)
+        if err then
+          reject(err)
+        else
+          resolve(res)
+        end
+      end)
+    end):sync(2000)
+    assert.is_not_nil(response)
+    local labels = vim.tbl_map(function(item) return item.label end, response.items or response)
+    assert.are_same(expected_labels, labels)
+  end
+
+  it('returns expected completions', function()
+    assert_completion('test|', { 'test_item1', 'test_item2' })
+  end)
+
+  it('returns empty for invalid context', function()
+    assert_completion('invalid|', {})
+  end)
+end)
+]]></example>
+      </pattern>
+      <pattern name="async_source_test">
+        <description>非同期Sourceのテストパターン</description>
+        <example><![CDATA[
+describe('async source', function()
+  it('handles async completion', function()
+    spec.setup({ buffer_text = { 'test|' } })
+    local completed = false
+    local result = nil
+
+    source:complete({ triggerKind = LSP.CompletionTriggerKind.Invoked }, function(err, res)
+      completed = true
+      result = res
+    end)
+
+    -- Wait for async completion
+    vim.wait(5000, function() return completed end)
+
+    assert.is_true(completed)
+    assert.is_not_nil(result)
+  end)
+end)
+]]></example>
+      </pattern>
+      <pattern name="capable_test">
+        <description>capableメソッドのテストパターン</description>
+        <example><![CDATA[
+describe('capable', function()
+  it('returns true for supported filetype', function()
+    spec.setup({ buffer_text = { '|' } })
+    vim.bo.filetype = 'lua'
+    assert.is_true(source:capable())
+  end)
+
+  it('returns false for unsupported filetype', function()
+    spec.setup({ buffer_text = { '|' } })
+    vim.bo.filetype = 'text'
+    assert.is_false(source:capable())
+  end)
+end)
+]]></example>
+      </pattern>
+      <pattern name="resolve_test">
+        <description>resolveメソッドのテストパターン</description>
+        <example><![CDATA[
+describe('resolve', function()
+  it('adds documentation to item', function()
+    local item = { label = 'test', data = { id = 1 } }
+    local resolved = nil
+
+    source:resolve(item, function(err, res)
+      resolved = res
+    end)
+
+    vim.wait(2000, function() return resolved ~= nil end)
+
+    assert.is_not_nil(resolved)
+    assert.is_not_nil(resolved.documentation)
+  end)
+end)
+]]></example>
+      </pattern>
+      <pattern name="signature_help_test">
+        <description>シグネチャヘルプSourceのテストパターン</description>
+        <example><![CDATA[
+local my_signature_source = require('my-plugin.source.signature_help')
+local spec = require('cmp-kit.spec')
+local LSP = require('cmp-kit.kit.LSP')
+local Async = require('cmp-kit.kit.Async')
+
+describe('my-plugin.source.signature_help', function()
+  local source = my_signature_source()
+
+  it('returns signature help', function()
+    spec.setup({ buffer_text = { 'func(|' } })
+    local response = Async.new(function(resolve, reject)
+      source:fetch({
+        triggerKind = LSP.SignatureHelpTriggerKind.TriggerCharacter,
+        triggerCharacter = '(',
+      }, function(err, res)
+        if err then reject(err) else resolve(res) end
+      end)
+    end):sync(2000)
+
+    assert.is_not_nil(response)
+    assert.is_not_nil(response.signatures)
+    assert.is_true(#response.signatures > 0)
+  end)
+end)
+]]></example>
+      </pattern>
+    </test_patterns>
+    <best_practices>
+      <practice priority="critical">コールバックが必ず呼び出されることをテスト</practice>
+      <practice priority="critical">vim.wait()でタイムアウト付きで非同期完了を待機</practice>
+      <practice priority="high">spec.setup()で|を使ってカーソル位置を明示</practice>
+      <practice priority="high">正常系・異常系・境界値のテストケースを作成</practice>
+      <practice priority="medium">capableメソッドの条件分岐をテスト</practice>
+      <practice priority="medium">エラーハンドリングのテスト（err引数の検証）</practice>
+    </best_practices>
+    <ci_integration>
+      <description>GitHub Actionsでのテスト実行（Nix使用）</description>
+      <example><![CDATA[
+name: test
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: cachix/install-nix-action@v31
+      - run: nix-shell -I nixpkgs=channel:nixos-25.11 -p neovim luajitPackages.vusted --run 'vusted --output=gtest --pattern=.spec ./lua'
+]]></example>
+    </ci_integration>
+  </testing>
+  <related_agents>
+    <agent name="execute">カスタムSourceの実装にこのスキルを使用</agent>
+    <agent name="bug">Source関連のデバッグにこのスキルを使用</agent>
+  </related_agents>
+  <related_skills>
+    <skill name="context7-usage">LSP仕様やNeovim APIのドキュメント参照</skill>
+    <skill name="serena-usage">既存Source実装のコード分析</skill>
+    <skill name="execution-workflow">Source実装の委任ワークフロー</skill>
+  </related_skills>
+</skill>
