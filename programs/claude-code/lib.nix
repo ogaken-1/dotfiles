@@ -7,7 +7,7 @@ let
     else if builtins.isInt value || builtins.isFloat value then
       toString value
     else
-      "\"${value}\"";
+      "\"${builtins.replaceStrings ["\""] ["\\\""] value}\"";
 
   # Convert an attribute set to YAML front-matter lines
   toYaml =

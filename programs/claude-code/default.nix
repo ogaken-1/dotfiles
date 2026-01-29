@@ -167,8 +167,6 @@ in
         };
         body = ./commands/feedback.xml;
       };
-    };
-    skills = {
       serena-usage = lib.buildMarkdown {
         front-matter = {
           name = "Serena Usage";
