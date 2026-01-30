@@ -15,6 +15,30 @@ return {
         vim.snippet.expand(snippet)
       end,
       attach = {
+        insert_mode = function()
+          if vim.bo.buftype == 'nofile' then
+            return
+          end
+          do
+            local service = ix.get_completion_service { recreate = true }
+            service:register_source(ix.source.completion.emoji(), { group = 1 })
+            service:register_source(ix.source.completion.path(), { group = 2 })
+            local repeat_source = require 'ix-repeat'()
+            if #vim.lsp.get_clients { buffer = 0 } > 0 then
+              ix.source.completion.attach_lsp(service, {
+                default = { group = 3 },
+              })
+              service:register_source(repeat_source, { group = 3 })
+            else
+              service:register_source(ix.source.completion.buffer(), { group = 3 })
+              service:register_source(repeat_source, { group = 3 })
+            end
+          end
+          do
+            local service = ix.get_signature_help_service { recreate = true }
+            ix.source.signature_help.attach_lsp(service)
+          end
+        end,
         cmdline_mode = function()
           local service = ix.get_completion_service { recreate = true }
           if vim.fn.getcmdtype() == ':' then
