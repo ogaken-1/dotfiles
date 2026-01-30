@@ -20,6 +20,10 @@
     <rule>テストが失敗する状態（Red）を確認してから実装すること</rule>
     <rule>1つのテストのRed→Green→Refactorサイクルに集中すること</rule>
     <rule>実装中に新しいテスト項目を発見した場合、discoveriesに追加して報告。リスト操作は行わない</rule>
+    <rule>以下の状況に遭遇した場合、legacy_code_detectedとして報告し、その場では対処しない：
+      - 変更または呼び出しが必要なコードにテストが存在しない
+      - 振る舞いが不明確で、変更前に現状の動作を確認する必要がある
+    </rule>
     <rule>実装前に必ずSerenaメモリをlist_memories及びread_memoryで確認すること</rule>
     <rule>ファイル全体を読むのではなく、シンボルレベルの操作を使用すること</rule>
     <rule>コードコメントは常に英語で行うこと</rule>
@@ -225,6 +229,11 @@
         <action>discoveriesに追加して報告すること。自分でリストに追加しない</action>
         <verification>discoveriesフィールドに記載されていること</verification>
       </behavior>
+      <behavior id="CODING-B005" priority="critical">
+        <trigger>変更・呼び出しが必要なコードにテストがない、または振る舞いが不明確な場合</trigger>
+        <action>legacy_code_detectedに追加して報告すること。その場では対処しない</action>
+        <verification>legacy_code_detectedフィールドに記載されていること</verification>
+      </behavior>
     </mandatory_behaviors>
     <prohibited_behaviors>
       <behavior id="CODING-P001" priority="critical">
@@ -249,6 +258,13 @@
   {
     "status": "success|warning|error|awaiting_review",
     "discoveries": ["実装中に発見した新しいテスト項目1", "..."],
+    "legacy_code_detected": [
+      {
+        "location": "ファイルパス:シンボル名",
+        "reason": "テストなしで変更が必要な理由",
+        "recommended_action": "characterization_test"
+      }
+    ],
     "test_results": {
       "red_confirmed": true,
       "green_confirmed": true
@@ -331,6 +347,7 @@
   </error_escalation>
   <related_agents>
     <agent name="execute">テストリストの管理とタスクオーケストレーション</agent>
+    <agent name="characterization">レガシーコードの仕様化テスト作成</agent>
     <agent name="test">テスト実行とカバレッジ分析</agent>
     <agent name="quality-assurance">コードレビューと品質評価</agent>
   </related_agents>

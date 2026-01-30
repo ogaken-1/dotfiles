@@ -10,6 +10,8 @@
     <rule>テストリストの管理にはTodoWriteツールを使用する（マスター/ワーカー方式）</rule>
     <rule>codingエージェントには単一のテスト項目のみを委任する</rule>
     <rule>codingエージェントからのdiscoveriesはテストリストに追加する</rule>
+    <rule>codingエージェントからのlegacy_code_detectedはcharacterization_testタイプとしてテストリストに追加する</rule>
+    <rule>characterizationエージェントからのrefactoring_candidatesはrefactoringタイプとしてテストリストに追加する</rule>
     <rule>テストリスト完了時にfeedbackスキルを実行する</rule>
   </rules>
   <rules priority="standard">
@@ -32,8 +34,19 @@
       <objective>機能要求からテストすべき項目を抽出し、TodoWriteでリスト化する</objective>
       <step order="1">要求の行動分析 (behavioral analysis) - Kent Beckのアプローチ</step>
       <step order="2">テスト項目の列挙（基本ケース、エッジケース、エラーケース）</step>
-      <step order="3">TodoWriteでテストリストを作成</step>
-      <step order="4">各項目に優先度を付与（依存関係を考慮）</step>
+      <step order="3">
+        <action>レガシーコード検出（テストなしで変更が必要なコードの特定）</action>
+        <detection_criteria>
+          <criterion>変更対象のコードに既存テストがない</criterion>
+          <criterion>コードの振る舞いが不明確で仕様化が必要</criterion>
+          <criterion>リファクタリング前に現状の振る舞いを記録する必要がある</criterion>
+        </detection_criteria>
+        <on_detection>
+          該当コードに対してcharacterization_testタイプのタスクを作成
+        </on_detection>
+      </step>
+      <step order="4">TodoWriteでテストリストを作成（characterization_testタイプを含む）</step>
+      <step order="5">各項目に優先度を付与（仕様化テストは通常のTDD項目より先に実行）</step>
     </phase>
     <phase name="decompose">
       <objective>複雑なタスクを管理可能な単位に分解する</objective>
@@ -55,11 +68,37 @@
       <objective>リストが空になるまでRed-Green-Refactorを繰り返す</objective>
       <loop condition="pending items exist in test list">
         <step order="1">リストから1項目を選択、TodoWriteでin_progressに変更</step>
-        <step order="2">codingエージェントに単一タスクとして委任</step>
-        <step order="3">codingエージェントのdiscoveriesをリストに追加（TodoWrite）</step>
+        <step order="2">
+          <routing>
+            <condition type="characterization_test">
+              項目がcharacterization_test（仕様化テスト）タイプの場合、characterizationエージェントに委任
+            </condition>
+            <condition type="refactoring">
+              項目がrefactoringタイプの場合：
+              1. 対象コードのcharacterization testが完了していることを確認
+              2. 完了していればcodingエージェントに委任（通常のTDDフロー）
+              3. 未完了の場合は実行を保留し、characterization_testタイプのタスクを先に実行
+              ※ characterizationで作成したテストが安全網となる
+            </condition>
+            <condition type="default">
+              通常のテスト項目はcodingエージェントに単一タスクとして委任
+            </condition>
+          </routing>
+        </step>
+        <step order="3">
+          <action>エージェント出力の処理（重複チェック付き）</action>
+          <deduplication>
+            リストへの追加前に、同一のtarget/locationを持つ項目が既に存在しないか確認する。
+            存在する場合はスキップし、循環発見を防止する。
+          </deduplication>
+          <substep>discoveriesを通常のテスト項目としてリストに追加（TodoWrite、重複チェック）</substep>
+          <substep>legacy_code_detectedをcharacterization_testタイプとしてリストに追加（TodoWrite、重複チェック）</substep>
+          <substep>refactoring_candidatesをrefactoringタイプとしてリストに追加（TodoWrite、strategyとtargetを含める、重複チェック）</substep>
+        </step>
         <step order="4">完了したらTodoWriteでcompletedに変更</step>
       </loop>
-      <note>並列実行可能な独立タスクは同時に複数のcodingエージェントに委任可能</note>
+      <note>並列実行可能な独立タスクは同時に複数のエージェントに委任可能</note>
+      <note>characterizationエージェントからのseamsやrefactoring_candidatesは後続タスクの参考情報として保持</note>
     </phase>
     <phase name="assign">
       <objective>明確な指示とともにタスクを適切なサブエージェントに委任する</objective>
@@ -89,14 +128,35 @@
     </phase>
     <!-- TDD Completion: Final quality check after test list is complete -->
     <phase name="completion">
-      <objective>テストリスト完了後の品質確認</objective>
+      <objective>テストリスト完了後の品質確認とfeedback対応</objective>
       <step order="1">すべてのテスト項目が完了していることを確認</step>
       <step order="2">feedbackスキルを実行（テストリストの内容も含めてレビュー）</step>
-      <step order="3">feedbackの結果に基づき、必要に応じて追加タスクを作成</step>
+      <step order="3">
+        <action>feedbackの指摘事項をTodoWriteでタスク登録する（必須）</action>
+        <note>「必要に応じて」ではなく、Critical/Warningの指摘は必ずTODOとして登録する</note>
+      </step>
+      <step order="4">
+        <action>登録したTODOを順次消化</action>
+        <loop condition="feedback対応のTODOが残っている間">
+          <substep>TODOをin_progressに変更し、指摘事項を修正</substep>
+          <substep>TODOをcompletedに変更</substep>
+        </loop>
+      </step>
+      <step order="5">
+        <action>feedback対応の変更をコミット</action>
+        <on_delegate>
+          <substep>git absorb を実行して変更を適切なコミットに fixup</substep>
+          <on_failure>absorb が失敗した場合は git commit --fixup で手動指定</on_failure>
+        </on_delegate>
+        <on_manual>
+          「feedback対応が完了しました。必要であればコミットを作成してください」と表示
+        </on_manual>
+      </step>
     </phase>
   </workflow>
   <agents>
     <agent name="coding" subagent_type="coding" readonly="false">テストファーストワークフローでの実装（テスト → レビュー → 実装）</agent>
+    <agent name="characterization" subagent_type="coding" readonly="false">レガシーコードの仕様化テスト作成（Greenから開始、接合部特定）</agent>
     <agent name="quality" subagent_type="quality-assurance" readonly="false">構文、型、フォーマットの検証</agent>
     <agent name="security" subagent_type="security" readonly="false">脆弱性検出</agent>
     <agent name="test" subagent_type="test" readonly="false">テスト作成、カバレッジ</agent>
