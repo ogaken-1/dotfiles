@@ -13,6 +13,11 @@
     <rule>codingエージェントからのlegacy_code_detectedはcharacterization_testタイプとしてテストリストに追加する</rule>
     <rule>characterizationエージェントからのrefactoring_candidatesはrefactoringタイプとしてテストリストに追加する</rule>
     <rule>テストリスト完了時にfeedbackスキルを実行する</rule>
+    <rule>delegateモードの場合：意味のある単位でconventional commitsに従いコミットする</rule>
+    <rule>delegateモードの場合：mainまたは保護ブランチではtopicブランチを作成してから作業する</rule>
+    <rule>manualモードの場合：Git操作は行わない。フェーズ完了時に「必要であればコミットを作成してください」と表示しユーザー入力を待つ</rule>
+    <rule>delegateモードの場合：git push は禁止（ローカルコミットのみ）</rule>
+    <rule>delegateモードの場合：feedback対応の変更は git absorb で既存コミットに fixup する</rule>
   </rules>
   <rules priority="standard">
     <rule>委任パターンにはexecution-workflowスキルを使用する</rule>
@@ -21,6 +26,39 @@
     <rule>実装前にSerenaメモリを確認する</rule>
   </rules>
   <workflow>
+    <phase name="git_policy_check">
+      <objective>Git操作ポリシーを確認し、セッション中の動作を決定する</objective>
+      <note>AskUserQuestionでの確認はCLAUDE.mdの「Git操作はユーザーの明示的な要求がある場合のみ」を満たす明示的な要求とみなす</note>
+      <skip_condition>セッション内で既にポリシーが確定している場合はスキップ</skip_condition>
+      <step order="1">
+        <action>AskUserQuestionツールでGit操作ポリシーを確認する</action>
+        <question>Git操作をどのように行いますか？</question>
+        <options>
+          <option value="delegate">
+            <label>エージェントに任せる（推奨）</label>
+            <description>変更を適宜コミット（conventional commits準拠）</description>
+          </option>
+          <option value="manual">
+            <label>自分で行う</label>
+            <description>コミットしない。フェーズ完了時に入力待ち</description>
+          </option>
+        </options>
+      </step>
+      <step order="2">
+        <action>ポリシーに基づく初期設定</action>
+        <on_delegate>
+          <substep>現在のブランチを確認</substep>
+          <substep>
+            保護ブランチの場合、topic branch を作成して移動
+            <protected_branches>main, master, develop, release/*, production</protected_branches>
+          </substep>
+          <substep>ブランチ名は機能/タスクに基づいて命名（例: feat/add-user-auth）</substep>
+        </on_delegate>
+        <on_manual>
+          <substep>Git操作は行わないことを記録</substep>
+        </on_manual>
+      </step>
+    </phase>
     <phase name="analyze">
       <objective>タスクの範囲を理解し、必要なリソースを特定する</objective>
       <step order="1">どのタスクを実行する必要があるか？</step>
@@ -99,6 +137,16 @@
       </loop>
       <note>並列実行可能な独立タスクは同時に複数のエージェントに委任可能</note>
       <note>characterizationエージェントからのseamsやrefactoring_candidatesは後続タスクの参考情報として保持</note>
+      <phase_completion>
+        <action>Git操作（ポリシーに基づく、フェーズ完了時）</action>
+        <on_delegate>
+          フェーズで完了した変更をまとめてコミットする（conventional commits形式）
+          例: feat: add user authentication, fix: resolve null pointer in login
+        </on_delegate>
+        <on_manual>
+          「必要であればコミットを作成してください」と表示し、ユーザーの入力（Enterなど）を待つ
+        </on_manual>
+      </phase_completion>
     </phase>
     <phase name="assign">
       <objective>明確な指示とともにタスクを適切なサブエージェントに委任する</objective>
@@ -177,7 +225,10 @@
     <agent name="validator" subagent_type="validator" readonly="true">クロスバリデーションとコンセンサス検証</agent>
   </agents>
   <execution_graph>
-    <sequential_phase id="analysis_phase" depends_on="none">
+    <sequential_phase id="git_policy_phase" depends_on="none">
+      <step>git_policy_check</step>
+    </sequential_phase>
+    <sequential_phase id="analysis_phase" depends_on="git_policy_phase">
       <step>analyze</step>
       <step>test_list_creation</step>
     </sequential_phase>
