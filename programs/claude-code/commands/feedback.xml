@@ -134,14 +134,15 @@
       <execution>すべてのエージェントを並列実行</execution>
     </mode>
     <mode name="execute">
-      <target>Edit/Writeツールで変更されたファイル</target>
+      <target>Edit/Writeツールで変更されたファイル、およびTDDテストリスト（TodoWriteの内容）</target>
+      <aspects>命名、DRY、可読性、セキュリティ、アーキテクチャ、テストリストの完全性、テスト項目の網羅性、発見された項目(discoveries)の処理状況</aspects>
       <agents>
         <agent name="quality" subagent_type="quality-assurance" readonly="true">命名、DRY、可読性</agent>
         <agent name="security" subagent_type="security" readonly="true">OWASP Top 10、入力検証、認証</agent>
         <agent name="design" subagent_type="design" readonly="true">アーキテクチャ整合性、パターン</agent>
         <agent name="docs" subagent_type="docs" readonly="true">正確性、構造、完全性</agent>
         <agent name="performance" subagent_type="performance" readonly="true">パフォーマンスレビュー</agent>
-        <agent name="test" subagent_type="test" readonly="true">テストカバレッジレビュー</agent>
+        <agent name="test" subagent_type="test" readonly="true">テストカバレッジレビュー、TDDテストリストレビュー（完全性、網羅性、discoveriesの処理）</agent>
         <agent name="fact-check" subagent_type="fact-check" readonly="true">外部ソース検証</agent>
       </agents>
       <execution>すべてのエージェントを並列実行</execution>
@@ -209,6 +210,12 @@
 - 推奨: {修正}</flagged_claims>
           <unverifiable_claims>ソースが利用できず確認できなかった主張</unverifiable_claims>
         </fact_check_results>
+        <!-- TDD test list review results (execute mode only) -->
+        <tdd_list_review>
+          <completeness>すべてのテスト項目が実装されたか</completeness>
+          <coverage>テスト項目がユースケースを網羅しているか</coverage>
+          <discoveries>発見された項目が適切に処理されたか</discoveries>
+        </tdd_list_review>
         <recommended_actions>
 - [High] アクション
 - [Medium] アクション

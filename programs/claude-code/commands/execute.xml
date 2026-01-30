@@ -7,6 +7,10 @@
     <rule>オーケストレーションとポリシー決定に集中する</rule>
     <rule>独立したタスクを並列実行する</rule>
     <rule>統合前にサブエージェントの出力を検証する</rule>
+    <rule>テストリストの管理にはTodoWriteツールを使用する（マスター/ワーカー方式）</rule>
+    <rule>codingエージェントには単一のテスト項目のみを委任する</rule>
+    <rule>codingエージェントからのdiscoveriesはテストリストに追加する</rule>
+    <rule>テストリスト完了時にfeedbackスキルを実行する</rule>
   </rules>
   <rules priority="standard">
     <rule>委任パターンにはexecution-workflowスキルを使用する</rule>
@@ -23,6 +27,14 @@
       <step order="4">タスク間にどのような依存関係があるか？</step>
       <step order="5">どのような検証が必要か？</step>
     </phase>
+    <!-- TDD Rhythm: Extract testable items and manage via TodoWrite -->
+    <phase name="test_list_creation">
+      <objective>機能要求からテストすべき項目を抽出し、TodoWriteでリスト化する</objective>
+      <step order="1">要求の行動分析 (behavioral analysis) - Kent Beckのアプローチ</step>
+      <step order="2">テスト項目の列挙（基本ケース、エッジケース、エラーケース）</step>
+      <step order="3">TodoWriteでテストリストを作成</step>
+      <step order="4">各項目に優先度を付与（依存関係を考慮）</step>
+    </phase>
     <phase name="decompose">
       <objective>複雑なタスクを管理可能な単位に分解する</objective>
       <step order="1">管理可能な単位に分割する</step>
@@ -38,6 +50,17 @@
       <question>理解に不足がないか？</question>
       <threshold>信頼度が70未満の場合、さらに証拠を収集するかユーザーに確認する</threshold>
     </reflection_checkpoint>
+    <!-- TDD Cycle: Iterate Red-Green-Refactor until test list is empty -->
+    <phase name="tdd_cycle">
+      <objective>リストが空になるまでRed-Green-Refactorを繰り返す</objective>
+      <loop condition="pending items exist in test list">
+        <step order="1">リストから1項目を選択、TodoWriteでin_progressに変更</step>
+        <step order="2">codingエージェントに単一タスクとして委任</step>
+        <step order="3">codingエージェントのdiscoveriesをリストに追加（TodoWrite）</step>
+        <step order="4">完了したらTodoWriteでcompletedに変更</step>
+      </loop>
+      <note>並列実行可能な独立タスクは同時に複数のcodingエージェントに委任可能</note>
+    </phase>
     <phase name="assign">
       <objective>明確な指示とともにタスクを適切なサブエージェントに委任する</objective>
       <step order="1">詳細な指示とともにタスクを委任する</step>
@@ -64,6 +87,13 @@
       <step order="1">サブエージェントの出力を検証する</step>
       <step order="2">結果を統合する</step>
     </phase>
+    <!-- TDD Completion: Final quality check after test list is complete -->
+    <phase name="completion">
+      <objective>テストリスト完了後の品質確認</objective>
+      <step order="1">すべてのテスト項目が完了していることを確認</step>
+      <step order="2">feedbackスキルを実行（テストリストの内容も含めてレビュー）</step>
+      <step order="3">feedbackの結果に基づき、必要に応じて追加タスクを作成</step>
+    </phase>
   </workflow>
   <agents>
     <agent name="coding" subagent_type="coding" readonly="false">テストファーストワークフローでの実装（テスト → レビュー → 実装）</agent>
@@ -87,19 +117,21 @@
     <agent name="validator" subagent_type="validator" readonly="true">クロスバリデーションとコンセンサス検証</agent>
   </agents>
   <execution_graph>
-    <sequential_phase id="coding_phase" depends_on="none">
-      <agent>coding</agent>
-      <reason>テストファースト：テストを作成/修正し、レビューを受け、その後実装する</reason>
+    <sequential_phase id="analysis_phase" depends_on="none">
+      <step>analyze</step>
+      <step>test_list_creation</step>
     </sequential_phase>
-    <parallel_group id="post_implementation" depends_on="coding_phase">
-      <agent>test</agent>
+    <sequential_phase id="tdd_phase" depends_on="analysis_phase">
+      <step>tdd_cycle</step>
+      <reason>テストリストを1項目ずつ消化。独立項目は並列実行可能</reason>
+    </sequential_phase>
+    <parallel_group id="post_implementation" depends_on="tdd_phase">
       <agent>quality</agent>
       <agent>security</agent>
-      <agent>docs</agent>
     </parallel_group>
-    <sequential_phase id="review_phase" depends_on="post_implementation">
-      <agent>review</agent>
-      <reason>すべてのチェック完了後の最終レビュー</reason>
+    <sequential_phase id="completion_phase" depends_on="post_implementation">
+      <step>completion</step>
+      <reason>feedbackスキルでテストリストを含む全体レビュー</reason>
     </sequential_phase>
   </execution_graph>
   <delegation>
@@ -231,7 +263,7 @@
     <command name="define">実装で不明確な要件が判明した場合</command>
     <command name="ask">実装に調査が必要な場合</command>
     <command name="bug">実装で予期しないエラーが発生した場合</command>
-    <command name="feedback">実行完了後の作業レビュー</command>
+    <command name="feedback">TDDサイクル完了後のレビュー（テストリストを含む）</command>
     <command name="upstream">上流OSSへの貢献のための変更準備時</command>
   </related_commands>
   <related_skills>
