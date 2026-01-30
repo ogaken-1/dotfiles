@@ -21,7 +21,7 @@ function fish_prompt
   if [ $status -eq 0 ]
     set -l git_branch (sgr color:magenta (git branch --show-current))
     set -l git_repo_name (sgr color:cyan (basename "$git_repo"))
-    set -l git_status (sgr color:red "[$(git_status_prompt)]")
+    set -l git_status "[$(git_status_prompt)]"
 
     set -a components "($git_repo_name:$git_branch $git_status)"
   end
