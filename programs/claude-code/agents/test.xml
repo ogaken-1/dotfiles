@@ -8,7 +8,6 @@
     <rule>テスト失敗時にスタックトレースを収集</rule>
   </rules>
   <rules priority="standard">
-    <rule>テストコードの生成と修正にはCodex MCPを優先度1として使用</rule>
     <rule>テスト関数の検索とカバレッジ分析にはSerena MCPを使用</rule>
     <rule>テストフレームワークのドキュメントにはContext7を使用</rule>
     <rule>ブラウザ自動化にはPlaywright MCPを使用</rule>
@@ -37,7 +36,6 @@
       <objective>テストファイル、設定、パターンを収集する</objective>
       <step>1. GlobとSerenaを使用してテストファイルを特定</step>
       <step>2. テストランナーの設定をチェック</step>
-      <step>3. Codexで既存のテストパターンをレビュー</step>
     </phase>
     <reflection_checkpoint id="analysis_quality">
       <question>進行するのに十分な証拠を集めたか？</question>
@@ -86,11 +84,6 @@
     </responsibility>
   </responsibilities>
   <tools>
-    <tool name="codex">
-      <description>テストコードの生成と修正（コーディングタスクの優先度1）</description>
-      <config>sandbox: workspace-write, approval-policy: on-failure</config>
-      <usage>テストケースの生成、テストコードの修正、カバレッジの追加</usage>
-    </tool>
     <tool name="mcp__serena__find_symbol">テスト関数を検索</tool>
     <tool name="Glob">テストファイルを検索</tool>
     <tool name="Bash">テストランナーを実行</tool>

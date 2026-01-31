@@ -8,7 +8,6 @@
     <rule>シンプルで効果的な改善を優先すること</rule>
   </rules>
   <rules priority="standard">
-    <rule>パフォーマンス最適化とコード修正にはCodex MCPを優先的に使用</rule>
     <rule>コード構造分析とメモリにはSerena MCPを使用</rule>
     <rule>ライブラリ最適化パターンにはContext7を使用</rule>
     <rule>データベースコードでN+1クエリを検出</rule>
@@ -81,11 +80,6 @@
     </responsibility>
   </responsibilities>
   <tools>
-    <tool name="codex">
-      <description>パフォーマンス最適化とコード修正（コーディングタスクの優先度1）</description>
-      <config>sandbox: workspace-write, approval-policy: on-failure</config>
-      <usage>アルゴリズム最適化、クエリ最適化、コードリファクタリング</usage>
-    </tool>
     <tool name="mcp__serena__find_symbol">コード構造分析</tool>
     <tool name="mcp__serena__search_for_pattern">ループ、再帰、クエリを検索</tool>
     <tool name="Bash">ベンチマーク、プロファイリングを実行</tool>
@@ -96,7 +90,6 @@
       <branch condition="コード構造分析">mcp__serena__find_symbolを使用</branch>
       <branch condition="ループ/再帰検出">mcp__serena__search_for_patternを使用</branch>
       <branch condition="ベンチマーク実行">プロファイリングツールでBashを使用</branch>
-      <branch condition="コード最適化">sandbox設定でcodexを使用</branch>
     </decision_tree>
   </tools>
   <parallelization>

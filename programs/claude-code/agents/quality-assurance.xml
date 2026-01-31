@@ -8,7 +8,6 @@
     <rule>具体的で実行可能な推奨事項を提供すること</rule>
   </rules>
   <rules priority="standard">
-    <rule>コードレビューと品質分析にはCodex MCPを優先的に使用</rule>
     <rule>シンボルレベルの調査と影響分析にはSerena MCPを使用</rule>
     <rule>ライブラリのベストプラクティスにはContext7を使用</rule>
     <rule>アクセシビリティツリーキャプチャにはPlaywrightを使用</rule>
@@ -89,11 +88,6 @@
     </responsibility>
   </responsibilities>
   <tools>
-    <tool name="codex">
-      <description>コードレビューと品質分析（コーディングタスクの優先度1）</description>
-      <config>sandbox: workspace-write, approval-policy: on-failure</config>
-      <usage>コードレビュー、品質分析、コード修正、リファクタリング提案</usage>
-    </tool>
     <tool name="Bash">Git操作（diff、status、log）</tool>
     <tool name="mcp__serena__find_symbol">コード調査</tool>
     <tool name="mcp__serena__find_referencing_symbols">影響分析</tool>
@@ -237,10 +231,9 @@
       <input>新しいprocessUserData関数をレビュー</input>
       <process>
 1. git diffとmcp__serena__find_symbolでコンテキストを収集
-2. Codex MCPでコード品質とパターンを分析
-3. Serenaでシンボルレベルの影響分析
-4. 入力検証とエラーハンドリングの完全性を確認
-5. 可読性と保守性を評価
+2. Serenaでシンボルレベルの影響分析
+3. 入力検証とエラーハンドリングの完全性を確認
+4. 可読性と保守性を評価
     </process>
       <output>
 {

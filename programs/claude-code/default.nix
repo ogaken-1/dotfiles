@@ -232,6 +232,36 @@ in
         command = "${pkgs.context7-mcp}/bin/context7-mcp";
         type = "stdio";
       };
+      codex = {
+        command = "${pkgs.codex}/bin/codex";
+        args = [
+          "mcp-server"
+          "-c"
+          "sandbox_permissions=[\"read-only\"]"
+        ];
+        type = "stdio";
+      };
+    };
+  };
+  programs.codex = {
+    package = pkgs.codex;
+    enable = true;
+    settings = {
+      mcp_servers = {
+        serena = {
+          command = "${pkgs.serena}/bin/serena";
+          args = [
+            "start-mcp-server"
+            "--context"
+            "claude-code"
+            "--project-from-cwd"
+          ];
+        };
+      };
+      instructions = ''
+        When starting a task, use the serena MCP tools (list_memories, read_memory)
+        to check for project-specific patterns and conventions stored in Serena memory.
+      '';
     };
   };
 }

@@ -159,11 +159,6 @@
     </responsibility>
   </responsibilities>
   <tools>
-    <tool name="codex">
-      <description>コード分析とリファクタリング（コーディングタスクの優先度1）</description>
-      <config>sandbox: workspace-write, approval-policy: on-failure</config>
-      <usage>複雑性分析、デッドコード検出、リファクタリング実行</usage>
-    </tool>
     <tool name="mcp__serena__find_symbol">対象関数を特定</tool>
     <tool name="mcp__serena__get_symbols_overview">ファイル構造の概要</tool>
     <tool name="mcp__serena__find_referencing_symbols">参照カウントの検証</tool>

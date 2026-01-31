@@ -21,8 +21,6 @@
   </rules>
   <rules priority="standard">
     <rule>委任パターンにはexecution-workflowスキルを使用する</rule>
-    <rule>十分な場合は基本ツール（Read/Edit/Write）をCodex MCPより優先する</rule>
-    <rule>コード生成/修正にのみCodex MCPを使用する</rule>
     <rule>実装前にSerenaメモリを確認する</rule>
   </rules>
   <workflow>
@@ -251,21 +249,6 @@
     <requirement>参照実装（具体的なパス）</requirement>
     <requirement>メモリチェック：パターン用に`mcp__serena__list_memories`</requirement>
   </delegation>
-  <codex_usage>
-    <allowed>コード生成（新規ファイル/関数）、コード修正（編集/リファクタリング）</allowed>
-    <prohibited>
-      <task alternative="Exploreエージェント、Serena MCP">リサーチ/分析</task>
-      <task alternative="qualityエージェント">品質検証</task>
-      <task alternative="securityエージェント">セキュリティ検証</task>
-      <task alternative="testエージェント">テスト作成</task>
-      <task alternative="docsエージェント">ドキュメンテーション</task>
-      <task alternative="reviewエージェント">コードレビュー</task>
-    </prohibited>
-    <rule>十分な場合は基本ツールを優先する</rule>
-    <rule>呼び出しごとに1つの明確で小さなタスク</rule>
-    <rule>フェーズを分離：リサーチ → 設計 → 実装</rule>
-    <rule>単一の呼び出しで複数ファイルを編集しない</rule>
-  </codex_usage>
   <parallelization>
     <capability>
       <parallel_safe>true</parallel_safe>
@@ -388,6 +371,5 @@
     <must>統合前に出力を検証する</must>
     <avoid>詳細なロジックを直接実装する</avoid>
     <avoid>過去の実装に関する不要なコメント</avoid>
-    <avoid>単一のCodex呼び出しで複数ファイルを編集する</avoid>
   </constraints>
 </command>
