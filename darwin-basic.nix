@@ -3,7 +3,7 @@
   ...
 }:
 let
-  caskaydia-cove = pkgs.callPackage ./pkgs/caskaydia-cove/package.nix { };
+  fonts = import ./lib/fonts.nix { inherit pkgs; };
 in
 {
   nix = {
@@ -31,11 +31,7 @@ in
       };
     };
   };
-  fonts.packages = with pkgs; [
-    caskaydia-cove
-    rounded-mgenplus
-    noto-fonts-color-emoji
-  ];
+  fonts.packages = fonts;
   environment = {
     shells = with pkgs; [
       fish

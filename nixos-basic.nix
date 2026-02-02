@@ -1,7 +1,7 @@
 { username, homeDirectory }:
 { pkgs, ... }:
 let
-  caskaydia-cove = pkgs.callPackage ./pkgs/caskaydia-cove/package.nix { };
+  fonts = import ./lib/fonts.nix { inherit pkgs; };
 in
 {
   services = {
@@ -24,11 +24,7 @@ in
 
   system.stateVersion = "24.05";
 
-  fonts.packages = with pkgs; [
-    caskaydia-cove
-    rounded-mgenplus
-    noto-fonts-color-emoji
-  ];
+  fonts.packages = fonts;
   environment = {
     systemPackages = with pkgs; [
       man-pages
