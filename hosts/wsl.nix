@@ -39,7 +39,7 @@ let
         };
       };
       home-manager.users.${username} = {
-        imports = [ ../modules/wsl-ssh-agent-relay.nix ];
+        imports = [ ../modules/wsl-ssh-agent-relay.nix ] ++ (import ../programs/cli.nix);
       };
     };
   homeConfig = {

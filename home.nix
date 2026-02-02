@@ -42,5 +42,4 @@
     ];
   };
   xdg.enable = true;
-  imports = import ./programs;
 }

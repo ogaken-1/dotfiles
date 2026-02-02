@@ -36,7 +36,7 @@ let
         users.${username} = {
           imports = [
             ../modules/darwin-op-ssh.nix
-          ];
+          ] ++ (import ../programs/gui.nix);
         };
       };
     };
