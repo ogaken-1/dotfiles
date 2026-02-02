@@ -6,8 +6,9 @@ let
     vscode-server
     home-manager
     ;
+  userInfo = import ../lib/user.nix;
   system = "x86_64-linux";
-  username = "ogaken";
+  username = userInfo.username;
   wslConfig =
     { pkgs, ... }:
     {
@@ -45,6 +46,7 @@ let
   homeConfig = {
     home-manager = {
       useUserPackages = false;
+      extraSpecialArgs = { inherit userInfo; };
       users.${username} = import ../home.nix { inherit inputs; };
       backupFileExtension = "backup";
     };

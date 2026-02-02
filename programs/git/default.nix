@@ -1,3 +1,4 @@
+{ userInfo, ... }:
 {
   programs.git = {
     enable = true;
@@ -39,9 +40,9 @@
         };
       };
       user = {
-        name = "Kento Ogata";
+        name = userInfo.fullName;
         # 1. Use direnv to set email via $GIT_AUTHOR_EMAIL and $GIT_COMMITTER_EMAIL.
-        signingKey = "key::ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILjUKp0bTcWZOctvJtnXZsy7efQSpKO7xXDuVCehEA23";
+        signingKey = userInfo.signingKey;
       };
       pull = {
         rebase = true;

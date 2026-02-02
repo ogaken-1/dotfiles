@@ -1,8 +1,9 @@
 { inputs }:
 let
   inherit (inputs) nix-darwin home-manager mac-app-util;
+  userInfo = import ../lib/user.nix;
   system = "aarch64-darwin";
-  username = "ogaken";
+  username = userInfo.username;
   homeDirectory = "/Users/${username}";
   homeConfiguration = {
     home-manager.users.${username} = import ../home.nix { inherit inputs; };
@@ -29,6 +30,7 @@ let
       programs.fish.enable = true;
       home-manager = {
         backupFileExtension = "backup";
+        extraSpecialArgs = { inherit userInfo; };
         sharedModules = [
           mac-app-util.homeManagerModules.default
         ];

@@ -1,6 +1,7 @@
 { username, homeDirectory }:
 { pkgs, ... }:
 let
+  userInfo = import ./lib/user.nix;
   fonts = import ./lib/fonts.nix { inherit pkgs; };
 in
 {
@@ -69,7 +70,7 @@ in
   users.users.${username} = {
     isNormalUser = true;
     home = homeDirectory;
-    description = "Kento Ogata";
+    description = userInfo.fullName;
     extraGroups = [
       "wheel"
       "docker"
