@@ -237,7 +237,7 @@ in
         args = [
           "mcp-server"
           "-c"
-          "sandbox_permissions=[\"read-only\"]"
+          "sandbox_permissions=[\"workspace-write\"]"
         ];
         type = "stdio";
       };
