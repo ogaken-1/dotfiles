@@ -23,16 +23,12 @@ return {
             local service = ix.get_completion_service { recreate = true }
             service:register_source(ix.source.completion.emoji(), { group = 1 })
             service:register_source(ix.source.completion.path(), { group = 2 })
+            ix.source.completion.attach_lsp(service, {
+              default = { group = 3 },
+            })
             local repeat_source = require 'ix-repeat'()
-            if #vim.lsp.get_clients { buffer = 0 } > 0 then
-              ix.source.completion.attach_lsp(service, {
-                default = { group = 3 },
-              })
-              service:register_source(repeat_source, { group = 3 })
-            else
-              service:register_source(ix.source.completion.buffer(), { group = 3 })
-              service:register_source(repeat_source, { group = 3 })
-            end
+            service:register_source(repeat_source, { group = 4 })
+            service:register_source(ix.source.completion.buffer(), { group = 5 })
           end
           do
             local service = ix.get_signature_help_service { recreate = true }
