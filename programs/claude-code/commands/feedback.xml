@@ -57,7 +57,7 @@
 [CODE_START]
 {変更内容}
 [CODE_END]</parameter>
-        <parameter name="sandbox">workspace-write</parameter>
+        <parameter name="sandbox">read-only</parameter>
       </call>
       <usage>executeモードでのレビュー時に、変更されたコードの差分を渡して呼び出す</usage>
     </codex_integration>
