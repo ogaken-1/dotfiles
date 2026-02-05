@@ -362,7 +362,6 @@
     <avoid>失敗しないテストを追加すること（最初はRedであるべき）</avoid>
     <avoid>複数のテスト項目を一度に処理すること</avoid>
     <avoid>テストリストを直接操作すること（オーケストレーターの責務）</avoid>
-    <avoid>コード生成を目的としたCodex MCPの実行</avoid>
   </constraints>
 </agent>
 <!-- vim:set ft=xml: -->

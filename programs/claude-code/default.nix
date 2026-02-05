@@ -236,8 +236,10 @@ in
         command = "${pkgs.codex}/bin/codex";
         args = [
           "mcp-server"
-          "-c"
-          "sandbox_permissions=[\"workspace-write\"]"
+          "--sandbox"
+          "workspace-write"
+          "--ask-for-approval"
+          "never"
         ];
         type = "stdio";
       };
