@@ -40,6 +40,7 @@
       vim
       wget
       yq
+      bun
     ];
   };
   xdg.enable = true;
