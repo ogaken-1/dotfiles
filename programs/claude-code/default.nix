@@ -33,6 +33,13 @@ in
         };
         body = ./agents/coding.xml;
       };
+      characterization = lib.buildMarkdown {
+        front-matter = {
+          name = "characterization";
+          description = "Create characterization tests for non tested programs.";
+        };
+        body = ./agents/characterization.xml;
+      };
       database = lib.buildMarkdown {
         front-matter = {
           name = "database";

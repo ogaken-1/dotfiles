@@ -202,7 +202,7 @@
   </workflow>
   <agents>
     <agent name="coding" subagent_type="coding" readonly="false">テストファーストワークフローでの実装（テスト → レビュー → 実装）</agent>
-    <agent name="characterization" subagent_type="coding" readonly="false">レガシーコードの仕様化テスト作成（Greenから開始、接合部特定）</agent>
+    <agent name="characterization" subagent_type="characterization" readonly="false">レガシーコードの仕様化テスト作成（Greenから開始、接合部特定）</agent>
     <agent name="quality" subagent_type="quality-assurance" readonly="false">構文、型、フォーマットの検証</agent>
     <agent name="security" subagent_type="security" readonly="false">脆弱性検出</agent>
     <agent name="test" subagent_type="test" readonly="false">テスト作成、カバレッジ</agent>
