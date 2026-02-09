@@ -19,6 +19,7 @@
       fsautocomplete
       ghq
       git-absorb
+      glow
       gnumake
       gnupg
       jq
