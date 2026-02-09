@@ -37,6 +37,7 @@
       gb = "git branch";
       gbd = "git branch --delete";
       gl = "git log";
+      gm = "git merge";
     };
     functions = {
       fzf_tmux_session = {
