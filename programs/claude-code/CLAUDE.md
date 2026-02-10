@@ -25,6 +25,7 @@
     <rule>ライブラリドキュメントはContext7で確認</rule>
     <rule>Git操作はユーザーの明示的な要求がある場合のみ</rule>
     <rule>独立タスクは並列実行</rule>
+    <rule>Claude Code関連（programs/claude-code/配下、スキル、エージェント、コマンド）の修正時は、claude-code-guideエージェント（Taskツールのsubagent_type、model: opus）を並列で起動してClaude Codeの最新仕様を確認</rule>
   </rules>
   <related_skills>
     <skill name="plan-workflow">要件定義・計画ワークフロー</skill>
