@@ -4,6 +4,71 @@
 }:
 let
   lib = import ./lib.nix;
+  skillDefs = {
+    plan-workflow = lib.buildMarkdown {
+      front-matter = {
+        name = "Plan Workflow";
+        description = ''This skill should be used when in Plan mode (EnterPlanMode) or when the user needs requirements definition, technical investigation, or design planning. Provides structured planning workflow with investigation, clarification, and requirements documentation.'';
+      };
+      body = ./skills/plan-workflow.xml;
+    };
+    impl-workflow = lib.buildMarkdown {
+      front-matter = {
+        name = "Implementation Workflow";
+        description = ''This skill should be used when implementing features after Plan approval, or when the user asks to "execute task", "implement feature". Provides TDD-based implementation workflow with sub-agent delegation, characterization tests, and git policy management.'';
+      };
+      body = ./skills/impl-workflow.xml;
+    };
+    execution-workflow = lib.buildMarkdown {
+      front-matter = {
+        name = "Execution Workflow";
+        description = ''This skill should be used when the user asks to "execute task", "implement feature", "delegate work", "run workflow", "review code", "code quality check", or needs task orchestration and code review guidance. Provides execution, delegation, and code review patterns.'';
+      };
+      body = ./skills/execution-workflow.xml;
+    };
+    serena-usage = lib.buildMarkdown {
+      front-matter = {
+        name = "Serena Usage";
+        description = ''This skill should be used when the user asks to "use serena", "semantic search", "symbol analysis", "find references", "code navigation", or needs Serena MCP guidance. Provides Serena tool usage patterns.'';
+      };
+      body = ./skills/serena-usage.xml;
+    };
+    context7-usage = lib.buildMarkdown {
+      front-matter = {
+        name = "Context7 Usage";
+        description = ''This skill should be used when the user asks to "check documentation", "latest API", "library docs", "context7", or needs up-to-date library documentation. Provides Context7 MCP usage patterns.'';
+      };
+      body = ./skills/context7-usage.xml;
+    };
+    fact-check = lib.buildMarkdown {
+      front-matter = {
+        name = "Fact Check";
+        description = ''This skill should be used when the user asks to "verify claims", "fact check", "validate documentation", "check sources", or needs verification of external source references. Provides patterns for systematic fact verification using Context7 and WebSearch.'';
+      };
+      body = ./skills/fact-check.xml;
+    };
+    investigation-patterns = lib.buildMarkdown {
+      front-matter = {
+        name = "Investigation Patterns";
+        description = ''This skill should be used when the user asks to "investigate code", "analyze implementation", "find patterns", "understand codebase", "debug issue", "find bug", "troubleshoot", or needs evidence-based code analysis and debugging. Provides systematic investigation and debugging methodology.'';
+      };
+      body = ./skills/investigation-patterns.xml;
+    };
+    testing-patterns = lib.buildMarkdown {
+      front-matter = {
+        name = "Testing Patterns";
+        description = ''This skill should be used when the user asks to "write tests", "test strategy", "coverage", "unit test", "integration test", or needs testing guidance. Provides testing methodology and patterns.'';
+      };
+      body = ./skills/testing-patterns.xml;
+    };
+    nvim-ix-source = lib.buildMarkdown {
+      front-matter = {
+        name = "nvim-ix Source";
+        description = ''This skill should be used when the user asks to "create nvim-ix source", "nvim-ix completion", "cmp-kit source", "neovim completion source", or needs guidance on implementing custom completion sources for nvim-ix/nvim-cmp-kit. Provides interface specifications and implementation patterns.'';
+      };
+      body = ./skills/nvim-ix-source.xml;
+    };
+  };
 in
 {
   nixpkgs.config.allowUnfree = true;
@@ -16,6 +81,19 @@ in
       attribution = {
         commit = "";
         pr = "";
+      };
+      hooks = {
+        PreToolUse = [
+          {
+            matcher = "EnterPlanMode";
+            hooks = [
+              {
+                type = "command";
+                command = "echo 'EnterPlanModeは使用禁止。/plan-workflow コマンドを使ってください' >&2 && exit 2";
+              }
+            ];
+          }
+        ];
       };
     };
     agents = {
@@ -134,14 +212,6 @@ in
         };
         body = ./commands/markdown.xml;
       };
-      execute = lib.buildMarkdown {
-        front-matter = {
-          name = "execute";
-          description = "Task execution command";
-          argument-hint = "[task-description]";
-        };
-        body = ./commands/execute.xml;
-      };
       ask = lib.buildMarkdown {
         front-matter = {
           name = "ask";
@@ -158,14 +228,6 @@ in
         };
         body = ./commands/bug.xml;
       };
-      define = lib.buildMarkdown {
-        front-matter = {
-          name = "define";
-          description = "Requirements definition command";
-          argument-hint = "[message]";
-        };
-        body = ./commands/define.xml;
-      };
       feedback = lib.buildMarkdown {
         front-matter = {
           name = "feedback";
@@ -173,55 +235,6 @@ in
           argument-hint = "[previous-command]";
         };
         body = ./commands/feedback.xml;
-      };
-      serena-usage = lib.buildMarkdown {
-        front-matter = {
-          name = "Serena Usage";
-          description = "This skill should be used when the user asks to \"use serena\", \"semantic search\", \"symbol analysis\", \"find references\", \"code navigation\", or needs Serena MCP guidance. Provides Serena tool usage patterns.";
-        };
-        body = ./skills/serena-usage.xml;
-      };
-      context7-usage = lib.buildMarkdown {
-        front-matter = {
-          name = "Context7 Usage";
-          description = "This skill should be used when the user asks to \"check documentation\", \"latest API\", \"library docs\", \"context7\", or needs up-to-date library documentation. Provides Context7 MCP usage patterns.";
-        };
-        body = ./skills/context7-usage.xml;
-      };
-      execution-workflow = lib.buildMarkdown {
-        front-matter = {
-          name = "Execution Workflow";
-          description = "This skill should be used when the user asks to \"execute task\", \"implement feature\", \"delegate work\", \"run workflow\", \"review code\", \"code quality check\", or needs task orchestration and code review guidance. Provides execution, delegation, and code review patterns.";
-        };
-        body = ./skills/execution-workflow.xml;
-      };
-      fact-check = lib.buildMarkdown {
-        front-matter = {
-          name = "Fact Check";
-          description = "This skill should be used when the user asks to \"verify claims\", \"fact check\", \"validate documentation\", \"check sources\", or needs verification of external source references. Provides patterns for systematic fact verification using Context7 and WebSearch.";
-        };
-        body = ./skills/fact-check.xml;
-      };
-      investigation-patterns = lib.buildMarkdown {
-        front-matter = {
-          name = "Investigation Patterns";
-          description = "This skill should be used when the user asks to \"investigate code\", \"analyze implementation\", \"find patterns\", \"understand codebase\", \"debug issue\", \"find bug\", \"troubleshoot\", or needs evidence-based code analysis and debugging. Provides systematic investigation and debugging methodology.";
-        };
-        body = ./skills/investigation-patterns.xml;
-      };
-      testing-patterns = lib.buildMarkdown {
-        front-matter = {
-          name = "Testing Patterns";
-          description = "This skill should be used when the user asks to \"write tests\", \"test strategy\", \"coverage\", \"unit test\", \"integration test\", or needs testing guidance. Provides testing methodology and patterns.";
-        };
-        body = ./skills/testing-patterns.xml;
-      };
-      nvim-ix-source = lib.buildMarkdown {
-        front-matter = {
-          name = "nvim-ix Source";
-          description = "This skill should be used when the user asks to \"create nvim-ix source\", \"nvim-ix completion\", \"cmp-kit source\", \"neovim completion source\", or needs guidance on implementing custom completion sources for nvim-ix/nvim-cmp-kit. Provides interface specifications and implementation patterns.";
-        };
-        body = ./skills/nvim-ix-source.xml;
       };
     };
     mcpServers = {
@@ -252,6 +265,12 @@ in
       };
     };
   };
+  home.file = builtins.listToAttrs (
+    builtins.map (name: {
+      name = ".claude/skills/${name}/SKILL.md";
+      value = { text = skillDefs.${name}; };
+    }) (builtins.attrNames skillDefs)
+  );
   programs.codex = {
     package = pkgs.codex;
     enable = true;

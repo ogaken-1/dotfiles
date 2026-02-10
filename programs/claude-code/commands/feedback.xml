@@ -4,7 +4,7 @@
   <rules priority="critical">
     <rule>すべてのTaskツールを1つのメッセージで同時に起動する（タイムアウト回避）</rule>
     <rule>前回のコマンドに基づいてモードを自動選択する</rule>
-    <rule>executeモードでは変更されたコードのみをレビューし、既存の問題はレビューしない</rule>
+    <rule>implモードでは変更されたコードのみをレビューし、既存の問題はレビューしない</rule>
     <rule>抽象的な理論ではなく具体的な修正提案を提供する</rule>
   </rules>
   <rules priority="standard">
@@ -26,7 +26,7 @@
   <workflow>
     <phase name="analyze">
       <objective>レビュー範囲と適切なモード選択を決定する</objective>
-      <step>1. 前回のコマンドは何だったか？（/define、/execute、/bug、/ask、その他）</step>
+      <step>1. 前回のコマンドは何だったか？（Plan mode、impl-workflow、/bug、/ask、その他）</step>
       <step>2. どのファイル/作業をレビューする必要があるか？</step>
       <step>3. どのエージェントを並列実行すべきか？</step>
       <step>4. このモードに関連するメトリクスは何か？</step>
@@ -34,8 +34,8 @@
     <phase name="select">
       <objective>レビューモードを選択し、適切なエージェントを構成する</objective>
       <step>1. 前回のコマンドに基づいてモードを決定する</step>
-      <step>2. /define後：実行計画のフィードバック</step>
-      <step>3. /execute後：作業内容のフィードバック</step>
+      <step>2. Plan mode後：実行計画のフィードバック</step>
+      <step>3. impl-workflow後：作業内容のフィードバック</step>
       <step>4. /bug後：調査品質のフィードバック</step>
       <step>5. /ask後：回答精度のフィードバック</step>
       <step>6. その他：最近の作業のフィードバック</step>
@@ -134,8 +134,8 @@
     </validation_tests>
   </decision_criteria>
   <modes>
-    <mode name="define">
-      <target>会話履歴からの実行計画</target>
+    <mode name="plan">
+      <target>会話履歴からの実行計画（Plan mode出力）</target>
       <aspects>ステップ粒度、依存関係、リスク特定、完全性、実現可能性</aspects>
       <agents>
         <agent name="plan" subagent_type="Plan" readonly="true">実行計画レビュー</agent>
@@ -144,7 +144,7 @@
       </agents>
       <execution>すべてのエージェントを並列実行</execution>
     </mode>
-    <mode name="execute">
+    <mode name="impl">
       <target>Edit/Writeツールで変更されたファイル、およびTDDテストリスト（TodoWriteの内容）</target>
       <aspects>命名、DRY、可読性、セキュリティ、アーキテクチャ、テストリストの完全性、テスト項目の網羅性、発見された項目(discoveries)の処理状況</aspects>
       <agents>
@@ -274,11 +274,8 @@
     </level>
   </error_escalation>
   <related_commands>
-    <command name="execute">実装後のフィードバックの主要ターゲット</command>
-    <command name="define">実行計画へのフィードバック</command>
     <command name="bug">調査品質へのフィードバック</command>
     <command name="ask">回答精度へのフィードバック</command>
-    <command name="upstream">上流PRを提出する前のレビュー</command>
   </related_commands>
   <related_skills>
     <skill name="execution-workflow">作業レビュー方法論の理解</skill>

@@ -1,19 +1,195 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<command>
-  <purpose>実装前に詳細な要件定義を行い、技術的制約、設計方針、仕様を明確にする。</purpose>
+<skill>
+  <purpose>Plan mode（EnterPlanMode）で起動される計画フェーズのワークフロー。実装前に要件定義、技術調査、設計方針の明確化を読み取り専用で行う。</purpose>
+  <tools>
+    <tool name="agent_groups">専門サブエージェント: investigation（explore、design、database、fact-check - 並列）、analysis（general-purpose - investigation後に順次）、validation（validator - analysis後に順次）</tool>
+    <tool name="delegation">スコープの概要、対象ファイルパス、明示的な編集禁止、AskUserQuestion使用指示を提供</tool>
+    <tool name="tool_selection">Serena MCP（シンボル検索、メモリ確認）→ Context7（ライブラリドキュメント）→ 基本ツール（Glob、Grep）</tool>
+  </tools>
+  <concepts>
+    <concept name="plan_mode_context">
+      <description>Claude CodeのPlan mode（EnterPlanMode/ExitPlanMode）で起動される計画ワークフロー。すべての操作は読み取り専用であり、ファイルの変更・作成・削除は行わない。</description>
+      <example>
+        EnterPlanMode → plan-workflowスキル起動
+        要件定義と技術調査を実施
+        ExitPlanMode → impl-workflowスキルへハンドオフ
+      </example>
+    </concept>
+    <concept name="read_only_investigation">
+      <description>調査、質問、要件定義のみを行い、コードを一切変更しない</description>
+      <example>
+        許可: シンボル検索、パターン検索、メモリ読み取り、ドキュメント参照、ユーザーへの質問
+        禁止: ファイル編集、ファイル作成、ファイル削除、コード実装
+      </example>
+    </concept>
+    <concept name="confidence_scoring">
+      <description>要件の明確度を定量的に評価する信頼度スコアリング</description>
+      <example>
+        requirement_clarity（40%）: 要件の明確さ
+        technical_feasibility（30%）: 技術的実現可能性
+        stakeholder_alignment（30%）: ユーザーとの合意度
+        閾値: 80以上=success、60-79=warning、60未満=error
+      </example>
+    </concept>
+    <concept name="question_scoring">
+      <description>ユーザーへの質問を優先度で分類・スコアリングする</description>
+      <example>
+        スコアリング基準（各1-5）:
+        - 設計分岐: 選択肢が実装に大きな影響を与えるか
+        - 不可逆性: 後から変更が困難か
+        - 調査不可能性: コードベースから答えが得られないか
+        - 工数影響: 回答によって工数が大きく変わるか
+
+        分類:
+        - 仕様確認、設計選択、制約、スコープ、優先度
+      </example>
+    </concept>
+    <concept name="handoff_to_implementation">
+      <description>計画完了後のimpl-workflowへのハンドオフ</description>
+      <example>
+        要件ドキュメント: 機能要件（FR-001形式）、非機能要件、技術仕様
+        タスク分解: 依存関係グラフ、フェーズ別タスクリスト
+        決定事項: ユーザーの選択、制約、参照情報
+      </example>
+    </concept>
+  </concepts>
+  <patterns>
+    <pattern name="analyze_request">
+      <description>ユーザーの要求を解析しコア要件を抽出</description>
+      <decision_tree name="when_to_use">
+        <question>Plan modeに入り、ユーザーの要求を受け取りましたか？</question>
+        <if_yes>要求分析パターンを適用してコア要件と制約を抽出</if_yes>
+        <if_no>Plan modeの開始を待つ</if_no>
+      </decision_tree>
+      <example>
+        1. ユーザーの要求からコア要件を抽出
+        2. コンテキストから技術的制約を特定
+        3. ユーザー入力が必要な設計決定を判断
+        4. ハイレベルで技術的実現可能性を評価
+      </example>
+    </pattern>
+    <pattern name="delegate_investigation">
+      <description>サブエージェントに並列で調査を委任</description>
+      <decision_tree name="when_to_use">
+        <question>コア要件と制約の初期リストが作成されましたか？</question>
+        <if_yes>サブエージェントに調査を並列委任</if_yes>
+        <if_no>最初に要求分析パターンを完了</if_no>
+      </decision_tree>
+      <example>
+        並列実行グループ（investigation）:
+        - explore: 関連ファイルと既存パターンの発見
+        - design: アーキテクチャの一貫性と依存関係の評価
+        - database: データベース設計の分析（該当する場合）
+        - fact-check: 外部ドキュメントと標準参照の検証
+
+        順次実行（analysis、investigation完了後）:
+        - general-purpose: 要件分析と工数見積もり
+      </example>
+    </pattern>
+    <pattern name="structured_clarification">
+      <description>構造化された質問でユーザーとの曖昧さを解決</description>
+      <decision_tree name="when_to_use">
+        <question>調査完了後、未解決の曖昧さがありますか？</question>
+        <if_yes>質問スコアリングと構造化された質問で曖昧さを解決</if_yes>
+        <if_no>検証パターンに進む</if_no>
+      </decision_tree>
+      <example>
+        1. 質問をスコアリング（設計分岐、不可逆性、調査不可能性、工数影響）
+        2. 質問を分類（仕様確認、設計選択、制約、スコープ、優先度）
+        3. AskUserQuestionツールで2-4の構造化された選択肢を提示
+        4. 常に（推奨）オプションを含める
+        5. 高スコアの質問を最初に提示
+      </example>
+    </pattern>
+    <pattern name="verify_decisions">
+      <description>ユーザーの決定を技術的証拠に対して検証</description>
+      <decision_tree name="when_to_use">
+        <question>ユーザーが設計上の決定を行いましたか？</question>
+        <if_yes>技術的証拠と照合して決定を検証</if_yes>
+        <if_no>明確化パターンを続行</if_no>
+      </decision_tree>
+      <example>
+        1. エージェントの発見を使用して回答からの制約を検証
+        2. 選択されたアプローチに関連する実装を確認
+        3. 矛盾がある場合はフラグを立ててユーザーに報告
+      </example>
+    </pattern>
+    <pattern name="document_requirements">
+      <description>包括的な要件ドキュメントを作成</description>
+      <decision_tree name="when_to_use">
+        <question>すべての質問が解決され、決定が検証されましたか？</question>
+        <if_yes>要件ドキュメントとタスク分解を作成</if_yes>
+        <if_no>明確化または検証パターンに戻る</if_no>
+      </decision_tree>
+      <example>
+        要件ドキュメント:
+        - summary: 一文の要求、背景、期待される成果
+        - current_state: 既存システム、技術スタック
+        - functional_requirements: FR-001形式（必須/任意）
+        - non_functional_requirements: パフォーマンス、セキュリティ、保守性
+        - technical_specifications: 設計方針、影響範囲、決定事項
+        - constraints: 技術的、運用上の制約
+        - test_requirements: ユニット、結合、受け入れ基準
+
+        タスク分解:
+        - dependency_graph: タスク依存関係の可視化
+        - phased_tasks: フェーズごとのファイル、概要、依存関係
+        - impl-workflow_handoff: 決定事項、参照、制約
+      </example>
+    </pattern>
+    <pattern name="self_evaluate">
+      <description>要件出力の品質を自己評価</description>
+      <decision_tree name="when_to_use">
+        <question>要件ドキュメントの作成が完了しましたか？</question>
+        <if_yes>信頼度スコアを計算し、問題があれば特定</if_yes>
+        <if_no>ドキュメント作成パターンを完了</if_no>
+      </decision_tree>
+      <example>
+        1. decision_criteriaで信頼度を計算
+        2. 信頼度80未満の場合、上位1-2個の重大な問題を特定
+        3. self_feedbackセクションを出力に追加
+      </example>
+    </pattern>
+  </patterns>
+  <anti_patterns>
+    <avoid name="premature_implementation">
+      <description>Plan mode中にコードを実装または変更する</description>
+      <instead>すべての操作を読み取り専用に保ち、要件定義と技術調査のみを行う</instead>
+    </avoid>
+    <avoid name="skipping_investigation">
+      <description>技術調査なしに要件を確定する</description>
+      <instead>サブエージェントに委任して技術的証拠を収集してから要件を確定</instead>
+    </avoid>
+    <avoid name="unstructured_questions">
+      <description>プレーンテキストでユーザーに質問する</description>
+      <instead>AskUserQuestionツールで構造化された選択肢（2-4個、推奨オプション付き）を提示</instead>
+    </avoid>
+    <avoid name="assumption_over_evidence">
+      <description>推測に基づいて要件を決定する</description>
+      <instead>コードベース調査と外部ドキュメント検証による技術的証拠を優先</instead>
+    </avoid>
+    <avoid name="proceeding_without_answers">
+      <description>重要な質問への回答なしに要件を確定する</description>
+      <instead>高スコアの質問には明確な回答を得てから進行</instead>
+    </avoid>
+    <avoid name="user_wish_over_feasibility">
+      <description>技術的妥当性よりユーザーの希望を優先する</description>
+      <instead>技術的に不可能な要求を明確に特定し、代替案を提示</instead>
+    </avoid>
+  </anti_patterns>
   <rules priority="critical">
-    <rule>ファイルを変更、作成、削除しない</rule>
-    <rule>コードを実装しない。要件定義のみ</rule>
+    <rule>ファイルを変更、作成、削除しない（読み取り専用）</rule>
+    <rule>コードを実装しない。要件定義と技術調査のみ</rule>
     <rule>技術的に不可能な要求を明確に特定する</rule>
     <rule>ユーザーの希望より技術的妥当性を優先する</rule>
     <rule>推測より技術的証拠</rule>
   </rules>
   <rules priority="standard">
-    <rule>方法論にはrequirements-definitionスキルを使用する</rule>
     <rule>調査をサブエージェントに委任する</rule>
     <rule>要件が明確になるまで制限なく質問する</rule>
     <rule>結論を出す前に調査して質問する</rule>
     <rule>AskUserQuestionで選択肢を提示する際は常に（推奨）オプションを含める</rule>
+    <rule>ファイル全体を読む前にSerenaシンボルツールを使用</rule>
   </rules>
   <workflow>
     <phase name="analyze">
@@ -149,7 +325,7 @@
         <output>完全な要件仕様</output>
       </step>
       <step number="2">
-        <action>/executeへのハンドオフのためにタスクを分解する</action>
+        <action>impl-workflowへのハンドオフのためにタスクを分解する</action>
         <tool>タスク分解</tool>
         <output>依存関係を含むフェーズ別タスクリスト</output>
       </step>
@@ -257,7 +433,7 @@
       </test>
       <test name="ambiguous_requirements">
         <input>requirement_clarity=50, technical_feasibility=55, stakeholder_alignment=45</input>
-        <calculation>(50*0.4)+(55*0.3)+(45\*0.3) = 20+16.5+13.5 = 50</calculation>
+        <calculation>(50*0.4)+(55*0.3)+(45*0.3) = 20+16.5+13.5 = 50</calculation>
         <expected_status>error</expected_status>
         <reasoning>未回答の質問を伴う不明確な要件が多く50となりエラーをトリガー</reasoning>
       </test>
@@ -265,27 +441,37 @@
   </decision_criteria>
   <enforcement>
     <mandatory_behaviors>
-      <behavior id="DEF-B001" priority="critical">
+      <behavior id="PLAN-B001" priority="critical">
         <trigger>要件ドキュメント作成前</trigger>
         <action>既存のコードベースパターンを調査する</action>
         <verification>出力にコードベース分析を含める</verification>
       </behavior>
-      <behavior id="DEF-B002" priority="critical">
+      <behavior id="PLAN-B002" priority="critical">
         <trigger>設計決定の場合</trigger>
         <action>構造化された選択肢とともにAskUserQuestionツールを使用する</action>
         <verification>ユーザーの回答を記録する</verification>
       </behavior>
+      <behavior id="PLAN-B003" priority="critical">
+        <trigger>Plan mode中の全操作</trigger>
+        <action>読み取り専用操作のみを実行する</action>
+        <verification>ファイルの変更・作成・削除が行われていないこと</verification>
+      </behavior>
     </mandatory_behaviors>
     <prohibited_behaviors>
-      <behavior id="DEF-P001" priority="critical">
+      <behavior id="PLAN-P001" priority="critical">
         <trigger>常に</trigger>
         <action>コードファイルを変更または作成する</action>
-        <response>操作をブロック、これは読み取り専用コマンド</response>
+        <response>操作をブロック、これは読み取り専用スキル</response>
       </behavior>
-      <behavior id="DEF-P002" priority="critical">
+      <behavior id="PLAN-P002" priority="critical">
         <trigger>常に</trigger>
         <action>重要な質問に回答せずに進める</action>
         <response>操作をブロック、まず確認を要求する</response>
+      </behavior>
+      <behavior id="PLAN-P003" priority="critical">
+        <trigger>常に</trigger>
+        <action>AskUserQuestionツールの代わりにプレーンテキストで質問する</action>
+        <response>構造化された選択肢付きのAskUserQuestionツールに切り替える</response>
       </behavior>
     </prohibited_behaviors>
   </enforcement>
@@ -308,7 +494,7 @@
       <task_breakdown>
         <dependency_graph>タスク依存関係の可視化</dependency_graph>
         <phased_tasks>フェーズごとのファイル、概要、依存関係</phased_tasks>
-        <execute_handoff>決定事項、参照、制約</execute_handoff>
+        <impl_workflow_handoff>決定事項、参照、制約</impl_workflow_handoff>
       </task_breakdown>
       <self_feedback>
         <confidence>XX/100（requirement_clarityに基づく）</confidence>
@@ -337,25 +523,37 @@
       <action>操作をブロックし、ユーザーの明示的な承認を要求する</action>
     </level>
   </error_escalation>
-  <related_commands>
-    <command name="ask">要件で技術的な質問が発生した場合</command>
-    <command name="bug">既知の問題の修正要件を定義する場合</command>
-    <command name="execute">要件定義後のハンドオフポイント</command>
-  </related_commands>
+  <best_practices>
+    <practice priority="critical">Plan mode中はすべての操作を読み取り専用に保つ</practice>
+    <practice priority="critical">構造化されたユーザーインタラクションにAskUserQuestionツールを使用する</practice>
+    <practice priority="critical">推測ではなく技術的証拠に基づいて要件を定義する</practice>
+    <practice priority="high">詳細な調査をサブエージェントに委任する</practice>
+    <practice priority="high">質問スコアリングで優先度の高い質問を最初に提示する</practice>
+    <practice priority="high">ファイル全体を読む前にSerenaシンボルツールを使用</practice>
+    <practice priority="medium">AskUserQuestionで選択肢を提示する際は常に（推奨）オプションを含める</practice>
+    <practice priority="medium">impl-workflowへのハンドオフに必要な情報を漏れなく文書化する</practice>
+  </best_practices>
+  <related_agents>
+    <agent name="plan-workflow">Plan modeで要件定義と技術調査を実施する（自身）</agent>
+    <agent name="impl-workflow">計画完了後のExitPlanMode時に実装を実施する</agent>
+    <agent name="bug">要件で技術的な問題が発生した場合のデバッグに使用</agent>
+    <agent name="ask">コードベースのアーキテクチャと実装に関する質問への回答に使用</agent>
+  </related_agents>
   <related_skills>
-    <skill name="requirements-definition">仕様のコア方法論</skill>
     <skill name="investigation-patterns">実現可能性のための証拠収集</skill>
     <skill name="serena-usage">既存パターンとメモリを確認する</skill>
     <skill name="fact-check">Context7とWebSearchを使用した外部ソース検証</skill>
+    <skill name="execution-workflow">計画完了後の実装ワークフロー</skill>
   </related_skills>
   <constraints>
     <must>すべての操作を読み取り専用に保つ</must>
     <must>詳細な調査をサブエージェントに委任する</must>
     <must>構造化されたユーザーインタラクションにAskUserQuestionツールを使用する</must>
     <must>想定を立てる前に質問を提示する</must>
+    <must>impl-workflowへのハンドオフに必要な情報を完全に文書化する</must>
     <avoid>コードを実装または変更する</avoid>
     <avoid>技術的妥当性よりユーザーの要求を正当化する</avoid>
     <avoid>重要な質問への明確な回答なしに進める</avoid>
     <avoid>AskUserQuestionツールの代わりにプレーンテキストで質問する</avoid>
   </constraints>
-</command>
+</skill>

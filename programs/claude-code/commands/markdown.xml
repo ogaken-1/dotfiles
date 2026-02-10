@@ -175,7 +175,6 @@
     </level>
   </error_escalation>
   <related_commands>
-    <command name="define">EXECUTION.md出力の主要なソース</command>
     <command name="ask">RESEARCH.md出力の主要なソース</command>
     <command name="bug">RESEARCH.md出力の主要なソース</command>
   </related_commands>
@@ -185,7 +184,6 @@
   </related_skills>
   <file_mapping>
     <default_output_dir>プロジェクトルート</default_output_dir>
-    <mapping command="/define" output="EXECUTION.md"/>
     <mapping command="/ask" output="RESEARCH.md"/>
     <mapping command="/bug" output="RESEARCH.md"/>
     <mapping command="other" output="MEMO.md"/>

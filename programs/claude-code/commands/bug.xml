@@ -235,8 +235,6 @@
   </error_escalation>
   <related_commands>
     <command name="ask">調査でアーキテクチャに関する質問が発生した場合</command>
-    <command name="define">バグ修正に要件定義が必要な場合</command>
-    <command name="execute">調査後に修正を実装する準備ができた場合</command>
   </related_commands>
   <related_skills>
     <skill name="investigation-patterns">コアデバッグ方法論</skill>

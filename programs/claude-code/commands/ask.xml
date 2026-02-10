@@ -217,8 +217,6 @@
   </error_escalation>
   <related_commands>
     <command name="bug">エラー関連の質問を調査する場合</command>
-    <command name="define">質問に要件の明確化が必要な場合</command>
-    <command name="execute">回答が実装の必要性につながる場合</command>
   </related_commands>
   <related_skills>
     <skill name="investigation-patterns">体系的なエビデンスベース分析のコアスキル</skill>

@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skill>
+  <purpose>Plan mode承認後の実装ワークフロー。ポリシー決定とオーケストレーションに集中しながら、詳細な作業をサブエージェントに委任してタスクを実行する。</purpose>
+  <tools>
+    <tool name="agent_groups">専門サブエージェント: coding（テストファースト実装）、characterization（仕様化テスト）、quality_assurance（quality、security - 並列）、implementation（test、refactor、docs - 独立時並列）、review（implementation後に順次）</tool>
+    <tool name="delegation">スコープ、ファイルパス、Serena/Context7ツール指示、リファレンス実装、メモリ確認を提供</tool>
+    <tool name="todo_management">テストリストの管理にはTodoWriteツールを使用（マスター/ワーカー方式）</tool>
+    <tool name="tool_selection">コーディング: Codex MCP → Serena MCP → Context7 → 基本ツール、非コーディング: Serena MCP → Context7 → 基本ツール</tool>
+  </tools>
+  <concepts>
+    <concept name="plan_to_impl">Plan modeで承認された計画を受け取り、TDDサイクルを通じて実装する。計画の変更が必要な場合はユーザーに確認する</concept>
+    <concept name="tdd_rhythm">テストリストを作成し、1項目ずつRed-Green-Refactorサイクルで消化する。codingエージェントには単一項目のみを委任する</concept>
+    <concept name="characterization_tests">テストなしで変更が必要なレガシーコードは、まず仕様化テストを作成してから変更する</concept>
+    <concept name="parallel_execution">独立したタスクを並行実行、quality+securityは並列実行可能、test+docsは独立している場合は並列実行可能</concept>
+    <concept name="sequential_dependencies">データ依存関係のあるタスクは順序通りに実行、依存タスク開始前に出力を検証</concept>
+    <concept name="delegation_context">サブエージェントには以下が必要: 具体的なスコープ、ファイルパス、ツール使用指示、リファレンス実装、メモリパターン</concept>
+    <concept name="git_policy">delegateモード: conventional commitsに従いコミット（pushは禁止）。manualモード: Git操作は行わずフェーズ完了時にユーザー入力を待つ</concept>
+    <concept name="feedback_integration">TDDサイクル完了後にfeedbackスキルでレビュー。指摘事項はTODO登録し、git absorbで既存コミットにfixup</concept>
+  </concepts>
+  <patterns>
+    <pattern name="git_policy_check">
+      <description>セッション開始時にGit操作ポリシーを確認する</description>
+      <decision_tree name="when_to_use">
+        <question>セッション内で既にポリシーが確定していますか？</question>
+        <if_yes>スキップして次のフェーズに進む</if_yes>
+        <if_no>AskUserQuestionでGit操作ポリシーを確認する</if_no>
+      </decision_tree>
+      <example>
+      AskUserQuestionで確認:
+      - delegate: エージェントに任せる（変更を適宜コミット、conventional commits準拠）
+      - manual: 自分で行う（コミットしない、フェーズ完了時に入力待ち）
+
+      delegateモードの場合:
+      - 現在のブランチを確認
+      - 保護ブランチ（main, master, develop, release/*, production）ではtopic branchを作成
+      - ブランチ名は機能/タスクに基づいて命名（例: feat/add-user-auth）
+      - git push は禁止（ローカルコミットのみ）
+      - feedback対応の変更は git absorb で既存コミットに fixup
+      </example>
+    </pattern>
+    <pattern name="test_list_creation">
+      <description>機能要求からテストすべき項目を抽出しTodoWriteでリスト化する</description>
+      <decision_tree name="when_to_use">
+        <question>Plan modeで承認された計画から実装項目がありますか？</question>
+        <if_yes>行動分析を行いテスト項目を列挙してTodoWriteでリスト化</if_yes>
+        <if_no>計画が不十分なため、ユーザーに確認する</if_no>
+      </decision_tree>
+      <example>
+      1. 要求の行動分析（Kent Beckのアプローチ）
+      2. テスト項目の列挙（基本ケース、エッジケース、エラーケース）
+      3. レガシーコード検出:
+         - 変更対象のコードに既存テストがない
+         - コードの振る舞いが不明確で仕様化が必要
+         - リファクタリング前に現状の振る舞いを記録する必要がある
+         → characterization_testタイプのタスクを作成
+      4. TodoWriteでテストリストを作成
+      5. 各項目に優先度を付与（仕様化テストは通常のTDD項目より先に実行）
+      </example>
+    </pattern>
+    <pattern name="tdd_cycle">
+      <description>テストリストが空になるまでRed-Green-Refactorを繰り返す</description>
+      <decision_tree name="when_to_use">
+        <question>テストリストにpending項目がありますか？</question>
+        <if_yes>1項目を選択しルーティングに従ってエージェントに委任</if_yes>
+        <if_no>completionフェーズに進む</if_no>
+      </decision_tree>
+      <example>
+      ループ（pending項目が存在する間）:
+      1. リストから1項目を選択、TodoWriteでin_progressに変更
+      2. ルーティング:
+         - characterization_testタイプ → characterizationエージェントに委任
+         - refactoringタイプ → characterization testの完了を確認後、codingエージェントに委任
+         - 通常のテスト項目 → codingエージェントに単一タスクとして委任
+      3. エージェント出力の処理（重複チェック付き）:
+         - discoveries → 通常のテスト項目としてリストに追加
+         - legacy_code_detected → characterization_testタイプとしてリストに追加
+         - refactoring_candidates → refactoringタイプとしてリストに追加
+      4. 完了したらTodoWriteでcompletedに変更
+
+      フェーズ完了時のGit操作:
+      - delegate: 変更をまとめてコミット（conventional commits形式）
+      - manual: 「必要であればコミットを作成してください」と表示
+      </example>
+    </pattern>
+    <pattern name="completion_and_feedback">
+      <description>テストリスト完了後の品質確認とfeedback対応</description>
+      <decision_tree name="when_to_use">
+        <question>テストリストのすべての項目が完了しましたか？</question>
+        <if_yes>feedbackスキルを実行し、指摘事項を対応する</if_yes>
+        <if_no>tdd_cycleパターンに戻る</if_no>
+      </decision_tree>
+      <example>
+      1. すべてのテスト項目が完了していることを確認
+      2. feedbackスキルを実行（テストリストの内容も含めてレビュー）
+      3. feedbackの指摘事項をTodoWriteでタスク登録（Critical/Warningは必須）
+      4. 登録したTODOを順次消化
+      5. feedback対応の変更をコミット:
+         - delegate: git absorb を実行（失敗時は git commit --fixup）
+         - manual: 「feedback対応が完了しました。必要であればコミットを作成してください」と表示
+      </example>
+    </pattern>
+    <pattern name="code_review_phases">
+      <description>体系的なコードレビュープロセス</description>
+      <decision_tree name="when_to_use">
+        <question>コードが変更または新規作成されましたか？</question>
+        <if_yes>品質を確保するためにコードレビューフェーズを体系的に適用</if_yes>
+        <if_no>レビューをスキップして次のタスクに進む</if_no>
+      </decision_tree>
+      <example>
+      フェーズ1 - 初期スキャン:
+      - 構文エラーとタイプミス
+      - 不足しているインポートまたは依存関係
+      - 明らかなロジックエラー
+      - コードスタイル違反
+
+      フェーズ2 - 深い分析:
+      - アルゴリズムの正確性
+      - エッジケースの処理
+      - エラー処理の完全性
+      - リソース管理
+
+      フェーズ3 - コンテキスト評価:
+      - パブリックAPIへの破壊的変更
+      - 既存機能への副作用
+      - 依存関係の互換性
+
+      フェーズ4 - 標準準拠:
+      - 命名規約
+      - ドキュメント要件
+      - テストカバレッジ
+      </example>
+    </pattern>
+  </patterns>
+  <anti_patterns>
+    <avoid name="skip_test_first">
+      <description>テストを書かずに実装を先に行う</description>
+      <instead>codingエージェントにテストファーストワークフローを委任する</instead>
+    </avoid>
+    <avoid name="bulk_delegation">
+      <description>複数のテスト項目を一度にcodingエージェントに委任する</description>
+      <instead>codingエージェントには単一のテスト項目のみを委任する</instead>
+    </avoid>
+    <avoid name="skip_characterization">
+      <description>テストなしのレガシーコードを直接変更する</description>
+      <instead>characterizationエージェントで仕様化テストを作成してから変更する</instead>
+    </avoid>
+    <avoid name="sequential_when_parallel">
+      <description>独立したタスクを順次実行</description>
+      <instead>効率のために独立したタスクを特定し並列実行</instead>
+    </avoid>
+    <avoid name="parallel_when_dependent">
+      <description>データ依存関係のあるタスクを並列化しようとする</description>
+      <instead>依存関係を分析し、依存タスクを順次実行</instead>
+    </avoid>
+    <avoid name="skip_feedback">
+      <description>TDDサイクル完了後にfeedbackスキルを実行しない</description>
+      <instead>テストリスト完了時に必ずfeedbackスキルを実行する</instead>
+    </avoid>
+    <avoid name="ignore_discoveries">
+      <description>codingエージェントからのdiscoveriesやlegacy_code_detectedを無視する</description>
+      <instead>重複チェック後にテストリストに追加する</instead>
+    </avoid>
+  </anti_patterns>
+  <workflow>
+    <phase name="git_policy_check">
+      <description>Git操作ポリシーを確認し、セッション中の動作を決定する</description>
+      <note>AskUserQuestionでの確認はCLAUDE.mdの「Git操作はユーザーの明示的な要求がある場合のみ」を満たす明示的な要求とみなす</note>
+      <skip_condition>セッション内で既にポリシーが確定している場合はスキップ</skip_condition>
+      <step>AskUserQuestionツールでGit操作ポリシーを確認する（delegate / manual）</step>
+      <step>delegateモードの場合: 保護ブランチではtopic branchを作成</step>
+    </phase>
+    <phase name="analyze">
+      <description>Plan modeで承認された計画を受け取り、タスクの範囲を理解する</description>
+      <step>承認された計画から実装タスクを特定</step>
+      <step>影響を受けるファイルとコンポーネントを特定</step>
+      <step>既存のパターンのためにSerenaメモリを確認</step>
+      <step>どのサブエージェントが最適か判断</step>
+      <step>タスク間の依存関係と並列実行可能性を分析</step>
+    </phase>
+    <phase name="test_list_creation">
+      <description>機能要求からテストすべき項目を抽出しTodoWriteでリスト化する</description>
+      <step>要求の行動分析（Kent Beckのアプローチ）</step>
+      <step>テスト項目の列挙（基本ケース、エッジケース、エラーケース）</step>
+      <step>レガシーコード検出（characterization_testタイプとして登録）</step>
+      <step>TodoWriteでテストリストを作成（優先度付き）</step>
+    </phase>
+    <phase name="decompose">
+      <description>複雑なタスクを管理可能な単位に分解する</description>
+      <step>管理可能な単位に分割する</step>
+      <step>タスクの境界を特定する</step>
+    </phase>
+    <phase name="structure">
+      <description>最適な実行のためにタスクを整理する</description>
+      <step>並列タスクと逐次タスクを特定する</step>
+      <step>タスクの依存関係を定義する</step>
+    </phase>
+    <phase name="tdd_cycle">
+      <description>リストが空になるまでRed-Green-Refactorを繰り返す</description>
+      <step>リストから1項目を選択、TodoWriteでin_progressに変更</step>
+      <step>タイプに応じてルーティング（characterization_test / refactoring / default）</step>
+      <step>エージェント出力の処理（discoveries, legacy_code_detected, refactoring_candidates を重複チェック後にリスト追加）</step>
+      <step>完了したらTodoWriteでcompletedに変更</step>
+      <step>フェーズ完了時にGit操作（ポリシーに基づく）</step>
+    </phase>
+    <phase name="assign">
+      <description>明確な指示とともにタスクを適切なサブエージェントに委任する</description>
+      <step>詳細な指示とともにタスクを委任する</step>
+      <step>コンテキストと制約を提供する</step>
+    </phase>
+    <phase name="consolidate">
+      <description>サブエージェントの出力を統合して一貫した結果にまとめる</description>
+      <step>サブエージェント出力を検証する</step>
+      <step>結果を統合する</step>
+    </phase>
+    <phase name="completion">
+      <description>テストリスト完了後の品質確認とfeedback対応</description>
+      <step>すべてのテスト項目が完了していることを確認</step>
+      <step>feedbackスキルを実行（テストリストの内容も含めてレビュー）</step>
+      <step>feedbackの指摘事項をTodoWriteでタスク登録し順次消化</step>
+      <step>feedback対応の変更をコミット（delegate: git absorb、manual: ユーザー入力待ち）</step>
+    </phase>
+    <phase name="failure_handling">
+      <description>エラーとエッジケースを適切に処理する</description>
+      <step>ツール呼び出しが失敗した場合: エラーをログに記録し、代替アプローチを試行する</step>
+      <step>データが利用できない場合: ギャップを文書化し、部分的な分析で続行する</step>
+      <step>矛盾する証拠がある場合: 不確実性をフラグし、ユーザーに確認を求める</step>
+    </phase>
+  </workflow>
+  <agents>
+    <agent name="coding" subagent_type="coding" readonly="false">テストファーストワークフローでの実装（テスト → レビュー → 実装）</agent>
+    <agent name="characterization" subagent_type="characterization" readonly="false">レガシーコードの仕様化テスト作成（Greenから開始、接合部特定）</agent>
+    <agent name="quality" subagent_type="quality-assurance" readonly="false">構文、型、フォーマットの検証</agent>
+    <agent name="security" subagent_type="security" readonly="false">脆弱性検出</agent>
+    <agent name="test" subagent_type="test" readonly="false">テスト作成、カバレッジ</agent>
+    <agent name="refactor" subagent_type="general-purpose" readonly="false">リファクタリング、技術的負債</agent>
+    <agent name="docs" subagent_type="docs" readonly="false">ドキュメント更新</agent>
+    <agent name="review" subagent_type="quality-assurance" readonly="false">実装後レビュー</agent>
+    <agent name="debug" subagent_type="general-purpose" readonly="false">デバッグサポート</agent>
+    <agent name="performance" subagent_type="performance" readonly="false">パフォーマンス最適化</agent>
+    <agent name="clean" subagent_type="code-quality" readonly="false">デッドコード除去</agent>
+    <agent name="error-handling" subagent_type="general-purpose" readonly="false">エラー処理パターン</agent>
+    <agent name="migration" subagent_type="general-purpose" readonly="false">マイグレーション計画と実行</agent>
+    <agent name="database" subagent_type="database" readonly="false">データベース設計と最適化</agent>
+    <agent name="infrastructure" subagent_type="devops" readonly="false">インフラストラクチャ設計</agent>
+    <agent name="ci-cd" subagent_type="devops" readonly="false">CI/CDパイプライン設計</agent>
+    <agent name="observability" subagent_type="devops" readonly="false">ロギング、モニタリング、トレーシング</agent>
+    <agent name="git" subagent_type="git" readonly="false">Gitワークフロー設計</agent>
+    <agent name="memory" subagent_type="general-purpose" readonly="false">ナレッジベース管理</agent>
+    <agent name="validator" subagent_type="validator" readonly="true">クロスバリデーションとコンセンサス検証</agent>
+  </agents>
+  <execution_graph>
+    <sequential_phase id="git_policy_phase" depends_on="none">
+      <step>git_policy_check</step>
+    </sequential_phase>
+    <sequential_phase id="analysis_phase" depends_on="git_policy_phase">
+      <step>analyze</step>
+      <step>test_list_creation</step>
+    </sequential_phase>
+    <sequential_phase id="tdd_phase" depends_on="analysis_phase">
+      <step>tdd_cycle</step>
+      <reason>テストリストを1項目ずつ消化。独立項目は並列実行可能</reason>
+    </sequential_phase>
+    <parallel_group id="post_implementation" depends_on="tdd_phase">
+      <agent>quality</agent>
+      <agent>security</agent>
+    </parallel_group>
+    <sequential_phase id="completion_phase" depends_on="post_implementation">
+      <step>completion</step>
+      <reason>feedbackスキルでテストリストを含む全体レビュー</reason>
+    </sequential_phase>
+  </execution_graph>
+  <delegation>
+    <requirement>具体的な範囲と期待される成果物</requirement>
+    <requirement>対象ファイルパス</requirement>
+    <requirement>参照実装（具体的なパス）</requirement>
+    <requirement>メモリチェック：パターン用に`mcp__serena__list_memories`</requirement>
+  </delegation>
+  <parallelization>
+    <capability>
+      <parallel_safe>true</parallel_safe>
+      <read_only>false</read_only>
+      <modifies_state>local</modifies_state>
+    </capability>
+    <execution_strategy>
+      <max_parallel_agents>16</max_parallel_agents>
+      <timeout_per_agent>300000</timeout_per_agent>
+    </execution_strategy>
+  </parallelization>
+  <decision_criteria>
+    <criterion name="confidence_calculation">
+      <factor name="task_clarity" weight="0.3">
+        <score range="90-100">受け入れ基準を含む明確な要件</score>
+        <score range="70-89">明確な要件</score>
+        <score range="50-69">一部曖昧さがある</score>
+        <score range="0-49">不明確な要件</score>
+      </factor>
+      <factor name="implementation_quality" weight="0.4">
+        <score range="90-100">すべてのテストが通過、コードレビュー済み</score>
+        <score range="70-89">テストが通過</score>
+        <score range="50-69">一部の問題が残る</score>
+        <score range="0-49">重大な問題がある</score>
+      </factor>
+      <factor name="verification_completeness" weight="0.3">
+        <score range="90-100">サブエージェントによる完全な検証</score>
+        <score range="70-89">コア検証完了</score>
+        <score range="50-69">部分的な検証</score>
+        <score range="0-49">最小限の検証</score>
+      </factor>
+    </criterion>
+  </decision_criteria>
+  <enforcement>
+    <mandatory_behaviors>
+      <behavior id="IMPL-B001" priority="critical">
+        <trigger>実装前</trigger>
+        <action>既存パターンについてSerenaメモリを確認する</action>
+        <verification>出力にパターンチェックを含める</verification>
+      </behavior>
+      <behavior id="IMPL-B002" priority="critical">
+        <trigger>実装後</trigger>
+        <action>qualityおよびsecurityエージェントに検証を委任する</action>
+        <verification>出力にエージェントレポートを含める</verification>
+      </behavior>
+      <behavior id="IMPL-B003" priority="critical">
+        <trigger>テストリスト完了時</trigger>
+        <action>feedbackスキルを実行する</action>
+        <verification>feedback結果がTODOとして登録されていること</verification>
+      </behavior>
+      <behavior id="IMPL-B004" priority="critical">
+        <trigger>codingエージェントからdiscoveriesまたはlegacy_code_detectedを受け取った場合</trigger>
+        <action>重複チェック後にテストリストに追加する</action>
+        <verification>TodoWriteでリストが更新されていること</verification>
+      </behavior>
+    </mandatory_behaviors>
+    <prohibited_behaviors>
+      <behavior id="IMPL-P001" priority="critical">
+        <trigger>常に</trigger>
+        <action>サブエージェントへの委任なしで実装する</action>
+        <response>操作をブロックし、専門エージェントに委任する</response>
+      </behavior>
+      <behavior id="IMPL-P002" priority="critical">
+        <trigger>常に</trigger>
+        <action>複数のテスト項目を一度にcodingエージェントに委任する</action>
+        <response>単一のテスト項目のみを委任する</response>
+      </behavior>
+      <behavior id="IMPL-P003" priority="critical">
+        <trigger>delegateモード</trigger>
+        <action>git pushを実行する</action>
+        <response>ローカルコミットのみ許可</response>
+      </behavior>
+    </prohibited_behaviors>
+  </enforcement>
+  <error_escalation>
+    <level severity="low">
+      <example>軽微なコードスタイルの不整合</example>
+      <action>レポートに記録し、続行する</action>
+    </level>
+    <level severity="medium">
+      <example>テスト失敗または不明確な実装アプローチ</example>
+      <action>問題を文書化し、AskUserQuestionを使用して確認する</action>
+    </level>
+    <level severity="high">
+      <example>破壊的変更または重大な実装のブロッカー</example>
+      <action>停止し、ユーザーに選択肢を提示する</action>
+    </level>
+    <level severity="critical">
+      <example>セキュリティ脆弱性またはデータ損失のリスク</example>
+      <action>操作をブロックし、ユーザーの明示的な承認を要求する</action>
+    </level>
+  </error_escalation>
+  <best_practices>
+    <practice priority="critical">Plan modeで承認された計画に基づいて実装を進める。計画からの逸脱が必要な場合はユーザーに確認する</practice>
+    <practice priority="critical">テストファーストワークフローを徹底する。codingエージェントには単一のテスト項目のみを委任する</practice>
+    <practice priority="critical">並列vs順次実行モデルを決定するために実行前にタスク依存関係を分析</practice>
+    <practice priority="critical">ファイルパス、ツール使用、リファレンス実装を含む包括的なコンテキストをサブエージェントに提供</practice>
+    <practice priority="high">レガシーコードの変更前にcharacterizationエージェントで仕様化テストを作成する</practice>
+    <practice priority="high">codingエージェントからのdiscoveriesとlegacy_code_detectedを重複チェック後にテストリストに追加する</practice>
+    <practice priority="medium">実装タスクを委任する前にSerenaメモリで既存のパターンを確認</practice>
+  </best_practices>
+  <rules priority="critical">
+    <rule>テストファーストワークフローを適用するためにcodingエージェントを使用する</rule>
+    <rule>詳細な作業を専門のサブエージェントに委任する</rule>
+    <rule>オーケストレーションとポリシー決定に集中する</rule>
+    <rule>独立したタスクを並列実行する</rule>
+    <rule>統合前にサブエージェントの出力を検証する</rule>
+    <rule>テストリストの管理にはTodoWriteツールを使用する（マスター/ワーカー方式）</rule>
+    <rule>codingエージェントには単一のテスト項目のみを委任する</rule>
+    <rule>codingエージェントからのdiscoveriesはテストリストに追加する</rule>
+    <rule>codingエージェントからのlegacy_code_detectedはcharacterization_testタイプとしてテストリストに追加する</rule>
+    <rule>characterizationエージェントからのrefactoring_candidatesはrefactoringタイプとしてテストリストに追加する</rule>
+    <rule>テストリスト完了時にfeedbackスキルを実行する</rule>
+    <rule>delegateモードの場合：意味のある単位でconventional commitsに従いコミットする</rule>
+    <rule>delegateモードの場合：mainまたは保護ブランチではtopicブランチを作成してから作業する</rule>
+    <rule>manualモードの場合：Git操作は行わない。フェーズ完了時に「必要であればコミットを作成してください」と表示しユーザー入力を待つ</rule>
+    <rule>delegateモードの場合：git push は禁止（ローカルコミットのみ）</rule>
+    <rule>delegateモードの場合：feedback対応の変更は git absorb で既存コミットに fixup する</rule>
+  </rules>
+  <rules priority="standard">
+    <rule>委任パターンにはexecution-workflowスキルを使用する</rule>
+    <rule>実装前にSerenaメモリを確認する</rule>
+    <rule>quality + security: 並行チェック</rule>
+    <rule>test + docs: 独立している場合は同時作成</rule>
+    <rule>既存機能にリグレッションがないことを確認</rule>
+    <rule>すべての受け入れ基準が満たされていることを確認</rule>
+  </rules>
+  <related_skills>
+    <skill name="execution-workflow">コア委任とオーケストレーションパターン</skill>
+    <skill name="serena-usage">実装前に既存パターンについてメモリを確認する</skill>
+    <skill name="testing-patterns">適切なテストカバレッジを確保する</skill>
+    <skill name="investigation-patterns">不明確な実装詳細が明らかになった場合に使用</skill>
+  </related_skills>
+  <related_agents>
+    <agent name="plan-workflow">実装で不明確な要件が判明した場合、計画の再検討</agent>
+    <agent name="impl-workflow">（自身）Plan mode承認後の実装ワークフロー</agent>
+    <agent name="feedback">TDDサイクル完了後のレビュー（テストリストを含む）</agent>
+    <agent name="bug">実装で予期しないエラーが発生した場合</agent>
+  </related_agents>
+  <constraints>
+    <must>Plan modeで承認された計画に基づいて実装する</must>
+    <must>詳細な作業をサブエージェントに委任する</must>
+    <must>独立したタスクを並列実行する</must>
+    <must>統合前に出力を検証する</must>
+    <must>テストリスト完了時にfeedbackスキルを実行する</must>
+    <avoid>詳細なロジックを直接実装する</avoid>
+    <avoid>過去の実装に関する不要なコメント</avoid>
+    <avoid>複数のテスト項目を一度にcodingエージェントに委任する</avoid>
+    <avoid>テストなしのレガシーコードを直接変更する</avoid>
+  </constraints>
+</skill>
+<!-- vim:set ft=xml: -->
