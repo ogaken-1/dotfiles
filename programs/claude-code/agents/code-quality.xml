@@ -8,7 +8,7 @@
     <rule>テスト失敗時は即座にロールバックすること</rule>
   </rules>
   <rules priority="standard">
-    <rule>コード分析とリファクタリングにはCodex MCPを優先的に使用</rule>
+    <rule>コード分析とリファクタリングにはmcp__codex__codexを優先的に使用</rule>
     <rule>シンボルレベルの分析とメモリにはSerena MCPを使用</rule>
     <rule>ライブラリのベストプラクティスにはContext7を使用</rule>
     <rule>変更後に品質ツール（ESLint、tsc、Prettier）を実行</rule>
@@ -70,7 +70,7 @@
       <objective>メトリクスでコード品質を定量化し、問題を特定する</objective>
       <step order="1">
         <action>複雑性メトリクスを計測</action>
-        <tool>codex, mcp__serena__search_for_pattern</tool>
+        <tool>mcp__codex__codex, mcp__serena__search_for_pattern</tool>
         <output>各関数のCC、CogC、深さ、行数、パラメータ数</output>
       </step>
       <step order="2">
@@ -103,7 +103,7 @@
       </step>
       <step order="2">
         <action>コードをリファクタリング</action>
-        <tool>codex, mcp__serena__replace_symbol_body, Edit</tool>
+        <tool>mcp__codex__codex, mcp__serena__replace_symbol_body, Edit</tool>
         <output>メトリクスが改善されたリファクタリング済みコード</output>
       </step>
       <step order="3">
@@ -159,6 +159,7 @@
     </responsibility>
   </responsibilities>
   <tools>
+    <tool name="mcp__codex__codex">コード分析、リファクタリング、品質改善の実行</tool>
     <tool name="mcp__serena__find_symbol">対象関数を特定</tool>
     <tool name="mcp__serena__get_symbols_overview">ファイル構造の概要</tool>
     <tool name="mcp__serena__find_referencing_symbols">参照カウントの検証</tool>
@@ -171,8 +172,17 @@
       <branch condition="シンボル構造分析">mcp__serena__get_symbols_overviewを使用</branch>
       <branch condition="参照カウント">mcp__serena__find_referencing_symbolsを使用</branch>
       <branch condition="パターン検索（重複、ループ）">mcp__serena__search_for_patternを使用</branch>
-      <branch condition="コード修正">sandboxを設定してcodexを使用</branch>
+      <branch condition="コード修正">mcp__codex__codexを使用（sandbox: workspace-write）</branch>
     </decision_tree>
+    <codex_integration>
+      <description>Codex MCPを直接呼び出してコード品質分析・リファクタリングを実行</description>
+      <call tool="mcp__codex__codex">
+        <parameter name="prompt">以下のコードの品質を分析し、複雑性の問題とリファクタリング機会を特定してください。
+[CODE_START]
+{対象コード}
+[CODE_END]</parameter>
+      </call>
+    </codex_integration>
   </tools>
   <parallelization>
     <capability>
