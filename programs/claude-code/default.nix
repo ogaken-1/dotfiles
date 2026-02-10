@@ -101,6 +101,7 @@ in
         front-matter = {
           name = "code-quality";
           description = "Code quality analysis and refactoring recommendations. Use proactively after code changes.";
+          model = "sonnet";
         };
         body = ./agents/code-quality.xml;
       };
@@ -108,6 +109,7 @@ in
         front-matter = {
           name = "coding";
           description = "Test-first workflow implementation (test → review → implement). Use proactively for code implementation tasks.";
+          model = "sonnet";
         };
         body = ./agents/coding.xml;
       };
@@ -115,6 +117,7 @@ in
         front-matter = {
           name = "characterization";
           description = "Create characterization tests for non tested programs.";
+          model = "sonnet";
         };
         body = ./agents/characterization.xml;
       };
@@ -122,6 +125,7 @@ in
         front-matter = {
           name = "database";
           description = "Database design, optimization, and query analysis. Use for database-related tasks.";
+          model = "sonnet";
         };
         body = ./agents/database.xml;
       };
@@ -129,6 +133,7 @@ in
         front-matter = {
           name = "design";
           description = "System architecture and API design analysis. Use for architectural decisions.";
+          model = "opus";
         };
         body = ./agents/design.xml;
       };
@@ -136,6 +141,7 @@ in
         front-matter = {
           name = "devops";
           description = "Infrastructure, CI/CD, and observability. Use for DevOps-related tasks.";
+          model = "sonnet";
         };
         body = ./agents/devops.xml;
       };
@@ -143,6 +149,7 @@ in
         front-matter = {
           name = "docs";
           description = "Documentation updates and maintenance. Use proactively after code changes.";
+          model = "sonnet";
         };
         body = ./agents/docs.xml;
       };
@@ -150,6 +157,7 @@ in
         front-matter = {
           name = "explore";
           description = "Codebase exploration and file discovery. Use for understanding code structure.";
+          model = "haiku";
         };
         body = ./agents/explore.xml;
       };
@@ -157,6 +165,7 @@ in
         front-matter = {
           name = "fact-check";
           description = "External source verification for claims about libraries, docs, and standards.";
+          model = "haiku";
         };
         body = ./agents/fact-check.xml;
       };
@@ -164,6 +173,7 @@ in
         front-matter = {
           name = "git";
           description = "Git workflow design and operations. Use for version control tasks.";
+          model = "sonnet";
         };
         body = ./agents/git.xml;
       };
@@ -171,6 +181,7 @@ in
         front-matter = {
           name = "performance";
           description = "Performance analysis and optimization. Use for performance-related tasks.";
+          model = "sonnet";
         };
         body = ./agents/performance.xml;
       };
@@ -178,6 +189,7 @@ in
         front-matter = {
           name = "quality-assurance";
           description = "Code review and quality validation. Use proactively after implementation.";
+          model = "sonnet";
         };
         body = ./agents/quality-assurance.xml;
       };
@@ -185,6 +197,7 @@ in
         front-matter = {
           name = "security";
           description = "Security vulnerability detection and analysis. Use proactively for security review.";
+          model = "sonnet";
         };
         body = ./agents/security.xml;
       };
@@ -192,6 +205,7 @@ in
         front-matter = {
           name = "test";
           description = "Test creation, coverage analysis, and test execution. Use for testing tasks.";
+          model = "sonnet";
         };
         body = ./agents/test.xml;
       };
@@ -199,6 +213,7 @@ in
         front-matter = {
           name = "validator";
           description = "Cross-validation and consensus verification. Use for verifying agent outputs.";
+          model = "opus";
         };
         body = ./agents/validator.xml;
       };
