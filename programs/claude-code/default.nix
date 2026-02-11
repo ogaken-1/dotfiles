@@ -274,11 +274,11 @@ in
       codex = {
         command = "${pkgs.codex}/bin/codex";
         args = [
-          "mcp-server"
           "--sandbox"
           "workspace-write"
           "--ask-for-approval"
           "never"
+          "mcp-server"
         ];
         type = "stdio";
       };
