@@ -15,7 +15,8 @@
     <concept name="sequential_dependencies">データ依存関係のあるタスクは順序通りに実行、依存タスク開始前に出力を検証</concept>
     <concept name="delegation_context">サブエージェントには以下が必要: 具体的なスコープ、ファイルパス、ツール使用指示、リファレンス実装</concept>
     <concept name="git_policy">delegateモード: conventional commitsに従いコミット（pushは禁止）。manualモード: Git操作は行わずフェーズ完了時にユーザー入力を待つ</concept>
-    <concept name="feedback_integration">TDDサイクル完了後にfeedbackスキルでレビュー。指摘事項はTODO登録し、git absorbで既存コミットにfixup</concept>
+    <concept name="feedback_integration">TDDサイクル完了後にfeedbackスキルでレビュー。指摘事項はすべてTODO登録。不具合はテストコードPOCで事実確認後に修正、確認不可はユーザーに報告。Test Coverageはcharacterizationエージェントに委任。git absorbで既存コミットにfixup</concept>
+    <concept name="feedback_bug_verification">不具合の指摘はテストコードでPOCを作成し事実確認を行う。確認できた場合は修正、できなかった場合はユーザーに報告して判断を仰ぐ</concept>
   </concepts>
   <patterns>
     <pattern name="git_policy_check">
@@ -92,9 +93,14 @@
       <example>
       1. すべてのテスト項目が完了していることを確認
       2. feedbackスキルを実行（テストリストの内容も含めてレビュー）
-      3. feedbackの指摘事項をTodoWriteでタスク登録（Critical/Warningは必須）
-      4. 登録したTODOを順次消化
-      5. feedback対応の変更をコミット:
+      3. feedbackの指摘事項をすべてTodoWriteでタスク登録（Critical/Warningは必須、その他も登録）
+      4. 不具合と指摘された項目の対応:
+         a. テストコードでPOC（Proof of Concept）を作成し、不具合の事実確認を行う
+         b. 事実確認できた場合 → 修正を実施
+         c. テストコードで事実確認できなかった場合 → 指摘事項と現状の理解をユーザーに報告し、判断を仰ぐ
+      5. Test Coverageの指摘があった場合 → characterizationエージェントに委任して対応
+      6. その他の指摘事項を順次消化
+      7. feedback対応の変更をコミット:
          - delegate: git absorb を実行（失敗時は git commit --fixup）
          - manual: 「feedback対応が完了しました。必要であればコミットを作成してください」と表示
       </example>
@@ -156,6 +162,10 @@
       <description>TDDサイクル完了後にfeedbackスキルを実行しない</description>
       <instead>テストリスト完了時に必ずfeedbackスキルを実行する</instead>
     </avoid>
+    <avoid name="fix_without_verification">
+      <description>不具合の指摘を事実確認せずに修正する</description>
+      <instead>テストコードでPOCを作成し、不具合の存在を事実確認してから修正する</instead>
+    </avoid>
     <avoid name="ignore_discoveries">
       <description>codingエージェントからのdiscoveriesやlegacy_code_detectedを無視する</description>
       <instead>重複チェック後にテストリストに追加する</instead>
@@ -216,7 +226,10 @@
       <description>テストリスト完了後の品質確認とfeedback対応</description>
       <step>すべてのテスト項目が完了していることを確認</step>
       <step>feedbackスキルを実行（テストリストの内容も含めてレビュー）</step>
-      <step>feedbackの指摘事項をTodoWriteでタスク登録し順次消化</step>
+      <step>feedbackの指摘事項をすべてTodoWriteでタスク登録</step>
+      <step>不具合の指摘はテストコードでPOCを作成し事実確認してから修正（確認できない場合はユーザーに報告）</step>
+      <step>Test Coverageの指摘はcharacterizationエージェントに委任</step>
+      <step>その他の指摘事項を順次消化</step>
       <step>feedback対応の変更をコミット（delegate: git absorb、manual: ユーザー入力待ち）</step>
     </phase>
     <phase name="failure_handling">
@@ -329,6 +342,21 @@
         <action>重複チェック後にテストリストに追加する</action>
         <verification>TodoWriteでリストが更新されていること</verification>
       </behavior>
+      <behavior id="IMPL-B005" priority="critical">
+        <trigger>feedbackで不具合を指摘された場合</trigger>
+        <action>テストコードでPOCを作成し事実確認を行ってから修正する</action>
+        <verification>不具合修正前にPOCテストが存在すること</verification>
+      </behavior>
+      <behavior id="IMPL-B006" priority="critical">
+        <trigger>テストコードで不具合の事実確認ができなかった場合</trigger>
+        <action>指摘事項と現状の理解をユーザーに報告し判断を仰ぐ</action>
+        <verification>ユーザーへの報告が行われていること</verification>
+      </behavior>
+      <behavior id="IMPL-B007" priority="critical">
+        <trigger>feedbackでTest Coverageの指摘があった場合</trigger>
+        <action>characterizationエージェントに委任して対応する</action>
+        <verification>characterizationエージェントが起動されていること</verification>
+      </behavior>
     </mandatory_behaviors>
     <prohibited_behaviors>
       <behavior id="IMPL-P001" priority="critical">
@@ -387,6 +415,10 @@
     <rule>codingエージェントからのlegacy_code_detectedはcharacterization_testタイプとしてテストリストに追加する</rule>
     <rule>characterizationエージェントからのrefactoring_candidatesはrefactoringタイプとしてテストリストに追加する</rule>
     <rule>テストリスト完了時にfeedbackスキルを実行する</rule>
+    <rule>feedbackの指摘事項はすべてTodoWriteでタスク登録し、対応すること</rule>
+    <rule>不具合の指摘はテストコードでPOCを作成し事実確認してから修正すること</rule>
+    <rule>テストコードで事実確認できなかった不具合は、指摘事項と現状の理解をユーザーに報告し判断を仰ぐこと</rule>
+    <rule>Test Coverageの指摘はcharacterizationエージェントに委任すること</rule>
     <rule>delegateモードの場合：意味のある単位でconventional commitsに従いコミットする</rule>
     <rule>delegateモードの場合：mainまたは保護ブランチではtopicブランチを作成してから作業する</rule>
     <rule>manualモードの場合：Git操作は行わない。フェーズ完了時に「必要であればコミットを作成してください」と表示しユーザー入力を待つ</rule>
