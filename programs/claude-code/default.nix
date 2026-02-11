@@ -15,7 +15,7 @@ let
     impl-workflow = lib.buildMarkdown {
       front-matter = {
         name = "Implementation Workflow";
-        description = ''This skill should be used when implementing features after Plan approval, or when the user asks to "execute task", "implement feature". Provides TDD-based implementation workflow with sub-agent delegation, characterization tests, and git policy management.'';
+        description = ''Use for any code implementation task, from simple edits to complex features. Scales workflow to task complexity — handles sub-agent delegation, testing strategy, and git policy.'';
       };
       body = ./skills/impl-workflow.xml;
     };

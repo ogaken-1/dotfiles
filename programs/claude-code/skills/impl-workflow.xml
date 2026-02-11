@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <skill>
-  <purpose>Plan mode承認後の実装ワークフロー。ポリシー決定とオーケストレーションに集中しながら、詳細な作業をサブエージェントに委任してタスクを実行する。</purpose>
+  <purpose>コード実装ワークフロー。タスクの複雑さに応じてスケーリングし、シンプルな変更からPlan承認後の本格的な実装まで対応する。ポリシー決定とオーケストレーションに集中しながら、詳細な作業をサブエージェントに委任する。</purpose>
   <tools>
     <tool name="agent_groups">専門サブエージェント: coding（テストファースト実装）、characterization（仕様化テスト）、quality_assurance（quality、security - 並列）、implementation（test、refactor、docs - 独立時並列）、review（implementation後に順次）</tool>
     <tool name="delegation">スコープ、ファイルパス、Serena/Context7ツール指示、リファレンス実装を提供</tool>
