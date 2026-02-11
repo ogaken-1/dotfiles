@@ -3,7 +3,7 @@
   <purpose>Plan mode承認後の実装ワークフロー。ポリシー決定とオーケストレーションに集中しながら、詳細な作業をサブエージェントに委任してタスクを実行する。</purpose>
   <tools>
     <tool name="agent_groups">専門サブエージェント: coding（テストファースト実装）、characterization（仕様化テスト）、quality_assurance（quality、security - 並列）、implementation（test、refactor、docs - 独立時並列）、review（implementation後に順次）</tool>
-    <tool name="delegation">スコープ、ファイルパス、Serena/Context7ツール指示、リファレンス実装、メモリ確認を提供</tool>
+    <tool name="delegation">スコープ、ファイルパス、Serena/Context7ツール指示、リファレンス実装を提供</tool>
     <tool name="todo_management">テストリストの管理にはTodoWriteツールを使用（マスター/ワーカー方式）</tool>
     <tool name="tool_selection">コーディング: Codex MCP → Serena MCP → Context7 → 基本ツール、非コーディング: Serena MCP → Context7 → 基本ツール</tool>
   </tools>
@@ -13,7 +13,7 @@
     <concept name="characterization_tests">テストなしで変更が必要なレガシーコードは、まず仕様化テストを作成してから変更する</concept>
     <concept name="parallel_execution">独立したタスクを並行実行、quality+securityは並列実行可能、test+docsは独立している場合は並列実行可能</concept>
     <concept name="sequential_dependencies">データ依存関係のあるタスクは順序通りに実行、依存タスク開始前に出力を検証</concept>
-    <concept name="delegation_context">サブエージェントには以下が必要: 具体的なスコープ、ファイルパス、ツール使用指示、リファレンス実装、メモリパターン</concept>
+    <concept name="delegation_context">サブエージェントには以下が必要: 具体的なスコープ、ファイルパス、ツール使用指示、リファレンス実装</concept>
     <concept name="git_policy">delegateモード: conventional commitsに従いコミット（pushは禁止）。manualモード: Git操作は行わずフェーズ完了時にユーザー入力を待つ</concept>
     <concept name="feedback_integration">TDDサイクル完了後にfeedbackスキルでレビュー。指摘事項はTODO登録し、git absorbで既存コミットにfixup</concept>
   </concepts>
@@ -173,7 +173,7 @@
       <description>Plan modeで承認された計画を受け取り、タスクの範囲を理解する</description>
       <step>承認された計画から実装タスクを特定</step>
       <step>影響を受けるファイルとコンポーネントを特定</step>
-      <step>既存のパターンのためにSerenaメモリを確認</step>
+      <step>既存のパターンを確認</step>
       <step>どのサブエージェントが最適か判断</step>
       <step>タスク間の依存関係と並列実行可能性を分析</step>
     </phase>
@@ -273,7 +273,6 @@
     <requirement>具体的な範囲と期待される成果物</requirement>
     <requirement>対象ファイルパス</requirement>
     <requirement>参照実装（具体的なパス）</requirement>
-    <requirement>メモリチェック：パターン用に`mcp__serena__list_memories`</requirement>
   </delegation>
   <parallelization>
     <capability>
@@ -312,7 +311,7 @@
     <mandatory_behaviors>
       <behavior id="IMPL-B001" priority="critical">
         <trigger>実装前</trigger>
-        <action>既存パターンについてSerenaメモリを確認する</action>
+        <action>既存パターンを確認する</action>
         <verification>出力にパターンチェックを含める</verification>
       </behavior>
       <behavior id="IMPL-B002" priority="critical">
@@ -374,7 +373,7 @@
     <practice priority="critical">ファイルパス、ツール使用、リファレンス実装を含む包括的なコンテキストをサブエージェントに提供</practice>
     <practice priority="high">レガシーコードの変更前にcharacterizationエージェントで仕様化テストを作成する</practice>
     <practice priority="high">codingエージェントからのdiscoveriesとlegacy_code_detectedを重複チェック後にテストリストに追加する</practice>
-    <practice priority="medium">実装タスクを委任する前にSerenaメモリで既存のパターンを確認</practice>
+    <practice priority="medium">実装タスクを委任する前に既存のパターンを確認</practice>
   </best_practices>
   <rules priority="critical">
     <rule>テストファーストワークフローを適用するためにcodingエージェントを使用する</rule>
@@ -396,7 +395,6 @@
   </rules>
   <rules priority="standard">
     <rule>委任パターンにはexecution-workflowスキルを使用する</rule>
-    <rule>実装前にSerenaメモリを確認する</rule>
     <rule>quality + security: 並行チェック</rule>
     <rule>test + docs: 独立している場合は同時作成</rule>
     <rule>既存機能にリグレッションがないことを確認</rule>
@@ -404,7 +402,7 @@
   </rules>
   <related_skills>
     <skill name="execution-workflow">コア委任とオーケストレーションパターン</skill>
-    <skill name="serena-usage">実装前に既存パターンについてメモリを確認する</skill>
+    <skill name="serena-usage">シンボルレベルのコードナビゲーション</skill>
     <skill name="testing-patterns">適切なテストカバレッジを確保する</skill>
     <skill name="investigation-patterns">不明確な実装詳細が明らかになった場合に使用</skill>
   </related_skills>

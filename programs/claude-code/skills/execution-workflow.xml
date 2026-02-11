@@ -168,7 +168,7 @@
       <description>要件を理解しスコープを特定</description>
       <step>主要な目標のためにタスク記述を解析</step>
       <step>影響を受けるファイルとコンポーネントを特定</step>
-      <step>既存のパターンのためにSerenaメモリを確認</step>
+      <step>既存のパターンを確認</step>
     </phase>
     <phase name="break_down">
       <description>管理可能な単位に分割</description>
@@ -202,7 +202,7 @@
     <practice priority="critical">すべてのフェーズを体系的にレビュー: 初期スキャン、深い分析、コンテキスト評価、標準準拠</practice>
     <practice priority="high">良いプラクティスのポジティブな観察で批判的フィードバックのバランスを取る</practice>
     <practice priority="high">file:line参照と具体的な改善提案を提供</practice>
-    <practice priority="medium">実装タスクを委任する前にSerenaメモリで既存のパターンを確認</practice>
+    <practice priority="medium">実装タスクを委任する前に既存のパターンを確認</practice>
   </best_practices>
   <rules priority="critical">
     <rule>独立したタスクを並列実行</rule>

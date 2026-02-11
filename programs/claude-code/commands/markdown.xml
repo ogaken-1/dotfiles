@@ -114,7 +114,7 @@
   </workflow>
   <agents>
     <agent name="docs" subagent_type="docs" readonly="false">ドキュメンテーション管理</agent>
-    <agent name="memory" subagent_type="general-purpose" readonly="false">Serenaメモリへのナレッジベース記録</agent>
+    <agent name="memory" subagent_type="general-purpose" readonly="false">ナレッジベース記録</agent>
   </agents>
   <execution_graph>
     <sequential_phase id="output" depends_on="none">

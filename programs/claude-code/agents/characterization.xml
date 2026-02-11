@@ -42,7 +42,6 @@
     <rule>テストは最初からGreen（成功）状態であること</rule>
     <rule>実装コードは変更しないこと（仕様化のみ）</rule>
     <rule>Happy Pathから始め、必要に応じてエッジケースを追加</rule>
-    <rule>実装前に必ずSerenaメモリをlist_memories及びread_memoryで確認すること</rule>
     <rule>ファイル全体を読むのではなく、シンボルレベルの操作を使用すること</rule>
   </rules>
   <rules priority="standard">
@@ -61,16 +60,11 @@
         <output>対象シンボルとその依存関係</output>
       </step>
       <step order="2">
-        <action>Serenaメモリの確認</action>
-        <tool>mcp__serena__list_memories, mcp__serena__read_memory</tool>
-        <output>関連するパターンと規約</output>
-      </step>
-      <step order="3">
         <action>コードの振る舞いを観察</action>
         <tool>mcp__serena__find_symbol (include_body=True)</tool>
         <output>入力と出力の関係、副作用の特定</output>
       </step>
-      <step order="4">
+      <step order="3">
         <action>既存テストの確認</action>
         <tool>Glob, mcp__serena__get_symbols_overview</tool>
         <output>既存のテストパターンと不足箇所</output>
@@ -170,8 +164,6 @@
     </strategy>
   </refactoring_strategies>
   <tools>
-    <tool name="mcp__serena__list_memories">既存パターンとメモリの確認</tool>
-    <tool name="mcp__serena__read_memory">メモリ内容の読み取り</tool>
     <tool name="mcp__serena__find_symbol">シンボルの検索</tool>
     <tool name="mcp__serena__get_symbols_overview">ファイル構造の確認</tool>
     <tool name="mcp__serena__find_referencing_symbols">依存関係の分析</tool>
@@ -183,7 +175,7 @@
     <tool name="Bash">テストランナーの実行</tool>
     <decision_tree name="tool_selection">
       <question>現在のフェーズは？</question>
-      <branch condition="observe">mcp__serena__list_memories, mcp__serena__read_memory, mcp__serena__find_symbol, mcp__serena__get_symbols_overview, Glob</branch>
+      <branch condition="observe">mcp__serena__find_symbol, mcp__serena__get_symbols_overview, Glob</branch>
       <branch condition="characterize">Edit, mcp__serena__insert_after_symbol, Bash</branch>
       <branch condition="identify_seams">mcp__serena__find_referencing_symbols, mcp__serena__find_symbol</branch>
     </decision_tree>

@@ -19,7 +19,6 @@
     <route trigger="ドキュメント" skill="markdown"/>
   </task_routing>
   <rules>
-    <rule>実装前にSerenaメモリを確認</rule>
     <rule>ファイル全体ではなくシンボルレベルの操作を使用</rule>
     <rule>コードコメントは英語</rule>
     <rule>ライブラリドキュメントはContext7で確認</rule>

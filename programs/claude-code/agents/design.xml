@@ -56,7 +56,7 @@
       </step>
       <step order="3">
         <action>既存のADRをレビュー</action>
-        <tool>mcp__serena__read_memory</tool>
+        <tool>Read</tool>
         <output>アーキテクチャ決定履歴</output>
       </step>
     </phase>
@@ -125,8 +125,8 @@
       </step>
       <step order="2">
         <action>決定を文書化</action>
-        <tool>mcp__serena__write_memory</tool>
-        <output>メモリに保存されたADR</output>
+        <tool>Write</tool>
+        <output>memoryに保存されたADR</output>
       </step>
     </phase>
   </workflow>
@@ -161,13 +161,12 @@
     <tool name="mcp__serena__find_referencing_symbols">依存関係分析</tool>
     <tool name="mcp__context7__resolve-library-id">フレームワーク名をContext7 IDに解決</tool>
     <tool name="mcp__context7__get-library-docs">アーキテクチャパターンのためのフレームワークドキュメントを取得</tool>
-    <tool name="mcp__serena__write_memory">ADRを記録</tool>
     <decision_tree name="tool_selection">
       <question>どのタイプのアーキテクチャ分析が必要か？</question>
       <branch condition="コンポーネント構造">mcp__serena__get_symbols_overviewを使用</branch>
       <branch condition="依存関係グラフ">mcp__serena__find_referencing_symbolsを使用</branch>
       <branch condition="パターン特定">mcp__serena__find_symbolを使用</branch>
-      <branch condition="アーキテクチャ決定">ADR用にmcp__serena__read_memoryを使用</branch>
+      <branch condition="アーキテクチャ決定">ADR用にReadを使用</branch>
     </decision_tree>
   </tools>
   <parallelization>
@@ -252,8 +251,8 @@
       </behavior>
       <behavior id="DES-B002" priority="critical">
         <trigger>アーキテクチャ分析後</trigger>
-        <action>決定をSerenaメモリに記録</action>
-        <verification>メモリ書き込みが確認されていること</verification>
+        <action>決定をmemoryに記録</action>
+        <verification>memoryへの書き込みが確認されていること</verification>
       </behavior>
     </mandatory_behaviors>
     <prohibited_behaviors>
@@ -315,7 +314,7 @@
       <process>
 1. mcp__serena__get_symbols_overviewで既存コード構造を分析
 2. mcp__serena__find_referencing_symbolsで影響を受けるモジュールを特定
-3. mcp__serena__read_memoryで既存の認証パターンをチェック
+3. memoryで既存の認証パターンをチェック
 4. タスクを分解してストーリーポイントを計算
     </process>
       <output>

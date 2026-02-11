@@ -4,7 +4,7 @@
   <tools>
     <tool name="agent_groups">専門サブエージェント: investigation（explore、design、database、fact-check - 並列）、analysis（general-purpose - investigation後に順次）、validation（validator - analysis後に順次）</tool>
     <tool name="delegation">スコープの概要、対象ファイルパス、明示的な編集禁止、AskUserQuestion使用指示を提供</tool>
-    <tool name="tool_selection">Serena MCP（シンボル検索、メモリ確認）→ Context7（ライブラリドキュメント）→ 基本ツール（Glob、Grep）</tool>
+    <tool name="tool_selection">Serena MCP（シンボル検索）→ Context7（ライブラリドキュメント）→ 基本ツール（Glob、Grep）</tool>
   </tools>
   <concepts>
     <concept name="plan_mode_context">
@@ -18,7 +18,7 @@
     <concept name="read_only_investigation">
       <description>調査、質問、要件定義のみを行い、コードを一切変更しない</description>
       <example>
-        許可: シンボル検索、パターン検索、メモリ読み取り、ドキュメント参照、ユーザーへの質問
+        許可: シンボル検索、パターン検索、ドキュメント参照、ユーザーへの質問
         禁止: ファイル編集、ファイル作成、ファイル削除、コード実装
       </example>
     </concept>
@@ -541,7 +541,7 @@
   </related_agents>
   <related_skills>
     <skill name="investigation-patterns">実現可能性のための証拠収集</skill>
-    <skill name="serena-usage">既存パターンとメモリを確認する</skill>
+    <skill name="serena-usage">シンボルレベルのコードナビゲーション</skill>
     <skill name="fact-check">Context7とWebSearchを使用した外部ソース検証</skill>
     <skill name="execution-workflow">計画完了後の実装ワークフロー</skill>
   </related_skills>

@@ -8,7 +8,7 @@ let
     plan-workflow = lib.buildMarkdown {
       front-matter = {
         name = "Plan Workflow";
-        description = ''This skill should be used when in Plan mode (EnterPlanMode) or when the user needs requirements definition, technical investigation, or design planning. Provides structured planning workflow with investigation, clarification, and requirements documentation.'';
+        description = "This skill should be used when in Plan mode (EnterPlanMode) or when the user needs requirements definition, technical investigation, or design planning. Provides structured planning workflow with investigation, clarification, and requirements documentation.";
       };
       body = ./skills/plan-workflow.xml;
     };
@@ -110,6 +110,7 @@ in
           name = "coding";
           description = "Test-first workflow implementation (test → review → implement). Use proactively for code implementation tasks.";
           model = "sonnet";
+          memory = "project";
         };
         body = ./agents/coding.xml;
       };
@@ -118,6 +119,7 @@ in
           name = "characterization";
           description = "Create characterization tests for non tested programs.";
           model = "sonnet";
+          memory = "project";
         };
         body = ./agents/characterization.xml;
       };
@@ -134,6 +136,7 @@ in
           name = "design";
           description = "System architecture and API design analysis. Use for architectural decisions.";
           model = "opus";
+          memory = "project";
         };
         body = ./agents/design.xml;
       };
@@ -190,6 +193,7 @@ in
           name = "quality-assurance";
           description = "Code review and quality validation. Use proactively after implementation.";
           model = "sonnet";
+          memory = "project";
         };
         body = ./agents/quality-assurance.xml;
       };
@@ -281,9 +285,11 @@ in
     };
   };
   home.file = builtins.listToAttrs (
-    builtins.map (name: {
+    map (name: {
       name = ".claude/skills/${name}/SKILL.md";
-      value = { text = skillDefs.${name}; };
+      value = {
+        text = skillDefs.${name};
+      };
     }) (builtins.attrNames skillDefs)
   );
   programs.codex = {
@@ -301,10 +307,6 @@ in
           ];
         };
       };
-      instructions = ''
-        When starting a task, use the serena MCP tools (list_memories, read_memory)
-        to check for project-specific patterns and conventions stored in Serena memory.
-      '';
     };
   };
 }

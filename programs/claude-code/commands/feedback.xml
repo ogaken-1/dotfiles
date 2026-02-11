@@ -9,7 +9,6 @@
   </rules>
   <rules priority="standard">
     <rule>コードレビュー方法論にはexecution-workflowスキルを使用する</rule>
-    <rule>既存パターンについてSerenaメモリを確認する</rule>
     <rule>git diffではなくセッション操作を対象とする</rule>
   </rules>
   <parallelization>

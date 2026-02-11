@@ -62,70 +62,8 @@
       <param name="new_name">新しいシンボル名</param>
       <use_case>参照更新を伴う一貫したリネーム</use_case>
     </tool>
-    <tool name="mcp__serena__list_memories">
-      <description>利用可能なすべてのメモリファイルを一覧表示</description>
-      <use_case>実装前に既存のパターンを確認</use_case>
-    </tool>
-    <tool name="mcp__serena__read_memory">
-      <description>メモリファイルの内容を読み取る</description>
-      <param name="memory_file_name">読み取るメモリファイル名</param>
-      <use_case>プロジェクトのパターンと規約を読み込む</use_case>
-    </tool>
-    <tool name="mcp__serena__write_memory">
-      <description>メモリファイルに情報を書き込む</description>
-      <param name="memory_file_name">書き込むメモリファイル名</param>
-      <param name="content">書き込む内容</param>
-      <use_case>新しいパターンと規約を記録</use_case>
-    </tool>
-    <tool name="mcp__serena__delete_memory">
-      <description>メモリファイルを削除</description>
-      <param name="memory_file_name">削除するメモリファイル名</param>
-      <use_case>古いまたは不正確なパターンを削除</use_case>
-    </tool>
-    <tool name="mcp__serena__edit_memory">
-      <description>正規表現またはリテラルマッチングを使用してメモリファイルの内容を置換</description>
-      <param name="memory_file_name">編集するメモリファイル名</param>
-      <param name="needle">検索するパターン</param>
-      <param name="repl">置換文字列</param>
-      <param name="mode">"literal"または"regex"</param>
-      <use_case>メモリファイルの特定部分を更新</use_case>
-    </tool>
   </tools>
   <concepts>
-    <concept name="memory_files">
-      <description>プロジェクトのパターン、規約、アーキテクチャ決定のための永続ストレージ</description>
-      <example scenario="メモリファイル操作">
-        <step order="1" description="既存のパターンを確認">
-          <call tool="mcp__serena__list_memories">
-        </call>
-        </step>
-        <step order="2" description="Nixパターンを読み込む">
-          <call tool="mcp__serena__read_memory">
-            <param name="memory_file_name">nix-conventions</param>
-          </call>
-        </step>
-        <step order="3" description="新しいパターンを記録">
-          <call tool="mcp__serena__write_memory">
-            <param name="memory_file_name">api-patterns</param>
-            <param name="content">REST API conventions...</param>
-          </call>
-        </step>
-        <step order="4" description="古い情報を削除">
-          <call tool="mcp__serena__delete_memory">
-            <param name="memory_file_name">outdated-pattern</param>
-          </call>
-        </step>
-      </example>
-    </concept>
-    <concept name="memory_naming">
-      <description>メモリファイルの一貫した命名規約</description>
-      <example>
-      {project}-conventions  # プロジェクト全体の規約
-      {feature}-patterns     # 機能固有のパターン
-      {domain}-patterns      # ドメイン固有のパターン
-      architecture-{decision}  # アーキテクチャ決定
-    </example>
-    </concept>
     <concept name="symbol_path">
       <description>ファイル内のシンボルへのパス（例: MyClass/myMethod）</description>
       <example scenario="シンボルパスの使用パターン">
@@ -255,29 +193,6 @@
         </step>
       </example>
     </pattern>
-    <pattern name="memory_workflow">
-      <description>タスク間の一貫性を維持するためにメモリを使用</description>
-      <example scenario="一貫した実装のためのメモリワークフロー">
-        <step order="1" description="実装前 - 存在するパターンを確認">
-          <call tool="mcp__serena__list_memories">
-        </call>
-        </step>
-        <step order="2" description="実装前 - 関連パターンを読み込む">
-          <call tool="mcp__serena__read_memory">
-            <param name="memory_file_name">typescript-patterns</param>
-          </call>
-        </step>
-        <step order="3" description="実装中">
-          <note>メモリから読み込んだパターンに従う</note>
-        </step>
-        <step order="4" description="実装後 - 新しいパターンを記録">
-          <call tool="mcp__serena__write_memory">
-            <param name="memory_file_name">api-client-pattern</param>
-            <param name="content">HTTP client pattern using fetch with retry logic...</param>
-          </call>
-        </step>
-      </example>
-    </pattern>
     <decision_tree name="tool_selection">
       <question>どのような操作が必要ですか？</question>
       <branch condition="シンボル検索">name_path_patternを使用してmcp__serena__find_symbolを使用</branch>
@@ -287,8 +202,6 @@
       <branch condition="シンボルをリファクタリング">mcp__serena__replace_symbol_bodyを使用</branch>
       <branch condition="シンボルをリネーム">一貫した更新のためにmcp__serena__rename_symbolを使用</branch>
       <branch condition="コードを追加">mcp__serena__insert_before_symbolまたはmcp__serena__insert_after_symbolを使用</branch>
-      <branch condition="パターンを確認">mcp__serena__list_memoriesを使用し、次にmcp__serena__read_memoryを使用</branch>
-      <branch condition="パターンを記録">mcp__serena__write_memoryを使用</branch>
     </decision_tree>
   </patterns>
   <anti_patterns>
@@ -299,10 +212,6 @@
     <avoid name="unscoped_searches">
       <description>スコープが分かっている場合にコードベース全体を検索</description>
       <instead>relative_pathパラメータを使用して検索を既知のファイルまたはディレクトリに制限</instead>
-    </avoid>
-    <avoid name="ignoring_memories">
-      <description>既存のパターンを確認せずに機能を実装</description>
-      <instead>実装前に常にmcp__serena__list_memoriesとmcp__serena__read_memoryを確認</instead>
     </avoid>
     <avoid name="manual_refactoring">
       <description>ファイル間でシンボル参照を手動で更新</description>
@@ -316,9 +225,8 @@
   <workflow>
     <phase name="prepare">
       <objective>効果的なSerenaツール使用のための準備</objective>
-      <step>1. 既存のパターンをmcp__serena__list_memoriesで確認</step>
-      <step>2. ターゲットのシンボルまたはファイルを特定</step>
-      <step>3. decision_treeに基づいて適切なツールを選択</step>
+      <step>1. ターゲットのシンボルまたはファイルを特定</step>
+      <step>2. decision_treeに基づいて適切なツールを選択</step>
     </phase>
     <phase name="execute">
       <objective>Serena操作を効率的に実行</objective>
@@ -327,23 +235,19 @@
       <step>3. 依存関係のためにmcp__serena__find_referencing_symbolsを使用</step>
     </phase>
     <phase name="verify">
-      <objective>結果を検証しパターンを記録</objective>
+      <objective>結果を検証する</objective>
       <step>1. 検索後にmcp__serena__think_about_collected_informationを呼び出す</step>
-      <step>2. 新しいパターンをmcp__serena__write_memoryで記録</step>
-      <step>3. 完了時にmcp__serena__think_about_whether_you_are_doneを呼び出す</step>
+      <step>2. 完了時にmcp__serena__think_about_whether_you_are_doneを呼び出す</step>
     </phase>
   </workflow>
   <best_practices>
-    <practice priority="critical">新機能を実装する前に常にmcp__serena__list_memoriesとmcp__serena__read_memoryでメモリを確認</practice>
     <practice priority="critical">ファイル全体を読み取る代わりにシンボル操作（mcp__serena__get_symbols_overview、mcp__serena__find_symbol）を使用</practice>
     <practice priority="high">パフォーマンス向上のため、スコープが分かっている場合はrelative_pathで検索を制限</practice>
     <practice priority="high">不確実なシンボル名には検索結果を広げるためにsubstring_matchingを使用</practice>
-    <practice priority="high">将来の参照のために新しいパターンと規約をmcp__serena__write_memoryで記録</practice>
     <practice priority="medium">周囲のコードを理解するためにmcp__serena__search_for_patternでcontext_linesパラメータを使用</practice>
     <practice priority="medium">リファクタリング前にmcp__serena__find_referencing_symbolsでシンボル変更を確認</practice>
   </best_practices>
   <rules priority="critical">
-    <rule>新機能を実装する前に常にメモリを確認</rule>
     <rule>ファイル全体を読み取る代わりにシンボル操作を使用</rule>
     <rule>非自明な検索シーケンスの後にmcp__serena__think_about_collected_informationを呼び出す</rule>
     <rule>コード変更を行う前にmcp__serena__think_about_task_adherenceを呼び出す</rule>
@@ -351,14 +255,13 @@
   <rules priority="standard">
     <rule>スコープが分かっている場合はrelative_pathで検索を制限</rule>
     <rule>不確実なシンボル名にはsubstring_matchingを使用</rule>
-    <rule>新しいパターンをmcp__serena__write_memoryで記録</rule>
     <rule>タスクが完了したと思われるときにmcp__serena__think_about_whether_you_are_doneを呼び出す</rule>
   </rules>
   <related_agents>
     <agent name="design">アーキテクチャ分析とパターン発見にSerenaを使用</agent>
     <agent name="code-quality">複雑性分析とリファクタリングにSerenaを使用</agent>
     <agent name="bug">依存関係追跡と影響分析にSerenaを使用</agent>
-    <agent name="execute">シンボルレベル操作とメモリ管理にSerenaを使用</agent>
+    <agent name="execute">シンボルレベル操作にSerenaを使用</agent>
     <agent name="security">脆弱性検出とセキュリティパターン分析にSerenaを使用</agent>
     <agent name="database">スキーマ分析とクエリ最適化にSerenaを使用</agent>
     <agent name="performance">パフォーマンスボトルネック特定と最適化にSerenaを使用</agent>
@@ -384,19 +287,17 @@
   </error_escalation>
   <related_skills>
     <skill name="investigation-patterns">Serenaツールを使用した調査方法論</skill>
-    <skill name="nix-ecosystem">Serenaメモリに保存されたNixパターン</skill>
-    <skill name="typescript-ecosystem">Serenaメモリに保存されたTypeScriptパターン</skill>
-    <skill name="golang-ecosystem">Serenaメモリに保存されたGoパターン</skill>
-    <skill name="rust-ecosystem">Serenaメモリに保存されたRustパターン</skill>
-    <skill name="common-lisp-ecosystem">Serenaメモリに保存されたCommon Lispパターン</skill>
-    <skill name="emacs-ecosystem">Serenaメモリに保存されたEmacsパターン</skill>
+    <skill name="nix-ecosystem">Nixパターン</skill>
+    <skill name="typescript-ecosystem">TypeScriptパターン</skill>
+    <skill name="golang-ecosystem">Goパターン</skill>
+    <skill name="rust-ecosystem">Rustパターン</skill>
+    <skill name="common-lisp-ecosystem">Common Lispパターン</skill>
+    <skill name="emacs-ecosystem">Emacsパターン</skill>
   </related_skills>
   <constraints>
-    <must>新機能を実装する前にメモリ（mcp__serena__list_memories、mcp__serena__read_memory）を確認</must>
     <must>ファイル全体を読み取る代わりにシンボル操作を使用</must>
     <must>スコープが分かっている場合はrelative_pathで検索を制限</must>
     <avoid>シンボル操作で十分な場合にファイル全体を読み取る</avoid>
     <avoid>コードベース全体での範囲指定なしの検索</avoid>
-    <avoid>既存のメモリパターンを無視する</avoid>
   </constraints>
 </skill>

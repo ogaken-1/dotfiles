@@ -24,7 +24,6 @@
       - 変更または呼び出しが必要なコードにテストが存在しない
       - 振る舞いが不明確で、変更前に現状の動作を確認する必要がある
     </rule>
-    <rule>実装前に必ずSerenaメモリをlist_memories及びread_memoryで確認すること</rule>
     <rule>ファイル全体を読むのではなく、シンボルレベルの操作を使用すること</rule>
     <rule>コードコメントは常に英語で行うこと</rule>
   </rules>
@@ -44,11 +43,6 @@
         <output>テストすべき振る舞いと期待される結果</output>
       </step>
       <step order="2">
-        <action>Serenaメモリの確認</action>
-        <tool>mcp__serena__list_memories, mcp__serena__read_memory</tool>
-        <output>関連するパターンと規約</output>
-      </step>
-      <step order="3">
         <action>既存コードとテストの調査</action>
         <tool>Glob, mcp__serena__find_symbol, mcp__serena__get_symbols_overview</tool>
         <output>関連する既存コードとテストファイル</output>
@@ -153,8 +147,6 @@
     </phase>
   </workflow>
   <tools>
-    <tool name="mcp__serena__list_memories">既存パターンとメモリの確認</tool>
-    <tool name="mcp__serena__read_memory">メモリ内容の読み取り</tool>
     <tool name="mcp__serena__find_symbol">シンボルの検索</tool>
     <tool name="mcp__serena__get_symbols_overview">ファイル構造の確認</tool>
     <tool name="mcp__serena__replace_symbol_body">シンボル単位の置換</tool>
@@ -167,7 +159,7 @@
     <tool name="AskUserQuestion">レビュー依頼</tool>
     <decision_tree name="tool_selection">
       <question>現在のフェーズは？</question>
-      <branch condition="understand">mcp__serena__list_memories, mcp__serena__read_memory, Glob, mcp__serena__find_symbol</branch>
+      <branch condition="understand">Glob, mcp__serena__find_symbol</branch>
       <branch condition="test_first">Edit, mcp__serena__replace_symbol_body, Bash</branch>
       <branch condition="review_request">AskUserQuestion</branch>
       <branch condition="implement">Edit, mcp__serena__replace_symbol_body, Bash, mcp__context7__get-library-docs</branch>

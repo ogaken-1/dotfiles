@@ -90,7 +90,6 @@
     <tool name="mcp__serena__find_referencing_symbols">依存関係を分析</tool>
     <tool name="mcp__context7__resolve-library-id">ORMライブラリ名をContext7 IDに解決</tool>
     <tool name="mcp__context7__get-library-docs">ORMドキュメントを取得（Prisma、TypeORM、Drizzle）</tool>
-    <tool name="mcp__serena__write_memory">マイグレーションパターンを記録</tool>
     <decision_tree name="tool_selection">
       <question>どのタイプのデータベース分析が必要か？</question>
       <branch condition="ORMモデル検索">mcp__serena__find_symbolを使用</branch>
