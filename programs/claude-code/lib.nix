@@ -6,6 +6,11 @@ let
       if value then "true" else "false"
     else if builtins.isInt value || builtins.isFloat value then
       toString value
+    else if builtins.isList value then
+      let
+        elements = map toYamlValue value |> builtins.concatStringsSep ", ";
+      in
+      "[${elements}]"
     else
       "\"${builtins.replaceStrings ["\""] ["\\\""] value}\"";
 

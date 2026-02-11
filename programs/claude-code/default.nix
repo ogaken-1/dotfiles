@@ -111,6 +111,10 @@ in
           description = "Test-first workflow implementation (test → review → implement). Use proactively for code implementation tasks.";
           model = "sonnet";
           memory = "project";
+          disallowedTools = [
+            "mcp__codex__codex"
+            "mcp__codex__codex-reply"
+          ];
         };
         body = ./agents/coding.xml;
       };
