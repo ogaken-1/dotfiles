@@ -93,6 +93,16 @@ in
               }
             ];
           }
+          {
+            matcher = "Bash";
+            hooks = [
+              # findコマンドは-execオプションがあるのがヤバくてallow permissionできないので、fdに強制する
+              {
+                type = "command";
+                command = ''COMMAND=$(jq -r '.tool_input.command') && if echo "$COMMAND" | grep -qE '(^|[;&|])\s*find\s'; then echo 'findコマンドは使用禁止です。代わりにfdを使ってください。' >&2; exit 2; fi'';
+              }
+            ];
+          }
         ];
       };
     };
