@@ -11,6 +11,7 @@
   home = {
     stateVersion = "24.05";
     packages = with pkgs; [
+      age
       azure-cli
       bc
       devenv
