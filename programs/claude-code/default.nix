@@ -15,7 +15,7 @@ let
     impl-workflow = lib.buildMarkdown {
       front-matter = {
         name = "Implementation Workflow";
-        description = ''Use for any code implementation task, from simple edits to complex features. Scales workflow to task complexity — handles sub-agent delegation, testing strategy, and git policy.'';
+        description = "Use for any code implementation task, from simple edits to complex features. Scales workflow to task complexity — handles sub-agent delegation, testing strategy, and git policy.";
       };
       body = ./skills/impl-workflow.xml;
     };
