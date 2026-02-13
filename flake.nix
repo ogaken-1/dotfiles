@@ -93,7 +93,7 @@
         {
           devShells.default = pkgs.mkShellNoCC {
             packages = with pkgs; [
-              ruby
+              ruby_3_4
               sops
             ];
           };
