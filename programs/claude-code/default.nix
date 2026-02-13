@@ -1,9 +1,14 @@
 {
   pkgs,
+  config,
   ...
 }:
 let
   lib = import ./lib.nix;
+  context7-wrapped = pkgs.writeShellScriptBin "context7-mcp" ''
+    export CONTEXT7_API_KEY="$(cat ${config.sops.secrets.context7-api-key.path})"
+    exec ${pkgs.context7-mcp}/bin/context7-mcp "$@"
+  '';
   skillDefs = {
     plan-workflow = lib.buildMarkdown {
       front-matter = {
@@ -282,7 +287,7 @@ in
         type = "stdio";
       };
       context7 = {
-        command = "${pkgs.context7-mcp}/bin/context7-mcp";
+        command = "${context7-wrapped}/bin/context7-mcp";
         type = "stdio";
       };
       codex = {
