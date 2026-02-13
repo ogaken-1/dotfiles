@@ -12,5 +12,6 @@
   ./home-manager
   ./lazygit
   ./neovim
+  ./sops
   ./tmux
 ]

@@ -1,6 +1,6 @@
 { inputs }:
 let
-  inherit (inputs) nix-darwin home-manager mac-app-util;
+  inherit (inputs) nix-darwin home-manager mac-app-util sops-nix;
   userInfo = import ../lib/user.nix;
   system = "aarch64-darwin";
   username = userInfo.username;
@@ -37,6 +37,7 @@ let
         useUserPackages = false;
         users.${username} = {
           imports = [
+            sops-nix.homeManagerModules.sops
             ../modules/darwin-op-ssh.nix
           ] ++ (import ../programs/gui.nix);
         };

@@ -5,6 +5,7 @@ let
     nixos-wsl
     vscode-server
     home-manager
+    sops-nix
     ;
   userInfo = import ../lib/user.nix;
   system = "x86_64-linux";
@@ -40,7 +41,10 @@ let
         };
       };
       home-manager.users.${username} = {
-        imports = [ ../modules/wsl-ssh-agent-relay.nix ] ++ (import ../programs/cli.nix);
+        imports = [
+          sops-nix.homeManagerModules.sops
+          ../modules/wsl-ssh-agent-relay.nix
+        ] ++ (import ../programs/cli.nix);
       };
     };
   homeConfig = {
