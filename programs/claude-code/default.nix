@@ -303,14 +303,15 @@ in
       };
     };
   };
-  home.file = builtins.listToAttrs (
-    map (name: {
+  home.file =
+    builtins.attrNames skillDefs
+    |> map (name: {
       name = ".claude/skills/${name}/SKILL.md";
       value = {
         text = skillDefs.${name};
       };
-    }) (builtins.attrNames skillDefs)
-  );
+    })
+    |> builtins.listToAttrs;
   programs.codex = {
     package = pkgs.codex;
     enable = true;
