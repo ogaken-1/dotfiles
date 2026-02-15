@@ -145,7 +145,7 @@
     </mode>
     <mode name="impl">
       <target>Edit/Writeツールで変更されたファイル、およびTDDテストリスト（TodoWriteの内容）</target>
-      <aspects>命名、DRY、可読性、セキュリティ、アーキテクチャ、テストリストの完全性、テスト項目の網羅性、発見された項目(discoveries)の処理状況</aspects>
+      <aspects>命名、DRY、可読性、セキュリティ、アーキテクチャ、テストリストの完全性、テスト項目の網羅性、発見された項目(discoveries)の処理状況、コミット構成（レビュアが文脈と意図を容易に読み取れるか）</aspects>
       <agents>
         <agent name="quality" subagent_type="quality-assurance" readonly="true">命名、DRY、可読性</agent>
         <agent name="security" subagent_type="security" readonly="true">OWASP Top 10、入力検証、認証</agent>
@@ -154,6 +154,7 @@
         <agent name="performance" subagent_type="performance" readonly="true">パフォーマンスレビュー</agent>
         <agent name="test" subagent_type="test" readonly="true">テストカバレッジレビュー、TDDテストリストレビュー（完全性、網羅性、discoveriesの処理）</agent>
         <agent name="fact-check" subagent_type="fact-check" readonly="true">外部ソース検証</agent>
+        <agent name="git-review" subagent_type="git" readonly="true">コミット構成レビュー: レビュアが各コミットの文脈と意図を容易に読み取れるか、git-policyスキルの基準に沿っているか</agent>
       </agents>
       <execution>すべてのエージェントを並列実行</execution>
     </mode>
@@ -226,6 +227,13 @@
           <coverage>テスト項目がユースケースを網羅しているか</coverage>
           <discoveries>発見された項目が適切に処理されたか</discoveries>
         </tdd_list_review>
+        <!-- Commit structure review results (impl mode only) -->
+        <commit_review>
+          <criteria>この変更を提出されたレビュアは容易に文脈や意図を読み取ることができるか</criteria>
+          <structure>コミットの分離が適切か（各コミットが単一の検証可能な意図を持つか）</structure>
+          <messages>コミットメッセージがconventional commits形式で、変更内容を正確に反映しているか</messages>
+          <fixup_usage>fixup/rewordが適切に使用されているか</fixup_usage>
+        </commit_review>
         <recommended_actions>
 - [High] アクション
 - [Medium] アクション
@@ -281,6 +289,7 @@
     <skill name="investigation-patterns">調査における証拠品質の評価</skill>
     <skill name="testing-patterns">テストカバレッジと品質の評価</skill>
     <skill name="fact-check">外部ソースの主張の検証</skill>
+    <skill name="git-policy">コミット構成レビューの基準</skill>
   </related_skills>
   <constraints>
     <must>すべてのエージェントを同時に起動する（逐次実行なし）</must>

@@ -14,30 +14,20 @@
     <concept name="parallel_execution">独立したタスクを並行実行、quality+securityは並列実行可能、test+docsは独立している場合は並列実行可能</concept>
     <concept name="sequential_dependencies">データ依存関係のあるタスクは順序通りに実行、依存タスク開始前に出力を検証</concept>
     <concept name="delegation_context">サブエージェントには以下が必要: 具体的なスコープ、ファイルパス、ツール使用指示、リファレンス実装</concept>
-    <concept name="git_policy">delegateモード: conventional commitsに従いコミット（pushは禁止）。manualモード: Git操作は行わずフェーズ完了時にユーザー入力を待つ</concept>
+    <concept name="git_policy">
+      <description>Git操作ポリシーはgit-policyスキルに定義。delegateモード（conventional commits、ローカルコミットのみ）とmanualモード（Git操作なし）がある。</description>
+    </concept>
     <concept name="feedback_integration">TDDサイクル完了後にfeedbackスキルでレビュー。指摘事項はすべてTODO登録。不具合はテストコードPOCで事実確認後に修正、確認不可はユーザーに報告。Test Coverageはcharacterizationエージェントに委任。git absorbで既存コミットにfixup</concept>
     <concept name="feedback_bug_verification">不具合の指摘はテストコードでPOCを作成し事実確認を行う。確認できた場合は修正、できなかった場合はユーザーに報告して判断を仰ぐ</concept>
   </concepts>
   <patterns>
     <pattern name="git_policy_check">
-      <description>セッション開始時にGit操作ポリシーを確認する</description>
+      <description>セッション開始時にGit操作ポリシーを確認する（詳細はgit-policyスキル参照）</description>
       <decision_tree name="when_to_use">
         <question>セッション内で既にポリシーが確定していますか？</question>
         <if_yes>スキップして次のフェーズに進む</if_yes>
-        <if_no>AskUserQuestionでGit操作ポリシーを確認する</if_no>
+        <if_no>git-policyスキルのpolicy_selectionパターンに従いAskUserQuestionで確認する</if_no>
       </decision_tree>
-      <example>
-      AskUserQuestionで確認:
-      - delegate: エージェントに任せる（変更を適宜コミット、conventional commits準拠）
-      - manual: 自分で行う（コミットしない、フェーズ完了時に入力待ち）
-
-      delegateモードの場合:
-      - 現在のブランチを確認
-      - 保護ブランチ（main, master, develop, release/*, production）ではtopic branchを作成
-      - ブランチ名は機能/タスクに基づいて命名（例: feat/add-user-auth）
-      - git push は禁止（ローカルコミットのみ）
-      - feedback対応の変更は git absorb で既存コミットに fixup
-      </example>
     </pattern>
     <pattern name="test_list_creation">
       <description>機能要求からテストすべき項目を抽出しTodoWriteでリスト化する</description>
@@ -370,9 +360,9 @@
         <response>単一のテスト項目のみを委任する</response>
       </behavior>
       <behavior id="IMPL-P003" priority="critical">
-        <trigger>delegateモード</trigger>
-        <action>git pushを実行する</action>
-        <response>ローカルコミットのみ許可</response>
+        <trigger>常に</trigger>
+        <action>git-policyスキルの禁止ルールに違反すること</action>
+        <response>git-policyスキルのenforcement参照</response>
       </behavior>
     </prohibited_behaviors>
   </enforcement>
@@ -419,11 +409,7 @@
     <rule>不具合の指摘はテストコードでPOCを作成し事実確認してから修正すること</rule>
     <rule>テストコードで事実確認できなかった不具合は、指摘事項と現状の理解をユーザーに報告し判断を仰ぐこと</rule>
     <rule>Test Coverageの指摘はcharacterizationエージェントに委任すること</rule>
-    <rule>delegateモードの場合：意味のある単位でconventional commitsに従いコミットする</rule>
-    <rule>delegateモードの場合：mainまたは保護ブランチではtopicブランチを作成してから作業する</rule>
-    <rule>manualモードの場合：Git操作は行わない。フェーズ完了時に「必要であればコミットを作成してください」と表示しユーザー入力を待つ</rule>
-    <rule>delegateモードの場合：git push は禁止（ローカルコミットのみ）</rule>
-    <rule>delegateモードの場合：feedback対応の変更は git absorb で既存コミットに fixup する</rule>
+    <rule>Git操作はgit-policyスキルのルールに従うこと</rule>
   </rules>
   <rules priority="standard">
     <rule>委任パターンにはexecution-workflowスキルを使用する</rule>
@@ -437,6 +423,7 @@
     <skill name="serena-usage">シンボルレベルのコードナビゲーション</skill>
     <skill name="testing-patterns">適切なテストカバレッジを確保する</skill>
     <skill name="investigation-patterns">不明確な実装詳細が明らかになった場合に使用</skill>
+    <skill name="git-policy">Git操作のポリシーと制約</skill>
   </related_skills>
   <related_agents>
     <agent name="plan-workflow">実装で不明確な要件が判明した場合、計画の再検討</agent>

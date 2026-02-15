@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skill>
+  <purpose>Git操作に関するポリシーと制約を定義する参照スキル。すべてのワークフローから参照され、一貫性のあるGit操作を保証する。</purpose>
+  <concepts>
+    <concept name="explicit_staging">
+      <description>ファイルステージング時に`git add -A`や`git add .`は絶対禁止。必ずファイル名を明示的に指定してステージングする。サブエージェントに委任する場合も必ずこのルールを伝達する。</description>
+      <example>
+        許可: git add src/file1.ts src/file2.ts tests/file1.test.ts
+        禁止: git add -A
+        禁止: git add .
+
+        サブエージェント委任時: "ステージング時は必ずファイル名を明示的に指定し、git add -A や git add . は使用しないこと"と明記
+      </example>
+    </concept>
+    <concept name="pre_commit_checks">
+      <description>コミット前に必ずlintとformat checkを実行する。lintの警告やエラーは、今回の変更範囲外のものも含めてすべて対応する。</description>
+      <example>
+        1. lint実行: npm run lint または該当するlintコマンド
+        2. format check実行: npm run format:check または該当するformatコマンド
+        3. エラー/警告がある場合はすべて修正
+        4. 修正後に再度lint/format checkを実行して確認
+        5. すべてパスしたらステージングとコミット
+      </example>
+    </concept>
+    <concept name="logical_commits">
+      <description>コミットを分ける目的は2つ: (1) メンテナがレビュー・受け入れを容易に行えること (2) 他の開発者が履歴を探索する際に、変更の意図と範囲が明確に読み取れること。この2つの目的を満たすようにコミット単位を決定する。</description>
+      <example>
+        目的に沿ったコミット分離:
+        - refactorコミット → 動作が変わっていないことをレビュアが検証できる
+        - featコミット → 新機能の追加内容だけに集中してレビューできる
+        - fixコミット → 修正前後の差分だけで影響範囲を判断できる
+
+        目的に反する例:
+        - refactor: Restructure auth module（しかしfeatやfixが混在）
+          → レビュアは動作が変わっていないことを検証できない
+          → 履歴を辿った開発者はrefactorだと思って読み飛ばし、紛れた機能変更を見逃す
+
+        更新漏れの対応:
+        - git commit --fixup=&lt;commit-hash&gt;
+        - git absorb（利用可能な場合）
+      </example>
+    </concept>
+    <concept name="fixup_vs_new_commit">
+      <description>topic branch内で追加の変更を行う際の判断基準: 既存コミットへの訂正・補完・衝突する変更はfixupで統合し、既存コミットとは独立した変更は新規コミットにする。fixup後はrewordの必要性も検討する。</description>
+      <example>
+        fixupすべき場合（既存コミットと衝突・訂正・補完する変更）:
+        - feat: Add auth endpointのコミット後に、同じendpointのバリデーション漏れを発見 → fixup
+        - refactorコミット後に、同じリファクタリング対象のファイルで変更漏れを発見 → fixup
+        - 型定義を変更したコミット後に、その型を使う箇所の修正漏れ → fixup
+
+        rewordを検討すべき場合:
+        - fixup後にコミットのスコープが当初のメッセージと乖離した場合
+        - 例: "fix: Correct token expiration" に認証ロジック全体の修正がfixupされた
+          → reword: "fix: Correct authentication and token expiration"
+
+        新規コミットにすべき場合（メンテナが別のレビュー単位として見たい変更）:
+        - 既存のfeatコミットとは別の機能追加
+        - 既存の変更とは無関係なリファクタリング
+        - 別のファイル群に対する独立した修正
+      </example>
+    </concept>
+    <concept name="git_operation_policy">
+      <description>Git操作はユーザーの明示的な要求がある場合のみ実行する。セッション開始時にdelegate/manualモードのいずれかを選択する。</description>
+      <example>
+        明示的な要求:
+        - "コミットしてください"
+        - "変更をステージングしてください"
+        - AskUserQuestionでの確認と承認
+
+        明示的でない:
+        - タスク完了後の自動コミット
+        - 実装完了時の暗黙的なステージング
+      </example>
+    </concept>
+    <concept name="delegate_mode">
+      <description>Git操作をエージェントに委任するモード。conventional commits準拠、保護ブランチではtopic branch作成、git push禁止（ローカルコミットのみ）、feedback対応は`git absorb`→fallback `git commit --fixup`を使用。</description>
+      <example>
+        delegate modeの動作:
+        1. conventional commits形式でコミット（feat:, fix:, docs:など）
+        2. 保護ブランチ（main, master, develop, release/*, production）ではtopic branch作成
+        3. git pushは実行しない（ローカルコミットのみ）
+        4. feedback対応: git absorb → 失敗時はgit commit --fixup
+
+        コミットメッセージ例:
+        - feat: Add user authentication endpoint
+        - fix: Correct validation error in login form
+        - docs: Update API usage examples
+      </example>
+    </concept>
+    <concept name="manual_mode">
+      <description>Git操作を一切行わず、各フェーズ完了時にユーザーの手動操作を待つモード。エージェントは変更内容のみを提示する。</description>
+      <example>
+        manual modeの動作:
+        1. ファイルの変更・作成のみ実行
+        2. git操作は一切行わない
+        3. フェーズ完了時に変更ファイル一覧を提示
+        4. ユーザーが手動でgit add, git commit, git pushを実行
+
+        フェーズ完了時の提示内容:
+        - 変更されたファイル一覧
+        - 推奨されるコミットメッセージ
+        - 次のステップの説明
+      </example>
+    </concept>
+  </concepts>
+  <patterns>
+    <pattern name="policy_selection">
+      <description>セッション開始時にGit操作ポリシー（delegate/manual）を確認する</description>
+      <decision_tree name="when_to_use">
+        <question>Git操作を伴うタスクを開始しますか？</question>
+        <if_yes>AskUserQuestionでdelegate/manualを確認</if_yes>
+        <if_no>ポリシー選択をスキップ</if_no>
+      </decision_tree>
+      <example>
+        AskUserQuestionの例:
+        "Git操作のモードを選択してください：
+        1. delegate: エージェントがconventional commits形式でローカルコミットを作成（push不可）
+        2. manual: エージェントはファイル変更のみ行い、Git操作は手動で実行
+
+        推奨: delegate（自動的にlint/format check、論理的コミット分離を実施）"
+      </example>
+    </pattern>
+    <pattern name="branch_protection">
+      <description>delegateモードで保護ブランチにいる場合はtopic branchを作成する</description>
+      <decision_tree name="when_to_use">
+        <question>delegateモードで、現在のブランチは保護ブランチ（main, master, develop, release/*, production）ですか？</question>
+        <if_yes>topic branchを作成してチェックアウト</if_yes>
+        <if_no>現在のブランチで作業を継続</if_no>
+      </decision_tree>
+      <example>
+        保護ブランチ検出:
+        git branch --show-current → "main"
+
+        topic branch作成:
+        git checkout -b feature/user-authentication
+
+        ブランチ名の規則:
+        - feature/機能名
+        - fix/修正内容
+        - refactor/リファクタリング対象
+      </example>
+    </pattern>
+    <pattern name="commit_workflow">
+      <description>lint/format check → explicit staging → conventional commitの標準ワークフロー</description>
+      <decision_tree name="when_to_use">
+        <question>delegateモードでコミット可能な変更がありますか？</question>
+        <if_yes>commit_workflowパターンを適用</if_yes>
+        <if_no>変更を待つ</if_no>
+      </decision_tree>
+      <example>
+        1. lint実行とエラー修正:
+           npm run lint
+           （エラーがあれば修正）
+
+        2. format check実行と修正:
+           npm run format:check
+           （エラーがあれば修正）
+
+        3. 明示的にファイルをステージング:
+           git add src/auth.ts src/auth.test.ts
+
+        4. conventional commits形式でコミット:
+           git commit -m "feat: Add user authentication"
+      </example>
+    </pattern>
+    <pattern name="fixup_decision">
+      <description>追加の変更をfixupにするか新規コミットにするかを判断する</description>
+      <decision_tree name="when_to_use">
+        <question>この変更は現在のブランチの既存コミットと衝突、訂正、または補完する内容ですか？</question>
+        <if_yes>対象コミットにfixupし、rewordの必要性を検討する</if_yes>
+        <if_no>メンテナが独立してレビューできる新規コミットを作成する</if_no>
+      </decision_tree>
+      <example>
+        判断フロー:
+        1. 変更内容が既存コミットのスコープに含まれるか確認
+        2. 含まれる → git absorb または git commit --fixup
+        3. fixup後、コミットメッセージがまだ正確か確認
+           - 不正確 → git commit --fixup=reword:&lt;hash&gt; でreword
+        4. 含まれない → 新規コミット（conventional commits形式）
+      </example>
+    </pattern>
+    <pattern name="feedback_fixup">
+      <description>feedback対応の変更は`git absorb`で既存コミットにfixup（失敗時は`git commit --fixup`）</description>
+      <decision_tree name="when_to_use">
+        <question>feedbackに対応した修正をコミットしますか？</question>
+        <if_yes>git absorbを試行、失敗時はgit commit --fixupにフォールバック</if_yes>
+        <if_no>通常のcommit_workflowパターンを使用</if_no>
+      </decision_tree>
+      <example>
+        1. feedbackに対応した変更をステージング:
+           git add src/auth.ts
+
+        2. git absorbを試行:
+           git absorb
+
+        3. git absorbが失敗した場合:
+           git log --oneline -n 5 （対象コミットのハッシュを確認）
+           git commit --fixup=a1b2c3d
+
+        4. 後でrebaseでfixupをまとめる:
+           git rebase -i --autosquash HEAD~5
+      </example>
+    </pattern>
+  </patterns>
+  <anti_patterns>
+    <avoid name="bulk_staging">
+      <description>`git add -A`や`git add .`を使用してすべてのファイルを一括ステージングする</description>
+      <why_wrong>意図しないファイル（.env、credentials.json、大きなバイナリファイル）を誤ってステージングするリスクがある</why_wrong>
+      <instead>変更したファイルを明示的にリストアップし、ファイル名を指定してステージングする</instead>
+      <example>
+        悪い例: git add -A
+        良い例: git add src/auth.ts src/auth.test.ts docs/api.md
+      </example>
+    </avoid>
+    <avoid name="skip_lint">
+      <description>lintやformat checkを実行せずにコミットする</description>
+      <why_wrong>コードスタイルの一貫性が失われ、CIでのチェック失敗やレビュー時の指摘が増える</why_wrong>
+      <instead>コミット前に必ずlintとformat checkを実行し、すべてのエラー/警告を修正する</instead>
+      <example>
+        悪い例:
+        git add src/auth.ts
+        git commit -m "feat: Add auth"
+
+        良い例:
+        npm run lint
+        npm run format:check
+        （エラーがあれば修正）
+        git add src/auth.ts
+        git commit -m "feat: Add user authentication"
+      </example>
+    </avoid>
+    <avoid name="monolithic_commits">
+      <description>異なる意図の変更を1つのコミットにまとめる</description>
+      <why_wrong>レビュアが各変更の意図を個別に検証できなくなる。例: refactorと題したコミットにfeatやfixが混在していると、動作が変わっていないことを検証できない。また、履歴を探索する開発者が変更の意図を誤認する。</why_wrong>
+      <instead>コミットの意図（refactor/feat/fix等）ごとに分離し、各コミットが単一の検証可能な主張を持つようにする</instead>
+      <example>
+        悪い例:
+        refactor: Restructure auth module
+        （実際にはリファクタリングに加えてバグ修正と新機能が混在）
+        → レビュアはrefactorだけでは動作不変を検証できない
+
+        良い例:
+        refactor: Extract auth validation into separate module
+        feat: Add OAuth2 support to auth module
+        fix: Correct token expiration check
+        → 各コミットが単一の意図を持ち、個別に検証可能
+      </example>
+    </avoid>
+    <avoid name="unauthorized_git_ops">
+      <description>ユーザーの明示的な要求なしにGit操作を実行する</description>
+      <why_wrong>ユーザーの意図しないタイミングでコミットやブランチ操作が行われ、混乱を招く</why_wrong>
+      <instead>Git操作が必要な場合は必ずユーザーに確認（AskUserQuestion）してから実行する</instead>
+      <example>
+        悪い例:
+        （タスク完了後に自動的にコミット）
+
+        良い例:
+        AskUserQuestion: "変更をコミットしますか？推奨コミットメッセージ: feat: Add user authentication"
+        （ユーザーが承認してからコミット実行）
+      </example>
+    </avoid>
+    <avoid name="direct_push">
+      <description>git pushを実行する</description>
+      <why_wrong>delegateモードではローカルコミットのみを行い、リモートへのpushはユーザーが手動で制御すべき</why_wrong>
+      <instead>ローカルコミットまでを行い、pushはユーザーに任せる</instead>
+      <example>
+        悪い例:
+        git commit -m "feat: Add auth"
+        git push origin feature/auth
+
+        良い例:
+        git commit -m "feat: Add user authentication"
+        （pushはユーザーが手動で実行）
+      </example>
+    </avoid>
+    <avoid name="skip_absorb">
+      <description>feedback対応で新規コミットを作成する（git absorbを使うべき状況で）</description>
+      <why_wrong>コミット履歴が冗長になり、後でrebaseでまとめる手間が増える</why_wrong>
+      <instead>git absorbまたはgit commit --fixupを使用して既存コミットに統合する</instead>
+      <example>
+        悪い例:
+        git commit -m "fix: Address review feedback"
+
+        良い例:
+        git absorb
+        （または）
+        git commit --fixup=a1b2c3d
+      </example>
+    </avoid>
+  </anti_patterns>
+  <rules priority="critical">
+    <rule>`git add -A`および`git add .`は絶対に使用しない。ファイル名を明示的に指定すること</rule>
+    <rule>サブエージェントに委任する際は、explicit stagingルールを必ず伝達すること</rule>
+    <rule>コミット前に必ずlintとformat checkを実行すること</rule>
+    <rule>Git操作はユーザーの明示的な要求がある場合のみ実行すること（AskUserQuestionでの確認は明示的要求とみなす）</rule>
+    <rule>delegateモードではgit pushを実行しないこと（ローカルコミットのみ）</rule>
+    <rule>delegateモードで保護ブランチ（main, master, develop, release/*, production）にいる場合は必ずtopic branchを作成すること</rule>
+    <rule>delegateモードではconventional commits形式でコミットメッセージを作成すること</rule>
+  </rules>
+  <rules priority="standard">
+    <rule>lintの警告やエラーは、今回の変更範囲外のものも含めてすべて対応すること</rule>
+    <rule>コミットはレビュー容易性と履歴探索性を目的に分離すること。各コミットが単一の検証可能な意図（refactor/feat/fix等）を持つようにする</rule>
+    <rule>既存コミットへの訂正・補完・衝突する変更はfixupで統合し、rewordの必要性も検討すること。独立した変更は新規コミットにすること</rule>
+    <rule>feedback対応は`git absorb`を試行し、失敗時は`git commit --fixup`にフォールバックすること</rule>
+  </rules>
+  <enforcement>
+    <mandatory_behaviors>
+      <behavior id="GIT-B001" priority="critical">
+        <trigger>Git操作を伴うタスクの開始時</trigger>
+        <action>AskUserQuestionでdelegate/manualモードを確認すること</action>
+        <verification>ポリシー選択がログに記録されていること</verification>
+      </behavior>
+      <behavior id="GIT-B002" priority="critical">
+        <trigger>ファイルをステージングする前</trigger>
+        <action>ファイル名を明示的にリストアップし、`git add <file1> <file2>`形式で実行すること</action>
+        <verification>`git add -A`や`git add .`がコマンド履歴に存在しないこと</verification>
+      </behavior>
+      <behavior id="GIT-B003" priority="critical">
+        <trigger>コミットを作成する前</trigger>
+        <action>lintとformat checkを実行し、すべてのエラー/警告を修正すること</action>
+        <verification>lint/format checkがパスしたことがログに記録されていること</verification>
+      </behavior>
+      <behavior id="GIT-B004" priority="critical">
+        <trigger>サブエージェントに委任する際</trigger>
+        <action>explicit stagingルール（`git add -A`/`git add .`禁止）を明記して伝達すること</action>
+        <verification>委任メッセージにGitルールが含まれていること</verification>
+      </behavior>
+    </mandatory_behaviors>
+    <prohibited_behaviors>
+      <behavior id="GIT-P001" priority="critical">
+        <trigger>常に</trigger>
+        <action>`git add -A`または`git add .`を実行すること</action>
+        <response>処理を中断し、明示的なファイル指定に修正する</response>
+      </behavior>
+      <behavior id="GIT-P002" priority="critical">
+        <trigger>常に</trigger>
+        <action>git pushを実行すること</action>
+        <response>処理を中断し、pushはユーザーに任せる旨を通知する</response>
+      </behavior>
+      <behavior id="GIT-P003" priority="critical">
+        <trigger>常に</trigger>
+        <action>ユーザーの明示的な要求なしにGit操作を実行すること</action>
+        <response>処理を中断し、AskUserQuestionで確認する</response>
+      </behavior>
+      <behavior id="GIT-P004" priority="critical">
+        <trigger>常に</trigger>
+        <action>lintやformat checkをスキップしてコミットすること</action>
+        <response>処理を中断し、lint/format checkを実行してからコミットする</response>
+      </behavior>
+    </prohibited_behaviors>
+  </enforcement>
+  <constraints>
+    <must>ファイル名を明示的に指定してステージングすること</must>
+    <must>コミット前にlintとformat checkを実行すること</must>
+    <must>conventional commits形式でコミットメッセージを作成すること（delegateモード）</must>
+    <must>サブエージェントにGitルールを伝達すること</must>
+    <must>保護ブランチではtopic branchを作成すること（delegateモード）</must>
+    <avoid>`git add -A`または`git add .`の使用</avoid>
+    <avoid>git pushの実行</avoid>
+    <avoid>ユーザーの明示的な要求なしのGit操作</avoid>
+    <avoid>論理的に分離すべき変更を1つのコミットにまとめること</avoid>
+    <avoid>lintやformat checkをスキップしてコミットすること</avoid>
+  </constraints>
+  <related_skills>
+    <skill name="impl-workflow">実装ワークフロー内でのGit操作に本スキルを参照</skill>
+    <skill name="execution-workflow">タスク実行時のGit操作に本スキルを参照</skill>
+    <skill name="feedback">implモードのfeedbackでコミット構成がレビューされる。基準: レビュアが文脈と意図を容易に読み取れるか</skill>
+  </related_skills>
+</skill>
+<!-- vim:set ft=xml: -->

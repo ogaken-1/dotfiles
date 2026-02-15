@@ -22,7 +22,7 @@
     <rule>ファイル全体ではなくシンボルレベルの操作を使用</rule>
     <rule>コードコメントは英語</rule>
     <rule>ライブラリドキュメントはContext7で確認</rule>
-    <rule>Git操作はユーザーの明示的な要求がある場合のみ</rule>
+    <rule>Git操作はgit-policyスキルに従う（ステージング、コミット、ブランチ保護等のルール）</rule>
     <rule>独立タスクは並列実行</rule>
     <rule>Claude Code関連（programs/claude-code/配下、スキル、エージェント、コマンド）の修正時は、claude-code-guideエージェント（Taskツールのsubagent_type、model: opus）を並列で起動してClaude Codeの最新仕様を確認</rule>
   </rules>
@@ -31,6 +31,7 @@
     <skill name="impl-workflow">実装ワークフロー（TDD、サブエージェント委任）</skill>
     <skill name="serena-usage">Serena MCPツールの使用パターン</skill>
     <skill name="context7-usage">Context7 MCPツールの使用パターン</skill>
+    <skill name="git-policy">Git操作のポリシーと制約</skill>
   </related_skills>
 </instructions>
 

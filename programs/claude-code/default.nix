@@ -73,6 +73,13 @@ let
       };
       body = ./skills/nvim-ix-source.xml;
     };
+    git-policy = lib.buildMarkdown {
+      front-matter = {
+        name = "Git Policy";
+        description = "Git operation rules and constraints referenced by other skills. Covers staging policy, pre-commit checks, commit conventions, delegate/manual mode, and branch protection.";
+      };
+      body = ./skills/git-policy.xml;
+    };
   };
 in
 {
