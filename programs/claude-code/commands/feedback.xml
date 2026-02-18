@@ -15,7 +15,7 @@
     <capability>
       <parallel_safe>true</parallel_safe>
       <read_only>true</read_only>
-      <modifies_state>none</modifies_state>
+      <modifies_state>test_files</modifies_state>
     </capability>
     <execution_strategy>
       <max_parallel_agents>16</max_parallel_agents>
@@ -33,8 +33,9 @@
     <summary_format>
 Report: {file_path}
 Critical: N | Warning: N | Info: N
-- [Critical] 問題の概要 (file:line)
-- [Warning] 問題の概要 (file:line)
+Verified: N | Unverified: N
+- [Critical][verified] 問題の概要 (file:line)
+- [Warning][unverified] 問題の概要 (file:line)
     </summary_format>
   </report_protocol>
   <workflow>
@@ -96,6 +97,15 @@ Critical: N | Warning: N | Info: N
       <step>2. Critical問題については、必要に応じて対応するレポートファイルを参照して詳細を確認する</step>
       <step>3. 実行可能な推奨事項を生成する</step>
       <step>4. 最終レポートにレポートファイルのパスを含める（フォローアップエージェントとユーザーが参照できるよう）</step>
+    </phase>
+    <phase name="verify">
+      <objective>不具合の指摘に対してPOCテストを作成・実行し、事実確認を行う</objective>
+      <step>1. synthesizeフェーズで特定されたCritical/Warningの不具合指摘を収集する</step>
+      <step>2. 各不具合に対してPOCテストコードをプロジェクトに作成する（codingサブエージェントに委任）</step>
+      <step>3. POCテストを実行し結果を確認する</step>
+      <step>4. テストが失敗する（不具合が再現される）場合: verified として記録</step>
+      <step>5. テストが成功する（不具合が再現されない）場合: unverified として記録</step>
+      <step>6. 検証結果をレポートファイルに追記し、最終サマリーに反映する</step>
     </phase>
   </workflow>
   <decision_criteria>
@@ -214,6 +224,20 @@ Critical: N | Warning: N | Info: N
       <execution>すべてのエージェントを並列実行</execution>
     </mode>
   </modes>
+  <verification>
+    <description>不具合指摘のPOC検証。synthesizeフェーズ後に実行される。</description>
+    <agent name="poc-creator" subagent_type="coding" readonly="false">不具合のPOCテスト作成・実行</agent>
+    <poc_protocol>
+      <step>1. 不具合指摘の内容とfile:line情報をもとにPOCテストコードを作成</step>
+      <step>2. テストファイルをプロジェクト内の適切な場所に配置</step>
+      <step>3. テストを実行して結果を確認</step>
+      <step>4. 結果をレポートファイル（~/.claude/projects/{project-slug}/feedback/verification.md）に記録</step>
+    </poc_protocol>
+    <result_format>
+      <verified>テスト失敗 = 不具合が再現された。修正が必要。</verified>
+      <unverified>テスト成功 = 不具合が再現されなかった。ユーザーに報告して判断を仰ぐ。</unverified>
+    </result_format>
+  </verification>
   <output>
     <format>
       <feedback_results mode="{モード}">
@@ -254,6 +278,13 @@ Critical: N | Warning: N | Info: N
           <messages>コミットメッセージがconventional commits形式で、変更内容を正確に反映しているか</messages>
           <fixup_usage>fixup/rewordが適切に使用されているか</fixup_usage>
         </commit_review>
+        <!-- Bug verification results -->
+        <verification_results>
+          <verified_bugs>POCテストで再現が確認された不具合
+- [severity] 問題: file:line - POCテスト: test_file:line - ステータス: verified</verified_bugs>
+          <unverified_bugs>POCテストで再現できなかった指摘
+- [severity] 問題: file:line - POCテスト: test_file:line - ステータス: unverified</unverified_bugs>
+        </verification_results>
         <recommended_actions>
 - [High] アクション
 - [Medium] アクション
@@ -272,6 +303,11 @@ Critical: N | Warning: N | Info: N
         <trigger>問題を特定する場合</trigger>
         <action>改善提案を提供する</action>
         <verification>各問題に対する提案を含める</verification>
+      </behavior>
+      <behavior id="FB-B003" priority="critical">
+        <trigger>不具合を指摘する場合</trigger>
+        <action>POCテストを作成して事実確認を行う</action>
+        <verification>Critical/Warningの不具合すべてにverified/unverifiedステータスが付与されていること</verification>
       </behavior>
     </mandatory_behaviors>
     <prohibited_behaviors>

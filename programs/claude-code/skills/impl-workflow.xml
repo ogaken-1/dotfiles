@@ -17,8 +17,8 @@
     <concept name="git_policy">
       <description>Git操作ポリシーはgit-policyスキルに定義。delegateモード（conventional commits、ローカルコミットのみ）とmanualモード（Git操作なし）がある。</description>
     </concept>
-    <concept name="feedback_integration">TDDサイクル完了後にfeedbackスキルでレビュー。指摘事項はすべてTODO登録。不具合はテストコードPOCで事実確認後に修正、確認不可はユーザーに報告。Test Coverageはcharacterizationエージェントに委任。git absorbで既存コミットにfixup</concept>
-    <concept name="feedback_bug_verification">不具合の指摘はテストコードでPOCを作成し事実確認を行う。確認できた場合は修正、できなかった場合はユーザーに報告して判断を仰ぐ</concept>
+    <concept name="feedback_integration">TDDサイクル完了後にfeedbackスキルでレビュー。指摘事項はすべてTODO登録。feedbackのverifyフェーズでverifiedとなった不具合は直接修正、unverifiedはユーザーに報告し判断を仰ぐ。Test Coverageはcharacterizationエージェントに委任。git absorbで既存コミットにfixup</concept>
+    <concept name="feedback_bug_verification">不具合の指摘はfeedbackコマンドのverifyフェーズでPOCテストが作成・実行される。verifiedステータスの不具合は直接修正、unverifiedステータスの不具合はユーザーに報告して判断を仰ぐ</concept>
   </concepts>
   <patterns>
     <pattern name="git_policy_check">
@@ -84,10 +84,9 @@
       1. すべてのテスト項目が完了していることを確認
       2. feedbackスキルを実行（テストリストの内容も含めてレビュー）
       3. feedbackの指摘事項をすべてTodoWriteでタスク登録（Critical/Warningは必須、その他も登録）
-      4. 不具合と指摘された項目の対応:
-         a. テストコードでPOC（Proof of Concept）を作成し、不具合の事実確認を行う
-         b. 事実確認できた場合 → 修正を実施
-         c. テストコードで事実確認できなかった場合 → 指摘事項と現状の理解をユーザーに報告し、判断を仰ぐ
+      4. 不具合と指摘された項目の対応（feedbackのverifyフェーズ結果を参照）:
+         a. verifiedステータスの不具合 → 直接修正を実施（POCテストは既にfeedbackが作成済み）
+         b. unverifiedステータスの不具合 → 指摘事項と現状の理解をユーザーに報告し、判断を仰ぐ
       5. Test Coverageの指摘があった場合 → characterizationエージェントに委任して対応
       6. その他の指摘事項を順次消化
       7. feedback対応の変更をコミット:
@@ -153,8 +152,8 @@
       <instead>テストリスト完了時に必ずfeedbackスキルを実行する</instead>
     </avoid>
     <avoid name="fix_without_verification">
-      <description>不具合の指摘を事実確認せずに修正する</description>
-      <instead>テストコードでPOCを作成し、不具合の存在を事実確認してから修正する</instead>
+      <description>feedbackのverificationステータスを確認せずに不具合を修正する</description>
+      <instead>feedbackのverifyフェーズ結果を確認し、verifiedステータスの不具合のみ直接修正する</instead>
     </avoid>
     <avoid name="ignore_discoveries">
       <description>codingエージェントからのdiscoveriesやlegacy_code_detectedを無視する</description>
@@ -217,7 +216,7 @@
       <step>すべてのテスト項目が完了していることを確認</step>
       <step>feedbackスキルを実行（テストリストの内容も含めてレビュー）</step>
       <step>feedbackの指摘事項をすべてTodoWriteでタスク登録</step>
-      <step>不具合の指摘はテストコードでPOCを作成し事実確認してから修正（確認できない場合はユーザーに報告）</step>
+      <step>feedbackのverifyフェーズでverifiedとなった不具合は直接修正（POCテストは作成済み）、unverifiedはユーザーに報告</step>
       <step>Test Coverageの指摘はcharacterizationエージェントに委任</step>
       <step>その他の指摘事項を順次消化</step>
       <step>feedback対応の変更をコミット（delegate: git absorb、manual: ユーザー入力待ち）</step>
@@ -333,13 +332,13 @@
         <verification>TodoWriteでリストが更新されていること</verification>
       </behavior>
       <behavior id="IMPL-B005" priority="critical">
-        <trigger>feedbackで不具合を指摘された場合</trigger>
-        <action>テストコードでPOCを作成し事実確認を行ってから修正する</action>
-        <verification>不具合修正前にPOCテストが存在すること</verification>
+        <trigger>feedbackでverifiedステータスの不具合が報告された場合</trigger>
+        <action>feedbackが作成したPOCテストを活用して修正する</action>
+        <verification>feedbackのPOCテストが存在し、修正後にテストが通過すること</verification>
       </behavior>
       <behavior id="IMPL-B006" priority="critical">
-        <trigger>テストコードで不具合の事実確認ができなかった場合</trigger>
-        <action>指摘事項と現状の理解をユーザーに報告し判断を仰ぐ</action>
+        <trigger>feedbackでunverifiedステータスの不具合が報告された場合</trigger>
+        <action>指摘事項とfeedbackの検証結果をユーザーに報告し判断を仰ぐ</action>
         <verification>ユーザーへの報告が行われていること</verification>
       </behavior>
       <behavior id="IMPL-B007" priority="critical">
@@ -406,8 +405,8 @@
     <rule>characterizationエージェントからのrefactoring_candidatesはrefactoringタイプとしてテストリストに追加する</rule>
     <rule>テストリスト完了時にfeedbackスキルを実行する</rule>
     <rule>feedbackの指摘事項はすべてTodoWriteでタスク登録し、対応すること</rule>
-    <rule>不具合の指摘はテストコードでPOCを作成し事実確認してから修正すること</rule>
-    <rule>テストコードで事実確認できなかった不具合は、指摘事項と現状の理解をユーザーに報告し判断を仰ぐこと</rule>
+    <rule>feedbackのverifiedステータスの不具合はPOCテストを活用して直接修正すること</rule>
+    <rule>feedbackのunverifiedステータスの不具合は、指摘事項と検証結果をユーザーに報告し判断を仰ぐこと</rule>
     <rule>Test Coverageの指摘はcharacterizationエージェントに委任すること</rule>
     <rule>Git操作はgit-policyスキルのルールに従うこと</rule>
   </rules>
