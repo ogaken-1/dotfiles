@@ -15,19 +15,37 @@
     <concept name="sequential_dependencies">データ依存関係のあるタスクは順序通りに実行、依存タスク開始前に出力を検証</concept>
     <concept name="delegation_context">サブエージェントには以下が必要: 具体的なスコープ、ファイルパス、ツール使用指示、リファレンス実装</concept>
     <concept name="git_policy">
-      <description>Git操作ポリシーはgit-policyスキルに定義。delegateモード（conventional commits、ローカルコミットのみ）とmanualモード（Git操作なし）がある。</description>
+      <description>Git操作はユーザーの明示的な要求がある場合のみ実行する。セッション開始時にdelegateモード（エージェントがローカルコミットを作成、push不可）またはmanualモード（Git操作なし、変更内容を提示）を選択する。コミット作成時はcreate-git-commitスキルに従う。</description>
     </concept>
     <concept name="feedback_integration">TDDサイクル完了後にfeedbackスキルでレビュー。指摘事項はすべてTODO登録。feedbackのverifyフェーズでverifiedとなった不具合は直接修正、unverifiedはユーザーに報告し判断を仰ぐ。Test Coverageはcharacterizationエージェントに委任。git absorbで既存コミットにfixup</concept>
     <concept name="feedback_bug_verification">不具合の指摘はfeedbackコマンドのverifyフェーズでPOCテストが作成・実行される。verifiedステータスの不具合は直接修正、unverifiedステータスの不具合はユーザーに報告して判断を仰ぐ</concept>
   </concepts>
   <patterns>
     <pattern name="git_policy_check">
-      <description>セッション開始時にGit操作ポリシーを確認する（詳細はgit-policyスキル参照）</description>
+      <description>セッション開始時にGit操作ポリシー（delegate/manual）を確認する</description>
       <decision_tree name="when_to_use">
         <question>セッション内で既にポリシーが確定していますか？</question>
         <if_yes>スキップして次のフェーズに進む</if_yes>
-        <if_no>git-policyスキルのpolicy_selectionパターンに従いAskUserQuestionで確認する</if_no>
+        <if_no>AskUserQuestionでdelegate/manualを確認する</if_no>
       </decision_tree>
+      <example>
+    AskUserQuestionの例:
+    "Git操作のモードを選択してください：
+    1. delegate: エージェントがconventional commits形式でローカルコミットを作成（push不可）
+    2. manual: エージェントはファイル変更のみ行い、Git操作は手動で実行
+
+    推奨: delegate（自動的にlint/format check、論理的コミット分離を実施）"
+
+    delegateモード選択時:
+    - 保護ブランチ（main, master, develop, release/*, production）ではtopic branchを作成
+    - コミット作成時はcreate-git-commitスキルに従う
+    - git pushは実行しない（ローカルコミットのみ）
+
+    manualモード選択時:
+    - ファイルの変更・作成のみ実行
+    - git操作は一切行わない
+    - フェーズ完了時に変更ファイル一覧と推奨コミットメッセージを提示
+      </example>
     </pattern>
     <pattern name="test_list_creation">
       <description>機能要求からテストすべき項目を抽出しTodoWriteでリスト化する</description>
@@ -92,6 +110,28 @@
       7. feedback対応の変更をコミット:
          - delegate: git absorb を実行（失敗時は git commit --fixup）
          - manual: 「feedback対応が完了しました。必要であればコミットを作成してください」と表示
+      </example>
+    </pattern>
+    <pattern name="feedback_fixup">
+      <description>feedback対応の変更をgit absorbで既存コミットに統合する</description>
+      <decision_tree name="when_to_use">
+        <question>delegateモードでfeedbackに対応した修正をコミットしますか？</question>
+        <if_yes>git absorbを試行、失敗時はgit commit --fixupにフォールバック</if_yes>
+        <if_no>通常のcreate-git-commitスキルを使用</if_no>
+      </decision_tree>
+      <example>
+    1. feedbackに対応した変更をステージング:
+       git add src/auth.ts
+
+    2. git absorbを試行:
+       git absorb
+
+    3. git absorbが失敗した場合:
+       git log --oneline -n 5 （対象コミットのハッシュを確認）
+       git commit --fixup=a1b2c3d
+
+    4. fixup後、コミットメッセージがまだ正確か確認:
+       - 不正確 → git commit --fixup=reword:&lt;hash&gt; でreword
       </example>
     </pattern>
     <pattern name="code_review_phases">
@@ -360,8 +400,8 @@
       </behavior>
       <behavior id="IMPL-P003" priority="critical">
         <trigger>常に</trigger>
-        <action>git-policyスキルの禁止ルールに違反すること</action>
-        <response>git-policyスキルのenforcement参照</response>
+        <action>create-git-commitスキルのルールに違反すること</action>
+        <response>create-git-commitスキルのenforcement参照</response>
       </behavior>
     </prohibited_behaviors>
   </enforcement>
@@ -408,7 +448,7 @@
     <rule>feedbackのverifiedステータスの不具合はPOCテストを活用して直接修正すること</rule>
     <rule>feedbackのunverifiedステータスの不具合は、指摘事項と検証結果をユーザーに報告し判断を仰ぐこと</rule>
     <rule>Test Coverageの指摘はcharacterizationエージェントに委任すること</rule>
-    <rule>Git操作はgit-policyスキルのルールに従うこと</rule>
+    <rule>コミット作成時はcreate-git-commitスキルに従うこと</rule>
   </rules>
   <rules priority="standard">
     <rule>委任パターンにはexecution-workflowスキルを使用する</rule>
@@ -422,7 +462,7 @@
     <skill name="serena-usage">シンボルレベルのコードナビゲーション</skill>
     <skill name="testing-patterns">適切なテストカバレッジを確保する</skill>
     <skill name="investigation-patterns">不明確な実装詳細が明らかになった場合に使用</skill>
-    <skill name="git-policy">Git操作のポリシーと制約</skill>
+    <skill name="create-git-commit">コミット作成の手順とルール</skill>
   </related_skills>
   <related_agents>
     <agent name="plan-workflow">実装で不明確な要件が判明した場合、計画の再検討</agent>

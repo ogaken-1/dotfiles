@@ -73,12 +73,12 @@ let
       };
       body = ./skills/nvim-ix-source.xml;
     };
-    git-policy = lib.buildMarkdown {
+    create-git-commit = lib.buildMarkdown {
       front-matter = {
-        name = "Git Policy";
-        description = "Git operation rules and constraints referenced by other skills. Covers staging policy, pre-commit checks, commit conventions, delegate/manual mode, and branch protection.";
+        name = "Create Git Commit";
+        description = "Step-by-step workflow for creating git commits. Use when you need to commit changes: lint/format check, explicit staging, conventional commit message, and fixup decision.";
       };
-      body = ./skills/git-policy.xml;
+      body = ./skills/create-git-commit.xml;
     };
   };
 in

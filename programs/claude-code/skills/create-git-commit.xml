@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skill>
+  <purpose>gitコミットを作成する際の具体的な手順とルール。コミット作成が必要な場面でこのスキルを参照する。</purpose>
+  <workflow>
+    <phase name="step1_lint_format_check">
+      <description>lint/format checkを実行する</description>
+      <step>プロジェクトのlintコマンドを実行する（例: npm run lint、cargo clippy、nix fmt --check など）</step>
+      <step>プロジェクトのformat checkコマンドを実行する（例: npm run format:check、cargo fmt --check など）</step>
+      <step>コマンドが不明な場合はpackage.json、Makefile、flake.nixなどを確認する</step>
+    </phase>
+    <phase name="step2_fix_errors">
+      <description>エラー/警告をすべて修正する</description>
+      <step>lintエラー/警告がある場合はすべて修正する（今回の変更範囲外のものも含む）</step>
+      <step>formatエラーがある場合は修正する</step>
+      <step>修正後に再度lint/format checkを実行してすべてパスすることを確認する</step>
+    </phase>
+    <phase name="step3_decide_commit_boundary">
+      <description>コミット単位を決定する</description>
+      <step>変更内容を確認し、コミットを分けるべきかを判断する</step>
+      <step>判断基準: (1) メンテナがレビュー・受け入れを容易に行えるか (2) 他の開発者が履歴探索時に変更の意図と範囲を明確に読み取れるか</step>
+      <step>意図の異なる変更（refactor/feat/fix等）は分離する。各コミットが単一の検証可能な主張を持つようにする</step>
+      <example>
+        適切なコミット分離:
+        - refactorコミット → 動作が変わっていないことをレビュアが検証できる
+        - featコミット → 新機能の追加内容だけに集中してレビューできる
+        - fixコミット → 修正前後の差分だけで影響範囲を判断できる
+
+        不適切な例:
+        - refactor: Restructure auth module（しかしfeatやfixが混在）
+          → レビュアは動作が変わっていないことを検証できない
+      </example>
+    </phase>
+    <phase name="step4_stage_files">
+      <description>ファイルを明示的にステージングする</description>
+      <step>コミットするファイルをリストアップする</step>
+      <step>ファイル名を明示的に指定してステージングする: git add src/file1.ts src/file2.ts</step>
+      <step>`git add -A`および`git add .`は絶対に使用しない</step>
+      <example>
+        許可: git add src/auth.ts src/auth.test.ts docs/api.md
+        禁止: git add -A
+        禁止: git add .
+      </example>
+    </phase>
+    <phase name="step5_commit_message">
+      <description>conventional commits形式でコミットメッセージを作成する</description>
+      <step>変更の種類に応じたprefixを選択する（下記の形式を参照）</step>
+      <step>コミットメッセージは英語で作成する（1行目は50文字以内が推奨）</step>
+      <step>git commit -m "prefix: 変更内容の説明" でコミットを作成する</step>
+      <example>
+        形式: &lt;type&gt;[optional scope]: &lt;description&gt;
+
+        type一覧:
+        - feat: 新機能の追加
+        - fix: バグ修正
+        - docs: ドキュメントのみの変更
+        - refactor: リファクタリング（機能追加でもバグ修正でもない）
+        - test: テストの追加・修正
+        - chore: ビルドプロセス、ツール設定など
+
+        コミットメッセージ例:
+        - feat: Add user authentication endpoint
+        - fix: Correct validation error in login form
+        - docs: Update API usage examples
+        - refactor: Extract auth validation into separate module
+        - test: Add edge case tests for email validator
+      </example>
+    </phase>
+    <phase name="step6_fixup_decision">
+      <description>fixupか新規コミットかを判断する（topic branch内で追加変更がある場合）</description>
+      <step>変更が既存コミットへの訂正・補完・衝突する内容かを確認する</step>
+      <step>該当する場合: git absorb を試行し、失敗時は git commit --fixup=&lt;hash&gt; にフォールバック</step>
+      <step>fixup後、コミットメッセージが依然として正確かを確認する。乖離した場合は git commit --fixup=reword:&lt;hash&gt; でreword</step>
+      <step>既存コミットとは独立した変更の場合: 新規コミットを作成する（step5へ）</step>
+      <example>
+        fixupすべき場合:
+        - feat: Add auth endpointのコミット後に、同じendpointのバリデーション漏れを発見 → fixup
+        - refactorコミット後に、同じリファクタリング対象の変更漏れを発見 → fixup
+
+        新規コミットにすべき場合:
+        - 既存のfeatコミットとは別の機能追加
+        - 既存の変更とは無関係なリファクタリング
+
+        fixupコマンド:
+        git absorb
+        （失敗時）git commit --fixup=a1b2c3d
+        （rewordが必要な場合）git commit --fixup=reword:a1b2c3d
+      </example>
+    </phase>
+  </workflow>
+  <rules priority="critical">
+    <rule>`git add -A`および`git add .`は絶対に使用しない。ファイル名を明示的に指定すること</rule>
+    <rule>コミット前に必ずlintとformat checkを実行すること</rule>
+    <rule>lintの警告やエラーは、今回の変更範囲外のものも含めてすべて対応すること</rule>
+    <rule>conventional commits形式でコミットメッセージを作成すること</rule>
+    <rule>git pushは実行しないこと（ローカルコミットのみ）</rule>
+  </rules>
+  <anti_patterns>
+    <avoid name="bulk_staging">
+      <description>`git add -A`や`git add .`を使用してすべてのファイルを一括ステージングする</description>
+      <why_wrong>意図しないファイル（.env、credentials.json、大きなバイナリファイル）を誤ってステージングするリスクがある</why_wrong>
+      <instead>変更したファイルを明示的にリストアップし、ファイル名を指定してステージングする</instead>
+      <example>
+        悪い例: git add -A
+        良い例: git add src/auth.ts src/auth.test.ts docs/api.md
+      </example>
+    </avoid>
+    <avoid name="skip_lint">
+      <description>lintやformat checkを実行せずにコミットする</description>
+      <why_wrong>コードスタイルの一貫性が失われ、CIでのチェック失敗やレビュー時の指摘が増える</why_wrong>
+      <instead>コミット前に必ずlintとformat checkを実行し、すべてのエラー/警告を修正する</instead>
+      <example>
+        悪い例:
+        git add src/auth.ts
+        git commit -m "feat: Add auth"
+
+        良い例:
+        npm run lint
+        npm run format:check
+        （エラーがあれば修正）
+        git add src/auth.ts
+        git commit -m "feat: Add user authentication"
+      </example>
+    </avoid>
+    <avoid name="monolithic_commits">
+      <description>異なる意図の変更を1つのコミットにまとめる</description>
+      <why_wrong>レビュアが各変更の意図を個別に検証できなくなる。refactorと題したコミットにfeatやfixが混在していると、動作が変わっていないことを検証できない。また、履歴を探索する開発者が変更の意図を誤認する。</why_wrong>
+      <instead>コミットの意図（refactor/feat/fix等）ごとに分離し、各コミットが単一の検証可能な主張を持つようにする</instead>
+      <example>
+        悪い例:
+        refactor: Restructure auth module
+        （実際にはリファクタリングに加えてバグ修正と新機能が混在）
+
+        良い例:
+        refactor: Extract auth validation into separate module
+        feat: Add OAuth2 support to auth module
+        fix: Correct token expiration check
+      </example>
+    </avoid>
+  </anti_patterns>
+  <enforcement>
+    <mandatory_behaviors>
+      <behavior id="COMMIT-B001" priority="critical">
+        <trigger>コミットを作成する前</trigger>
+        <action>lintとformat checkを実行し、すべてのエラー/警告を修正すること</action>
+        <verification>lint/format checkがパスしたことがログに記録されていること</verification>
+      </behavior>
+      <behavior id="COMMIT-B002" priority="critical">
+        <trigger>ファイルをステージングする前</trigger>
+        <action>ファイル名を明示的にリストアップし、`git add &lt;file1&gt; &lt;file2&gt;`形式で実行すること</action>
+        <verification>`git add -A`や`git add .`がコマンド履歴に存在しないこと</verification>
+      </behavior>
+      <behavior id="COMMIT-B003" priority="critical">
+        <trigger>topic branch内で追加変更をコミットする前</trigger>
+        <action>既存コミットへの訂正・補完・衝突かどうかを確認し、該当する場合はfixupを使用すること</action>
+        <verification>fixupか新規コミットかの判断理由がログに記録されていること</verification>
+      </behavior>
+    </mandatory_behaviors>
+    <prohibited_behaviors>
+      <behavior id="COMMIT-P001" priority="critical">
+        <trigger>常に</trigger>
+        <action>`git add -A`または`git add .`を実行すること</action>
+        <response>処理を中断し、明示的なファイル指定に修正する</response>
+      </behavior>
+      <behavior id="COMMIT-P002" priority="critical">
+        <trigger>常に</trigger>
+        <action>lintやformat checkをスキップしてコミットすること</action>
+        <response>処理を中断し、lint/format checkを実行してからコミットする</response>
+      </behavior>
+      <behavior id="COMMIT-P003" priority="critical">
+        <trigger>常に</trigger>
+        <action>git pushを実行すること</action>
+        <response>処理を中断し、pushはユーザーに任せる旨を通知する</response>
+      </behavior>
+    </prohibited_behaviors>
+  </enforcement>
+  <constraints>
+    <must>ファイル名を明示的に指定してステージングすること</must>
+    <must>コミット前にlintとformat checkを実行すること</must>
+    <must>conventional commits形式でコミットメッセージを作成すること</must>
+    <must>コミット単位はレビュー容易性と履歴探索性を基準に決定すること</must>
+    <avoid>`git add -A`または`git add .`の使用</avoid>
+    <avoid>git pushの実行</avoid>
+    <avoid>lintやformat checkをスキップしてコミットすること</avoid>
+    <avoid>論理的に分離すべき変更を1つのコミットにまとめること</avoid>
+  </constraints>
+  <related_skills>
+    <skill name="impl-workflow">実装ワークフロー内でのコミット作成に本スキルを参照</skill>
+  </related_skills>
+</skill>
+<!-- vim:set ft=xml: -->

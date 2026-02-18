@@ -184,7 +184,7 @@ Verified: N | Unverified: N
         <agent name="performance" subagent_type="performance" readonly="true">パフォーマンスレビュー</agent>
         <agent name="test" subagent_type="test" readonly="true">テストカバレッジレビュー、TDDテストリストレビュー（完全性、網羅性、discoveriesの処理）</agent>
         <agent name="fact-check" subagent_type="fact-check" readonly="true">外部ソース検証</agent>
-        <agent name="git-review" subagent_type="git" readonly="true">コミット構成レビュー: レビュアが各コミットの文脈と意図を容易に読み取れるか、git-policyスキルの基準に沿っているか</agent>
+        <agent name="git-review" subagent_type="git" readonly="true">コミット構成レビュー: レビュアが各コミットの文脈と意図を容易に読み取れるか、create-git-commitスキルの基準に沿っているか</agent>
       </agents>
       <execution>すべてのエージェントを並列実行</execution>
     </mode>
@@ -354,7 +354,7 @@ Verified: N | Unverified: N
     <skill name="investigation-patterns">調査における証拠品質の評価</skill>
     <skill name="testing-patterns">テストカバレッジと品質の評価</skill>
     <skill name="fact-check">外部ソースの主張の検証</skill>
-    <skill name="git-policy">コミット構成レビューの基準</skill>
+    <skill name="create-git-commit">コミット構成レビューの基準</skill>
   </related_skills>
   <constraints>
     <must>すべてのエージェントを同時に起動する（逐次実行なし）</must>
