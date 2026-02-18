@@ -19,6 +19,9 @@
     </concept>
     <concept name="feedback_integration">TDDサイクル完了後にfeedbackスキルでレビュー。指摘事項はすべてTODO登録。feedbackのverifyフェーズでverifiedとなった不具合は直接修正、unverifiedはユーザーに報告し判断を仰ぐ。Test Coverageはcharacterizationエージェントに委任。git absorbで既存コミットにfixup</concept>
     <concept name="feedback_bug_verification">不具合の指摘はfeedbackコマンドのverifyフェーズでPOCテストが作成・実行される。verifiedステータスの不具合は直接修正、unverifiedステータスの不具合はユーザーに報告して判断を仰ぐ</concept>
+    <concept name="parent_owns_commits">
+      <description>Git操作（コミット、ステージング）は親エージェント（オーケストレーター）のみが実行する。サブエージェント（coding、characterization等）にはGit操作を禁止し、コード変更のみを委任する。コミットのタイミングと単位は親が判断する。</description>
+    </concept>
   </concepts>
   <patterns>
     <pattern name="git_policy_check">
@@ -86,8 +89,8 @@
          - refactoring_candidates → refactoringタイプとしてリストに追加
       4. 完了したらTodoWriteでcompletedに変更
 
-      フェーズ完了時のGit操作:
-      - delegate: 変更をまとめてコミット（conventional commits形式）
+      フェーズ完了時のGit操作（親エージェントが実行）:
+      - delegate: 親がcreate-git-commitスキルに従いコミット（サブエージェントはコミットしない）
       - manual: 「必要であればコミットを作成してください」と表示
       </example>
     </pattern>
@@ -315,6 +318,7 @@
     <requirement>具体的な範囲と期待される成果物</requirement>
     <requirement>対象ファイルパス</requirement>
     <requirement>参照実装（具体的なパス）</requirement>
+    <requirement>サブエージェントにGit操作（git add, git commit等）を禁止する旨を明記すること</requirement>
   </delegation>
   <parallelization>
     <capability>
@@ -386,6 +390,11 @@
         <action>characterizationエージェントに委任して対応する</action>
         <verification>characterizationエージェントが起動されていること</verification>
       </behavior>
+      <behavior id="IMPL-B008" priority="critical">
+        <trigger>サブエージェントに作業を委任する際</trigger>
+        <action>Git操作（git add, git commit等）を行わないよう明示的に指示すること</action>
+        <verification>委任メッセージにGit操作禁止の指示が含まれていること</verification>
+      </behavior>
     </mandatory_behaviors>
     <prohibited_behaviors>
       <behavior id="IMPL-P001" priority="critical">
@@ -402,6 +411,11 @@
         <trigger>常に</trigger>
         <action>create-git-commitスキルのルールに違反すること</action>
         <response>create-git-commitスキルのenforcement参照</response>
+      </behavior>
+      <behavior id="IMPL-P004" priority="critical">
+        <trigger>サブエージェントに作業を委任する場合</trigger>
+        <action>サブエージェントがgit add、git commit等のGit操作を実行すること</action>
+        <response>サブエージェントにはコード変更のみを委任し、Git操作は親エージェントが実行する</response>
       </behavior>
     </prohibited_behaviors>
   </enforcement>
@@ -433,6 +447,7 @@
     <practice priority="medium">実装タスクを委任する前に既存のパターンを確認</practice>
   </best_practices>
   <rules priority="critical">
+    <rule>サブエージェントにGit操作を実行させないこと。コミットは親エージェントのみがcreate-git-commitスキルに従って実行する</rule>
     <rule>テストファーストワークフローを適用するためにcodingエージェントを使用する</rule>
     <rule>詳細な作業を専門のサブエージェントに委任する</rule>
     <rule>オーケストレーションとポリシー決定に集中する</rule>

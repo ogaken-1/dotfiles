@@ -137,6 +137,19 @@ in
             "mcp__codex__codex"
             "mcp__codex__codex-reply"
           ];
+          hooks = {
+            PreToolUse = [
+              {
+                matcher = "Bash";
+                hooks = [
+                  {
+                    type = "command";
+                    command = "${./validate-no-git-write.sh}";
+                  }
+                ];
+              }
+            ];
+          };
         };
         body = ./agents/coding.xml;
       };
