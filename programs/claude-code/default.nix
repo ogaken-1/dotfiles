@@ -113,6 +113,19 @@ in
                 type = "command";
                 command = ''COMMAND=$(jq -r '.tool_input.command') && if echo "$COMMAND" | grep -qE '(^|[;&|])\s*find\s'; then echo 'findコマンドは使用禁止です。代わりにfdを使ってください。' >&2; exit 2; fi'';
               }
+              {
+                type = "command";
+                command = "${./hooks/require-git-commit-skill.sh}";
+              }
+            ];
+          }
+          {
+            matcher = "Skill";
+            hooks = [
+              {
+                type = "command";
+                command = "${./hooks/mark-git-commit-skill.sh}";
+              }
             ];
           }
         ];
