@@ -144,7 +144,7 @@ in
                 hooks = [
                   {
                     type = "command";
-                    command = "${./validate-no-git-write.sh}";
+                    command = "${./hooks/validate-no-git-write.sh}";
                   }
                 ];
               }
