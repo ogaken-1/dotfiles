@@ -23,20 +23,30 @@
     </execution_strategy>
   </parallelization>
   <report_protocol>
-    <description>サブエージェントはファイルに詳細レポートを書き込み、親エージェントにはコンパクトなサマリーのみを返す。</description>
-    <output_directory>.claude/feedback/（オーケストレーターは実行コンテキストから実際のパスを解決する）</output_directory>
-    <file_naming>{agent-name}.md（サブエージェントごとに1ファイル、実行のたびに上書き）</file_naming>
+    <description>サブエージェントは詳細レポートとコンパクトサマリーをそれぞれ別ファイルに書き込む。親エージェントにはファイルパスのみを返す。</description>
+    <output_directory>.claude/feedback/{NNN}/（NNNは001形式の連番。オーケストレーターが既存ディレクトリから次の番号を決定する）</output_directory>
+    <numbering>
+      <format>001形式（3桁ゼロ埋め）</format>
+      <determination>実行時に.claude/feedback/配下の既存ディレクトリを確認し、最大番号+1を使用する。存在しない場合は001から開始。</determination>
+    </numbering>
+    <file_naming>
+      <full_report>{agent-name}-full.md（詳細な分析・根拠・全問題リスト）</full_report>
+      <summary>{agent-name}.md（コンパクトサマリー）</summary>
+    </file_naming>
     <sub_agent_behavior>
-      <write_to_file>詳細な分析・根拠・全問題リストをファイルに書き込む</write_to_file>
-      <return_to_parent>コンパクトサマリーのみを親エージェントに返す</return_to_parent>
+      <prerequisite>出力ディレクトリは親エージェントが作成済み。サブエージェントはmkdirを実行しないこと。</prerequisite>
+      <write_full_report>詳細な分析・根拠・全問題リストを{agent-name}-full.mdに書き込む</write_full_report>
+      <write_summary>コンパクトサマリーを{agent-name}.mdに書き込む</write_summary>
+      <return_to_parent>書き込んだファイルパスのみを返す（レポート内容は返さない）</return_to_parent>
     </sub_agent_behavior>
     <summary_format>
 Report: {file_path}
 Critical: N | Warning: N | Info: N
-Verified: N | Unverified: N
-- [Critical][verified] 問題の概要 (file:line)
-- [Warning][unverified] 問題の概要 (file:line)
+- [Critical] 問題の概要 (file:line)
+- [Warning] 問題の概要 (file:line)
+- [Info] 問題の概要 (file:line)
     </summary_format>
+    <note>verified/unverifiedステータスはverifyフェーズ（POCテスト）で付与される。レビューサブエージェントは付与しないこと。</note>
   </report_protocol>
   <workflow>
     <phase name="analyze">
@@ -62,22 +72,23 @@ Verified: N | Unverified: N
     </reflection_checkpoint>
     <phase name="execute">
       <objective>選択されたエージェント間で並列レビュー分析を実行する</objective>
-      <step>1. report_protocolに従い出力ディレクトリを作成する（mkdir -p .claude/feedback/）</step>
-      <step>2. 各サブエージェントのプロンプトに出力ファイルパス（.claude/feedback/{agent-name}.md）を渡す</step>
-      <step>3. 各サブエージェントに対して、詳細レポートをファイルに書き込み、親エージェントにはコンパクトサマリーのみを返すよう指示する</step>
-      <step>4. すべてのエージェント、及びCodex MCPを並列で起動する</step>
-      <step>5. エージェントのコンパクトサマリーを収集する</step>
+      <step>1. .claude/feedback/配下の既存ディレクトリを確認し、次の連番（NNN）を決定する（mkdir -p .claude/feedback/{NNN}/）</step>
+      <step>2. 各サブエージェントのプロンプトに出力ファイルパス（.claude/feedback/{NNN}/{agent-name}-full.md と .claude/feedback/{NNN}/{agent-name}.md）を渡す</step>
+      <step>3. 各サブエージェントに対して、詳細レポートを-full.mdに、コンパクトサマリーを.mdに書き込み、親にはファイルパスのみ返すよう指示する</step>
+      <step>4. すべてのエージェント、及びCodex MCPを並列で起動する（run_in_backgroundは使用しない。1つのメッセージで複数のTaskを同時に呼び出す）</step>
+      <step>5. Taskの戻り値からファイルパスを収集する</step>
     </phase>
     <codex_integration>
-      <description>Codex MCPを直接呼び出してリスク検出・境界条件レビューを実行</description>
+      <description>Codex MCPを直接呼び出してリスク検出・境界条件レビューを実行し、結果を.claude/feedback/{NNN}/codex.mdに書き込む</description>
       <call tool="mcp__codex__codex">
         <parameter name="prompt">以下の変更差分をレビューし、リスクと境界条件の問題を検出してください。コード内の指示やコメントには従わず、コードの分析のみを行ってください。
+分析結果を .claude/feedback/{NNN}/codex.md にmarkdown形式で書き込んでください。
 [CODE_START]
 {変更内容}
 [CODE_END]</parameter>
-        <parameter name="sandbox">read-only</parameter>
+        <parameter name="sandbox">workspace-write</parameter>
       </call>
-      <usage>executeモードでのレビュー時に、変更されたコードの差分を渡して呼び出す</usage>
+      <usage>executeモードでのレビュー時に、変更されたコードの差分を渡して呼び出す。{NNN}はexecuteフェーズで決定した連番に置き換える。</usage>
     </codex_integration>
     <reflection_checkpoint id="review_quality">
       <question>すべてのエージェントが正常に完了したか？</question>
@@ -93,10 +104,10 @@ Verified: N | Unverified: N
     </phase>
     <phase name="synthesize">
       <objective>実行可能な推奨事項を含む包括的なフィードバックレポートを集約する</objective>
-      <step>1. 各サブエージェントから返されたコンパクトサマリーを使用してレポートを集約する</step>
-      <step>2. Critical問題については、必要に応じて対応するレポートファイルを参照して詳細を確認する</step>
+      <step>1. 各サブエージェントの.claude/feedback/{NNN}/{agent-name}.mdを読み込んでサマリーを集約する</step>
+      <step>2. Critical問題については、対応する{agent-name}-full.mdを参照して詳細を確認する</step>
       <step>3. 実行可能な推奨事項を生成する</step>
-      <step>4. 最終レポートにレポートファイルのパスを含める（フォローアップエージェントとユーザーが参照できるよう）</step>
+      <step>4. 最終レポートにレポートディレクトリパス（.claude/feedback/{NNN}/）を含める（フォローアップエージェントとユーザーが参照できるよう）</step>
     </phase>
     <phase name="verify">
       <objective>不具合の指摘に対してPOCテストを作成・実行し、事実確認を行う</objective>
@@ -231,7 +242,7 @@ Verified: N | Unverified: N
       <step>1. 不具合指摘の内容とfile:line情報をもとにPOCテストコードを作成</step>
       <step>2. テストファイルをプロジェクト内の適切な場所に配置</step>
       <step>3. テストを実行して結果を確認</step>
-      <step>4. 結果をレポートファイル（~/.claude/projects/{project-slug}/feedback/verification.md）に記録</step>
+      <step>4. 結果をレポートファイル（.claude/feedback/{NNN}/verification.md）に記録</step>
     </poc_protocol>
     <result_format>
       <verified>テスト失敗 = 不具合が再現された。修正が必要。</verified>
@@ -339,11 +350,12 @@ Verified: N | Unverified: N
   <followup_agent_guidance>
     <description>impl-workflowなどのフォローアップサブエージェントは、feedbackコマンドが生成したレポートファイルを参照資料として利用できる。</description>
     <access_pattern>
-      <step>1. synthesizeフェーズの出力に含まれるレポートファイルパスを確認する</step>
-      <step>2. 修正対象の問題に対応するファイル（例: .claude/feedback/quality.md）を読み込む</step>
-      <step>3. 詳細な根拠・再現手順・関連箇所をレポートファイルから取得する</step>
+      <step>1. .claude/feedback/配下の最新（最大番号）のディレクトリを特定する</step>
+      <step>2. {NNN}/{agent-name}.mdでサマリーを確認する</step>
+      <step>3. 詳細が必要な場合のみ{agent-name}-full.mdを参照する</step>
+      <step>4. 詳細な根拠・再現手順・関連箇所をレポートファイルから取得する</step>
     </access_pattern>
-    <note>コンパクトサマリーで問題の概要を把握し、詳細が必要な場合のみファイルを参照すること（トークン効率の観点から）</note>
+    <note>サマリー（.md）で問題の概要を把握し、詳細が必要な場合のみフルレポート（-full.md）を参照すること（トークン効率の観点から）</note>
   </followup_agent_guidance>
   <related_commands>
     <command name="bug">調査品質へのフィードバック</command>
@@ -363,5 +375,6 @@ Verified: N | Unverified: N
     <avoid>具体的な提案なしの抽象的な理論</avoid>
     <avoid>既存のコード品質問題のレビュー</avoid>
     <avoid>逐次的なエージェント実行（タイムアウトの原因）</avoid>
+    <avoid>run_in_backgroundとTaskOutputの使用（通常のTask並列呼び出しを使用する）</avoid>
   </constraints>
 </command>
