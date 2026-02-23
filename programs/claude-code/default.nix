@@ -106,6 +106,15 @@ in
             ];
           }
           {
+            matcher = "TaskOutput";
+            hooks = [
+              {
+                type = "command";
+                command = "echo 'TaskOutputは使用禁止です。バックグラウンドタスクの結果はサブエージェントが完了時に自動で返却されるため、TaskOutputで明示的に取得する必要はありません。context windowの圧迫を防ぐため、TaskOutputの代わりにTaskツールのblock=trueオプションまたはサブエージェントの自動返却を利用してください。' >&2 && exit 2";
+              }
+            ];
+          }
+          {
             matcher = "Bash";
             hooks = [
               # findコマンドは-execオプションがあるのがヤバくてallow permissionできないので、fdに強制する
