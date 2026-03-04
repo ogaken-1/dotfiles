@@ -345,6 +345,7 @@ in
       };
     };
   };
+  home.sessionVariables.CLAUDE_CODE_DISABLE_BACKGROUND_TASKS = "1";
   home.file =
     builtins.attrNames skillDefs
     |> map (name: {
