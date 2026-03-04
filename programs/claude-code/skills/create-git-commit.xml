@@ -44,8 +44,13 @@
     <phase name="step5_commit_message">
       <description>conventional commits形式でコミットメッセージを作成する</description>
       <step>変更の種類に応じたprefixを選択する（下記の形式を参照）</step>
-      <step>コミットメッセージは英語で作成する（1行目は50文字以内が推奨）</step>
-      <step>git commit -m "prefix: 変更内容の説明" でコミットを作成する</step>
+      <step>1行目（subject）は「What（何を変えたか）」を簡潔に記述する（50文字以内推奨）。言語はリポジトリの既存コミットログに倣う。他の開発者がリポジトリの履歴を読んだときに、パッチの説明として意味が通ること</step>
+      <step>本文（body）は「Why（なぜその変更が必要か）」をProblem/Solution形式で記述する:
+        - Problem: 何が問題だったか（変更の動機・背景）
+        - Solution: なぜこの方法で解決するか（実装方針の根拠）
+      </step>
+      <step>bodyが不要なケース: subjectだけでWhyが自明な場合は省略してよい（例: typo修正、format修正、自明なバグ修正）</step>
+      <step>注意: 設計判断の詳細や代替案の棄却理由などのコンテキスト補完は、コードコメントや設計資料に記述する。コミットメッセージはあくまでWhyに集中する</step>
       <example>
         形式: &lt;type&gt;[optional scope]: &lt;description&gt;
 
@@ -57,12 +62,19 @@
         - test: テストの追加・修正
         - chore: ビルドプロセス、ツール設定など
 
-        コミットメッセージ例:
-        - feat: Add user authentication endpoint
-        - fix: Correct validation error in login form
-        - docs: Update API usage examples
-        - refactor: Extract auth validation into separate module
-        - test: Add edge case tests for email validator
+        bodyあり（Whyが自明でない場合）:
+        feat(auth): Add rate limiting to login endpoint
+
+        Problem:
+        Brute-force attacks were observed in production logs.
+
+        Solution:
+        Per-IP rate limiting reduces attack surface without
+        affecting normal user experience.
+
+        body省略（Whyが自明な場合）:
+        fix: Correct typo in error message
+        chore: Run formatter
       </example>
     </phase>
     <phase name="step6_fixup_decision">
@@ -176,7 +188,7 @@
   <constraints>
     <must>ファイル名を明示的に指定してステージングすること</must>
     <must>コミット前にlintとformat checkを実行すること</must>
-    <must>conventional commits形式でコミットメッセージを作成すること</must>
+    <must>conventional commits形式でコミットメッセージを作成し、Whyが自明でない場合はbodyに動機・背景を記述すること</must>
     <must>コミット単位はレビュー容易性と履歴探索性を基準に決定すること</must>
     <avoid>`git add -A`または`git add .`の使用</avoid>
     <avoid>git pushの実行</avoid>
