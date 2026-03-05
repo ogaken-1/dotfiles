@@ -9,6 +9,30 @@ let
     export CONTEXT7_API_KEY="$(cat ${config.sops.secrets.context7-api-key.path})"
     exec ${pkgs.context7-mcp}/bin/context7-mcp "$@"
   '';
+  statusline-script = pkgs.writeShellScript "claude-statusline" ''
+    INPUT=$(cat)
+    SESSION_ID=$(echo "$INPUT" | jq -r '.session_id')
+    REMAINING=$(echo "$INPUT" | jq -r '.context_window.remaining_percentage // 100')
+    echo "$REMAINING" > "/tmp/claude-context-$SESSION_ID"
+    MODEL=$(echo "$INPUT" | jq -r '.model.display_name')
+    USED=$(echo "$INPUT" | jq -r '.context_window.used_percentage // 0')
+
+    # Extract cwd and project_dir
+    CWD=$(echo "$INPUT" | jq -r '.cwd')
+    PROJECT_DIR=$(echo "$INPUT" | jq -r '.workspace.project_dir')
+
+    # Build base status
+    STATUS="[$MODEL] $USED% used"
+
+    # Add cwd indicator if different from project_dir
+    if [ "$CWD" != "$PROJECT_DIR" ]; then
+      # Substitute HOME with ~ for shorter display
+      CWD_DISPLAY=$(echo "$CWD" | sed "s|^$HOME|~|")
+      STATUS="$STATUS | 📂 $CWD_DISPLAY"
+    fi
+
+    echo "$STATUS"
+  '';
   skillDefs = {
     plan-workflow = lib.buildMarkdown {
       front-matter = {
@@ -90,6 +114,10 @@ in
     settings = {
       autoUpdates = false;
       autoCompactEnabled = true;
+      statusLine = {
+        type = "command";
+        command = "${statusline-script}";
+      };
       attribution = {
         commit = "";
         pr = "";
