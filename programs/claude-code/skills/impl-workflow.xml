@@ -17,7 +17,7 @@
     <concept name="git_policy">
       <description>Git操作はユーザーの明示的な要求がある場合のみ実行する。セッション開始時にdelegateモード（エージェントがローカルコミットを作成、push不可）またはmanualモード（Git操作なし、変更内容を提示）を選択する。コミット作成時はcreate-git-commitスキルに従う。</description>
     </concept>
-    <concept name="feedback_integration">TDDサイクル完了後にfeedbackスキルでレビュー。指摘事項はすべてTODO登録。feedbackのverifyフェーズでverifiedとなった不具合は直接修正、unverifiedはユーザーに報告し判断を仰ぐ。Test Coverageはcharacterizationエージェントに委任。git absorbで既存コミットにfixup</concept>
+    <concept name="feedback_integration">TDDサイクル完了後にfeedbackスキルでレビュー。指摘事項はすべてTODO登録。feedbackのverifyフェーズでverifiedとなった不具合は直接修正、unverifiedはユーザーに報告し判断を仰ぐ。Test Coverageはcharacterizationエージェントに委任。git commit --fixupで既存コミットにfixup</concept>
     <concept name="feedback_bug_verification">不具合の指摘はfeedbackコマンドのverifyフェーズでPOCテストが作成・実行される。verifiedステータスの不具合は直接修正、unverifiedステータスの不具合はユーザーに報告して判断を仰ぐ</concept>
     <concept name="parent_owns_commits">
       <description>Git操作（コミット、ステージング）は親エージェント（オーケストレーター）のみが実行する。サブエージェント（coding、characterization等）にはGit操作を禁止し、コード変更のみを委任する。コミットのタイミングと単位は親が判断する。</description>
@@ -111,26 +111,25 @@
       5. Test Coverageの指摘があった場合 → characterizationエージェントに委任して対応
       6. その他の指摘事項を順次消化
       7. feedback対応の変更をコミット:
-         - delegate: git absorb を実行（失敗時は git commit --fixup）
+         - delegate: git commit --fixup で既存コミットに統合
          - manual: 「feedback対応が完了しました。必要であればコミットを作成してください」と表示
       </example>
     </pattern>
     <pattern name="feedback_fixup">
-      <description>feedback対応の変更をgit absorbで既存コミットに統合する</description>
+      <description>feedback対応の変更をgit commit --fixupで既存コミットに統合する</description>
       <decision_tree name="when_to_use">
         <question>delegateモードでfeedbackに対応した修正をコミットしますか？</question>
-        <if_yes>git absorbを試行、失敗時はgit commit --fixupにフォールバック</if_yes>
+        <if_yes>git commit --fixupで対象コミットにfixupする</if_yes>
         <if_no>通常のcreate-git-commitスキルを使用</if_no>
       </decision_tree>
       <example>
     1. feedbackに対応した変更をステージング:
        git add src/auth.ts
 
-    2. git absorbを試行:
-       git absorb
+    2. 対象コミットのハッシュを確認:
+       git log --oneline -n 5
 
-    3. git absorbが失敗した場合:
-       git log --oneline -n 5 （対象コミットのハッシュを確認）
+    3. fixupコミットを作成:
        git commit --fixup=a1b2c3d
 
     4. fixup後、コミットメッセージがまだ正確か確認:
@@ -262,7 +261,7 @@
       <step>feedbackのverifyフェーズでverifiedとなった不具合は直接修正（POCテストは作成済み）、unverifiedはユーザーに報告</step>
       <step>Test Coverageの指摘はcharacterizationエージェントに委任</step>
       <step>その他の指摘事項を順次消化</step>
-      <step>feedback対応の変更をコミット（delegate: git absorb、manual: ユーザー入力待ち）</step>
+      <step>feedback対応の変更をコミット（delegate: git commit --fixup、manual: ユーザー入力待ち）</step>
     </phase>
     <phase name="failure_handling">
       <description>エラーとエッジケースを適切に処理する</description>

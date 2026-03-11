@@ -80,7 +80,7 @@
     <phase name="step6_fixup_decision">
       <description>fixupか新規コミットかを判断する（topic branch内で追加変更がある場合）</description>
       <step>変更が既存コミットへの訂正・補完・衝突する内容かを確認する</step>
-      <step>該当する場合: git absorb を試行し、失敗時は git commit --fixup=&lt;hash&gt; にフォールバック</step>
+      <step>該当する場合: git commit --fixup=&lt;hash&gt; を実行する</step>
       <step>fixup後、コミットメッセージが依然として正確かを確認する。乖離した場合は git commit --fixup=reword:&lt;hash&gt; でreword</step>
       <step>既存コミットとは独立した変更の場合: 新規コミットを作成する（step5へ）</step>
       <example>
@@ -93,8 +93,7 @@
         - 既存の変更とは無関係なリファクタリング
 
         fixupコマンド:
-        git absorb
-        （失敗時）git commit --fixup=a1b2c3d
+        git commit --fixup=a1b2c3d
         （rewordが必要な場合）git commit --fixup=reword:a1b2c3d
       </example>
     </phase>
