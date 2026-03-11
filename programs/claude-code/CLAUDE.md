@@ -11,6 +11,12 @@
     <behavior>impl-workflowスキルのワークフローに従う</behavior>
     <prohibited>Edit/Writeツールで直接コードを書く（サブエージェントに委任）</prohibited>
   </implementation>
+  <todo>
+    <rule>タスクの大小に関わらず、必ずTodoWriteでタスクを管理する。作業開始前にTodoを書くこと</rule>
+    <rule>サブエージェントに委任する場合、先にタスクをTodoに分解してから各Todoをサブエージェントへ割り当てる</rule>
+    <rule>ファイル変更を伴うTodoは、並行タスク間のリソース競合を事前に分析する。同一ファイルを変更するタスクは並列ではなく順次実行する</rule>
+    <rule>作業の進行に合わせてTodoのステータスを更新する（pending → in_progress → completed）</rule>
+  </todo>
   <task_routing>
     <route trigger="要件明確化・設計" skill="plan-workflow"/>
     <route trigger="コード実装" skill="impl-workflow"/>
