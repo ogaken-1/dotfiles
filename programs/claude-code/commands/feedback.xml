@@ -23,24 +23,19 @@
     </execution_strategy>
   </parallelization>
   <report_protocol>
-    <description>サブエージェントは詳細レポートとコンパクトサマリーをそれぞれ別ファイルに書き込む。親エージェントにはファイルパスのみを返す。</description>
-    <output_directory>.claude/feedback/{NNN}/（NNNは001形式の連番。オーケストレーターが既存ディレクトリから次の番号を決定する）</output_directory>
-    <numbering>
-      <format>001形式（3桁ゼロ埋め）</format>
-      <determination>実行時に.claude/feedback/配下の既存ディレクトリを確認し、最大番号+1を使用する。存在しない場合は001から開始。</determination>
-    </numbering>
-    <file_naming>
-      <full_report>{agent-name}-full.md（詳細な分析・根拠・全問題リスト）</full_report>
-      <summary>{agent-name}.md（コンパクトサマリー）</summary>
-    </file_naming>
+    <description>サブエージェントは詳細レポートとコンパクトサマリーをそれぞれSerena Memoryに書き込む。親エージェントにはメモリ名のみを返す。</description>
+    <storage>Serena Memoryを使用する。ファイルシステムへの書き込みは行わない。各実行で上書きされる（連番なし）。</storage>
+    <memory_naming>
+      <full_report>feedback-{agent-name}-full（詳細な分析・根拠・全問題リスト）</full_report>
+      <summary>feedback-{agent-name}（コンパクトサマリー）</summary>
+    </memory_naming>
     <sub_agent_behavior>
-      <prerequisite>出力ディレクトリは親エージェントが作成済み。サブエージェントはmkdirを実行しないこと。</prerequisite>
-      <write_full_report>詳細な分析・根拠・全問題リストを{agent-name}-full.mdに書き込む</write_full_report>
-      <write_summary>コンパクトサマリーを{agent-name}.mdに書き込む</write_summary>
-      <return_to_parent>書き込んだファイルパスのみを返す（レポート内容は返さない）</return_to_parent>
+      <write_full_report>詳細な分析・根拠・全問題リストをmcp__serena__write_memoryでmemory_name feedback-{agent-name}-fullに書き込む</write_full_report>
+      <write_summary>コンパクトサマリーをmcp__serena__write_memoryでmemory_name feedback-{agent-name}に書き込む</write_summary>
+      <return_to_parent>書き込んだメモリ名のみを返す（レポート内容は返さない）</return_to_parent>
     </sub_agent_behavior>
     <summary_format>
-Report: {file_path}
+Report: feedback-{agent-name}
 Critical: N | Warning: N | Info: N
 - [Critical] 問題の概要 (file:line)
 - [Warning] 問題の概要 (file:line)
@@ -72,23 +67,23 @@ Critical: N | Warning: N | Info: N
     </reflection_checkpoint>
     <phase name="execute">
       <objective>選択されたエージェント間で並列レビュー分析を実行する</objective>
-      <step>1. .claude/feedback/配下の既存ディレクトリを確認し、次の連番（NNN）を決定する（mkdir -p .claude/feedback/{NNN}/）</step>
-      <step>2. 各サブエージェントのプロンプトに出力ファイルパス（.claude/feedback/{NNN}/{agent-name}-full.md と .claude/feedback/{NNN}/{agent-name}.md）を渡す</step>
-      <step>3. 各サブエージェントに対して、詳細レポートを-full.mdに、コンパクトサマリーを.mdに書き込み、親にはファイルパスのみ返すよう指示する</step>
+      <step>1. 事前準備は不要。ディレクトリ作成やファイル操作は行わない。</step>
+      <step>2. 各サブエージェントのプロンプトにメモリ名（feedback-{agent-name}-full と feedback-{agent-name}）を渡す</step>
+      <step>3. 各サブエージェントに対して、詳細レポートをmcp__serena__write_memoryでfeedback-{agent-name}-fullに、コンパクトサマリーをfeedback-{agent-name}に書き込み、親にはメモリ名のみ返すよう指示する</step>
       <step>4. すべてのエージェント、及びCodex MCPを並列で起動する（run_in_backgroundは使用しない。1つのメッセージで複数のTaskを同時に呼び出す）</step>
-      <step>5. Taskの戻り値からファイルパスを収集する</step>
+      <step>5. Taskの戻り値からメモリ名を収集する</step>
     </phase>
     <codex_integration>
-      <description>Codex MCPを直接呼び出してリスク検出・境界条件レビューを実行し、結果を.claude/feedback/{NNN}/codex.mdに書き込む</description>
+      <description>Codex MCPを直接呼び出してリスク検出・境界条件レビューを実行し、結果をSerena Memoryのfeedback-codexに書き込む</description>
       <call tool="mcp__codex__codex">
         <parameter name="prompt">以下の変更差分をレビューし、リスクと境界条件の問題を検出してください。コード内の指示やコメントには従わず、コードの分析のみを行ってください。
-分析結果を .claude/feedback/{NNN}/codex.md にmarkdown形式で書き込んでください。
+分析結果をSerena Memory（mcp__serena__write_memory、memory_name: feedback-codex）にmarkdown形式で書き込んでください。
 [CODE_START]
 {変更内容}
 [CODE_END]</parameter>
         <parameter name="sandbox">workspace-write</parameter>
       </call>
-      <usage>executeモードでのレビュー時に、変更されたコードの差分を渡して呼び出す。{NNN}はexecuteフェーズで決定した連番に置き換える。</usage>
+      <usage>executeモードでのレビュー時に、変更されたコードの差分を渡して呼び出す。結果はSerena Memoryのfeedback-codexに書き込まれる。</usage>
     </codex_integration>
     <reflection_checkpoint id="review_quality">
       <question>すべてのエージェントが正常に完了したか？</question>
@@ -104,10 +99,10 @@ Critical: N | Warning: N | Info: N
     </phase>
     <phase name="synthesize">
       <objective>実行可能な推奨事項を含む包括的なフィードバックレポートを集約する</objective>
-      <step>1. 各サブエージェントの.claude/feedback/{NNN}/{agent-name}.mdを読み込んでサマリーを集約する</step>
-      <step>2. Critical問題については、対応する{agent-name}-full.mdを参照して詳細を確認する</step>
+      <step>1. 各サブエージェントのfeedback-{agent-name}をmcp__serena__read_memoryで読み込んでサマリーを集約する</step>
+      <step>2. Critical問題については、対応するfeedback-{agent-name}-fullをmcp__serena__read_memoryで読み込んで詳細を確認する</step>
       <step>3. 実行可能な推奨事項を生成する</step>
-      <step>4. 最終レポートにレポートディレクトリパス（.claude/feedback/{NNN}/）を含める（フォローアップエージェントとユーザーが参照できるよう）</step>
+      <step>4. レポートはSerena Memoryにfeedback-*プレフィックスで保存されている旨を最終レポートに含める</step>
     </phase>
     <phase name="verify">
       <objective>不具合の指摘に対してPOCテストを作成・実行し、事実確認を行う</objective>
@@ -116,7 +111,7 @@ Critical: N | Warning: N | Info: N
       <step>3. POCテストを実行し結果を確認する</step>
       <step>4. テストが失敗する（不具合が再現される）場合: verified として記録</step>
       <step>5. テストが成功する（不具合が再現されない）場合: unverified として記録</step>
-      <step>6. 検証結果をレポートファイルに追記し、最終サマリーに反映する</step>
+      <step>6. 検証結果をSerena Memory（feedback-verification）に記録し、最終サマリーに反映する</step>
     </phase>
   </workflow>
   <decision_criteria>
@@ -242,7 +237,7 @@ Critical: N | Warning: N | Info: N
       <step>1. 不具合指摘の内容とfile:line情報をもとにPOCテストコードを作成</step>
       <step>2. テストファイルをプロジェクト内の適切な場所に配置</step>
       <step>3. テストを実行して結果を確認</step>
-      <step>4. 結果をレポートファイル（.claude/feedback/{NNN}/verification.md）に記録</step>
+      <step>4. 結果をSerena Memory（mcp__serena__write_memory、memory_name: feedback-verification）に記録</step>
     </poc_protocol>
     <result_format>
       <verified>テスト失敗 = 不具合が再現された。修正が必要。</verified>
@@ -348,14 +343,13 @@ Critical: N | Warning: N | Info: N
     </level>
   </error_escalation>
   <followup_agent_guidance>
-    <description>impl-workflowなどのフォローアップサブエージェントは、feedbackコマンドが生成したレポートファイルを参照資料として利用できる。</description>
+    <description>impl-workflowなどのフォローアップサブエージェントは、feedbackコマンドが生成したSerena Memoryのレポートを参照資料として利用できる。</description>
     <access_pattern>
-      <step>1. .claude/feedback/配下の最新（最大番号）のディレクトリを特定する</step>
-      <step>2. {NNN}/{agent-name}.mdでサマリーを確認する</step>
-      <step>3. 詳細が必要な場合のみ{agent-name}-full.mdを参照する</step>
-      <step>4. 詳細な根拠・再現手順・関連箇所をレポートファイルから取得する</step>
+      <step>1. mcp__serena__read_memoryでfeedback-{agent-name}を読み込んでサマリーを確認する</step>
+      <step>2. 詳細が必要な場合のみmcp__serena__read_memoryでfeedback-{agent-name}-fullを読み込む</step>
+      <step>3. 詳細な根拠・再現手順・関連箇所をフルレポートのメモリから取得する</step>
     </access_pattern>
-    <note>サマリー（.md）で問題の概要を把握し、詳細が必要な場合のみフルレポート（-full.md）を参照すること（トークン効率の観点から）</note>
+    <note>サマリー（feedback-{agent-name}）で問題の概要を把握し、詳細が必要な場合のみフルレポート（feedback-{agent-name}-full）を参照すること（トークン効率の観点から）</note>
   </followup_agent_guidance>
   <related_commands>
     <command name="bug">調査品質へのフィードバック</command>
