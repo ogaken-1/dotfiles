@@ -104,6 +104,13 @@ let
       };
       body = ./skills/create-git-commit.xml;
     };
+    refactoring-loop = lib.buildMarkdown {
+      front-matter = {
+        name = "Refactoring Loop";
+        description = "Post-implementation refactoring loop. Use after feat/fix implementation to iteratively improve code quality. Ensures test safety net before refactoring, delegates analysis to code-quality agent and execution to coding agent, repeats until no more improvements are found (max 10 iterations).";
+      };
+      body = ./skills/refactoring-loop.xml;
+    };
   };
 in
 {

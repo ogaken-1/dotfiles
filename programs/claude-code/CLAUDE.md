@@ -22,6 +22,7 @@
     <route trigger="コード実装" skill="impl-workflow"/>
     <route trigger="調査・デバッグ" skill="bug, ask"/>
     <route trigger="コードレビュー" skill="feedback"/>
+    <route trigger="feat/fix実装後のリファクタリング" skill="refactoring-loop"/>
     <route trigger="ドキュメント" skill="markdown"/>
   </task_routing>
   <rules>

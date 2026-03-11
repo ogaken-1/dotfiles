@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skill>
+  <purpose>feat/fix実装後のリファクタリングループ。改善点が見つからなくなるまで繰り返す。リファクタリング前にテストの安全ネットを確保し、外部から観測可能な振る舞いを変えずにコードを改善する。</purpose>
+  <tools>
+    <tool name="todo_management">TodoWriteでリファクタリング項目を管理（pending → in_progress → completed）</tool>
+    <tool name="agent_delegation">code-qualityエージェント（分析）、codingエージェント（実行）、characterizationエージェント（テスト追加）に委任</tool>
+    <tool name="iteration_limit">最大イテレーション数を追跡し、上限（10回）に達した場合はループを終了</tool>
+  </tools>
+  <concepts>
+    <concept name="test_safety_net">リファクタリング前にテストで安全ネットを確保する。テストがなければcharacterizationエージェントに委任してテストを追加してから開始する</concept>
+    <concept name="single_refactoring">1回のイテレーションで1つのリファクタリングのみ行う。小さなステップで確実に進め、各ステップ後にテストがパスすることを確認する</concept>
+    <concept name="convergence">改善点がなくなったら終了する。無限ループ防止のため最大イテレーション数（10回）を設ける</concept>
+    <concept name="behavior_preservation">外部から観測可能な振る舞いを変えない。テストがパスし続けることで振る舞いの保持を保証する</concept>
+    <concept name="parent_owns_commits">Git操作（コミット、ステージング）は親エージェント（オーケストレーター）のみが実行する。サブエージェントにはGit操作を禁止する</concept>
+  </concepts>
+  <patterns>
+    <pattern name="test_coverage_check">
+      <description>リファクタリング対象コードにテストが存在するか確認する</description>
+      <decision_tree name="when_to_use">
+        <question>対象コードに十分なテストカバレッジがありますか？</question>
+        <if_yes>analyzeフェーズに進む</if_yes>
+        <if_no>characterizationエージェントに委任してテストを追加してからanalyzeフェーズに進む</if_no>
+      </decision_tree>
+      <example>
+      確認方法:
+      1. テストファイルの存在確認（同名ファイルの.test.*、spec.*等）
+      2. 対象シンボルへの参照がテストに存在するか確認
+      3. テストが現在の振る舞いを十分にカバーしているか評価
+
+      テストが不十分な場合:
+      - characterizationエージェントに委任: 「対象ファイル: src/foo.ts の現在の振る舞いを仕様化テストとして記録してください。Git操作は行わないでください」
+      - テスト追加後にすべてのテストがパスすることを確認
+      </example>
+    </pattern>
+    <pattern name="improvement_analysis">
+      <description>code-qualityエージェントに改善点の分析を委任する</description>
+      <decision_tree name="when_to_use">
+        <question>テストの安全ネットが確保されていますか？</question>
+        <if_yes>code-qualityエージェントに分析を委任する</if_yes>
+        <if_no>test_coverage_checkパターンに戻る</if_no>
+      </decision_tree>
+      <example>
+      委任内容:
+      - 対象ファイルパスと変更されたシンボル名
+      - 検出対象: コードの臭い、重複、複雑度、命名、構造的な問題
+      - 出力形式: 優先度付きの改善候補リスト（1件以上あればループ継続、0件ならループ終了）
+
+      改善点がない場合 → ループ終了
+      改善点がある場合 → refactoringフェーズへ（最も優先度の高い1件を選択）
+      </example>
+    </pattern>
+    <pattern name="single_step_refactoring">
+      <description>codingエージェントに1つのリファクタリングを委任する</description>
+      <decision_tree name="when_to_use">
+        <question>code-qualityエージェントから改善点が報告されましたか？</question>
+        <if_yes>最も優先度の高い1件のみをcodingエージェントに委任する</if_yes>
+        <if_no>ループを終了する</if_no>
+      </decision_tree>
+      <example>
+      委任内容:
+      - 1件のリファクタリング内容（具体的なシンボルと改善方法）
+      - 対象ファイルパス
+      - テスト実行コマンド
+      - 「リファクタリング後にテストがパスすることを確認してください。Git操作は行わないでください」
+
+      リファクタリング完了後:
+      - テストがパスしていることを確認
+      - TodoWriteで完了済みに変更
+      - イテレーション数をインクリメント
+      - analyzeフェーズに戻る（convergenceチェック後）
+      </example>
+    </pattern>
+    <pattern name="convergence_check">
+      <description>ループ継続か終了かを判断する</description>
+      <decision_tree name="when_to_use">
+        <question>改善点がない、またはイテレーション数が上限（10回）に達しましたか？</question>
+        <if_yes>ループを終了してcompletionフェーズに進む</if_yes>
+        <if_no>analyzeフェーズに戻る</if_no>
+      </decision_tree>
+      <example>
+      終了条件:
+      1. code-qualityエージェントが改善点なしと報告した場合
+      2. イテレーション数が10回に達した場合（上限到達を報告し終了）
+
+      上限到達時のメッセージ例:
+      「リファクタリングループが上限（10回）に達しました。残りの改善候補: [一覧]。必要に応じて再実行してください」
+      </example>
+    </pattern>
+  </patterns>
+  <anti_patterns>
+    <avoid name="refactor_without_tests">
+      <description>テストなしでリファクタリングを開始する</description>
+      <instead>必ずensure_testsフェーズでテストの存在を確認し、なければcharacterizationエージェントで追加する</instead>
+    </avoid>
+    <avoid name="multiple_refactorings_at_once">
+      <description>複数のリファクタリングを一度に行う</description>
+      <instead>1回のイテレーションで1件のみのリファクタリングをcodingエージェントに委任する</instead>
+    </avoid>
+    <avoid name="behavior_change">
+      <description>振る舞いの変更を含む「リファクタリング」を行う</description>
+      <instead>振る舞いを変える変更はfeat/fixとして別途実施する。テストがパスし続けることで振る舞いの保持を保証する</instead>
+    </avoid>
+    <avoid name="infinite_loop">
+      <description>改善点が尽きないまま無限にループを継続する</description>
+      <instead>最大イテレーション数（10回）を設け、到達時点で残候補を報告して終了する</instead>
+    </avoid>
+    <avoid name="skip_test_verification">
+      <description>各リファクタリング後のテスト実行を省略する</description>
+      <instead>codingエージェントへの委任内容に必ずテスト実行確認を含める</instead>
+    </avoid>
+  </anti_patterns>
+  <workflow>
+    <phase name="identify">
+      <description>リファクタリング対象のコードを特定する</description>
+      <step>直前のfeat/fix実装で変更されたファイルとシンボルを確認する</step>
+      <step>TodoWriteでリファクタリングセッションを初期化する（イテレーションカウンター: 0、対象ファイル一覧）</step>
+      <step>対象範囲をユーザーに確認する（必要に応じて）</step>
+    </phase>
+    <phase name="ensure_tests">
+      <description>対象コードにテストがあるか確認し、なければ追加する</description>
+      <step>対象ファイルに対応するテストファイルの存在を確認する</step>
+      <step>テストが現在の振る舞いを十分にカバーしているか評価する</step>
+      <step>テストが不十分な場合: characterizationエージェントに委任してテストを追加する（Git操作禁止を明示）</step>
+      <step>テスト追加後、すべてのテストがパスすることを確認する</step>
+    </phase>
+    <phase name="analyze">
+      <description>code-qualityエージェントに改善点の分析を委任する</description>
+      <step>convergenceチェック: 前回のイテレーションで改善点なし、またはイテレーション数が10に達した場合はcompletionへ</step>
+      <step>code-qualityエージェントに対象ファイルと変更シンボルを提供し、改善点の分析を委任する（readonly=true）</step>
+      <step>分析結果を受け取り、改善候補リストを評価する</step>
+      <step>改善点がない場合: completionフェーズへ。改善点がある場合: refactorフェーズへ</step>
+    </phase>
+    <phase name="refactor">
+      <description>codingエージェントに1つのリファクタリングを委任する</description>
+      <step>改善候補リストから最も優先度の高い1件を選択し、TodoWriteでin_progressに変更する</step>
+      <step>codingエージェントに1件のリファクタリングを委任する（Git操作禁止、テスト実行確認を明示）</step>
+      <step>リファクタリング完了後、テストがパスすることを確認する</step>
+      <step>TodoWriteでcompletedに変更し、イテレーションカウンターをインクリメントする</step>
+      <step>analyzeフェーズに戻る（ループ継続）</step>
+    </phase>
+    <phase name="completion">
+      <description>ループ終了後の後処理を行う</description>
+      <step>実施したリファクタリングの一覧をユーザーに報告する</step>
+      <step>上限到達で終了した場合は残りの改善候補も報告する</step>
+      <step>Git操作ポリシーに従って変更をコミットする（delegate: create-git-commitスキルに従う、manual: 変更ファイル一覧と推奨コミットメッセージを提示）</step>
+    </phase>
+    <phase name="failure_handling">
+      <description>エラーと問題を適切に処理する</description>
+      <step>リファクタリング後にテストが失敗した場合: codingエージェントに原因調査と修正を委任する（振る舞いを壊していない場合のみ続行）</step>
+      <step>code-qualityエージェントの分析が失敗した場合: エラーをログに記録し、ユーザーに手動での候補指定を依頼する</step>
+      <step>振る舞いの変更が検出された場合: リファクタリングを中断し、ユーザーに報告する</step>
+    </phase>
+  </workflow>
+  <agents>
+    <agent name="code-quality" subagent_type="code-quality" readonly="true">コードの臭い、重複、複雑度、命名、構造的な問題の分析。改善候補を優先度付きで報告する</agent>
+    <agent name="coding" subagent_type="coding" readonly="false">1件のリファクタリングの実行。テストがパスすることを確認してから完了とする</agent>
+    <agent name="characterization" subagent_type="characterization" readonly="false">テストのない対象コードの仕様化テスト作成。リファクタリング前の安全ネット確保</agent>
+  </agents>
+  <enforcement>
+    <mandatory_behaviors>
+      <behavior id="REFACTOR-B001" priority="critical">
+        <trigger>リファクタリング開始前</trigger>
+        <action>対象コードのテストカバレッジを確認し、不十分な場合はcharacterizationエージェントでテストを追加する</action>
+        <verification>テストが存在し、すべてパスしていること</verification>
+      </behavior>
+      <behavior id="REFACTOR-B002" priority="critical">
+        <trigger>各イテレーションのリファクタリング後</trigger>
+        <action>テストがパスすることを確認してからループを継続する</action>
+        <verification>テスト実行結果が成功であること</verification>
+      </behavior>
+      <behavior id="REFACTOR-B003" priority="critical">
+        <trigger>codingエージェントに委任する際</trigger>
+        <action>1件のリファクタリングのみを委任し、Git操作禁止を明示する</action>
+        <verification>委任内容が単一のリファクタリングであり、Git操作禁止の指示が含まれていること</verification>
+      </behavior>
+      <behavior id="REFACTOR-B004" priority="critical">
+        <trigger>イテレーション数が10に達した場合</trigger>
+        <action>ループを終了し、残りの改善候補をユーザーに報告する</action>
+        <verification>ループが終了し、報告が行われていること</verification>
+      </behavior>
+      <behavior id="REFACTOR-B005" priority="critical">
+        <trigger>各イテレーション開始時</trigger>
+        <action>TodoWriteでイテレーションの状態を更新する</action>
+        <verification>TodoWriteのステータスが正確に反映されていること</verification>
+      </behavior>
+    </mandatory_behaviors>
+    <prohibited_behaviors>
+      <behavior id="REFACTOR-P001" priority="critical">
+        <trigger>常に</trigger>
+        <action>テストなしでリファクタリングを開始する</action>
+        <response>操作をブロックし、ensure_testsフェーズに戻る</response>
+      </behavior>
+      <behavior id="REFACTOR-P002" priority="critical">
+        <trigger>常に</trigger>
+        <action>複数のリファクタリングを一度にcodingエージェントに委任する</action>
+        <response>単一のリファクタリングのみを委任する</response>
+      </behavior>
+      <behavior id="REFACTOR-P003" priority="critical">
+        <trigger>常に</trigger>
+        <action>サブエージェントがgit add、git commit等のGit操作を実行する</action>
+        <response>サブエージェントにはコード変更のみを委任し、Git操作は親エージェントが実行する</response>
+      </behavior>
+      <behavior id="REFACTOR-P004" priority="critical">
+        <trigger>常に</trigger>
+        <action>振る舞いの変更を含む変更をリファクタリングとして実施する</action>
+        <response>操作をブロックし、feat/fixとして別途実施するようユーザーに案内する</response>
+      </behavior>
+    </prohibited_behaviors>
+  </enforcement>
+  <constraints>
+    <must>リファクタリング開始前にテストの安全ネットを確保する</must>
+    <must>1回のイテレーションで1つのリファクタリングのみ実行する</must>
+    <must>各リファクタリング後にテストがパスすることを確認する</must>
+    <must>外部から観測可能な振る舞いを変えない</must>
+    <must>最大イテレーション数（10回）の上限を守る</must>
+    <must>TodoWriteでリファクタリング項目を管理する</must>
+    <avoid>テストなしでリファクタリングを開始する</avoid>
+    <avoid>複数のリファクタリングを一度に行う</avoid>
+    <avoid>振る舞いの変更を含むリファクタリングを行う</avoid>
+    <avoid>イテレーション上限を無視してループを継続する</avoid>
+    <avoid>サブエージェントにGit操作を実行させる</avoid>
+  </constraints>
+  <related_skills>
+    <skill name="impl-workflow">feat/fix実装後にこのスキルを使用する</skill>
+    <skill name="testing-patterns">テスト追加時の参照</skill>
+    <skill name="create-git-commit">コミット作成時の手順</skill>
+    <skill name="execution-workflow">サブエージェント委任のコアパターン</skill>
+  </related_skills>
+</skill>
+<!-- vim:set ft=xml: -->
