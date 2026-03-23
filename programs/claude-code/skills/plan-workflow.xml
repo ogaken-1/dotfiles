@@ -5,6 +5,7 @@
     <tool name="agent_groups">専門サブエージェント: investigation（explore、design、database、fact-check - 並列）、analysis（general-purpose - investigation後に順次）、validation（validator - analysis後に順次）</tool>
     <tool name="delegation">スコープの概要、対象ファイルパス、明示的な編集禁止、AskUserQuestion使用指示を提供</tool>
     <tool name="tool_selection">Serena MCP（シンボル検索）→ Context7（ライブラリドキュメント）→ 基本ツール（Glob、Grep）</tool>
+    <tool name="persistence">Serena Memory（mcp__serena__write_memory）: 承認された計画の永続化</tool>
   </tools>
   <concepts>
     <concept name="plan_mode_context">
@@ -45,8 +46,9 @@
       </example>
     </concept>
     <concept name="handoff_to_implementation">
-      <description>計画完了後のimpl-workflowへのハンドオフ</description>
+      <description>計画完了後のimpl-workflowへのハンドオフ。承認された計画はSerena Memoryに保存され、impl-workflowから参照可能。</description>
       <example>
+        Serena Memory（plan-approved）: 要件ドキュメント全体
         要件ドキュメント: 機能要件（FR-001形式）、非機能要件、技術仕様
         タスク分解: 依存関係グラフ、フェーズ別タスクリスト
         決定事項: ユーザーの選択、制約、参照情報
@@ -348,6 +350,20 @@
         <output>セルフフィードバックセクション</output>
       </step>
     </phase>
+    <phase name="persist">
+      <objective>承認された計画をSerena Memoryに保存し、impl-workflowからアクセス可能にする</objective>
+      <trigger>ユーザーが計画を承認した後</trigger>
+      <step number="1">
+        <action>要件ドキュメントとタスク分解をSerena Memoryに書き込む（memory_name: plan-approved）</action>
+        <tool>mcp__serena__write_memory</tool>
+        <output>保存されたメモリ名（plan-approved）</output>
+      </step>
+      <step number="2">
+        <action>保存完了をユーザーに通知し、ExitPlanModeでimpl-workflowへハンドオフする</action>
+        <tool>ExitPlanMode</tool>
+        <output>impl-workflowへの引き継ぎ</output>
+      </step>
+    </phase>
   </workflow>
   <agents>
     <agent name="design" subagent_type="design" readonly="true">アーキテクチャの一貫性、依存関係分析、API設計</agent>
@@ -378,7 +394,7 @@
     <capability>
       <parallel_safe>true</parallel_safe>
       <read_only>true</read_only>
-      <modifies_state>none</modifies_state>
+      <modifies_state>serena_memory</modifies_state>
     </capability>
     <execution_strategy>
       <max_parallel_agents>16</max_parallel_agents>
@@ -551,6 +567,7 @@
     <must>構造化されたユーザーインタラクションにAskUserQuestionツールを使用する</must>
     <must>想定を立てる前に質問を提示する</must>
     <must>impl-workflowへのハンドオフに必要な情報を完全に文書化する</must>
+    <must>承認された計画をSerena Memoryに保存してからExitPlanModeする</must>
     <avoid>コードを実装または変更する</avoid>
     <avoid>技術的妥当性よりユーザーの要求を正当化する</avoid>
     <avoid>重要な質問への明確な回答なしに進める</avoid>
