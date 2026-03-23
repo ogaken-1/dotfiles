@@ -119,6 +119,7 @@ in
     enable = true;
     memory.source = ./CLAUDE.md;
     settings = {
+      language = "japanese";
       autoUpdates = false;
       autoCompactEnabled = true;
       statusLine = {
