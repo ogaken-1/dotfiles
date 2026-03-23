@@ -101,8 +101,9 @@ Critical: N | Warning: N | Info: N
       <objective>実行可能な推奨事項を含む包括的なフィードバックレポートを集約する</objective>
       <step>1. 各サブエージェントのfeedback-{agent-name}をmcp__serena__read_memoryで読み込んでサマリーを集約する</step>
       <step>2. Critical問題については、対応するfeedback-{agent-name}-fullをmcp__serena__read_memoryで読み込んで詳細を確認する</step>
-      <step>3. 実行可能な推奨事項を生成する</step>
-      <step>4. レポートはSerena Memoryにfeedback-*プレフィックスで保存されている旨を最終レポートに含める</step>
+      <step>3. 「削除推奨」「未使用」の指摘は、元の計画（Serena Memoryの実装計画、会話履歴中のPlan承認内容）・コミットメッセージ・TodoWriteのタスクリストと照合する。計画に含まれているものは「未設定（not yet configured）」と再分類し、削除対象から除外する</step>
+      <step>4. 実行可能な推奨事項を生成する</step>
+      <step>5. レポートはSerena Memoryにfeedback-*プレフィックスで保存されている旨を最終レポートに含める</step>
     </phase>
     <phase name="verify">
       <objective>不具合の指摘に対してPOCテストを作成・実行し、事実確認を行う</objective>
