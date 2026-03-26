@@ -129,6 +129,11 @@ in
       language = "japanese";
       autoUpdates = false;
       autoCompactEnabled = true;
+      permissions = {
+        deny = [
+          "Read(.envrc)"
+        ];
+      };
       statusLine = {
         type = "command";
         command = "${statusline-script}";
