@@ -290,7 +290,7 @@ in
         front-matter = {
           name = "fact-check";
           description = "External source verification for claims about libraries, docs, and standards.";
-          model = "haiku";
+          model = "sonnet";
           skills = [ "onboarding" ];
         };
         body = ./agents/fact-check.xml;
