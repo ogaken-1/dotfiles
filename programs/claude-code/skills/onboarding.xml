@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skill>
+  <purpose>作業開始前にプロジェクトのCLAUDE.mdファイルを読み込み、プロジェクト固有の指示・規約を把握する。サブエージェントが新しい作業を開始する際に必ず実行するオンボーディング手順。</purpose>
+  <workflow>
+    <phase name="step1_find_project_claude_md">
+      <description>プロジェクトルートのCLAUDE.mdを探して読み込む</description>
+      <step>Globツールを使ってプロジェクトルートのCLAUDE.mdを探す: Glob pattern="CLAUDE.md"</step>
+      <step>ファイルが見つかった場合: Readツールで読み込む</step>
+      <step>ファイルが見つからない場合: スキップして次のステップへ進む</step>
+    </phase>
+    <phase name="step2_apply_instructions">
+      <description>読み込んだ指示を作業に適用する</description>
+      <step>読み込んだCLAUDE.mdの指示・規約・コードスタイルをすべて把握する</step>
+      <step>以降の作業においてこれらの指示に従う</step>
+    </phase>
+  </workflow>
+  <rules priority="critical">
+    <rule>作業を開始する前に必ずこのオンボーディングを完了すること</rule>
+    <rule>CLAUDE.mdが存在しない場合でもエラーとせず、スキップして作業を続行すること</rule>
+    <rule>読み込んだ指示はすべての作業フェーズを通じて適用し続けること</rule>
+  </rules>
+  <constraints>
+    <must>GlobでプロジェクトルートのCLAUDE.mdをまず探してから読み込むこと（パスをハードコードしない）</must>
+    <must>ファイルが存在しない場合は静かにスキップすること</must>
+    <avoid>CLAUDE.mdを読まずに作業を開始すること</avoid>
+    <avoid>読み込んだ指示を無視すること</avoid>
+  </constraints>
+</skill>
+<!-- vim:set ft=xml: -->

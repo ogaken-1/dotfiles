@@ -111,6 +111,13 @@ let
       };
       body = ./skills/refactoring-loop.xml;
     };
+    onboarding = lib.buildMarkdown {
+      front-matter = {
+        name = "onboarding";
+        description = "Read and follow CLAUDE.md project instructions before starting work. Ensures sub-agents are aware of project-specific rules and conventions.";
+      };
+      body = ./skills/onboarding.xml;
+    };
   };
 in
 {
@@ -187,6 +194,7 @@ in
           name = "code-quality";
           description = "Code quality analysis and refactoring recommendations. Use proactively after code changes.";
           model = "sonnet";
+          skills = [ "onboarding" ];
         };
         body = ./agents/code-quality.xml;
       };
@@ -196,6 +204,7 @@ in
           description = "Test-first workflow implementation (test → review → implement). Use proactively for code implementation tasks.";
           model = "sonnet";
           memory = "project";
+          skills = [ "onboarding" ];
           disallowedTools = [
             "mcp__codex__codex"
             "mcp__codex__codex-reply"
@@ -222,6 +231,7 @@ in
           description = "Create characterization tests for non tested programs.";
           model = "sonnet";
           memory = "project";
+          skills = [ "onboarding" ];
         };
         body = ./agents/characterization.xml;
       };
@@ -230,6 +240,7 @@ in
           name = "database";
           description = "Database design, optimization, and query analysis. Use for database-related tasks.";
           model = "sonnet";
+          skills = [ "onboarding" ];
         };
         body = ./agents/database.xml;
       };
@@ -239,6 +250,7 @@ in
           description = "System architecture and API design analysis. Use for architectural decisions.";
           model = "opus";
           memory = "project";
+          skills = [ "onboarding" ];
         };
         body = ./agents/design.xml;
       };
@@ -247,6 +259,7 @@ in
           name = "devops";
           description = "Infrastructure, CI/CD, and observability. Use for DevOps-related tasks.";
           model = "sonnet";
+          skills = [ "onboarding" ];
         };
         body = ./agents/devops.xml;
       };
@@ -255,6 +268,7 @@ in
           name = "docs";
           description = "Documentation updates and maintenance. Use proactively after code changes.";
           model = "sonnet";
+          skills = [ "onboarding" ];
         };
         body = ./agents/docs.xml;
       };
@@ -263,6 +277,7 @@ in
           name = "explore";
           description = "Codebase exploration and file discovery. Use for understanding code structure.";
           model = "haiku";
+          skills = [ "onboarding" ];
         };
         body = ./agents/explore.xml;
       };
@@ -271,6 +286,7 @@ in
           name = "fact-check";
           description = "External source verification for claims about libraries, docs, and standards.";
           model = "haiku";
+          skills = [ "onboarding" ];
         };
         body = ./agents/fact-check.xml;
       };
@@ -279,6 +295,7 @@ in
           name = "git";
           description = "Git workflow design and operations. Use for version control tasks.";
           model = "sonnet";
+          skills = [ "onboarding" ];
         };
         body = ./agents/git.xml;
       };
@@ -287,6 +304,7 @@ in
           name = "performance";
           description = "Performance analysis and optimization. Use for performance-related tasks.";
           model = "sonnet";
+          skills = [ "onboarding" ];
         };
         body = ./agents/performance.xml;
       };
@@ -296,6 +314,7 @@ in
           description = "Code review and quality validation. Use proactively after implementation.";
           model = "sonnet";
           memory = "project";
+          skills = [ "onboarding" ];
         };
         body = ./agents/quality-assurance.xml;
       };
@@ -304,6 +323,7 @@ in
           name = "security";
           description = "Security vulnerability detection and analysis. Use proactively for security review.";
           model = "sonnet";
+          skills = [ "onboarding" ];
         };
         body = ./agents/security.xml;
       };
@@ -312,6 +332,7 @@ in
           name = "test";
           description = "Test creation, coverage analysis, and test execution. Use for testing tasks.";
           model = "sonnet";
+          skills = [ "onboarding" ];
         };
         body = ./agents/test.xml;
       };
@@ -320,6 +341,7 @@ in
           name = "validator";
           description = "Cross-validation and consensus verification. Use for verifying agent outputs.";
           model = "opus";
+          skills = [ "onboarding" ];
         };
         body = ./agents/validator.xml;
       };
