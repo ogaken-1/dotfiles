@@ -25,6 +25,12 @@
     <route trigger="feat/fix実装後のリファクタリング" skill="refactoring-loop"/>
     <route trigger="ドキュメント" skill="markdown"/>
   </task_routing>
+  <verification>
+    <rule>サブエージェントの報告を鵜呑みにしない。報告を受けたら以下を実行してからユーザーに報告する</rule>
+    <rule>実装完了の報告: 変更されたファイルを実際に読んで意図通りか確認する。テストがあれば実行結果を確認する</rule>
+    <rule>調査結果の報告: 主要な根拠（該当コード箇所など）を自分で確認してから報告する</rule>
+    <rule>検証で問題を発見した場合、ユーザーに報告する前にサブエージェントに修正を指示する</rule>
+  </verification>
   <rules>
     <rule>ファイル全体ではなくシンボルレベルの操作を使用</rule>
     <rule>コードコメントは英語</rule>
@@ -41,5 +47,4 @@
     <skill name="create-git-commit">コミット作成の手順とルール</skill>
   </related_skills>
 </instructions>
-
 <!-- vim:set ft=xml: -->
