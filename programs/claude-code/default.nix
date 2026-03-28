@@ -175,6 +175,11 @@ in
                 type = "command";
                 command = ''COMMAND=$(jq -r '.tool_input.command') && if echo "$COMMAND" | grep -qE '(^|[;&|])\s*grep\s'; then echo 'grepコマンドは使用禁止です。代わりにrgを使ってください。' >&2; exit 2; fi'';
               }
+              # catコマンドの代わりにRead/Writeツールを使わせる
+              {
+                type = "command";
+                command = ''COMMAND=$(jq -r '.tool_input.command') && if echo "$COMMAND" | grep -qE '(^|[;&|])\s*cat\s'; then echo 'catコマンドは使用禁止です。ファイルの読み取りにはReadツール、書き込みにはWriteツールを使ってください。' >&2; exit 2; fi'';
+              }
               {
                 type = "command";
                 command = "${./hooks/require-git-commit-skill.sh}";
