@@ -405,6 +405,13 @@ in
         command = "${context7-wrapped}/bin/context7-mcp";
         type = "stdio";
       };
+      playwright = {
+        command = "${pkgs.playwright-mcp}/bin/playwright-mcp";
+        args = [
+          "--headless"
+        ];
+        type = "stdio";
+      };
       codex = {
         command = "${pkgs.codex}/bin/codex";
         args = [
