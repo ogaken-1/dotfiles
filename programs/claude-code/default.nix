@@ -9,6 +9,16 @@ let
     export CONTEXT7_API_KEY="$(cat ${config.sops.secrets.context7-api-key.path})"
     exec ${pkgs.context7-mcp}/bin/context7-mcp "$@"
   '';
+  # Hook to deny a specific command pattern and suggest an alternative
+  denyCommand =
+    {
+      pattern,
+      message,
+    }:
+    {
+      type = "command";
+      command = ''COMMAND=$(jq -r '.tool_input.command') && if echo "$COMMAND" | grep -qE '(^|[;&|])\s*${pattern}\s'; then echo '${message}' >&2; exit 2; fi'';
+    };
   statusline-script = pkgs.writeShellScript "claude-statusline" ''
     INPUT=$(cat)
     SESSION_ID=$(echo "$INPUT" | jq -r '.session_id')
@@ -165,26 +175,22 @@ in
           {
             matcher = "Bash";
             hooks = [
-              # findコマンドは-execオプションがあるのがヤバくてallow permissionできないので、fdに強制する
-              {
-                type = "command";
-                command = ''COMMAND=$(jq -r '.tool_input.command') && if echo "$COMMAND" | grep -qE '(^|[;&|])\s*find\s'; then echo 'findコマンドは使用禁止です。代わりにfdを使ってください。' >&2; exit 2; fi'';
-              }
-              # grepコマンドの代わりにrgを使わせる
-              {
-                type = "command";
-                command = ''COMMAND=$(jq -r '.tool_input.command') && if echo "$COMMAND" | grep -qE '(^|[;&|])\s*grep\s'; then echo 'grepコマンドは使用禁止です。代わりにrgを使ってください。' >&2; exit 2; fi'';
-              }
-              # catコマンドの代わりにRead/Writeツールを使わせる
-              {
-                type = "command";
-                command = ''COMMAND=$(jq -r '.tool_input.command') && if echo "$COMMAND" | grep -qE '(^|[;&|])\s*cat\s'; then echo 'catコマンドは使用禁止です。ファイルの読み取りにはReadツール、書き込みにはWriteツールを使ってください。' >&2; exit 2; fi'';
-              }
-              # python3の代わりにperlかrubyを使わせる
-              {
-                type = "command";
-                command = ''COMMAND=$(jq -r '.tool_input.command') && if echo "$COMMAND" | grep -qE '(^|[;&|])\s*python3?\s'; then echo 'pythonは使用禁止です。代わりにperlまたはrubyを使ってください。' >&2; exit 2; fi'';
-              }
+              (denyCommand {
+                pattern = "find";
+                message = "findコマンドは使用禁止です。代わりにfdを使ってください。";
+              })
+              (denyCommand {
+                pattern = "grep";
+                message = "grepコマンドは使用禁止です。代わりにrgを使ってください。";
+              })
+              (denyCommand {
+                pattern = "cat";
+                message = "catコマンドは使用禁止です。ファイルの読み取りにはReadツール、書き込みにはWriteツールを使ってください。";
+              })
+              (denyCommand {
+                pattern = "python3?";
+                message = "pythonは使用禁止です。代わりにperlまたはrubyを使ってください。";
+              })
               {
                 type = "command";
                 command = "${./hooks/require-git-commit-skill.sh}";
