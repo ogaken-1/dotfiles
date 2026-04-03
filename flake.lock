@@ -294,6 +294,26 @@
         "type": "github"
       }
     },
+    "nix-claude-code": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1775171219,
+        "narHash": "sha256-3poVYyTB/THwwX2OIA4YNTEhg5pW3XEt1l53GV0j2mk=",
+        "owner": "ryoppippi",
+        "repo": "nix-claude-code",
+        "rev": "644838d512a95c415886736f1e6dc28531625f7d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ryoppippi",
+        "repo": "nix-claude-code",
+        "type": "github"
+      }
+    },
     "nix-darwin": {
       "inputs": {
         "nixpkgs": [
@@ -397,6 +417,7 @@
         "mac-app-util": "mac-app-util",
         "mcp-servers-nix": "mcp-servers-nix",
         "neovim-overlay": "neovim-overlay",
+        "nix-claude-code": "nix-claude-code",
         "nix-darwin": "nix-darwin",
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs",

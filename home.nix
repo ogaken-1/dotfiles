@@ -7,6 +7,7 @@
     neovim-overlay.overlays.default
     fish-fzf-complete.overlays.default
     mcp-servers-nix.overlays.default
+    nix-claude-code.overlays.default
   ];
   home = {
     stateVersion = "24.05";
