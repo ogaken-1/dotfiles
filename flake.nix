@@ -34,7 +34,6 @@
     vim-overlay = {
       url = "github:/kawarimidoll/vim-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.pre-commit-hooks.follows = "";
     };
     neovim-overlay = {
       url = "github:/nix-community/neovim-nightly-overlay";
