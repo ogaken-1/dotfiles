@@ -5,7 +5,7 @@
     emacs-overlay.overlay
     vim-overlay.overlays.default
     neovim-overlay.overlays.default
-    fish-fzf-complete.overlays.default
+    fish-lophius.overlays.default
     mcp-servers-nix.overlays.default
     nix-claude-code.overlays.default
   ];

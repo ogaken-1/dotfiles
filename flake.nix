@@ -64,8 +64,8 @@
       inputs.systems.follows = "systems";
       inputs.treefmt-nix.follows = "treefmt-nix";
     };
-    fish-fzf-complete = {
-      url = "github:ogaken-1/fzf_complete.fish";
+    fish-lophius = {
+      url = "github:ogaken-1/lophius.fish/v0.7.0";
     };
     mcp-servers-nix = {
       url = "github:natsukium/mcp-servers-nix";

@@ -7,7 +7,7 @@
     };
   };
   home.packages = [
-    pkgs.fishPlugins.fzf-complete
+    pkgs.fishPlugins.lophius
   ];
   programs.fish = {
     enable = true;

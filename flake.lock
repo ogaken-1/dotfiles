@@ -50,18 +50,19 @@
         "type": "github"
       }
     },
-    "fish-fzf-complete": {
+    "fish-lophius": {
       "locked": {
-        "lastModified": 1771074577,
-        "narHash": "sha256-8h1951HXetbHb3VUeF40pbN/0UX0VUeg1XCn8WJvjuc=",
+        "lastModified": 1775580467,
+        "narHash": "sha256-C1Vp2tweWKeCOCk2sXgCoXGOjB3LdYReUba9yLZETK8=",
         "owner": "ogaken-1",
-        "repo": "fzf_complete.fish",
-        "rev": "bd8c5ca4eb0ada32853e036a416953de3f2898ed",
+        "repo": "lophius.fish",
+        "rev": "eb994f0fa0a7983cd48528d384c65c3461e8b8a8",
         "type": "github"
       },
       "original": {
         "owner": "ogaken-1",
-        "repo": "fzf_complete.fish",
+        "ref": "v0.7.0",
+        "repo": "lophius.fish",
         "type": "github"
       }
     },
@@ -409,7 +410,7 @@
       "inputs": {
         "cl-nix-lite": "cl-nix-lite",
         "emacs-overlay": "emacs-overlay",
-        "fish-fzf-complete": "fish-fzf-complete",
+        "fish-lophius": "fish-lophius",
         "flake-compat": "flake-compat",
         "flake-parts": "flake-parts",
         "flake-utils": "flake-utils",
