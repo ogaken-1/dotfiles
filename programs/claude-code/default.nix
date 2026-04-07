@@ -17,7 +17,7 @@ let
     }:
     {
       type = "command";
-      command = ''COMMAND=$(jq -r '.tool_input.command') && if echo "$COMMAND" | grep -qE '(^|[;&|])\s*${pattern}\s'; then echo '${message}' >&2; exit 2; fi'';
+      command = ''COMMAND=$(jq -r '.tool_input.command') && if echo "$COMMAND" | grep -qE '(^|[;&|])\s*${pattern}\b'; then echo '${message}' >&2; exit 2; fi'';
     };
   statusline-script = pkgs.writeShellScript "claude-statusline" ''
     INPUT=$(cat)
@@ -186,6 +186,10 @@ in
               (denyCommand {
                 pattern = "cat";
                 message = "catコマンドは使用禁止です。ファイルの読み取りにはReadツール、書き込みにはWriteツールを使ってください。";
+              })
+              (denyCommand {
+                pattern = "sed[[:space:]]+(-[a-zA-Z]+[[:space:]]+)*-n[[:space:]]+[^;&|]*[0-9]+,[0-9]+p";
+                message = "sed -n でのファイル行範囲抽出は禁止です。Readツールの offset と limit パラメータを使ってください。";
               })
               (denyCommand {
                 pattern = "python3?";
