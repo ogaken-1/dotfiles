@@ -1,0 +1,12 @@
+{
+  "name": "slide-to-pdf",
+  "version": "1.0.0",
+  "description": "Convert slide HTML to PDF using Playwright",
+  "license": "MIT",
+  "bin": {
+    "slide-to-pdf": "slide-to-pdf.mjs"
+  },
+  "dependencies": {
+    "playwright-core": "1.58.2"
+  }
+}

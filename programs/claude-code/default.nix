@@ -5,6 +5,7 @@
 }:
 let
   lib = import ./lib.nix;
+  slide-to-pdf = pkgs.callPackage ../../pkgs/slide-to-pdf/package.nix { };
   context7-wrapped = pkgs.writeShellScriptBin "context7-mcp" ''
     export CONTEXT7_API_KEY="$(cat ${config.sops.secrets.context7-api-key.path})"
     exec ${pkgs.context7-mcp}/bin/context7-mcp "$@"
@@ -447,14 +448,25 @@ in
   # workaround: https://github.com/anthropics/claude-code/issues/21108#issuecomment-4107383369
   home.sessionVariables.DISABLE_AUTOUPDATER = "1";
   home.file =
-    builtins.attrNames skillDefs
-    |> map (name: {
-      name = ".claude/skills/${name}/SKILL.md";
-      value = {
-        text = skillDefs.${name};
+    (
+      builtins.attrNames skillDefs
+      |> map (name: {
+        name = ".claude/skills/${name}/SKILL.md";
+        value = {
+          text = skillDefs.${name};
+        };
+      })
+      |> builtins.listToAttrs
+    )
+    // {
+      ".claude/skills/slide-generating/SKILL.md".text =
+        builtins.readFile ./skills/slide-generating/SKILL.md
+        |> builtins.replaceStrings [ "@slide-to-pdf@" ] [ "${slide-to-pdf}/bin/slide-to-pdf" ];
+      ".claude/skills/slide-generating/references" = {
+        source = ./skills/slide-generating/references;
+        recursive = true;
       };
-    })
-    |> builtins.listToAttrs;
+    };
   programs.codex = {
     package = pkgs.codex;
     enable = true;
