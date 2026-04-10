@@ -33,7 +33,6 @@
   </verification>
   <rules>
     <rule>ファイル全体ではなくシンボルレベルの操作を使用</rule>
-    <rule>コードコメントは英語</rule>
     <rule>ライブラリドキュメントはContext7で確認</rule>
     <rule>コミット作成時はcreate-git-commitスキルに従う</rule>
     <rule>独立タスクは並列実行</rule>
