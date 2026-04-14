@@ -9,6 +9,7 @@
       "**/.direnv"
       "**/.serena"
       "**/.claude"
+      "tmp"
     ];
     settings = {
       alias = {
