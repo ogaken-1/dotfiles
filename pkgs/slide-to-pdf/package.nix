@@ -9,10 +9,11 @@
   makeFontsConf,
   chromedriver,
   chromium,
-  biz-ud-gothic,
+  callPackage,
 }:
 let
-  fontsConf = makeFontsConf { fontDirectories = [ biz-ud-gothic ]; };
+  slideFonts = callPackage ./fonts.nix { };
+  fontsConf = makeFontsConf { fontDirectories = slideFonts; };
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = "slide-to-pdf";
