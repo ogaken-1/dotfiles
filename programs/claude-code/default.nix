@@ -258,6 +258,19 @@ in
           model = "sonnet";
           memory = "project";
           skills = [ "onboarding" ];
+          hooks = {
+            PreToolUse = [
+              {
+                matcher = "Bash";
+                hooks = [
+                  {
+                    type = "command";
+                    command = "${./hooks/validate-no-git-write.sh}";
+                  }
+                ];
+              }
+            ];
+          };
         };
         body = ./agents/characterization.xml;
       };
