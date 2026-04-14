@@ -7,17 +7,12 @@
   fetchPnpmDeps,
   makeWrapper,
   makeFontsConf,
-  playwright-driver,
+  chromedriver,
+  chromium,
   biz-ud-gothic,
 }:
 let
   fontsConf = makeFontsConf { fontDirectories = [ biz-ud-gothic ]; };
-  browsers = playwright-driver.selectBrowsers {
-    fontconfig_file = fontsConf;
-    withChromium = false;
-    withFirefox = false;
-    withWebkit = false;
-  };
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = "slide-to-pdf";
@@ -34,7 +29,7 @@ stdenv.mkDerivation (finalAttrs: {
   pnpmDeps = fetchPnpmDeps {
     inherit (finalAttrs) pname version src;
     fetcherVersion = 3;
-    hash = "sha256-yJmDp/7N5g5KtP0O4wT5f1S9fXiAQ76QtKR8/vpK/dA=";
+    hash = "sha256-JkL+6RkHayWkSD5e/BvVs9nkKXFCRlabAJ6+97EHOE4=";
   };
 
   dontBuild = true;
@@ -46,13 +41,14 @@ stdenv.mkDerivation (finalAttrs: {
     cp slide-to-pdf.mjs $out/lib/slide-to-pdf/
     makeWrapper ${nodejs}/bin/node $out/bin/slide-to-pdf \
       --add-flags "$out/lib/slide-to-pdf/slide-to-pdf.mjs" \
-      --set PLAYWRIGHT_BROWSERS_PATH "${browsers}" \
+      --set CHROMEDRIVER_PATH "${chromedriver}/bin/chromedriver" \
+      --set CHROMIUM_PATH "${chromium}/bin/chromium" \
       --set FONTCONFIG_FILE "${fontsConf}"
     runHook postInstall
   '';
 
   meta = {
-    description = "Convert slide HTML to PDF using Playwright";
+    description = "Convert slide HTML to PDF using WebdriverIO";
     license = lib.licenses.mit;
     mainProgram = "slide-to-pdf";
   };

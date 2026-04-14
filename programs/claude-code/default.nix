@@ -459,14 +459,17 @@ in
       |> builtins.listToAttrs
     )
     // {
-      ".claude/skills/slide-generating/SKILL.md".text =
-        builtins.readFile ./skills/slide-generating/SKILL.md
-        |> builtins.replaceStrings [ "@slide-to-pdf@" ] [ "${slide-to-pdf}/bin/slide-to-pdf" ];
+      ".claude/skills/slide-generating/SKILL.md" = {
+        source = ./skills/slide-generating/SKILL.md;
+      };
       ".claude/skills/slide-generating/references" = {
         source = ./skills/slide-generating/references;
         recursive = true;
       };
     };
+  home.packages = [
+    slide-to-pdf
+  ];
   programs.codex = {
     package = pkgs.codex;
     enable = true;
