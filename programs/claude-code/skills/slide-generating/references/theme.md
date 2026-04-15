@@ -63,7 +63,7 @@
 | 温かい・柔らかい | Zen Maru Gothic | Fraunces       | 丸みのある字形が親しみと温かさを伝える   |
 | 格調・高級       | Shippori Mincho | Crimson Pro    | 明朝体+セリフの組み合わせが格式を表現    |
 | 大胆・インパクト | Dela Gothic One | Unbounded      | 極太+丸みの太字が強い存在感を出す        |
-| クリーン・実務的 | M PLUS 1p       | DM Sans        | ニュートラルで高可読性、ビジネス文書向き |
+| クリーン・実務的 | M PLUS 1        | DeepMind Sans  | ニュートラルで高可読性、ビジネス文書向き |
 
 **判断のステップ:**
 
@@ -78,8 +78,7 @@
 | ------------------- | ------------------------ | -------------------- |
 | Zen Kaku Gothic New | 現代的で柔らかいゴシック | カジュアル、親しみ   |
 | Zen Maru Gothic     | 丸みのあるゴシック       | 温かみ、安心感       |
-| M PLUS 1p           | クリーンで読みやすい     | テック、モダン       |
-| M PLUS Rounded 1c   | 丸ゴシック、親しみやすい | 教育、ワークショップ |
+| M PLUS 1            | クリーンで読みやすい     | テック、モダン       |
 | Shippori Mincho     | 上品な明朝体             | 格調、高級感、重厚   |
 | Klee One            | 手書き感のある教科書体   | 温かみ、ナチュラル   |
 | Murecho             | 幾何学的でシャープ       | テック、先進的       |
@@ -89,7 +88,7 @@
 | Noto Sans JP        | ニュートラル             | 中立的な場面のみ     |
 | Kosugi Maru         | 小杉丸ゴシック           | 柔らかい、カジュアル |
 | Sawarabi Gothic     | 清潔感のあるゴシック     | 清潔、シンプル       |
-| Kaisei Decol        | 装飾的な明朝             | 華やか、個性的       |
+| FK-Kaisei-Decol     | 装飾的な明朝             | 華やか、個性的       |
 
 **禁止事項:**
 
@@ -102,14 +101,14 @@
 | フォント            | 特徴               | 合うトーン           |
 | ------------------- | ------------------ | -------------------- |
 | Space Mono          | 等幅、テック感     | テック、コーディング |
-| DM Sans             | 幾何学的でモダン   | クリーン、モダン     |
+| DeepMind Sans       | 幾何学的でモダン   | クリーン、モダン     |
 | Outfit              | 柔らかい幾何学     | フレンドリー、モダン |
 | Sora                | 未来的、幾何学的   | 先進的、テック       |
 | Manrope             | 読みやすいモダン   | ビジネス、プロ       |
 | Bricolage Grotesque | 個性的なグロテスク | 大胆、クリエイティブ |
 | Plus Jakarta Sans   | 洗練されたモダン   | ビジネス、上品       |
 | Crimson Pro         | エレガントなセリフ | 格調、高級           |
-| Playfair Display    | クラシカルなセリフ | 高級、エディトリアル |
+| Playfair            | クラシカルなセリフ | 高級、エディトリアル |
 | Fraunces            | 柔らかいセリフ     | 温かみ、個性的       |
 | IBM Plex Sans       | 技術的で信頼感     | テック、企業         |
 | Unbounded           | 丸みのある太字     | 遊び心、インパクト   |
@@ -272,7 +271,7 @@ body {
   --color-text-muted: #8888a0;
   --color-border: #2a2a3a;
   --font-heading: "Murecho", sans-serif;
-  --font-body: "M PLUS 1p", sans-serif;
+  --font-body: "M PLUS 1", sans-serif;
 }
 ```
 

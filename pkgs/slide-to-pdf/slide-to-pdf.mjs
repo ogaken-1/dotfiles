@@ -3,6 +3,7 @@
 import { remote } from "webdriverio";
 import { resolve, basename } from "node:path";
 import { writeFile } from "node:fs/promises";
+import { readFileSync } from "node:fs";
 import { spawn } from "node:child_process";
 
 const debug = process.argv.includes("--debug");
@@ -19,6 +20,9 @@ const chromedriverPath = process.env.CHROMEDRIVER_PATH || "chromedriver";
 const chromiumPath = process.env.CHROMIUM_PATH || "chromium";
 const port = 9515;
 
+const manifestPath = process.env.SLIDE_FONTS_MANIFEST;
+const fontManifest = manifestPath ? JSON.parse(readFileSync(manifestPath, "utf8")) : [];
+
 // Start chromedriver as a subprocess, inheriting env (including FONTCONFIG_FILE)
 const driver = spawn(chromedriverPath, [`--port=${port}`], {
   stdio: "ignore",
@@ -27,6 +31,16 @@ const driver = spawn(chromedriverPath, [`--port=${port}`], {
 
 // Wait for chromedriver to start
 await new Promise((r) => setTimeout(r, 500));
+
+function buildFontFaceCss(manifest) {
+  return manifest
+    .map((e) => {
+      const weight = Array.isArray(e.weight) ? `${e.weight[0]} ${e.weight[1]}` : e.weight;
+      const family = JSON.stringify(e.family);
+      return `@font-face { font-family: ${family}; font-weight: ${weight}; font-style: ${e.style}; src: url("file://${e.path}") format("truetype"); }`;
+    })
+    .join("\n");
+}
 
 try {
   const browser = await remote({
@@ -43,6 +57,8 @@ try {
           "--disable-gpu",
           "--no-sandbox",
           "--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+          "--font-render-hinting=none",
+          "--allow-file-access-from-files",
         ],
       },
     },
@@ -56,6 +72,20 @@ try {
       async () => await browser.execute(() => document.readyState === "complete"),
       { timeout: 10000 },
     );
+
+    // Inject local @font-face rules and strip CDN links so that webfont
+    // resolution uses Nix-managed local fonts instead of fonts.googleapis.com.
+    const fontFaceCss = buildFontFaceCss(fontManifest);
+    await browser.execute((css) => {
+      document
+        .querySelectorAll('link[href*="fonts.googleapis.com"], link[href*="fonts.gstatic.com"]')
+        .forEach((el) => el.remove());
+      if (css) {
+        const style = document.createElement("style");
+        style.textContent = css;
+        document.head.appendChild(style);
+      }
+    }, fontFaceCss);
 
     // Wait for Mermaid and other async rendering (up to 2 seconds)
     await browser
@@ -107,6 +137,10 @@ try {
         s.style.marginBottom = "0";
       });
     });
+
+    // Screenshot-first hack: force Chromium to embed webfonts in the PDF
+    // (puppeteer/puppeteer#422).
+    await browser.takeScreenshot();
 
     // Generate PDF using W3C WebDriver Print API
     // 1920px / 96dpi = 20in = 50.8cm, 1080px / 96dpi = 11.25in = 28.575cm
