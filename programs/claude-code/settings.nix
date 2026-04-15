@@ -38,6 +38,7 @@ in
 {
   programs.claude-code.settings = {
     language = "japanese";
+    effortLevel = "high";
     autoUpdates = false;
     autoCompactEnabled = true;
     permissions = {
