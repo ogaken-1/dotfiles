@@ -55,9 +55,6 @@
       fetch = {
         prune = true;
       };
-      merge = {
-        conflictStyle = "diff3";
-      };
       diff = {
         colorMoved = "default";
       };
@@ -70,6 +67,10 @@
     };
   };
   programs.delta = {
+    enable = true;
+    enableGitIntegration = true;
+  };
+  programs.mergiraf = {
     enable = true;
     enableGitIntegration = true;
   };
