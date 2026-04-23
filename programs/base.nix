@@ -1,5 +1,6 @@
 # Base preset: Common CLI programs shared by all environments
 [
+  ./bash
   ./bat
   ./claude-code
   ./direnv
@@ -12,6 +13,7 @@
   ./home-manager
   ./lazygit
   ./neovim
+  ./ov
   ./sops
   ./tmux
 ]
