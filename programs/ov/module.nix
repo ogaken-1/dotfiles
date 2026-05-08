@@ -80,9 +80,16 @@ in
       })
 
       # psql
-      (lib.mkIf cfg.psqlIntegration.enable {
-        home.sessionVariables.PSQL_PAGER = lib.mkDefault "${ov} -F -C -d \"|\" -H1 --column-rainbow --align";
-      })
+      (lib.mkIf cfg.psqlIntegration.enable (
+        let
+          psqlPager = pkgs.writeShellScript "psql-pager" ''
+            exec ${ov} -F -C -d '|' -H1 --column-rainbow --align "$@"
+          '';
+        in
+        {
+          home.sessionVariables.PSQL_PAGER = lib.mkDefault "${psqlPager}";
+        }
+      ))
 
       # NOTE: The following tools have ov integration examples but require
       # their own config files or shell aliases, which are outside the scope
