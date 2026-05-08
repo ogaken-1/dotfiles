@@ -99,6 +99,10 @@ in
             })
             {
               type = "command";
+              command = ''COMMAND=$(jq -r '.tool_input.command') && if echo "$COMMAND" | grep -qE '(^|[[:space:]=])/tmp(/|$|[[:space:]])'; then echo '/tmpの使用は禁止です。一時ファイルはプロジェクト内の./tmpに置いてください。' >&2; exit 2; fi'';
+            }
+            {
+              type = "command";
               command = "${./hooks/require-git-commit-skill.sh}";
             }
           ];
