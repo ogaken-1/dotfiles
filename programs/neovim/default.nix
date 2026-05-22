@@ -16,7 +16,7 @@
       lua-language-server
       nixd
       nixfmt
-      omnisharp-roslyn
+      roslyn-ls
       shellcheck
       skkDictionaries.geo
       skkDictionaries.jinmei

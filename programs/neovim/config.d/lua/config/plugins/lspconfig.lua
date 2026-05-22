@@ -1,7 +1,6 @@
 return {
   'neovim/nvim-lspconfig',
   dependencies = {
-    'Hoffs/omnisharp-extended-lsp.nvim',
     'yioneko/nvim-vtsls',
   },
   event = 'FileType',
@@ -15,7 +14,6 @@ return {
       'jsonls',
       'lua_ls',
       'nixd',
-      'omnisharp',
       'prismals',
       'rust_analyzer',
       'tinymist',
