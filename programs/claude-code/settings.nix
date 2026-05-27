@@ -1,14 +1,20 @@
 { pkgs, ... }:
 let
-  # Hook to deny a specific command pattern and suggest an alternative
+  # Hook to deny a specific command pattern and suggest an alternative.
+  # Set onlyAtStart = true to match only when the command appears at the start of
+  # the input (i.e. not via pipe), useful when piped usage is legitimate.
   denyCommand =
     {
       pattern,
       message,
+      onlyAtStart ? false,
     }:
+    let
+      anchor = if onlyAtStart then "^" else "(^|[;&|])";
+    in
     {
       type = "command";
-      command = ''COMMAND=$(jq -r '.tool_input.command') && if echo "$COMMAND" | grep -qE '(^|[;&|])\s*${pattern}\b'; then echo '${message}' >&2; exit 2; fi'';
+      command = ''COMMAND=$(jq -r '.tool_input.command') && if echo "$COMMAND" | grep -qE '${anchor}\s*${pattern}\b'; then echo '${message}' >&2; exit 2; fi'';
     };
   statusline-script = pkgs.writeShellScript "claude-statusline" ''
     INPUT=$(cat)
@@ -92,6 +98,7 @@ in
             (denyCommand {
               pattern = "sed[[:space:]]+(-[a-zA-Z]+[[:space:]]+)*-n[[:space:]]+[^;&|]*[0-9]+,[0-9]+p";
               message = "sed -n でのファイル行範囲抽出は禁止です。Readツールの offset と limit パラメータを使ってください。";
+              onlyAtStart = true;
             })
             (denyCommand {
               pattern = "python3?";
