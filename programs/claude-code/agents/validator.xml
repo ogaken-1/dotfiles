@@ -31,7 +31,7 @@
     <reflection_checkpoint id="comparison_quality">
       <question>比較可能なすべてのアサーションを比較したか？</question>
       <question>矛盾はコンテキストと共に明確に特定されているか？</question>
-      <threshold>カバレッジが80%未満の場合、比較範囲を拡大</threshold>
+      <threshold>比較の網羅性が不十分な場合、比較範囲を拡大</threshold>
     </reflection_checkpoint>
     <phase name="consensus">
       <objective>論争のあるアサーションに対して加重合意を計算する</objective>
@@ -43,7 +43,7 @@
     <reflection_checkpoint id="consensus_complete">
       <question>合意計算は正しく加重されているか？</question>
       <question>低信頼度のすべてのアサーションがフラグされているか？</question>
-      <threshold>加重信頼度が70未満の場合、追加調査が必要</threshold>
+      <threshold>合意が不十分な場合、追加調査が必要</threshold>
     </reflection_checkpoint>
     <phase name="retry">
       <objective>失敗または低信頼度の出力を処理する</objective>
@@ -156,60 +156,6 @@
       <agent reason="Git状態はグローバル">git</agent>
     </conflicts_with>
   </parallelization>
-  <decision_criteria>
-    <criterion name="confidence_calculation">
-      <factor name="agent_coverage" weight="0.3">
-        <score range="90-100">3+エージェントが一致する出力</score>
-        <score range="70-89">2エージェントが一致する出力</score>
-        <score range="50-69">単一エージェントまたは部分的な一致</score>
-        <score range="0-49">一致する出力なしまたは矛盾</score>
-      </factor>
-      <factor name="consensus_strength" weight="0.4">
-        <score range="90-100">加重合意が0.9以上</score>
-        <score range="70-89">加重合意が0.7-0.9</score>
-        <score range="50-69">加重合意が0.5-0.7</score>
-        <score range="0-49">加重合意が0.5未満</score>
-      </factor>
-      <factor name="contradiction_resolution" weight="0.3">
-        <score range="90-100">矛盾なしまたはすべて解決</score>
-        <score range="70-89">軽微な矛盾を解決</score>
-        <score range="50-69">一部の矛盾が未解決</score>
-        <score range="0-49">重大な矛盾が未解決</score>
-      </factor>
-    </criterion>
-    <validation_tests>
-      <test name="full_consensus">
-        <input>agent_coverage=95, consensus_strength=95, contradiction_resolution=95</input>
-        <calculation>(95*0.3)+(95*0.4)+(95*0.3) = 28.5+38+28.5 = 95</calculation>
-        <expected_status>success</expected_status>
-        <reasoning>複数エージェントが高い合意で一致し、高い信頼度</reasoning>
-      </test>
-      <test name="boundary_warning_79">
-        <input>agent_coverage=80, consensus_strength=75, contradiction_resolution=80</input>
-        <calculation>(80*0.3)+(75*0.4)+(80*0.3) = 24+30+24 = 78</calculation>
-        <expected_status>warning</expected_status>
-        <reasoning>一部のギャップがある中程度の合意で78、警告をトリガー</reasoning>
-      </test>
-      <test name="boundary_success_80">
-        <input>agent_coverage=85, consensus_strength=75, contradiction_resolution=85</input>
-        <calculation>(85*0.3)+(75*0.4)+(85*0.3) = 25.5+30+25.5 = 81</calculation>
-        <expected_status>success</expected_status>
-        <reasoning>加重平均81が成功閾値を満たす</reasoning>
-      </test>
-      <test name="boundary_warning_60">
-        <input>agent_coverage=55, consensus_strength=60, contradiction_resolution=65</input>
-        <calculation>(55*0.3)+(60*0.4)+(65*0.3) = 16.5+24+19.5 = 60</calculation>
-        <expected_status>warning</expected_status>
-        <reasoning>加重平均がちょうど60、警告閾値を満たす</reasoning>
-      </test>
-      <test name="major_contradiction">
-        <input>agent_coverage=70, consensus_strength=40, contradiction_resolution=30</input>
-        <calculation>(70*0.3)+(40*0.4)+(30*0.3) = 21+16+9 = 46</calculation>
-        <expected_status>error</expected_status>
-        <reasoning>重大な未解決の矛盾で46、エラーをトリガー</reasoning>
-      </test>
-    </validation_tests>
-  </decision_criteria>
   <enforcement>
     <mandatory_behaviors>
       <behavior id="VAL-B001" priority="critical">
@@ -245,12 +191,6 @@
     <format>
 {
   "status": "success|warning|error",
-  "status_criteria": {
-    "success": "合意達成、信頼度 &gt;= 80",
-    "warning": "部分的な合意 または 信頼度 60-79",
-    "error": "重大な矛盾あり または 信頼度 60未満"
-  },
-  "confidence": 0,
   "summary": "検証結果サマリー",
   "metrics": {
     "agents_compared": 0,
@@ -299,8 +239,7 @@
       <output>
 {
   "status": "success",
-  "confidence": 92,
-  "summary": "3エージェントがAPI構造について92%の信頼度で合意達成",
+  "summary": "3エージェントがAPI構造について高い信頼度で合意達成",
   "metrics": {"agents_compared": 3, "assertions_validated": 5, "contradictions_found": 0},
   "validated_assertions": [
     {"assertion": "APIはRESTアーキテクチャを使用", "agreeing_agents": ["explore", "design", "security"], "consensus_score": 1.0}
@@ -320,7 +259,6 @@
       <output>
 {
   "status": "warning",
-  "confidence": 72,
   "summary": "エージェント間で矛盾を発見、加重合意を適用",
   "metrics": {"agents_compared": 2, "contradictions_found": 1, "contradictions_resolved": 0},
   "contradictions": [{
@@ -348,7 +286,6 @@
       <output>
 {
   "status": "success",
-  "confidence": 85,
   "summary": "代替エージェントでのリトライ後に検証完了",
   "retry_log": [{
     "agent": "database",

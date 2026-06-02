@@ -59,7 +59,7 @@
     <reflection_checkpoint id="investigation_quality">
       <question>症状から原因までの完全な証拠チェーンを構築したか？</question>
       <question>具体的な証拠でエラーメカニズムを説明できるか？</question>
-      <threshold>信頼度が70未満の場合、調査を継続するか不確実性をフラグする</threshold>
+      <threshold>証拠が不十分と判断した場合、調査を継続するか不確実性をフラグする</threshold>
     </reflection_checkpoint>
     <phase name="gather">
       <objective>環境コンテキストとランタイム条件を収集する</objective>
@@ -69,7 +69,7 @@
     <reflection_checkpoint id="analysis_quality">
       <question>十分な証拠を収集したか？</question>
       <question>理解に不足がないか？</question>
-      <threshold>信頼度が70未満の場合、さらに証拠を収集するかユーザーに確認する</threshold>
+      <threshold>証拠が不十分と判断した場合、さらに証拠を収集するかユーザーに確認する</threshold>
     </reflection_checkpoint>
     <phase name="failure_handling">
       <objective>調査失敗を適切に処理する</objective>
@@ -84,65 +84,10 @@
     </phase>
     <phase name="self_evaluate">
       <objective>調査出力の簡潔な品質評価</objective>
-      <step>1. decision_criteriaを使用して信頼度を計算：root_cause_certainty（50%）、evidence_chain（30%）、fix_viability（20%）</step>
-      <step>2. 信頼度が80未満または証拠ギャップが検出された場合、上位1-2個の重大な問題を特定する</step>
-      <step>3. 出力にself_feedbackセクションを追加する</step>
+      <step>1. 根本原因への確信度（高/中/低）と、残る主要な不明点（最大1-2点）を定性的に評価する</step>
+      <step>2. 出力にself_feedbackセクションを追加する</step>
     </phase>
   </workflow>
-  <decision_criteria>
-    <criterion name="confidence_calculation">
-      <factor name="root_cause_certainty" weight="0.5">
-        <score range="90-100">再現により根本原因を確認</score>
-        <score range="70-89">可能性の高い根本原因を特定</score>
-        <score range="50-69">考えられる原因を特定</score>
-        <score range="0-49">根本原因が不明</score>
-      </factor>
-      <factor name="evidence_chain" weight="0.3">
-        <score range="90-100">症状から原因までの完全な証拠チェーン</score>
-        <score range="70-89">強い証拠の連鎖</score>
-        <score range="50-69">部分的な証拠</score>
-        <score range="0-49">弱い証拠</score>
-      </factor>
-      <factor name="fix_viability" weight="0.2">
-        <score range="90-100">明確でテスト済みの修正が利用可能</score>
-        <score range="70-89">修正アプローチが定義済み</score>
-        <score range="50-69">可能な修正を特定</score>
-        <score range="0-49">明確な修正なし</score>
-      </factor>
-    </criterion>
-    <validation_tests>
-      <test name="confirmed_root_cause">
-        <input>root_cause_certainty=95, evidence_chain=90, fix_viability=95</input>
-        <calculation>(95*0.5)+(90*0.3)+(95*0.2) = 47.5+27+19 = 93.5</calculation>
-        <expected_status>success</expected_status>
-        <reasoning>テスト済み修正を伴う再現された根本原因は高い信頼度をもたらす</reasoning>
-      </test>
-      <test name="boundary_warning_79">
-        <input>root_cause_certainty=80, evidence_chain=75, fix_viability=80</input>
-        <calculation>(80*0.5)+(75*0.3)+(80*0.2) = 40+22.5+16 = 78.5</calculation>
-        <expected_status>warning</expected_status>
-        <reasoning>完全な証拠なしの可能性の高い原因は78.5となり警告をトリガー</reasoning>
-      </test>
-      <test name="boundary_success_80">
-        <input>root_cause_certainty=85, evidence_chain=75, fix_viability=75</input>
-        <calculation>(85*0.5)+(75*0.3)+(75*0.2) = 42.5+22.5+15 = 80</calculation>
-        <expected_status>success</expected_status>
-        <reasoning>加重平均がちょうど80、成功閾値を満たす</reasoning>
-      </test>
-      <test name="boundary_error_59">
-        <input>root_cause_certainty=60, evidence_chain=55, fix_viability=60</input>
-        <calculation>(60*0.5)+(55*0.3)+(60*0.2) = 30+16.5+12 = 58.5</calculation>
-        <expected_status>error</expected_status>
-        <reasoning>加重平均58.5は60未満でエラーをトリガー</reasoning>
-      </test>
-      <test name="unclear_cause">
-        <input>root_cause_certainty=45, evidence_chain=50, fix_viability=40</input>
-        <calculation>(45*0.5)+(50*0.3)+(40\*0.2) = 22.5+15+8 = 45.5</calculation>
-        <expected_status>error</expected_status>
-        <reasoning>弱い証拠を伴う不明確な根本原因は45.5となりエラーをトリガー</reasoning>
-      </test>
-    </validation_tests>
-  </decision_criteria>
   <agents>
     <agent name="quality-assurance" subagent_type="quality-assurance" readonly="true">エラー追跡、スタックトレース分析、デバッグ</agent>
     <agent name="general-purpose" subagent_type="general-purpose" readonly="true">ログ分析、可観測性、依存関係エラー</agent>
@@ -178,15 +123,11 @@
 - 直接的な原因
 - 根本的な原因
 - 条件</root_cause>
-      <metrics>
-- 信頼度：0-100
-- ログ活用度：0-100
-- 客観性：0-100</metrics>
       <impact>影響範囲、類似エラー</impact>
       <recommendations>修正提案（実装なし）、予防策</recommendations>
       <further_investigation>不明点、次のステップ</further_investigation>
       <self_feedback>
-        <confidence>XX/100（root_cause_certaintyに基づく）</confidence>
+        <confidence>確信度（高/中/低）と根拠の強さ</confidence>
         <issues>
 - [Critical] 問題の説明（もしあれば、最大2つ）
 - [Warning] 問題の説明（もしあれば）

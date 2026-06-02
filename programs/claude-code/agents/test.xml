@@ -24,13 +24,11 @@
     </phase>
     <reflection_checkpoint id="analysis_complete" after="analyze">
       <questions>
-        <question weight="0.5">すべてのテストシナリオを特定したか？</question>
-        <question weight="0.3">既存のテストパターンを理解しているか？</question>
-        <question weight="0.2">カバレッジ計画は包括的か？</question>
+        <question>すべてのテストシナリオを特定したか？</question>
+        <question>既存のテストパターンを理解しているか？</question>
+        <question>カバレッジ計画は包括的か？</question>
       </questions>
-      <threshold min="70" action="proceed">
-        <below_threshold>より多くのコンテキストを収集するかユーザーに相談</below_threshold>
-      </threshold>
+      <threshold>不十分な場合、より多くのコンテキストを収集するかユーザーに相談</threshold>
     </reflection_checkpoint>
     <phase name="gather">
       <objective>テストファイル、設定、パターンを収集する</objective>
@@ -40,7 +38,7 @@
     <reflection_checkpoint id="analysis_quality">
       <question>進行するのに十分な証拠を集めたか？</question>
       <question>理解にギャップがあるか？</question>
-      <threshold>信頼度が70未満の場合、さらに証拠を探すかユーザーに確認</threshold>
+      <threshold>証拠が不十分な場合、さらに証拠を探すかユーザーに確認</threshold>
     </reflection_checkpoint>
     <phase name="evaluate">
       <objective>テスト品質とカバレッジの完全性を評価する</objective>
@@ -118,60 +116,6 @@
     </safe_with>
     <conflicts_with/>
   </parallelization>
-  <decision_criteria>
-    <criterion name="confidence_calculation">
-      <factor name="coverage_completeness" weight="0.4">
-        <score range="90-100">すべてのクリティカルパスをテストでカバー</score>
-        <score range="70-89">主要なパスをカバー</score>
-        <score range="50-69">基本的なカバレッジ</score>
-        <score range="0-49">最小限のカバレッジ</score>
-      </factor>
-      <factor name="test_quality" weight="0.3">
-        <score range="90-100">モック付きでベストプラクティスに従ったテスト</score>
-        <score range="70-89">良好なテスト構造</score>
-        <score range="50-69">基本的なアサーション</score>
-        <score range="0-49">テスト品質が低い</score>
-      </factor>
-      <factor name="execution_reliability" weight="0.3">
-        <score range="90-100">すべてのテストが一貫してパス</score>
-        <score range="70-89">ほとんどのテストがパス</score>
-        <score range="50-69">一部フレイキーテストあり</score>
-        <score range="0-49">多数の失敗</score>
-      </factor>
-    </criterion>
-    <validation_tests>
-      <test name="high_confidence_pass">
-        <input>coverage_completeness=90, test_quality=85, execution_reliability=95</input>
-        <calculation>(90*0.4)+(85*0.3)+(95*0.3) = 36+25.5+28.5 = 90</calculation>
-        <expected_status>success</expected_status>
-        <reasoning>すべての要素が80以上、加重平均90 &gt;= 80</reasoning>
-      </test>
-      <test name="boundary_warning_79">
-        <input>coverage_completeness=80, test_quality=75, execution_reliability=80</input>
-        <calculation>(80*0.4)+(75*0.3)+(80*0.3) = 32+22.5+24 = 78.5</calculation>
-        <expected_status>warning</expected_status>
-        <reasoning>加重平均78.5は60-79の間、警告をトリガー</reasoning>
-      </test>
-      <test name="boundary_success_80">
-        <input>coverage_completeness=85, test_quality=75, execution_reliability=80</input>
-        <calculation>(85*0.4)+(75*0.3)+(80*0.3) = 34+22.5+24 = 80.5</calculation>
-        <expected_status>success</expected_status>
-        <reasoning>加重平均80.5が成功閾値を満たす</reasoning>
-      </test>
-      <test name="boundary_warning_60">
-        <input>coverage_completeness=60, test_quality=60, execution_reliability=60</input>
-        <calculation>(60*0.4)+(60*0.3)+(60*0.3) = 24+18+18 = 60</calculation>
-        <expected_status>warning</expected_status>
-        <reasoning>加重平均がちょうど60、警告閾値を満たす</reasoning>
-      </test>
-      <test name="boundary_error_59">
-        <input>coverage_completeness=55, test_quality=60, execution_reliability=65</input>
-        <calculation>(55*0.4)+(60*0.3)+(65*0.3) = 22+18+19.5 = 59.5</calculation>
-        <expected_status>error</expected_status>
-        <reasoning>加重平均59.5は60未満、エラーをトリガー</reasoning>
-      </test>
-    </validation_tests>
-  </decision_criteria>
   <enforcement>
     <mandatory_behaviors>
       <behavior id="TEST-B001" priority="critical">
@@ -197,12 +141,6 @@
     <format>
 {
   "status": "success|warning|error",
-  "status_criteria": {
-    "success": "すべてのチェックがパス、信頼度 &gt;= 80",
-    "warning": "軽微な問題あり または 信頼度 60-79",
-    "error": "重大な問題あり または 信頼度 60未満"
-  },
-  "confidence": 0,
   "summary": "テスト結果",
   "metrics": {"total": 0, "passed": 0, "failed": 0, "coverage": "XX%"},
   "screenshots": ["パス"],
@@ -223,20 +161,11 @@
       <output>
 {
   "status": "success",
-  "status_criteria": {
-    "success": "すべてのチェックがパス、信頼度 &gt;= 80",
-    "warning": "軽微な問題あり または 信頼度 60-79",
-    "error": "重大な問題あり または 信頼度 60未満"
-  },
-  "confidence": 90,
   "summary": "125テスト、2失敗、85%カバレッジ",
   "metrics": {"total": 125, "passed": 123, "failed": 2, "coverage": "85%"},
   "next_actions": ["失敗したテストを修正"]
 }
     </output>
-      <reasoning>
-信頼度は90。テストファイルは明確に識別可能、テストランナーは確定的なパス/失敗結果を生成、カバレッジメトリクスは正確なため。
-    </reasoning>
     </example>
     <example name="e2e_test">
       <input>ログインフローのE2Eテストを実行</input>
@@ -249,21 +178,12 @@
       <output>
 {
   "status": "success",
-  "status_criteria": {
-    "success": "すべてのチェックがパス、信頼度 &gt;= 80",
-    "warning": "軽微な問題あり または 信頼度 60-79",
-    "error": "重大な問題あり または 信頼度 60未満"
-  },
-  "confidence": 85,
   "summary": "ログインフローE2Eテストがパス",
   "metrics": {"total": 1, "passed": 1, "failed": 0, "coverage": "N/A"},
   "screenshots": ["/tmp/login-success.png"],
   "next_actions": ["ログアウトフローテストを追加", "エラーケーステストを追加"]
 }
     </output>
-      <reasoning>
-信頼度は85。ブラウザ自動化は確定的な結果を生成、スクリーンショットは視覚的な検証を提供、Playwrightセレクターはdata-testidで堅牢なため。
-    </reasoning>
     </example>
   </examples>
   <error_codes>

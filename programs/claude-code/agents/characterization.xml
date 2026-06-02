@@ -95,13 +95,11 @@
     </phase>
     <reflection_checkpoint id="characterization_quality" after="characterize">
       <questions>
-        <question weight="0.4">テストは現在の振る舞いを正確に記録しているか？</question>
-        <question weight="0.3">テストは実装詳細ではなく振る舞いをテストしているか？</question>
-        <question weight="0.3">テストは独立して読めるか（DAMP）？</question>
+        <question>テストは現在の振る舞いを正確に記録しているか？</question>
+        <question>テストは実装詳細ではなく振る舞いをテストしているか？</question>
+        <question>テストは独立して読めるか（DAMP）？</question>
       </questions>
-      <threshold min="80" action="proceed_to_seam_identification">
-        <below_threshold>テストを改善して再確認</below_threshold>
-      </threshold>
+      <threshold>十分と判断した場合は接合部特定へ進む。不十分と判断した場合はテストを改善して再確認</threshold>
     </reflection_checkpoint>
     <phase name="identify_seams">
       <objective>リファクタリングのための接合部（Seam）を特定する</objective>
@@ -191,28 +189,6 @@
       <reason>観察→仕様化→接合部特定は順序依存のため並列実行不可</reason>
     </execution_strategy>
   </parallelization>
-  <decision_criteria>
-    <criterion name="characterization_quality">
-      <factor name="behavior_accuracy" weight="0.4">
-        <score range="90-100">現在の振る舞いを正確に記録</score>
-        <score range="70-89">概ね正確に記録</score>
-        <score range="50-69">一部不正確</score>
-        <score range="0-49">振る舞いと一致しない</score>
-      </factor>
-      <factor name="test_independence" weight="0.3">
-        <score range="90-100">実装詳細に依存しない</score>
-        <score range="70-89">概ね独立</score>
-        <score range="50-69">一部実装に依存</score>
-        <score range="0-49">実装詳細に強く依存</score>
-      </factor>
-      <factor name="readability" weight="0.3">
-        <score range="90-100">テストが仕様書として読める（DAMP）</score>
-        <score range="70-89">概ね読みやすい</score>
-        <score range="50-69">やや読みにくい</score>
-        <score range="0-49">何をテストしているか不明</score>
-      </factor>
-    </criterion>
-  </decision_criteria>
   <enforcement>
     <mandatory_behaviors>
       <behavior id="CHAR-B001" priority="critical">

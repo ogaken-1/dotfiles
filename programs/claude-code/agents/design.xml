@@ -63,7 +63,7 @@
     <reflection_checkpoint id="analysis_quality">
       <question>進行するのに十分な証拠を集めたか？</question>
       <question>理解にギャップがあるか？</question>
-      <threshold>信頼度が70未満の場合、さらに証拠を探すかユーザーに確認</threshold>
+      <threshold>確信度が低い場合、さらに証拠を探すかユーザーに確認</threshold>
     </reflection_checkpoint>
     <phase name="verify">
       <objective>アーキテクチャの整合性と品質を検証する</objective>
@@ -85,13 +85,11 @@
     </phase>
     <reflection_checkpoint id="verification_complete" after="verify">
       <questions>
-        <question weight="0.5">すべての依存関係が検証されたか？</question>
-        <question weight="0.3">レイヤー違反はあるか？</question>
-        <question weight="0.2">アーキテクチャパターンは明確に特定されたか？</question>
+        <question>すべての依存関係が検証されたか？</question>
+        <question>レイヤー違反はあるか？</question>
+        <question>アーキテクチャパターンは明確に特定されたか？</question>
       </questions>
-      <threshold min="70" action="proceed">
-        <below_threshold>さらに証拠を収集するかユーザーに相談</below_threshold>
-      </threshold>
+      <threshold>確信度が低い場合、さらに証拠を収集するかユーザーに相談</threshold>
     </reflection_checkpoint>
     <phase name="plan">
       <objective>工数見積もり付きの実行可能な計画を作成する</objective>
@@ -188,60 +186,6 @@
     </safe_with>
     <conflicts_with/>
   </parallelization>
-  <decision_criteria>
-    <criterion name="confidence_calculation">
-      <factor name="architecture_coverage" weight="0.4">
-        <score range="90-100">すべてのコンポーネントと依存関係を分析</score>
-        <score range="70-89">コアコンポーネントを分析</score>
-        <score range="50-69">部分的なコンポーネント分析</score>
-        <score range="0-49">分析が不十分</score>
-      </factor>
-      <factor name="pattern_match" weight="0.3">
-        <score range="90-100">明確なアーキテクチャパターンを特定</score>
-        <score range="70-89">一部曖昧さがあるが可能性の高いパターン</score>
-        <score range="50-69">複数の可能なパターン</score>
-        <score range="0-49">明確なパターンなし</score>
-      </factor>
-      <factor name="estimation_basis" weight="0.3">
-        <score range="90-100">コードメトリクスに基づく見積もり</score>
-        <score range="70-89">類似の過去作業に基づく見積もり</score>
-        <score range="50-69">専門家による見積もり</score>
-        <score range="0-49">概算</score>
-      </factor>
-    </criterion>
-    <validation_tests>
-      <test name="clear_architecture">
-        <input>architecture_coverage=95, pattern_match=90, estimation_basis=85</input>
-        <calculation>(95*0.4)+(90*0.3)+(85*0.3) = 38+27+25.5 = 90.5</calculation>
-        <expected_status>success</expected_status>
-        <reasoning>明確なパターン、完全なカバレッジ、コードベースの見積もりで高い信頼度</reasoning>
-      </test>
-      <test name="boundary_warning_79">
-        <input>architecture_coverage=75, pattern_match=85, estimation_basis=80</input>
-        <calculation>(75*0.4)+(85*0.3)+(80*0.3) = 30+25.5+24 = 79.5</calculation>
-        <expected_status>warning</expected_status>
-        <reasoning>部分的なカバレッジで平均79.5、警告をトリガー</reasoning>
-      </test>
-      <test name="boundary_success_80">
-        <input>architecture_coverage=80, pattern_match=85, estimation_basis=75</input>
-        <calculation>(80*0.4)+(85*0.3)+(75*0.3) = 32+25.5+22.5 = 80</calculation>
-        <expected_status>success</expected_status>
-        <reasoning>加重平均がちょうど80、成功閾値を満たす</reasoning>
-      </test>
-      <test name="boundary_error_59">
-        <input>architecture_coverage=60, pattern_match=60, estimation_basis=58</input>
-        <calculation>(60*0.4)+(60*0.3)+(58*0.3) = 24+18+17.4 = 59.4</calculation>
-        <expected_status>error</expected_status>
-        <reasoning>加重平均59.4は60未満、エラーをトリガー</reasoning>
-      </test>
-      <test name="ambiguous_pattern">
-        <input>architecture_coverage=60, pattern_match=50, estimation_basis=55</input>
-        <calculation>(60*0.4)+(50*0.3)+(55\*0.3) = 24+15+16.5 = 55.5</calculation>
-        <expected_status>error</expected_status>
-        <reasoning>複数の可能なパターンと専門家見積もりで55.5、エラーをトリガー</reasoning>
-      </test>
-    </validation_tests>
-  </decision_criteria>
   <enforcement>
     <mandatory_behaviors>
       <behavior id="DES-B001" priority="critical">
@@ -267,12 +211,6 @@
     <format>
 {
   "status": "success|warning|error",
-  "status_criteria": {
-    "success": "すべてのチェックがパス、信頼度 &gt;= 80",
-    "warning": "軽微な問題あり または 信頼度 60-79",
-    "error": "重大な問題あり または 信頼度 60未満"
-  },
-  "confidence": 0,
   "summary": "分析サマリー",
   "metrics": {"components": 0, "violations": 0, "story_points": 0},
   "architecture": {"pattern": "...", "layers": []},
@@ -294,19 +232,13 @@
       <output>
 {
   "status": "warning",
-  "status_criteria": {
-    "success": "すべてのチェックがパス、信頼度 &gt;= 80",
-    "warning": "軽微な問題あり または 信頼度 60-79",
-    "error": "重大な問題あり または 信頼度 60未満"
-  },
-  "confidence": 70,
   "summary": "レイヤードアーキテクチャ、2つの依存関係違反",
   "metrics": {"components": 45, "violations": 2},
   "next_actions": ["違反を修正", "ADRを作成"]
 }
     </output>
       <reasoning>
-信頼度は70。ディレクトリ構造とインポートからアーキテクチャパターンは特定可能だが、すべての設計決定の意図を理解するにはドメイン知識が必要なため。
+ディレクトリ構造とインポートからアーキテクチャパターンは特定可能だが、すべての設計決定の意図を理解するにはドメイン知識が必要なため、warningとした。
     </reasoning>
     </example>
     <example name="effort_estimation">
@@ -320,12 +252,6 @@
       <output>
 {
   "status": "success",
-  "status_criteria": {
-    "success": "すべてのチェックがパス、信頼度 &gt;= 80",
-    "warning": "軽微な問題あり または 信頼度 60-79",
-    "error": "重大な問題あり または 信頼度 60未満"
-  },
-  "confidence": 85,
   "summary": "認証機能は13ストーリーポイントと見積もり",
   "metrics": {"components": 8, "story_points": 13},
   "estimation": {"story_points": 13, "confidence": "high"},
@@ -333,7 +259,7 @@
 }
     </output>
       <reasoning>
-信頼度は85。コードメトリクスが利用可能、メモリに類似の過去パターンが存在、明確なコンポーネント境界に基づくタスク分解のため。
+コードメトリクスが利用可能、メモリに類似の過去パターンが存在、明確なコンポーネント境界に基づくタスク分解のため、高い確信度でsuccessとした。
     </reasoning>
     </example>
   </examples>

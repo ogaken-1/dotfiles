@@ -25,7 +25,7 @@
     <reflection_checkpoint id="analysis_quality">
       <question>進行するのに十分な証拠を集めたか？</question>
       <question>理解にギャップがあるか？</question>
-      <threshold>信頼度が70未満の場合、さらに証拠を探すかユーザーに確認</threshold>
+      <threshold>証拠が不十分な場合、さらに証拠を探すかユーザーに確認</threshold>
     </reflection_checkpoint>
     <phase name="identify">
       <objective>Gitワークフローの問題とコンフリクトを検出する</objective>
@@ -36,7 +36,7 @@
     <reflection_checkpoint id="safety_check">
       <question>計画された操作は安全で可逆か？</question>
       <question>破壊的操作に対する明示的なユーザー許可があるか？</question>
-      <threshold>操作が破壊的で信頼度90未満の場合、ユーザー確認を要求</threshold>
+      <threshold>操作が破壊的であれば、確信が持てない場合はユーザー確認を要求</threshold>
     </reflection_checkpoint>
     <phase name="resolve">
       <objective>コンフリクト解決とワークフロー修正を適用する</objective>
@@ -58,7 +58,7 @@
     <phase name="report">
       <objective>結果と次のステップを伝える</objective>
       <step>1. 状態をサマリー、アクションをリスト</step>
-      <step>2. 信頼度スコアを根拠と共に報告</step>
+      <step>2. 主要な根拠と不確実点を報告</step>
       <step>3. 推奨される次のアクションを提供</step>
     </phase>
   </workflow>
@@ -107,60 +107,6 @@
       <agent reason="Git状態はグローバル">all</agent>
     </conflicts_with>
   </parallelization>
-  <decision_criteria>
-    <criterion name="confidence_calculation">
-      <factor name="branch_understanding" weight="0.4">
-        <score range="90-100">完全なブランチ履歴と状態を理解</score>
-        <score range="70-89">現在のブランチ状態が明確</score>
-        <score range="50-69">基本的なブランチ理解</score>
-        <score range="0-49">ブランチ状態が不明確</score>
-      </factor>
-      <factor name="operation_safety" weight="0.4">
-        <score range="90-100">バックアップ付きの非破壊的操作</score>
-        <score range="70-89">可逆的な操作</score>
-        <score range="50-69">潜在的にリスクがあるが回復可能</score>
-        <score range="0-49">破壊的または不可逆</score>
-      </factor>
-      <factor name="workflow_compliance" weight="0.2">
-        <score range="90-100">プロジェクトのGitワークフローに準拠</score>
-        <score range="70-89">概ね準拠</score>
-        <score range="50-69">軽微な逸脱</score>
-        <score range="0-49">ワークフロー違反</score>
-      </factor>
-    </criterion>
-    <validation_tests>
-      <test name="safe_operation">
-        <input>branch_understanding=95, operation_safety=95, workflow_compliance=90</input>
-        <calculation>(95*0.4)+(95*0.4)+(90*0.2) = 38+38+18 = 94</calculation>
-        <expected_status>success</expected_status>
-        <reasoning>非破壊的操作と完全な理解で高い信頼度</reasoning>
-      </test>
-      <test name="boundary_warning_79">
-        <input>branch_understanding=80, operation_safety=75, workflow_compliance=85</input>
-        <calculation>(80*0.4)+(75*0.4)+(85*0.2) = 32+30+17 = 79</calculation>
-        <expected_status>warning</expected_status>
-        <reasoning>可逆だがリスクのある操作で79、警告をトリガー</reasoning>
-      </test>
-      <test name="boundary_success_80">
-        <input>branch_understanding=85, operation_safety=75, workflow_compliance=85</input>
-        <calculation>(85*0.4)+(75*0.4)+(85*0.2) = 34+30+17 = 81</calculation>
-        <expected_status>success</expected_status>
-        <reasoning>加重平均81が成功閾値を満たす</reasoning>
-      </test>
-      <test name="boundary_warning_60">
-        <input>branch_understanding=60, operation_safety=60, workflow_compliance=60</input>
-        <calculation>(60*0.4)+(60*0.4)+(60*0.2) = 24+24+12 = 60</calculation>
-        <expected_status>warning</expected_status>
-        <reasoning>加重平均がちょうど60、警告閾値を満たす</reasoning>
-      </test>
-      <test name="boundary_error_59">
-        <input>branch_understanding=55, operation_safety=60, workflow_compliance=65</input>
-        <calculation>(55*0.4)+(60*0.4)+(65\*0.2) = 22+24+13 = 59</calculation>
-        <expected_status>error</expected_status>
-        <reasoning>加重平均59は60未満、エラーをトリガー</reasoning>
-      </test>
-    </validation_tests>
-  </decision_criteria>
   <enforcement>
     <mandatory_behaviors>
       <behavior id="GIT-B001" priority="critical">
@@ -191,12 +137,6 @@
     <format>
 {
   "status": "success|warning|error",
-  "status_criteria": {
-    "success": "すべてのチェックがパス、信頼度 &gt;= 80",
-    "warning": "軽微な問題あり または 信頼度 60-79",
-    "error": "重大な問題あり または 信頼度 60未満"
-  },
-  "confidence": 0,
   "summary": "Git操作サマリー",
   "workflow": {"strategy": "...", "branches": {}},
   "metrics": {"conflicts": 0, "resolved": 0, "branches": 0},
@@ -217,19 +157,13 @@
       <output>
 {
   "status": "success",
-  "status_criteria": {
-    "success": "すべてのチェックがパス、信頼度 &gt;= 80",
-    "warning": "軽微な問題あり または 信頼度 60-79",
-    "error": "重大な問題あり または 信頼度 60未満"
-  },
-  "confidence": 80,
   "summary": "頻繁なデプロイを行う小規模チームにはGitHub Flowを推奨",
   "workflow": {"strategy": "GitHub Flow", "branches": {"main": "本番", "feature/*": "機能"}},
   "next_actions": ["mainにブランチ保護を設定", "PR要件を設定"]
 }
     </output>
       <reasoning>
-信頼度は80。チームサイズとデプロイ頻度はgit履歴から観察可能だが、組織文化や好みを理解することで信頼度はさらに上がるため。
+チームサイズとデプロイ頻度はgit履歴から観察可能だが、組織文化や好みを理解することでさらに確信が高まる。
     </reasoning>
     </example>
     <example name="conflict_resolution">
@@ -243,19 +177,13 @@
       <output>
 {
   "status": "success",
-  "status_criteria": {
-    "success": "すべてのチェックがパス、信頼度 &gt;= 80",
-    "warning": "軽微な問題あり または 信頼度 60-79",
-    "error": "重大な問題あり または 信頼度 60未満"
-  },
-  "confidence": 75,
   "summary": "両方の機能追加をマージしてconfigコンフリクトを解決",
   "metrics": {"conflicts": 1, "resolved": 1},
   "next_actions": ["git addでステージ", "テストを実行", "マージコミットを作成"]
 }
     </output>
       <reasoning>
-信頼度は75。コンフリクトマーカーは明確、Serenaでコードコンテキストは理解可能だが、テスト結果が正しい解決を確認するため。
+コンフリクトマーカーは明確、Serenaでコードコンテキストは理解可能だが、テスト結果が正しい解決を最終確認する。
     </reasoning>
     </example>
   </examples>

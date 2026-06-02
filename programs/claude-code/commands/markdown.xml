@@ -18,60 +18,6 @@
       <timeout_per_agent>180000</timeout_per_agent>
     </execution_strategy>
   </parallelization>
-  <decision_criteria>
-    <criterion name="confidence_calculation">
-      <factor name="content_accuracy" weight="0.4">
-        <score range="90-100">すべてのコンテンツがソースに対して検証済み</score>
-        <score range="70-89">コアコンテンツが検証済み</score>
-        <score range="50-69">部分的に検証済み</score>
-        <score range="0-49">未検証のコンテンツ</score>
-      </factor>
-      <factor name="structure_quality" weight="0.3">
-        <score range="90-100">明確な階層構造、適切なフォーマット</score>
-        <score range="70-89">良好な構造</score>
-        <score range="50-69">基本的な構造</score>
-        <score range="0-49">構造が不十分</score>
-      </factor>
-      <factor name="completeness" weight="0.3">
-        <score range="90-100">要求されたすべてのコンテンツを含む</score>
-        <score range="70-89">主要なコンテンツを含む</score>
-        <score range="50-69">部分的なコンテンツ</score>
-        <score range="0-49">不完全</score>
-      </factor>
-    </criterion>
-    <validation_tests>
-      <test name="clear_delegation">
-        <input>content_accuracy=95, structure_quality=90, completeness=95</input>
-        <calculation>(95*0.4)+(90*0.3)+(95*0.3) = 38+27+28.5 = 93.5</calculation>
-        <expected_status>success</expected_status>
-        <reasoning>明確な構造で検証済みのコンテンツは高い信頼度をもたらす</reasoning>
-      </test>
-      <test name="boundary_warning_79">
-        <input>content_accuracy=80, structure_quality=75, completeness=80</input>
-        <calculation>(80*0.4)+(75*0.3)+(80*0.3) = 32+22.5+24 = 78.5</calculation>
-        <expected_status>warning</expected_status>
-        <reasoning>コアコンテンツは検証済みだが構造に問題があり、結果は78.5で警告をトリガー</reasoning>
-      </test>
-      <test name="boundary_success_80">
-        <input>content_accuracy=85, structure_quality=75, completeness=80</input>
-        <calculation>(85*0.4)+(75*0.3)+(80*0.3) = 34+22.5+24 = 80.5</calculation>
-        <expected_status>success</expected_status>
-        <reasoning>加重平均80.5、成功閾値を満たす</reasoning>
-      </test>
-      <test name="boundary_error_59">
-        <input>content_accuracy=60, structure_quality=55, completeness=60</input>
-        <calculation>(60*0.4)+(55*0.3)+(60*0.3) = 24+16.5+18 = 58.5</calculation>
-        <expected_status>error</expected_status>
-        <reasoning>加重平均58.5は60未満でエラーをトリガー</reasoning>
-      </test>
-      <test name="unverified_content">
-        <input>content_accuracy=50, structure_quality=55, completeness=45</input>
-        <calculation>(50*0.4)+(55*0.3)+(45\*0.3) = 20+16.5+13.5 = 50</calculation>
-        <expected_status>error</expected_status>
-        <reasoning>構造が不十分で未検証のコンテンツは50となりエラーをトリガー</reasoning>
-      </test>
-    </validation_tests>
-  </decision_criteria>
   <workflow>
     <phase name="analyze">
       <objective>前回のコマンド出力とコンテキストを理解する</objective>
@@ -83,7 +29,7 @@
     <reflection_checkpoint id="analyze_quality">
       <question>前回のコマンドとその出力を正しく特定したか？</question>
       <question>どのコンテンツを文書化する必要があるか理解しているか？</question>
-      <threshold>信頼度が70未満の場合、さらに証拠を収集するかユーザーに確認する</threshold>
+      <threshold>不十分と判断した場合、さらに証拠を収集するかユーザーに確認する</threshold>
     </reflection_checkpoint>
     <phase name="gather">
       <objective>ドキュメンテーションに必要なすべての関連情報を取得する</objective>
@@ -93,7 +39,7 @@
     <reflection_checkpoint id="analysis_quality">
       <question>十分な証拠を収集したか？</question>
       <question>理解に不足がないか？</question>
-      <threshold>信頼度が70未満の場合、さらに証拠を収集するかユーザーに確認する</threshold>
+      <threshold>不十分と判断した場合、さらに証拠を収集するかユーザーに確認する</threshold>
     </reflection_checkpoint>
     <phase name="determine">
       <objective>出力ファイルの場所と構造を決定する</objective>

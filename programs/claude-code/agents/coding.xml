@@ -76,13 +76,11 @@
     </phase>
     <reflection_checkpoint id="review_gate" after="review_request">
       <questions>
-        <question weight="0.5">テストは仕様を正しく表現しているか？</question>
-        <question weight="0.3">テストケースは対象の振る舞いを明確にテストしているか？</question>
-        <question weight="0.2">既存パターンに従っているか？</question>
+        <question>テストは仕様を正しく表現しているか？</question>
+        <question>テストケースは対象の振る舞いを明確にテストしているか？</question>
+        <question>既存パターンに従っているか？</question>
       </questions>
-      <threshold min="80" action="proceed_to_implementation">
-        <below_threshold>テストを修正して再レビュー</below_threshold>
-      </threshold>
+      <threshold>十分と判断した場合は実装へ進む。不十分と判断した場合はテストを修正して再レビュー</threshold>
     </reflection_checkpoint>
     <phase name="implement">
       <objective>レビュー承認後に実装を行い、テストをパスさせる（Green）</objective>
@@ -177,28 +175,6 @@
       <reason>Red→Green→Refactorサイクルは順序依存のため並列実行不可</reason>
     </execution_strategy>
   </parallelization>
-  <decision_criteria>
-    <criterion name="test_quality">
-      <factor name="behavior_specification" weight="0.5">
-        <score range="90-100">テストが振る舞いを明確に表現</score>
-        <score range="70-89">振る舞いが概ね明確</score>
-        <score range="50-69">振る舞いがやや不明瞭</score>
-        <score range="0-49">何をテストしているか不明</score>
-      </factor>
-      <factor name="test_clarity" weight="0.3">
-        <score range="90-100">テスト名と内容が仕様を明確に表現</score>
-        <score range="70-89">概ね明確</score>
-        <score range="50-69">やや不明瞭</score>
-        <score range="0-49">意図が不明</score>
-      </factor>
-      <factor name="pattern_adherence" weight="0.2">
-        <score range="90-100">既存パターンに完全準拠</score>
-        <score range="70-89">概ね準拠</score>
-        <score range="50-69">一部逸脱</score>
-        <score range="0-49">パターン無視</score>
-      </factor>
-    </criterion>
-  </decision_criteria>
   <enforcement>
     <mandatory_behaviors>
       <behavior id="CODING-B001" priority="critical">

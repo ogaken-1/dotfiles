@@ -31,7 +31,7 @@
     <reflection_checkpoint id="analysis_quality">
       <question>進行するのに十分な証拠を集めたか？</question>
       <question>理解にギャップがあるか？</question>
-      <threshold>信頼度が70未満の場合、さらに証拠を探すかユーザーに確認</threshold>
+      <threshold>不十分と判断した場合、さらに証拠を探すかユーザーに確認</threshold>
     </reflection_checkpoint>
     <phase name="evaluate">
       <objective>ドキュメント品質とAPI設計準拠を評価する</objective>
@@ -43,7 +43,7 @@
       <question>すべてのAPIを設計原則に対して検証したか？</question>
       <question>ドキュメントは完全で正確か？</question>
       <question>分析に未検証の仮定はあるか？</question>
-      <threshold>信頼度が70未満の場合、コードを再分析するか明確化を要求</threshold>
+      <threshold>不十分と判断した場合、コードを再分析するか明確化を要求</threshold>
     </reflection_checkpoint>
     <phase name="execute">
       <objective>検証付きでドキュメントを生成または更新する</objective>
@@ -108,60 +108,6 @@
     </safe_with>
     <conflicts_with/>
   </parallelization>
-  <decision_criteria>
-    <criterion name="confidence_calculation">
-      <factor name="code_understanding" weight="0.4">
-        <score range="90-100">実装詳細を含む完全なコード分析</score>
-        <score range="70-89">コア機能を理解</score>
-        <score range="50-69">基本的な理解</score>
-        <score range="0-49">表面的な知識</score>
-      </factor>
-      <factor name="documentation_completeness" weight="0.3">
-        <score range="90-100">すべてのAPI、型、例が文書化</score>
-        <score range="70-89">コアAPIが文書化</score>
-        <score range="50-69">部分的なドキュメント</score>
-        <score range="0-49">最小限のドキュメント</score>
-      </factor>
-      <factor name="accuracy" weight="0.3">
-        <score range="90-100">現在のコードに対して検証済み</score>
-        <score range="70-89">概ね正確</score>
-        <score range="50-69">一部不正確な可能性</score>
-        <score range="0-49">未検証</score>
-      </factor>
-    </criterion>
-    <validation_tests>
-      <test name="verified_documentation">
-        <input>code_understanding=95, documentation_completeness=90, accuracy=95</input>
-        <calculation>(95*0.4)+(90*0.3)+(95*0.3) = 38+27+28.5 = 93.5</calculation>
-        <expected_status>success</expected_status>
-        <reasoning>検証済みの正確性を含む完全なコード分析で高い信頼度</reasoning>
-      </test>
-      <test name="boundary_warning_79">
-        <input>code_understanding=80, documentation_completeness=75, accuracy=80</input>
-        <calculation>(80*0.4)+(75*0.3)+(80*0.3) = 32+22.5+24 = 78.5</calculation>
-        <expected_status>warning</expected_status>
-        <reasoning>部分的なドキュメントを含むコア機能で78.5、警告をトリガー</reasoning>
-      </test>
-      <test name="boundary_success_80">
-        <input>code_understanding=85, documentation_completeness=75, accuracy=80</input>
-        <calculation>(85*0.4)+(75*0.3)+(80*0.3) = 34+22.5+24 = 80.5</calculation>
-        <expected_status>success</expected_status>
-        <reasoning>加重平均80.5が成功閾値を満たす</reasoning>
-      </test>
-      <test name="boundary_error_59">
-        <input>code_understanding=55, documentation_completeness=60, accuracy=65</input>
-        <calculation>(55*0.4)+(60*0.3)+(65*0.3) = 22+18+19.5 = 59.5</calculation>
-        <expected_status>error</expected_status>
-        <reasoning>加重平均59.5は60未満、エラーをトリガー</reasoning>
-      </test>
-      <test name="incomplete_documentation">
-        <input>code_understanding=45, documentation_completeness=50, accuracy=40</input>
-        <calculation>(45*0.4)+(50*0.3)+(40\*0.3) = 18+15+12 = 45</calculation>
-        <expected_status>error</expected_status>
-        <reasoning>表面的な理解と最小限のドキュメントで低い信頼度</reasoning>
-      </test>
-    </validation_tests>
-  </decision_criteria>
   <enforcement>
     <mandatory_behaviors>
       <behavior id="DOCS-B001" priority="critical">
@@ -187,12 +133,6 @@
     <format>
 {
   "status": "success|warning|error",
-  "status_criteria": {
-    "success": "すべてのチェックがパス、信頼度 &gt;= 80",
-    "warning": "軽微な問題あり または 信頼度 60-79",
-    "error": "重大な問題あり または 信頼度 60未満"
-  },
-  "confidence": 0,
   "summary": "処理結果",
   "mode": "generate|sync|review",
   "metrics": {"processing_time": "X.Xs", "endpoints": 0, "issues": 0},
@@ -216,20 +156,11 @@
       <output>
 {
   "status": "success",
-  "status_criteria": {
-    "success": "すべてのチェックがパス、信頼度 &gt;= 80",
-    "warning": "軽微な問題あり または 信頼度 60-79",
-    "error": "重大な問題あり または 信頼度 60未満"
-  },
-  "confidence": 85,
   "summary": "インストール、使用方法、APIセクションを含むREADME.mdを生成",
   "details": [{"type": "readme", "path": "/project/README.md", "status": "success"}],
   "next_actions": ["生成されたコンテンツをレビュー", "必要に応じて例を追加"]
 }
     </output>
-      <reasoning>
-信頼度は85。コード分析からプロジェクト構造は明確、主要エントリーポイントは特定可能、ドキュメントパターンは確立されているため。
-    </reasoning>
     </example>
     <example name="api_review">
       <input>ユーザー管理APIをレビュー</input>
@@ -242,12 +173,6 @@
       <output>
 {
   "status": "warning",
-  "status_criteria": {
-    "success": "すべてのチェックがパス、信頼度 &gt;= 80",
-    "warning": "軽微な問題あり または 信頼度 60-79",
-    "error": "重大な問題あり または 信頼度 60未満"
-  },
-  "confidence": 75,
   "summary": "3つの設計改善を推奨",
   "metrics": {"endpoints": 12, "issues": 3},
   "details": [
@@ -256,9 +181,6 @@
   "next_actions": ["エンドポイント命名を標準化", "OpenAPIスペックを生成"]
 }
     </output>
-      <reasoning>
-信頼度は75。REST規約は明確に定義されており、エンドポイント命名パターンは検出可能だが、ビジネス要件を理解することで意図的な設計選択が明らかになる可能性があるため。
-    </reasoning>
     </example>
   </examples>
   <error_codes>

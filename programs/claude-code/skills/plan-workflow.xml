@@ -24,12 +24,10 @@
       </example>
     </concept>
     <concept name="confidence_scoring">
-      <description>要件の明確度を定量的に評価する信頼度スコアリング</description>
+      <description>要件の明確度を定性的に評価する</description>
       <example>
-        requirement_clarity（40%）: 要件の明確さ
-        technical_feasibility（30%）: 技術的実現可能性
-        stakeholder_alignment（30%）: ユーザーとの合意度
-        閾値: 80以上=success、60-79=warning、60未満=error
+        評価軸: 要件の明確さ、技術的実現可能性、ユーザーとの合意度
+        判断: すべての軸で十分な確信が持てる場合に進行。不足がある場合は明確化フェーズに戻る
       </example>
     </concept>
     <concept name="question_scoring">
@@ -143,12 +141,12 @@
       <description>要件出力の品質を自己評価</description>
       <decision_tree name="when_to_use">
         <question>要件ドキュメントの作成が完了しましたか？</question>
-        <if_yes>信頼度スコアを計算し、問題があれば特定</if_yes>
+        <if_yes>定性的に確信度と主要な不足（最大1-2点）を評価する</if_yes>
         <if_no>ドキュメント作成パターンを完了</if_no>
       </decision_tree>
       <example>
-        1. decision_criteriaで信頼度を計算
-        2. 信頼度80未満の場合、上位1-2個の重大な問題を特定
+        1. 要件の明確さ・技術的実現可能性・ユーザー合意度を定性的に評価
+        2. 不足や懸念点がある場合、上位1-2個の重大な問題を特定
         3. self_feedbackセクションを出力に追加
       </example>
     </pattern>
@@ -247,18 +245,16 @@
     </phase>
     <reflection_checkpoint id="investigation_complete" after="investigate">
       <questions>
-        <question weight="0.4">すべての関連ファイルとパターンが特定されたか？</question>
-        <question weight="0.3">スコープは明確に理解されているか？</question>
-        <question weight="0.3">技術的なブロッカーが特定されたか？</question>
+        <question>すべての関連ファイルとパターンが特定されたか？</question>
+        <question>スコープは明確に理解されているか？</question>
+        <question>技術的なブロッカーが特定されたか？</question>
       </questions>
-      <threshold min="70" action="proceed">
-        <below_threshold>調査範囲を拡大するかユーザーに確認する</below_threshold>
-      </threshold>
+      <threshold>調査が不十分な場合、調査範囲を拡大するかユーザーに確認する</threshold>
     </reflection_checkpoint>
     <reflection_checkpoint id="analysis_quality">
       <question>十分な証拠を収集したか？</question>
       <question>理解に不足がないか？</question>
-      <threshold>信頼度が70未満の場合、さらに証拠を収集するかユーザーに確認する</threshold>
+      <threshold>証拠が不十分な場合、さらに証拠を収集するかユーザーに確認する</threshold>
     </reflection_checkpoint>
     <phase name="clarify">
       <objective>構造化されたユーザーインタラクションを通じて曖昧さを解決する</objective>
@@ -335,12 +331,12 @@
     <phase name="self_evaluate">
       <objective>要件出力の簡潔な品質評価</objective>
       <step number="1">
-        <action>decision_criteriaを使用して信頼度を計算：requirement_clarity（40%）、technical_feasibility（30%）、stakeholder_alignment（30%）</action>
-        <tool>決定基準評価</tool>
-        <output>信頼度スコア</output>
+        <action>要件の明確さ・技術的実現可能性・ユーザー合意度を定性的に評価する</action>
+        <tool>定性評価</tool>
+        <output>評価結果（確信度と主要な懸念点）</output>
       </step>
       <step number="2">
-        <action>信頼度が80未満または要件ギャップが検出された場合、上位1-2個の重大な問題を特定する</action>
+        <action>不足や懸念点がある場合、上位1-2個の重大な問題を特定する</action>
         <tool>ギャップ分析</tool>
         <output>問題リスト</output>
       </step>
@@ -401,60 +397,6 @@
       <timeout_per_agent>300000</timeout_per_agent>
     </execution_strategy>
   </parallelization>
-  <decision_criteria>
-    <criterion name="confidence_calculation">
-      <factor name="requirement_clarity" weight="0.4">
-        <score range="90-100">すべての要件が明確で文書化済み</score>
-        <score range="70-89">コア要件が明確</score>
-        <score range="50-69">一部曖昧さが残る</score>
-        <score range="0-49">不明確な要件が多い</score>
-      </factor>
-      <factor name="technical_feasibility" weight="0.3">
-        <score range="90-100">証拠で実現可能性を確認</score>
-        <score range="70-89">おそらく実現可能</score>
-        <score range="50-69">実現可能性が不確実</score>
-        <score range="0-49">おそらく実現不可能</score>
-      </factor>
-      <factor name="stakeholder_alignment" weight="0.3">
-        <score range="90-100">すべての質問にユーザーが回答済み</score>
-        <score range="70-89">ほとんどの質問に回答済み</score>
-        <score range="50-69">一部の質問が保留中</score>
-        <score range="0-49">未回答の質問が多い</score>
-      </factor>
-    </criterion>
-    <validation_tests>
-      <test name="clear_requirements">
-        <input>requirement_clarity=95, technical_feasibility=90, stakeholder_alignment=95</input>
-        <calculation>(95*0.4)+(90*0.3)+(95*0.3) = 38+27+28.5 = 93.5</calculation>
-        <expected_status>success</expected_status>
-        <reasoning>実現可能性が確認されたすべての文書化済み要件は高い信頼度をもたらす</reasoning>
-      </test>
-      <test name="boundary_warning_79">
-        <input>requirement_clarity=80, technical_feasibility=75, stakeholder_alignment=80</input>
-        <calculation>(80*0.4)+(75*0.3)+(80*0.3) = 32+22.5+24 = 78.5</calculation>
-        <expected_status>warning</expected_status>
-        <reasoning>コア要件は明確だが一部の質問が保留中で、結果は78.5で警告をトリガー</reasoning>
-      </test>
-      <test name="boundary_success_80">
-        <input>requirement_clarity=85, technical_feasibility=75, stakeholder_alignment=80</input>
-        <calculation>(85*0.4)+(75*0.3)+(80*0.3) = 34+22.5+24 = 80.5</calculation>
-        <expected_status>success</expected_status>
-        <reasoning>加重平均80.5、成功閾値を満たす</reasoning>
-      </test>
-      <test name="boundary_error_59">
-        <input>requirement_clarity=60, technical_feasibility=55, stakeholder_alignment=60</input>
-        <calculation>(60*0.4)+(55*0.3)+(60*0.3) = 24+16.5+18 = 58.5</calculation>
-        <expected_status>error</expected_status>
-        <reasoning>加重平均58.5は60未満でエラーをトリガー</reasoning>
-      </test>
-      <test name="ambiguous_requirements">
-        <input>requirement_clarity=50, technical_feasibility=55, stakeholder_alignment=45</input>
-        <calculation>(50*0.4)+(55*0.3)+(45*0.3) = 20+16.5+13.5 = 50</calculation>
-        <expected_status>error</expected_status>
-        <reasoning>未回答の質問を伴う不明確な要件が多く50となりエラーをトリガー</reasoning>
-      </test>
-    </validation_tests>
-  </decision_criteria>
   <enforcement>
     <mandatory_behaviors>
       <behavior id="PLAN-B001" priority="critical">
@@ -499,10 +441,6 @@
         <functional_requirements>FR-001形式（必須/任意）</functional_requirements>
         <non_functional_requirements>パフォーマンス、セキュリティ、保守性</non_functional_requirements>
         <technical_specifications>設計方針、影響範囲、決定事項</technical_specifications>
-        <metrics>
-          <metric name="feasibility">0-100</metric>
-          <metric name="objectivity">0-100</metric>
-        </metrics>
         <constraints>技術的、運用上の制約</constraints>
         <test_requirements>ユニット、結合、受け入れ基準</test_requirements>
         <outstanding_issues>未解決の質問</outstanding_issues>
@@ -513,7 +451,7 @@
         <impl_workflow_handoff>決定事項、参照、制約</impl_workflow_handoff>
       </task_breakdown>
       <self_feedback>
-        <confidence>XX/100（requirement_clarityに基づく）</confidence>
+        <confidence>定性的評価（例: 要件は明確だが技術的実現可能性に懸念がある、など）</confidence>
         <issues>
 - [Critical] 問題の説明（もしあれば、最大2つ）
 - [Warning] 問題の説明（もしあれば）

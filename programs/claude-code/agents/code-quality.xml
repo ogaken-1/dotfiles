@@ -64,7 +64,7 @@
     <reflection_checkpoint id="analysis_quality">
       <question>進行するのに十分な証拠を集めたか？</question>
       <question>理解にギャップがあるか？</question>
-      <threshold>信頼度が70未満の場合、さらに証拠を探すかユーザーに確認</threshold>
+      <threshold>不十分と判断した場合、さらに証拠を探すかユーザーに確認</threshold>
     </reflection_checkpoint>
     <phase name="measure">
       <objective>メトリクスでコード品質を定量化し、問題を特定する</objective>
@@ -86,13 +86,11 @@
     </phase>
     <reflection_checkpoint id="measurement_complete" after="measure">
       <questions>
-        <question weight="0.5">すべての複雑性メトリクスが正確に計測されたか？</question>
-        <question weight="0.3">すべての最適化機会を特定したか？</question>
-        <question weight="0.2">提案された変更は適用しても安全か？</question>
+        <question>すべての複雑性メトリクスが正確に計測されたか？</question>
+        <question>すべての最適化機会を特定したか？</question>
+        <question>提案された変更は適用しても安全か？</question>
       </questions>
-      <threshold min="70" action="proceed">
-        <below_threshold>再計測するかユーザーにガイダンスを求める</below_threshold>
-      </threshold>
+      <threshold>十分と判断した場合は実行へ進む。不十分と判断した場合は再計測するかユーザーにガイダンスを求める</threshold>
     </reflection_checkpoint>
     <phase name="execute">
       <objective>コード改善を適用し、回帰がないことを確認する</objective>
@@ -202,60 +200,6 @@
     </safe_with>
     <conflicts_with/>
   </parallelization>
-  <decision_criteria>
-    <criterion name="confidence_calculation">
-      <factor name="evidence_coverage" weight="0.4">
-        <score range="90-100">すべての対象ファイルがメトリクスで分析済み</score>
-        <score range="70-89">ほとんどの対象ファイルが分析済み</score>
-        <score range="50-69">部分的なファイル分析</score>
-        <score range="0-49">分析が不十分</score>
-      </factor>
-      <factor name="metric_reliability" weight="0.3">
-        <score range="90-100">検証付きのツール生成メトリクス</score>
-        <score range="70-89">ツール生成メトリクス</score>
-        <score range="50-69">手動推定</score>
-        <score range="0-49">推測</score>
-      </factor>
-      <factor name="refactoring_safety" weight="0.3">
-        <score range="90-100">変更に対する完全なテストカバレッジ</score>
-        <score range="70-89">部分的なテストカバレッジ</score>
-        <score range="50-69">テストなしだが低リスク</score>
-        <score range="0-49">テストなし、高リスク</score>
-      </factor>
-    </criterion>
-    <validation_tests>
-      <test name="high_confidence_pass">
-        <input>evidence_coverage=95, metric_reliability=85, refactoring_safety=90</input>
-        <calculation>(95*0.4)+(85*0.3)+(90*0.3) = 38+25.5+27 = 90.5</calculation>
-        <expected_status>success</expected_status>
-        <reasoning>すべての因子が80以上、加重平均90.5 &gt;= 80</reasoning>
-      </test>
-      <test name="boundary_warning_79">
-        <input>evidence_coverage=75, metric_reliability=80, refactoring_safety=85</input>
-        <calculation>(75*0.4)+(80*0.3)+(85*0.3) = 30+24+25.5 = 79.5</calculation>
-        <expected_status>warning</expected_status>
-        <reasoning>加重平均79.5は60-79の間、警告をトリガー</reasoning>
-      </test>
-      <test name="boundary_success_80">
-        <input>evidence_coverage=80, metric_reliability=80, refactoring_safety=80</input>
-        <calculation>(80*0.4)+(80*0.3)+(80*0.3) = 32+24+24 = 80</calculation>
-        <expected_status>success</expected_status>
-        <reasoning>加重平均がちょうど80、成功閾値を満たす</reasoning>
-      </test>
-      <test name="boundary_warning_60">
-        <input>evidence_coverage=60, metric_reliability=60, refactoring_safety=60</input>
-        <calculation>(60*0.4)+(60*0.3)+(60*0.3) = 24+18+18 = 60</calculation>
-        <expected_status>warning</expected_status>
-        <reasoning>加重平均がちょうど60、警告閾値を満たす</reasoning>
-      </test>
-      <test name="boundary_error_59">
-        <input>evidence_coverage=55, metric_reliability=60, refactoring_safety=65</input>
-        <calculation>(55*0.4)+(60*0.3)+(65\*0.3) = 22+18+19.5 = 59.5</calculation>
-        <expected_status>error</expected_status>
-        <reasoning>加重平均59.5は60未満、エラーをトリガー</reasoning>
-      </test>
-    </validation_tests>
-  </decision_criteria>
   <enforcement>
     <mandatory_behaviors>
       <behavior id="CQ-B001" priority="critical">
@@ -281,12 +225,6 @@
     <format>
   {
     "status": "success|warning|error",
-    "status_criteria": {
-      "success": "すべてのチェックがパス、信頼度 &gt;= 80",
-      "warning": "軽微な問題あり または 信頼度 60-79",
-      "error": "重大な問題あり または 信頼度 60未満"
-    },
-    "confidence": 0,
     "summary": "処理結果のサマリー",
     "metrics": {
       "cyclomatic_complexity": 0,
@@ -313,21 +251,12 @@
       <output>
   {
     "status": "warning",
-    "status_criteria": {
-      "success": "すべてのチェックがパス、信頼度 &gt;= 80",
-      "warning": "軽微な問題あり または 信頼度 60-79",
-      "error": "重大な問題あり または 信頼度 60未満"
-    },
-    "confidence": 75,
     "summary": "processOrderは閾値を超過。リファクタリングを推奨",
     "metrics": {"cyclomatic_complexity": 15, "cognitive_complexity": 22, "max_nesting_depth": 5},
     "suggestions": [{"type": "extract_method", "target": "lines 60-75", "expected_reduction": "CC -4"}],
     "next_actions": ["在庫チェックをvalidate_inventory()に抽出"]
   }
       </output>
-      <reasoning>
-信頼度は75。循環的複雑度が明らかに高い（15 vs 閾値10）、認知的複雑度が制限を超過（22 vs 15）、リファクタリング機会が明確であるため。警告ステータスが妥当。
-      </reasoning>
     </example>
     <example name="dead_code_detection">
       <input>プロジェクト内の未使用関数を検出</input>
@@ -340,20 +269,11 @@
       <output>
   {
     "status": "success",
-    "status_criteria": {
-      "success": "すべてのチェックがパス、信頼度 &gt;= 80",
-      "warning": "軽微な問題あり または 信頼度 60-79",
-      "error": "重大な問題あり または 信頼度 60未満"
-    },
-    "confidence": 90,
     "summary": "5つの未使用関数を削除",
     "metrics": {"target_files": 23, "deleted_functions": 5, "reduced_lines": 142},
     "next_actions": ["テストを実行して検証", "ビルドして型エラーがないことを確認"]
   }
       </output>
-      <reasoning>
-信頼度は90。参照カウントが決定的（0参照）、パターン分析で動的呼び出しが検出されず、すべての未使用関数が静的分析で安全に特定されたため。
-      </reasoning>
     </example>
   </examples>
   <error_codes>

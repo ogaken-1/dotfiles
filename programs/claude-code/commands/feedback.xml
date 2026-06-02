@@ -63,7 +63,7 @@ Critical: N | Warning: N | Info: N
     <reflection_checkpoint id="analysis_quality">
       <question>十分な証拠を収集したか？</question>
       <question>理解に不足がないか？</question>
-      <threshold>信頼度が70未満の場合、さらに証拠を収集するかユーザーに確認する</threshold>
+      <threshold>不十分と判断した場合、さらに証拠を収集するかユーザーに確認する</threshold>
     </reflection_checkpoint>
     <phase name="execute">
       <objective>選択されたエージェント間で並列レビュー分析を実行する</objective>
@@ -89,7 +89,7 @@ Critical: N | Warning: N | Info: N
       <question>すべてのエージェントが正常に完了したか？</question>
       <question>フィードバックは具体的で実行可能か？</question>
       <question>すべての問題に優先度レベルを割り当てたか？</question>
-      <threshold>信頼度が70未満の場合、追加のコンテキストを収集するかエージェントを再実行する</threshold>
+      <threshold>不十分と判断した場合、追加のコンテキストを収集するかエージェントを再実行する</threshold>
     </reflection_checkpoint>
     <phase name="failure_handling">
       <objective>実行失敗と不完全なデータを適切に処理する</objective>
@@ -105,9 +105,22 @@ Critical: N | Warning: N | Info: N
       <step>4. 実行可能な推奨事項を生成する</step>
       <step>5. レポートはSerena Memoryにfeedback-*プレフィックスで保存されている旨を最終レポートに含める</step>
     </phase>
+    <phase name="confidence_filter">
+      <objective>synthesizeで集約した各指摘に確信度スコアを付与し、誤検知を除外する</objective>
+      <step>1. synthesizeで集約したCritical/Warning/Infoの各指摘に対し、sonnetサブエージェントを並列起動して0–100の確信度スコアを付与する</step>
+      <step>2. 各サブエージェントには指摘内容・file:line・根拠と、以下の採点ルーブリックを逐語で渡す:
+- 0: 全く確信なし。軽い精査で崩れる誤検知、または既存（変更前から存在する）の問題。
+- 25: やや確信。実在するかもしれないが誤検知の可能性もあり、検証できなかった。スタイル指摘でCLAUDE.md等に明記がないもの。
+- 50: 中程度の確信。実在は確認したが、nitpickまたは実際には稀。PR全体の中では重要度低。
+- 75: 高い確信。再確認済みで実際に踏む可能性が高い。重要で機能に直接影響、またはCLAUDE.md/プロジェクト規約に直接該当。
+- 100: 確実。再確認し実在を確証、頻繁に発生。</step>
+      <step>3. 誤検知の参考リスト（サブエージェントに渡す）: 既存の問題（変更前から存在）、バグに見えて実はバグでないもの、シニアエンジニアが指摘しない過度なnitpick、linter/typechecker/compilerが拾うもの（import漏れ・型エラー・整形）、ユーザーが変更していない行の問題、意図的と思われる機能変更。</step>
+      <step>4. スコア80未満の指摘を除外する。除外した件数と内訳（カテゴリ・スコア・除外理由）を記録する。</step>
+      <step>5. スコア80以上の指摘のみを後続のverifyフェーズに渡す（検証コスト削減）。</step>
+    </phase>
     <phase name="verify">
       <objective>不具合の指摘に対してPOCテストを作成・実行し、事実確認を行う</objective>
-      <step>1. synthesizeフェーズで特定されたCritical/Warningの不具合指摘を収集する</step>
+      <step>1. confidence_filterフェーズを通過した（スコア80以上の）Critical/Warningの不具合指摘を収集する</step>
       <step>2. 各不具合に対してPOCテストコードをプロジェクトに作成する（codingサブエージェントに委任）</step>
       <step>3. POCテストを実行し結果を確認する</step>
       <step>4. テストが失敗する（不具合が再現される）場合: verified として記録</step>
@@ -115,60 +128,6 @@ Critical: N | Warning: N | Info: N
       <step>6. 検証結果をSerena Memory（feedback-verification）に記録し、最終サマリーに反映する</step>
     </phase>
   </workflow>
-  <decision_criteria>
-    <criterion name="confidence_calculation">
-      <factor name="review_depth" weight="0.4">
-        <score range="90-100">すべてのコードパスとエッジケースをレビュー済み</score>
-        <score range="70-89">主要なコードパスをレビュー済み</score>
-        <score range="50-69">表面的なレビュー</score>
-        <score range="0-49">最小限のレビュー</score>
-      </factor>
-      <factor name="feedback_actionability" weight="0.3">
-        <score range="90-100">すべてのフィードバックが具体的で実行可能</score>
-        <score range="70-89">ほとんどのフィードバックが実行可能</score>
-        <score range="50-69">一部曖昧なフィードバック</score>
-        <score range="0-49">ほとんど曖昧なフィードバック</score>
-      </factor>
-      <factor name="issue_prioritization" weight="0.3">
-        <score range="90-100">根拠を含む明確な優先度レベル</score>
-        <score range="70-89">優先度レベルが割り当て済み</score>
-        <score range="50-69">部分的な優先順位付け</score>
-        <score range="0-49">優先順位付けなし</score>
-      </factor>
-    </criterion>
-    <validation_tests>
-      <test name="comprehensive_review">
-        <input>review_depth=95, feedback_actionability=90, issue_prioritization=95</input>
-        <calculation>(95*0.4)+(90*0.3)+(95*0.3) = 38+27+28.5 = 93.5</calculation>
-        <expected_status>success</expected_status>
-        <reasoning>実行可能で優先順位付けされたフィードバックを伴う深いコード分析は高い信頼度をもたらす</reasoning>
-      </test>
-      <test name="boundary_warning_79">
-        <input>review_depth=80, feedback_actionability=75, issue_prioritization=80</input>
-        <calculation>(80*0.4)+(75*0.3)+(80*0.3) = 32+22.5+24 = 78.5</calculation>
-        <expected_status>warning</expected_status>
-        <reasoning>部分的な優先順位付けで重大な問題が見つかり、結果は78.5で警告をトリガー</reasoning>
-      </test>
-      <test name="boundary_success_80">
-        <input>review_depth=85, feedback_actionability=75, issue_prioritization=80</input>
-        <calculation>(85*0.4)+(75*0.3)+(80*0.3) = 34+22.5+24 = 80.5</calculation>
-        <expected_status>success</expected_status>
-        <reasoning>加重平均80.5、成功閾値を満たす</reasoning>
-      </test>
-      <test name="boundary_error_59">
-        <input>review_depth=60, feedback_actionability=55, issue_prioritization=60</input>
-        <calculation>(60*0.4)+(55*0.3)+(60*0.3) = 24+16.5+18 = 58.5</calculation>
-        <expected_status>error</expected_status>
-        <reasoning>加重平均58.5は60未満でエラーをトリガー</reasoning>
-      </test>
-      <test name="superficial_review">
-        <input>review_depth=50, feedback_actionability=45, issue_prioritization=50</input>
-        <calculation>(50*0.4)+(45*0.3)+(50\*0.3) = 20+13.5+15 = 48.5</calculation>
-        <expected_status>error</expected_status>
-        <reasoning>曖昧なフィードバックを伴う表面的なレビューは48.5となりエラーをトリガー</reasoning>
-      </test>
-    </validation_tests>
-  </decision_criteria>
   <modes>
     <mode name="plan">
       <target>会話履歴からの実行計画（Plan mode出力）</target>
@@ -248,10 +207,6 @@ Critical: N | Warning: N | Info: N
   <output>
     <format>
       <feedback_results mode="{モード}">
-        <evaluation_scores>
-- {メトリクス1}: XX/100
-- {メトリクス2}: XX/100
-- 総合: XX/100</evaluation_scores>
         <critical>即座に修正が必要
 - [カテゴリ] 問題: 場所
 - 問題点: 説明
@@ -263,11 +218,10 @@ Critical: N | Warning: N | Info: N
         <good_practice>[カテゴリ] 称賛すべき点</good_practice>
         <fact_check_results>
           <verified_claims>外部ソース（Context7、WebSearch）に対して確認された主張</verified_claims>
-          <flagged_claims>検証信頼度が80未満の主張
+          <flagged_claims>十分に検証できなかった主張
 - 主張: {主張}
 - 参照されたソース: {ソース}
 - 検証結果: {結果}
-- 信頼度: {XX}/100
 - 証拠: {証拠}
 - 推奨: {修正}</flagged_claims>
           <unverifiable_claims>ソースが利用できず確認できなかった主張</unverifiable_claims>
@@ -371,5 +325,6 @@ Critical: N | Warning: N | Info: N
     <avoid>既存のコード品質問題のレビュー</avoid>
     <avoid>逐次的なエージェント実行（タイムアウトの原因）</avoid>
     <avoid>run_in_backgroundとTaskOutputの使用（通常のTask並列呼び出しを使用する）</avoid>
+    <must>confidence_filterフェーズでスコア80未満の指摘を除外してからverifyフェーズに渡す</must>
   </constraints>
 </command>

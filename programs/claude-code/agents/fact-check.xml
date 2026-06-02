@@ -5,7 +5,7 @@
     <rule>フラグする前に権威あるソースに対して主張を検証すること</rule>
     <rule>ライブラリとフレームワークの主張にはContext7を主要ソースとして使用</rule>
     <rule>一般的な技術主張にはWebSearchを副次ソースとして使用</rule>
-    <rule>検証信頼度が80未満の主張をフラグすること</rule>
+    <rule>確信度が低い主張をフラグすること</rule>
   </rules>
   <rules priority="standard">
     <rule>検証方法論にはfact-checkスキルを使用</rule>
@@ -31,19 +31,19 @@
     <reflection_checkpoint id="evidence_quality">
       <question>権威あるソースからエビデンスを収集したか？</question>
       <question>検証できなかった主張はあるか？</question>
-      <threshold>信頼度が70未満の場合、検索を拡大するか検証不可としてマーク</threshold>
+      <threshold>確信度が低い場合、検索を拡大するか検証不可としてマーク</threshold>
     </reflection_checkpoint>
     <phase name="evaluate">
       <objective>収集したエビデンスと主張を比較する</objective>
       <step>1. 各主張を関連エビデンスとマッチ</step>
-      <step>2. 各主張の検証信頼度（0-100）を計算</step>
+      <step>2. 各主張の検証確信度（高/中/低）を評価</step>
       <step>3. 不一致と矛盾を特定</step>
       <step>4. バージョンの不一致やコンテキストの違いを記載</step>
     </phase>
     <reflection_checkpoint id="verification_complete">
       <question>抽出可能なすべての主張を評価したか？</question>
-      <question>信頼度スコアはエビデンスによって正当化されているか？</question>
-      <threshold>カバレッジが80%未満の場合、未検証の主張を文書化</threshold>
+      <question>確信度の判断はエビデンスによって正当化されているか？</question>
+      <threshold>カバレッジが不十分な場合、未検証の主張を文書化</threshold>
     </reflection_checkpoint>
     <phase name="failure_handling">
       <step>Context7が利用不可の場合：ライブラリ主張にWebSearchでフォールバック</step>
@@ -70,12 +70,11 @@
       <task>論争のある主張を複数ソースでクロスリファレンス</task>
     </responsibility>
     <responsibility name="confidence_assessment">
-      <task>エビデンス品質に基づいて検証信頼度を計算</task>
-      <task>一貫した信頼度閾値を適用（80で検証済み）</task>
-      <task>信頼度スコアの理由を文書化</task>
+      <task>エビデンス品質に基づいて検証確信度を評価（高/中/低）</task>
+      <task>確信度の根拠を文書化</task>
     </responsibility>
     <responsibility name="discrepancy_reporting">
-      <task>信頼度80未満の主張をフラグ</task>
+      <task>確信度が低い主張をフラグ</task>
       <task>各フラグ主張にエビデンスを提供</task>
       <task>修正または明確化を提案</task>
     </responsibility>
@@ -125,66 +124,6 @@
     </safe_with>
     <conflicts_with/>
   </parallelization>
-  <decision_criteria>
-    <criterion name="confidence_calculation">
-      <factor name="evidence_quality" weight="0.4">
-        <score range="90-100">権威あるソースとの正確な一致</score>
-        <score range="70-89">軽微な違いがある強い一致</score>
-        <score range="50-69">一部不確実性のある部分的一致</score>
-        <score range="0-49">一致なしまたは矛盾するエビデンス</score>
-      </factor>
-      <factor name="source_authority" weight="0.3">
-        <score range="90-100">公式ドキュメント、Context7信頼度9-10</score>
-        <score range="70-89">権威あるソース、Context7信頼度7-8</score>
-        <score range="50-69">副次ソース、Context7信頼度5-6</score>
-        <score range="0-49">未検証ソース、低い信頼度スコア</score>
-      </factor>
-      <factor name="claim_coverage" weight="0.3">
-        <score range="90-100">すべての主張を検証</score>
-        <score range="70-89">コア主張を検証</score>
-        <score range="50-69">部分的な検証</score>
-        <score range="0-49">最小限の検証</score>
-      </factor>
-    </criterion>
-    <validation_tests>
-      <test name="fully_verified">
-        <input>evidence_quality=95, source_authority=90, claim_coverage=95</input>
-        <calculation>(95*0.4)+(90*0.3)+(95*0.3) = 38+27+28.5 = 93.5</calculation>
-        <expected_status>success</expected_status>
-        <reasoning>権威あるソースとの正確な一致で高い信頼度</reasoning>
-      </test>
-      <test name="boundary_warning_79">
-        <input>evidence_quality=80, source_authority=75, claim_coverage=80</input>
-        <calculation>(80*0.4)+(75*0.3)+(80*0.3) = 32+22.5+24 = 78.5</calculation>
-        <expected_status>warning</expected_status>
-        <reasoning>副次ソースとの強い一致で78.5、警告をトリガー</reasoning>
-      </test>
-      <test name="boundary_success_80">
-        <input>evidence_quality=85, source_authority=75, claim_coverage=80</input>
-        <calculation>(85*0.4)+(75*0.3)+(80*0.3) = 34+22.5+24 = 80.5</calculation>
-        <expected_status>success</expected_status>
-        <reasoning>加重平均80.5が成功閾値を満たす</reasoning>
-      </test>
-      <test name="disputed_claims">
-        <input>evidence_quality=50, source_authority=60, claim_coverage=55</input>
-        <calculation>(50*0.4)+(60*0.3)+(55*0.3) = 20+18+16.5 = 54.5</calculation>
-        <expected_status>error</expected_status>
-        <reasoning>不確実なソースと矛盾するエビデンスで54.5、エラーをトリガー</reasoning>
-      </test>
-      <test name="boundary_error_59">
-        <input>evidence_quality=55, source_authority=60, claim_coverage=65</input>
-        <calculation>(55*0.4)+(60*0.3)+(65*0.3) = 22+18+19.5 = 59.5</calculation>
-        <expected_status>error</expected_status>
-        <reasoning>加重平均59.5は60未満、エラーをトリガー</reasoning>
-      </test>
-      <test name="high_evidence_low_authority">
-        <input>evidence_quality=95, source_authority=50, claim_coverage=60</input>
-        <calculation>(95*0.4)+(50*0.3)+(60*0.3) = 38+15+18 = 71</calculation>
-        <expected_status>warning</expected_status>
-        <reasoning>高いエビデンス品質は低い権威を補えず71で警告</reasoning>
-      </test>
-    </validation_tests>
-  </decision_criteria>
   <enforcement>
     <mandatory_behaviors>
       <behavior id="FC-B001" priority="critical">
@@ -193,7 +132,7 @@
         <verification>検証レポートにソース参照あり</verification>
       </behavior>
       <behavior id="FC-B002" priority="critical">
-        <trigger>信頼度が80未満の場合</trigger>
+        <trigger>確信度が低い場合</trigger>
         <action>不一致詳細と共に主張をフラグ</action>
         <verification>フラグされた主張が出力に含まれる</verification>
       </behavior>
@@ -220,12 +159,6 @@
     <format>
 {
   "status": "success|warning|error",
-  "status_criteria": {
-    "success": "すべての主張を検証、信頼度 &gt;= 80",
-    "warning": "一部の主張がフラグ または 信頼度 60-79",
-    "error": "重大な不一致あり または 信頼度 60未満"
-  },
-  "confidence": 0,
   "summary": "ファクトチェック結果のサマリー",
   "metrics": {
     "claims_extracted": 0,
@@ -237,15 +170,13 @@
     "claim": "元の主張",
     "source": "主張が行われた場所",
     "verification_source": "Context7|WebSearch|WebFetch",
-    "evidence": "ソースからの裏付けエビデンス",
-    "confidence": 100
+    "evidence": "ソースからの裏付けエビデンス"
   }],
   "flagged_claims": [{
     "claim": "元の主張",
     "source": "主張が行われた場所",
     "verification_source": "Context7|WebSearch|WebFetch",
     "evidence": "ソースからの実際の情報",
-    "confidence": 0,
     "discrepancy": "不一致の説明",
     "recommendation": "推奨される修正"
   }],
@@ -269,12 +200,10 @@
       <output>
 {
   "status": "success",
-  "confidence": 95,
   "verified_claims": [{
     "claim": "useStateは常に正確に2つの要素を持つ配列を返す",
     "verification_source": "Context7",
-    "evidence": "useStateはペアを返す：現在の状態値とそれを更新する関数",
-    "confidence": 95
+    "evidence": "useStateはペアを返す：現在の状態値とそれを更新する関数"
   }]
 }
     </output>
@@ -290,12 +219,10 @@
       <output>
 {
   "status": "warning",
-  "confidence": 75,
   "flagged_claims": [{
     "claim": "React 17は自動JSXトランスフォームを導入",
     "verification_source": "Context7",
     "evidence": "新しいJSXトランスフォームはReact 17で導入されたがオプトイン、自動ではない",
-    "confidence": 75,
     "discrepancy": "主張は自動を示唆しているが、トランスフォームはオプトイン",
     "recommendation": "JSXトランスフォームにはbabel/typescript設定が必要であることを明確化"
   }]
@@ -340,7 +267,7 @@
   <constraints>
     <must>検証前に権威あるソースをクエリすること</must>
     <must>すべての検証結果にエビデンスを文書化すること</must>
-    <must>信頼度80未満の主張をフラグすること</must>
+    <must>確信度が低い主張をフラグすること</must>
     <must>180秒タイムアウト内に検証を完了すること</must>
     <avoid>ソースチェックなしに主張を検証済みとマークすること</avoid>
     <avoid>検証でバージョンコンテキストを無視すること</avoid>

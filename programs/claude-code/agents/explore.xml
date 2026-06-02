@@ -53,7 +53,7 @@
     <reflection_checkpoint id="search_quality">
       <question>関連するマッチを見つけたか？</question>
       <question>検索を拡大または絞り込むべきか？</question>
-      <threshold>マッチが期待より少ない場合、代替パターンを試す</threshold>
+      <threshold>結果が不十分と判断した場合、代替パターンを試す</threshold>
     </reflection_checkpoint>
     <phase name="filter">
       <objective>最も関連性の高いマッチに結果を絞り込む</objective>
@@ -152,60 +152,6 @@
     </safe_with>
     <conflicts_with/>
   </parallelization>
-  <decision_criteria>
-    <criterion name="confidence_calculation">
-      <factor name="match_relevance" weight="0.4">
-        <score range="90-100">高い確信度で正確なマッチを発見</score>
-        <score range="70-89">一部ノイズがあるが関連するマッチ</score>
-        <score range="50-69">検証が必要な部分的なマッチ</score>
-        <score range="0-49">関連するマッチがほとんどまたはまったくない</score>
-      </factor>
-      <factor name="coverage" weight="0.3">
-        <score range="90-100">コードベースのすべての関連領域を検索</score>
-        <score range="70-89">主要な領域を検索</score>
-        <score range="50-69">限定的なスコープを検索</score>
-        <score range="0-49">最小限の検索カバレッジ</score>
-      </factor>
-      <factor name="result_quality" weight="0.3">
-        <score range="90-100">パス、行、コンテキストを含む結果</score>
-        <score range="70-89">パスと行を含む結果</score>
-        <score range="50-69">パスのみを含む結果</score>
-        <score range="0-49">不完全な結果</score>
-      </factor>
-    </criterion>
-    <validation_tests>
-      <test name="comprehensive_search">
-        <input>match_relevance=95, coverage=90, result_quality=95</input>
-        <calculation>(95*0.4)+(90*0.3)+(95*0.3) = 38+27+28.5 = 93.5</calculation>
-        <expected_status>success</expected_status>
-        <reasoning>完全なカバレッジと品質を備えた正確なマッチで高い信頼度</reasoning>
-      </test>
-      <test name="boundary_warning_79">
-        <input>match_relevance=80, coverage=75, result_quality=80</input>
-        <calculation>(80*0.4)+(75*0.3)+(80*0.3) = 32+22.5+24 = 78.5</calculation>
-        <expected_status>warning</expected_status>
-        <reasoning>限定的なスコープで関連するマッチは78.5、警告をトリガー</reasoning>
-      </test>
-      <test name="boundary_success_80">
-        <input>match_relevance=85, coverage=75, result_quality=80</input>
-        <calculation>(85*0.4)+(75*0.3)+(80*0.3) = 34+22.5+24 = 80.5</calculation>
-        <expected_status>success</expected_status>
-        <reasoning>加重平均80.5が成功閾値を満たす</reasoning>
-      </test>
-      <test name="boundary_error_59">
-        <input>match_relevance=60, coverage=55, result_quality=60</input>
-        <calculation>(60*0.4)+(55*0.3)+(60*0.3) = 24+16.5+18 = 58.5</calculation>
-        <expected_status>error</expected_status>
-        <reasoning>加重平均58.5は60未満、エラーをトリガー</reasoning>
-      </test>
-      <test name="no_matches">
-        <input>match_relevance=40, coverage=50, result_quality=45</input>
-        <calculation>(40*0.4)+(50*0.3)+(45\*0.3) = 16+15+13.5 = 44.5</calculation>
-        <expected_status>error</expected_status>
-        <reasoning>限定的なカバレッジでマッチが少なく44.5、エラーをトリガー</reasoning>
-      </test>
-    </validation_tests>
-  </decision_criteria>
   <enforcement>
     <mandatory_behaviors>
       <behavior id="EXP-B001" priority="critical">
@@ -232,11 +178,11 @@
 {
   "status": "success|warning|error",
   "status_criteria": {
-    "success": "関連するマッチを発見、信頼度 &gt;= 80",
-    "warning": "部分的なマッチ または 信頼度 60-79",
-    "error": "マッチなし または 信頼度 60未満"
+    "success": "関連するマッチを発見、確信度が高い",
+    "warning": "部分的なマッチ、または確信度が中程度",
+    "error": "マッチなし、または確信度が低い"
   },
-  "confidence": 0,
+  "confidence": "高|中|低（根拠の強さと残る不明点を添えて）",
   "summary": "検索サマリー",
   "metrics": {"files_searched": 0, "matches_found": 0},
   "results": [{"file": "path", "line": 0, "context": "..."}],
@@ -255,16 +201,13 @@
       <output>
 {
   "status": "success",
-  "confidence": 92,
+  "confidence": "高（GrepがTypeScriptファイル内のuseStateに対する正確なマッチを検出）",
   "summary": "useStateを使用する15個のコンポーネントを発見",
   "results": [
     {"file": "src/components/Counter.tsx", "line": 5, "context": "const [count, setCount] = useState(0)"}
   ]
 }
     </output>
-      <reasoning>
-高い信頼度。GrepがTypeScriptファイル内のuseStateに対する正確なマッチを検出し、明確な行番号とコンテキストを提供したため。
-    </reasoning>
     </example>
     <example name="symbol_navigation">
       <input>UserServiceクラスの定義とその使用箇所を検索</input>
@@ -276,12 +219,7 @@
       <output>
 {
   "status": "success",
-  "status_criteria": {
-    "success": "関連するマッチを発見、信頼度 &gt;= 80",
-    "warning": "部分的なマッチ または 信頼度 60-79",
-    "error": "マッチなし または 信頼度 60未満"
-  },
-  "confidence": 88,
+  "confidence": "高（LSPが決定的なシンボル位置を提供、findReferencesが完全な使用リストを提供）",
   "summary": "UserServiceはsrc/services/user.tsで定義、8ファイルで使用",
   "metrics": {"files_searched": 45, "matches_found": 9},
   "results": [
@@ -291,9 +229,6 @@
   "next_actions": ["UserService実装をレビュー", "循環依存をチェック"]
 }
     </output>
-      <reasoning>
-信頼度は88。LSPが決定的なシンボル位置を提供、findReferencesが完全な使用リストを提供、クラス境界が明確に識別可能なため。
-    </reasoning>
     </example>
   </examples>
   <error_codes>
