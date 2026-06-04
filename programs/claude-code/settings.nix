@@ -47,6 +47,7 @@ in
     effortLevel = "high";
     autoUpdates = false;
     autoCompactEnabled = true;
+    tui = "fullscreen";
     permissions = {
       deny = [
         "Read(.envrc)"
