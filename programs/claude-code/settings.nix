@@ -49,6 +49,50 @@ in
     autoCompactEnabled = true;
     tui = "fullscreen";
     permissions = {
+      allow = [
+        # MCP: read-only code navigation (Serena) — safe across all projects
+        "mcp__plugin_claude-code-home-manager_serena__find_symbol"
+        "mcp__plugin_claude-code-home-manager_serena__find_referencing_symbols"
+        "mcp__plugin_claude-code-home-manager_serena__find_implementations"
+        "mcp__plugin_claude-code-home-manager_serena__find_declaration"
+        "mcp__plugin_claude-code-home-manager_serena__get_symbols_overview"
+        "mcp__plugin_claude-code-home-manager_serena__get_diagnostics_for_file"
+        "mcp__plugin_claude-code-home-manager_serena__list_memories"
+        "mcp__plugin_claude-code-home-manager_serena__read_memory"
+        "mcp__plugin_claude-code-home-manager_serena__initial_instructions"
+        "mcp__plugin_claude-code-home-manager_serena__onboarding"
+        # MCP: docs lookup (read-only servers) — wildcard is safe, all tools are read-only
+        "mcp__plugin_claude-code-home-manager_context7__*"
+        "mcp__claude_ai_Microsoft_Docs__*"
+        # Web search (read-only)
+        "WebSearch"
+        # Bash: read-only file/dir inspection (find/grep/cat are blocked by PreToolUse hooks)
+        "Bash(ls *)"
+        "Bash(fd *)"
+        "Bash(rg *)"
+        "Bash(wc *)"
+        "Bash(head *)"
+        "Bash(tail *)"
+        "Bash(tree *)"
+        # Bash: git read-only subcommands
+        "Bash(git status *)"
+        "Bash(git log *)"
+        "Bash(git diff *)"
+        "Bash(git show *)"
+        "Bash(git ls-tree *)"
+        "Bash(git diff-tree *)"
+        # Skills: orchestration entrypoints (downstream tools remain permission-gated)
+        "Skill(execute)"
+        "Skill(plan-workflow)"
+        "Skill(impl-workflow)"
+        "Skill(feedback)"
+        "Skill(bug)"
+        "Skill(ask)"
+        "Skill(define)"
+        "Skill(fact-check)"
+        "Skill(investigation-patterns)"
+        "Skill(markdown)"
+      ];
       deny = [
         "Read(.envrc)"
       ];
