@@ -1,5 +1,7 @@
+# shellcheck shell=bash  # shebang is inserted by writeShellApplication
 minutes=30
 refresh=false
+no_images=false
 cache_dir="${HOME}/.cache/nerv"
 last_id_file="${cache_dir}/last_id"
 
@@ -8,17 +10,49 @@ cyan=$'\033[36m'
 dim=$'\033[2m'
 reset=$'\033[0m'
 
+_jq_exit_file=""
+_cleanup() {
+  [[ -n "$_jq_exit_file" ]] && rm -f "$_jq_exit_file"
+}
+trap '_cleanup' INT TERM EXIT
+
 usage() {
   cat <<EOF
-Usage: nerv [-m N] [-r] [-h]
+Usage: nerv [-m N] [-r] [-I] [-h]
 
 Fetch recent posts from unnerv.jp.
 
 Options:
   -m, --minutes N   Fetch posts from the last N minutes (default: 30, ignored if cache exists)
   -r, --refresh     Ignore cache and fetch by time range
+  -I, --no-images   Do not display images
   -h, --help        Show this help message
 EOF
+}
+
+check_sixel_support() {
+  [[ -t 1 ]] || return 1
+  local saved da_response
+  saved="$(stty -g </dev/tty)"
+  stty -icanon -echo min 0 time 2 </dev/tty
+  printf '\033[c' >/dev/tty
+  da_response=""
+  # shellcheck disable=SC2034  # -d 'c' is the delimiter arg, not a read target
+  IFS= read -r -t 1 -d 'c' da_response </dev/tty || true
+  # Drain any remaining DA response bytes to prevent them leaking into the shell prompt
+  while IFS= read -r -N 1 -t 0.05 _ </dev/tty 2>/dev/null; do :; done || true
+  stty "$saved" </dev/tty
+  local sixel_re='[?;]4(;|$)'
+  [[ "$da_response" =~ $sixel_re ]]
+}
+
+display_image() {
+  local url="$1" tmpfile
+  tmpfile="$(mktemp)"
+  if curl -sf --max-time 10 --connect-timeout 5 "$url" -o "$tmpfile" 2>/dev/null; then
+    img2sixel "$tmpfile" 2>/dev/null || true
+  fi
+  rm -f "$tmpfile"
 }
 
 while [[ $# -gt 0 ]]; do
@@ -34,6 +68,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     -r | --refresh)
       refresh=true
+      shift
+      ;;
+    -I | --no-images)
+      no_images=true
       shift
       ;;
     -h | --help)
@@ -86,21 +124,48 @@ else
   cutoff=""
 fi
 
-result="$(echo "$response" | jq -rf "$nerv_jq" \
+if [[ "$no_images" == false ]] && ! check_sixel_support; then
+  no_images=true
+fi
+
+if [[ "$no_images" == false ]] && ! command -v img2sixel &>/dev/null; then
+  no_images=true
+fi
+
+_jq_exit_file="$(mktemp)"
+found_posts=false
+# shellcheck disable=SC2154  # nerv_jq is injected by the Nix writeShellApplication wrapper
+while IFS= read -r post; do
+  found_posts=true
+  text="$(echo "$post" | jq -r '.text')"
+  printf '%s\n' "$text"
+  if [[ "$no_images" == false ]]; then
+    while IFS= read -r url; do
+      [[ -z "$url" ]] && continue
+      display_image "$url"
+    done < <(echo "$post" | jq -r '.images[]?')
+  fi
+  printf '%s---%s\n' "$dim" "$reset"
+done < <(echo "$response" | jq -crf "$nerv_jq" \
   --arg cutoff "$cutoff" \
   --arg bold "$bold" \
   --arg cyan "$cyan" \
-  --arg dim "$dim" \
   --arg reset "$reset" \
   --arg tz_offset "$tz_offset" \
-  --arg tz_name "$tz_name")"
+  --arg tz_name "$tz_name"; printf '%d\n' "$?" > "$_jq_exit_file")
 
-if [[ "$result" == "NO_POSTS" ]]; then
+_jq_exit="$(cat "$_jq_exit_file")"
+rm -f "$_jq_exit_file"
+_jq_exit_file=""
+if [[ "$_jq_exit" != "0" ]]; then
+  echo "Error: Failed to parse posts from API response" >&2
+  exit 1
+fi
+
+if [[ "$found_posts" == false ]]; then
   if [[ -z "$last_id" ]]; then
     echo "No posts in the last ${minutes} minutes."
   else
     echo "No new posts since last check."
   fi
-else
-  echo "$result"
 fi

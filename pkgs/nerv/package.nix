@@ -3,6 +3,7 @@
   coreutils,
   curl,
   jq,
+  libsixel,
 }:
 writeShellApplication {
   name = "nerv";
@@ -10,6 +11,7 @@ writeShellApplication {
     coreutils
     curl
     jq
+    libsixel
   ];
   text = ''
     nerv_jq="${./nerv.jq}"

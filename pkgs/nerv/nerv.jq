@@ -12,10 +12,22 @@ def decode_html:
   | ltrimstr("\n")
   | rtrimstr("\n");
 
+def format_timestamp:
+  sub("\\.[0-9]+Z$"; "Z")
+  | strptime("%Y-%m-%dT%H:%M:%SZ")
+  | mktime + ($tz_offset | tonumber)
+  | strftime("%Y-%m-%d %H:%M:%S") + " " + $tz_name;
+
+def format_header:
+  "\($bold)\(.created_at | format_timestamp)\($reset) \($cyan)@\(.account.acct)\($reset)";
+
 [.[] | select($cutoff == "" or .created_at >= $cutoff)]
 | if length == 0 then
-  "NO_POSTS"
+  empty
 else
   .[]
-  | "\($bold)\(.created_at | sub("\\.[0-9]+Z$"; "Z") | strptime("%Y-%m-%dT%H:%M:%SZ") | mktime + ($tz_offset | tonumber) | strftime("%Y-%m-%d %H:%M:%S") + " " + $tz_name)\($reset) \($cyan)@\(.account.acct)\($reset)\n\(.content | decode_html)\n\($dim)---\($reset)"
+  | {
+      text: "\(format_header)\n\(.content // "" | decode_html)",
+      images: [.media_attachments[]? | select(.type == "image") | (.preview_url // .url)]
+    }
 end
