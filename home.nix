@@ -1,5 +1,8 @@
 { inputs }:
 { pkgs, ... }:
+let
+  nerv = pkgs.callPackage ./pkgs/nerv/package.nix { };
+in
 {
   nixpkgs.overlays = with inputs; [
     emacs-overlay.overlay
@@ -27,6 +30,7 @@
       jq
       kubectl
       mermaid-cli
+      nerv
       nvd
       pgcli
       prisma-language-server
