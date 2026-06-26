@@ -16,6 +16,7 @@
       gci = "git commit";
       gcia = "git commit --amend";
       gcif = "git commit --fixup";
+      gco = "git checkout";
       gd = "git diff";
       gf = "git fetch";
       gF = "git pull";
