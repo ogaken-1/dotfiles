@@ -28,13 +28,5 @@ in
       };
       body = ./commands/bug.xml;
     };
-    feedback = lib.buildMarkdown {
-      front-matter = {
-        name = "feedback";
-        description = "Review command for Claude Code's recent work";
-        argument-hint = "[previous-command]";
-      };
-      body = ./commands/feedback.xml;
-    };
   };
 }

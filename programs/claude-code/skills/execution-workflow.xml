@@ -236,7 +236,7 @@
   </error_escalation>
   <related_agents>
     <agent name="execute">サブエージェント委任による機能実装の主要エージェント</agent>
-    <agent name="feedback">実装後のコードレビューと品質評価に使用</agent>
+    <agent name="code-review">実装後のコードレビューと品質評価に使用</agent>
     <agent name="bug">レビュー中に重大な問題が特定された場合のデバッグタスクに委任</agent>
   </related_agents>
   <related_skills>
