@@ -70,6 +70,7 @@ in
         "Bash(ls *)"
         "Bash(fd *)"
         "Bash(rg *)"
+        "Bash(grep *)"
         "Bash(wc *)"
         "Bash(head *)"
         "Bash(tail *)"
@@ -131,10 +132,6 @@ in
             (denyCommand {
               pattern = "find";
               message = "findコマンドは使用禁止です。代わりにfdを使ってください。";
-            })
-            (denyCommand {
-              pattern = "grep";
-              message = "grepコマンドは使用禁止です。代わりにrgを使ってください。";
             })
             (denyCommand {
               pattern = "cat";
