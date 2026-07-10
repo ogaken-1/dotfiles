@@ -91,7 +91,7 @@ mkdir -p "$cache_dir"
 api="https://unnerv.jp/api/v1/timelines/public?local=true&limit=40"
 last_id=""
 
-if [[ "$refresh" == false && -f "$last_id_file" ]]; then
+if [[ "$refresh" == false ]] && find "$last_id_file" -type f -mmin -"$minutes" 2>/dev/null | grep -q .; then
   last_id="$(<"$last_id_file")"
   if [[ -n "$last_id" ]]; then
     api="${api}&since_id=${last_id}"
