@@ -26,8 +26,6 @@ return {
             ix.source.completion.attach_lsp(service, {
               default = { group = 3 },
             })
-            local repeat_source = require 'ix-repeat'()
-            service:register_source(repeat_source, { group = 4 })
             service:register_source(ix.source.completion.buffer(), { group = 5 })
           end
           do
