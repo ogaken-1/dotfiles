@@ -1,6 +1,6 @@
 {
   programs.lazygit = {
-    enable = true;
+    enable = false;
     settings = {
       gui = {
         timeFormat = "2006-01-02";
