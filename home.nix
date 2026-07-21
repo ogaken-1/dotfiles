@@ -40,6 +40,8 @@ in
       skkDictionaries.geo
       skkDictionaries.jinmei
       skkDictionaries.l
+      skkDictionaries.jis2004
+      skkDictionaries.jis3_4
       tailscale
       tree-sitter
       unzip

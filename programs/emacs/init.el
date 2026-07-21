@@ -470,10 +470,19 @@ Text scale:
 
 (defun c/skk-jisyo-files (&optional dict-dir)
   "List SKK dictionary files in `dict-dir'."
-  (let ((dict-dir (or dict-dir
-                      ;; home-managerで配置される場所がデフォルト
-                      (f-join (getenv "HOME") ".nix-profile/share/skk"))))
-    (directory-files dict-dir t "SKK-JISYO" t)))
+  (let* ((dict-dir (or dict-dir
+                       ;; home-managerで配置される場所がデフォルト
+                       (f-join (getenv "HOME") ".nix-profile/share/skk")))
+         (files (directory-files dict-dir t "SKK-JISYO" t)))
+    (mapcar
+     (lambda (file)
+       (pcase file
+         ((rx (or "JIS3_4" "JIS2004") string-end)
+          (cons file 'euc-jisx0213))
+         ((rx "emoji" string-end)
+          (cons file 'utf-8))
+         (_ file)))
+     files)))
 
 (leaf ddskk
   :doc "Simple Kana to Kanji conversion program"

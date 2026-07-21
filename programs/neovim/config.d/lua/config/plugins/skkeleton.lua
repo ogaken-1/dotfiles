@@ -3,7 +3,12 @@ local function read_dict(dir)
     ---@diagnostic disable-next-line: param-type-mismatch
     .iter(vim.fn.readdir(dir, 'v:val =~# "^SKK-JISYO"'))
     :map(function(fname)
-      return vim.fs.joinpath(dir, fname)
+      local ext = vim.fs.ext(fname)
+      local full_path = vim.fs.joinpath(dir, fname)
+      if ext == 'JIS3_4' or ext == 'JIS2004' then
+        return { full_path, 'euc-jisx0213' }
+      end
+      return full_path
     end)
     :totable()
 end
