@@ -316,6 +316,7 @@ Text scale:
 (leaf yasnippet
   :doc "Yet another snippet extension for Emacs."
   :added "2025-12-02"
+  :ensure t
   :hook (prog-mode-hook . yas-minor-mode)
   :config
   (yas-reload-all))
