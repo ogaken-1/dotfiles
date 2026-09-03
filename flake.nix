@@ -22,8 +22,7 @@
     };
     vscode-server = {
       url = "github:nix-community/nixos-vscode-server";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.follows = "flake-utils";
+      inputs.flake-parts.follows = "flake-parts";
     };
     flake-compat.url = "github:edolstra/flake-compat";
     flake-parts.url = "github:hercules-ci/flake-parts";
@@ -65,7 +64,7 @@
       inputs.treefmt-nix.follows = "treefmt-nix";
     };
     fish-lophius = {
-      url = "github:ogaken-1/lophius.fish/v0.7.0";
+      url = "github:ogaken-1/lophius.fish";
     };
     mcp-servers-nix = {
       url = "github:natsukium/mcp-servers-nix";

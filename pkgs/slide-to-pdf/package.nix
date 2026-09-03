@@ -98,7 +98,9 @@ stdenv.mkDerivation (finalAttrs: {
         style=$(mapSlant "$fcSlant")
         entry=$(jq -n --arg family "$family" --argjson weight "$weightJson" --arg style "$style" --arg path "$fontFile" '{family: $family, weight: $weight, style: $style, path: $path}')
         entries+=("$entry")
-      done < <(find -L "$fontDir" -type f \( -name '*.ttf' -o -name '*.otf' \) -print0)
+        # なんかnixpkgsをupdateしたらfontパッケージにmacOSのresource forkファイルが
+        # 入ってしまうようになった
+      done < <(find -L "$fontDir" -type f \( -name '*.ttf' -o -name '*.otf' \) -not -name '._*' -print0)
     done
 
     printf '%s\n' "''${entries[@]}" | jq -s '.' > "$manifest"

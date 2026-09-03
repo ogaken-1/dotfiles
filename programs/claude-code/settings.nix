@@ -51,18 +51,18 @@ in
     permissions = {
       allow = [
         # MCP: read-only code navigation (Serena) — safe across all projects
-        "mcp__plugin_claude-code-home-manager_serena__find_symbol"
-        "mcp__plugin_claude-code-home-manager_serena__find_referencing_symbols"
-        "mcp__plugin_claude-code-home-manager_serena__find_implementations"
-        "mcp__plugin_claude-code-home-manager_serena__find_declaration"
-        "mcp__plugin_claude-code-home-manager_serena__get_symbols_overview"
-        "mcp__plugin_claude-code-home-manager_serena__get_diagnostics_for_file"
-        "mcp__plugin_claude-code-home-manager_serena__list_memories"
-        "mcp__plugin_claude-code-home-manager_serena__read_memory"
-        "mcp__plugin_claude-code-home-manager_serena__initial_instructions"
-        "mcp__plugin_claude-code-home-manager_serena__onboarding"
+        "mcp__plugin_hm_serena__find_symbol"
+        "mcp__plugin_hm_serena__find_referencing_symbols"
+        "mcp__plugin_hm_serena__find_implementations"
+        "mcp__plugin_hm_serena__find_declaration"
+        "mcp__plugin_hm_serena__get_symbols_overview"
+        "mcp__plugin_hm_serena__get_diagnostics_for_file"
+        "mcp__plugin_hm_serena__list_memories"
+        "mcp__plugin_hm_serena__read_memory"
+        "mcp__plugin_hm_serena__initial_instructions"
+        "mcp__plugin_hm_serena__onboarding"
         # MCP: docs lookup (read-only servers) — wildcard is safe, all tools are read-only
-        "mcp__plugin_claude-code-home-manager_context7__*"
+        "mcp__plugin_hm_context7__*"
         "mcp__claude_ai_Microsoft_Docs__*"
         # Web search (read-only)
         "WebSearch"
@@ -75,6 +75,7 @@ in
         "Bash(head *)"
         "Bash(tail *)"
         "Bash(tree *)"
+        "Bash(make -n *)"
         # Bash: git read-only subcommands
         "Bash(git status *)"
         "Bash(git log *)"
