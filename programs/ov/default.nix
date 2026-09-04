@@ -2,7 +2,7 @@
 {
   imports = [ ./module.nix ];
   programs.ov = {
-    enable = true;
+    enable = false;
     manIntegration.enable = false;
     psqlIntegration.enable = true;
   };
