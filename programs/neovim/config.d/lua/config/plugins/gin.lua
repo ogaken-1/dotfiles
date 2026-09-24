@@ -25,5 +25,11 @@ return {
       local cmdline = vim.fn.getcmdline()
       return cmdline == 'cq' and (buffer_commands['Cancel'] == nil and 'cq' or 'Cancel') or 'cq'
     end, { expr = true })
+    vim.api.nvim_create_user_command('GinCatHEADFile', function()
+      local path = vim.fn.expand '%'
+      local ft = vim.bo.ft
+      vim.cmd.GinBuffer { 'cat-file', '-p', 'HEAD:' .. path }
+      vim.bo.ft = ft
+    end)
   end,
 }
