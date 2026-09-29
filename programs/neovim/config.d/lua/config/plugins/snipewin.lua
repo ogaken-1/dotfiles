@@ -7,7 +7,7 @@ local function invoke_snipewin_if_wins_morethan_3(key, action)
       end)
       :totable()
     if #focusable_wins <= 2 then
-      vim.cmd.normal { bang = true, key }
+      vim.cmd.normal { bang = true, vim.keycode(key) }
       return
     end
     local snipewin = require 'snipewin'
@@ -19,6 +19,6 @@ return {
   lazy = true,
   init = function()
     vim.keymap.set('n', '<C-w><C-w>', invoke_snipewin_if_wins_morethan_3('<C-w><C-w>', 'goto'))
-    vim.keymap.set('n', '<C-w>r', invoke_snipewin_if_wins_morethan_3('<C-w><C-w>', 'swap'))
+    vim.keymap.set('n', '<C-w>r', invoke_snipewin_if_wins_morethan_3('<C-w>r', 'swap'))
   end,
 }
