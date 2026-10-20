@@ -10,6 +10,7 @@ in
     neovim-overlay.overlays.default
     fish-lophius.overlays.default
     mcp-servers-nix.overlays.default
+    nix-direnv.overlays.default
   ];
   home = {
     stateVersion = "24.05";

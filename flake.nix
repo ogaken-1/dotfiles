@@ -70,6 +70,12 @@
       url = "github:natsukium/mcp-servers-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-direnv = {
+      url = "github:nix-community/nix-direnv";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.treefmt-nix.follows = "treefmt-nix";
+    };
   };
   outputs =
     { flake-parts, ... }@inputs:

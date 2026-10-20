@@ -291,6 +291,32 @@
         "type": "github"
       }
     },
+    "nix-direnv": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1791143424,
+        "narHash": "sha256-lxQy0a+Dx9Yl0WocxkKDj6Bgip+AirHdCckFxdNeiYc=",
+        "owner": "nix-community",
+        "repo": "nix-direnv",
+        "rev": "a06537470e5ae52203cf2208e90dc66e74eb7b2f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "nix-direnv",
+        "type": "github"
+      }
+    },
     "nixos-wsl": {
       "inputs": {
         "flake-compat": [
@@ -375,6 +401,7 @@
         "mcp-servers-nix": "mcp-servers-nix",
         "neovim-overlay": "neovim-overlay",
         "nix-darwin": "nix-darwin",
+        "nix-direnv": "nix-direnv",
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs",
         "sops-nix": "sops-nix",
