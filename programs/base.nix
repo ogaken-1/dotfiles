@@ -16,4 +16,5 @@
   ./ov
   ./sops
   ./tmux
+  ./mise
 ]
