@@ -16,7 +16,8 @@ in
     stateVersion = "24.05";
     packages = with pkgs; [
       age
-      azure-cli
+      # fabric v3がnixpkgsにおいてbrokenなためupgradeのために削除
+      # azure-cli
       bc
       devenv
       docker-client
