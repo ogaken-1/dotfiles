@@ -6,6 +6,14 @@ let
   # settings.nix is a home-manager module that only needs `pkgs`, so evaluate it directly and
   # reuse its values instead of copying them.
   settings = (import ./settings.nix { inherit pkgs; }).programs.claude-code.settings;
+
+  # GoogleChrome/modern-web-guidance; only its modern-web-guidance skill is deployed.
+  modern-web-guidance-src = pkgs.fetchFromGitHub {
+    owner = "GoogleChrome";
+    repo = "modern-web-guidance";
+    rev = "4dd968349e54ca45a05dd5c818fb035c9054b022";
+    hash = "sha256-bqsUEI1yaGy1sd8DBJzG5cOv4Yv0RSYac6e9egqYFJU=";
+  };
 in
 eunomia.mkClaudeConfig {
   src = ./src;
@@ -84,4 +92,5 @@ eunomia.mkClaudeConfig {
   inherit (settings) hooks;
 
   extra.skills.slide-generating = ./skills/slide-generating;
+  extra.skills.modern-web-guidance = "${modern-web-guidance-src}/skills/modern-web-guidance";
 }
