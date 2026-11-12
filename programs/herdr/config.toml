@@ -1,0 +1,6 @@
+onboarding = false
+
+[keys]
+prefix = "ctrl+q"
+workspace_picker = "prefix+s"
+settings = "prefix+shift+s"

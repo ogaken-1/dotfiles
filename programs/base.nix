@@ -9,6 +9,7 @@
   ./fish
   ./fzf
   ./gh
+  ./herdr
   ./git
   ./home-manager
   ./lazygit

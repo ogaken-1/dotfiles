@@ -41,18 +41,16 @@
       gm = "git merge";
     };
     functions = {
-      fzf_tmux_session = {
+      herdr_attach = {
         body = ''
-          ${pkgs.tmux}/bin/tmux attach-session -t (
-            ${pkgs.tmux}/bin/tmux list-sessions -F '#{session_name}' 2> /dev/null |
-              ${pkgs.fzf}/bin/fzf --layout=reverse --border=block
-          ) > /dev/null 2> /dev/null
+          ${pkgs.herdr}/bin/herdr
+          commandline -f repaint
         '';
       };
     };
     interactiveShellInit = ''
-      if [ -z "$TMUX" ]
-        bind \cqs fzf_tmux_session
+      if [ -z "$HERDR_ENV" ]
+        bind \cqs herdr_attach
       end
       set fish_color_command blue
       set fish_color_keyword green
