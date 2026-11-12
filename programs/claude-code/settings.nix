@@ -86,13 +86,10 @@ in
         "Bash(git ls-tree *)"
         "Bash(git diff-tree *)"
         # Skills: orchestration entrypoints (downstream tools remain permission-gated)
-        "Skill(execute)"
         "Skill(plan-workflow)"
         "Skill(impl-workflow)"
-        "Skill(feedback)"
         "Skill(bug)"
         "Skill(ask)"
-        "Skill(define)"
         "Skill(fact-check)"
         "Skill(investigation-patterns)"
         "Skill(markdown)"
@@ -114,15 +111,6 @@ in
             {
               type = "command";
               command = "echo 'EnterPlanModeは使用禁止。/plan-workflow コマンドを使ってください' >&2 && exit 2";
-            }
-          ];
-        }
-        {
-          matcher = "TaskOutput";
-          hooks = [
-            {
-              type = "command";
-              command = "echo 'TaskOutputは使用禁止です。バックグラウンドタスクの結果はサブエージェントが完了時に自動で返却されるため、TaskOutputで明示的に取得する必要はありません。context windowの圧迫を防ぐため、TaskOutputの代わりにTaskツールのblock=trueオプションまたはサブエージェントの自動返却を利用してください。' >&2 && exit 2";
             }
           ];
         }

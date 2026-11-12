@@ -32,16 +32,5 @@ in
       ];
       type = "stdio";
     };
-    codex = {
-      command = "${pkgs.codex}/bin/codex";
-      args = [
-        "--sandbox"
-        "workspace-write"
-        "--ask-for-approval"
-        "never"
-        "mcp-server"
-      ];
-      type = "stdio";
-    };
   };
 }

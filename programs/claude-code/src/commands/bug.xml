@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cc:command xmlns:cc="urn:eunomia:claude-code:v1">
+  <cc:frontMatter>
+    <cc:description>Root cause investigation command</cc:description>
+    <cc:field name="argument-hint">[error-message]</cc:field>
+  </cc:frontMatter>
+  <cc:prompt><command>
+  <purpose>エラーメッセージと異常な動作から根本原因を特定し、修正を行わずに事実に基づく分析を提供する。</purpose>
+  <rules priority="critical">
+    <rule>ファイルを変更、作成、削除しない</rule>
+    <rule>修正を実装しない。提案のみを提供する</rule>
+    <rule>ログ分析を主要な情報源として優先する</rule>
+    <rule>ユーザーの推測ではなく事実から判断する</rule>
+    <rule>ログを主要な情報源とする</rule>
+  </rules>
+  <rules priority="standard">
+    <rule>デバッグ方法論には<cc:useSkill ref="skill:investigation-patterns"/>スキルを使用する</rule>
+    <rule>調査を<cc:delegate agent="agent:general-purpose"/>エージェントに委任する</rule>
+    <rule>原因を特定できない場合は正直に報告する</rule>
+    <rule>近くの類似実装を確認する</rule>
+    <rule>発生パスを時系列で追跡する</rule>
+  </rules>
+  <parallelization>
+    <capability>
+      <parallel_safe>true</parallel_safe>
+      <read_only>true</read_only>
+      <modifies_state>none</modifies_state>
+    </capability>
+    <execution_strategy>
+      <max_parallel_agents>16</max_parallel_agents>
+      <timeout_per_agent>180000</timeout_per_agent>
+    </execution_strategy>
+  </parallelization>
+  <workflow>
+    <phase name="analyze">
+      <objective>エラータイプを分類し、調査範囲を確立する</objective>
+      <step>1. これはどのタイプのエラーか？（構文、ランタイム、ロジック）</step>
+      <step>2. どこで発生しているか？（ファイル、行、関数）</step>
+      <step>3. どのログが利用可能か？</step>
+      <step>4. エラーのコンテキストは何か？（前後、発生中）</step>
+    </phase>
+    <phase name="investigate">
+      <objective>専門エージェントに並列調査を委任する</objective>
+      <step>1. <cc:delegate agent="agent:quality-assurance"/>エージェントに委任：スタックトレース、エラーパターンを分析する</step>
+      <step>2. <cc:delegate agent="agent:explore"/>エージェントに委任：エラー位置と関連するコードパスを発見する</step>
+      <step>3. <cc:delegate agent="agent:general-purpose"/>エージェントに委任：ログと依存関係を分析する</step>
+      <step>4. <cc:delegate agent="agent:fact-check"/>エージェントに委任：エラーコンテキストで外部ドキュメント参照を検証する</step>
+      <step>6. エージェントの発見からエラー位置の詳細を分析する</step>
+      <step>7. 依存関係とインポートを確認する</step>
+      <step>8. 設定ファイルと最近の変更を確認する</step>
+    </phase>
+    <reflection_checkpoint id="investigation_quality">
+      <question>症状から原因までの完全な証拠チェーンを構築したか？</question>
+      <question>具体的な証拠でエラーメカニズムを説明できるか？</question>
+      <threshold>証拠が不十分と判断した場合、調査を継続するか不確実性をフラグする</threshold>
+    </reflection_checkpoint>
+    <phase name="gather">
+      <objective>環境コンテキストとランタイム条件を収集する</objective>
+      <step>1. ランタイム情報（OS、バージョン、環境変数）を収集する</step>
+      <step>2. リソース（ディスク、メモリ、ネットワーク）を確認する</step>
+    </phase>
+    <reflection_checkpoint id="analysis_quality">
+      <question>十分な証拠を収集したか？</question>
+      <question>理解に不足がないか？</question>
+      <threshold>証拠が不十分と判断した場合、さらに証拠を収集するかユーザーに確認する</threshold>
+    </reflection_checkpoint>
+    <phase name="failure_handling">
+      <objective>調査失敗を適切に処理する</objective>
+      <step>1. ツール呼び出しが失敗した場合：エラーをログに記録し、代替アプローチを試行する</step>
+      <step>2. データが利用できない場合：ギャップを文書化し、部分的な分析で続行する</step>
+      <step>3. 矛盾する証拠がある場合：不確実性をフラグし、ユーザーに確認を求める</step>
+    </phase>
+    <phase name="report">
+      <objective>発見を実行可能な根本原因分析に統合する</objective>
+      <step>1. 信頼度メトリクスを用いてエージェントの発見を集約する</step>
+      <step>2. 裏付けとなる証拠とともに根本原因を特定する</step>
+    </phase>
+    <phase name="self_evaluate">
+      <objective>調査出力の簡潔な品質評価</objective>
+      <step>1. 根本原因への確信度（高/中/低）と、残る主要な不明点（最大1-2点）を定性的に評価する</step>
+      <step>2. 出力にself_feedbackセクションを追加する</step>
+    </phase>
+  </workflow>
+  <agents>
+    <agent readonly="true"><cc:delegate agent="agent:quality-assurance"/>: エラー追跡、スタックトレース分析、デバッグ</agent>
+    <agent readonly="true"><cc:delegate agent="agent:general-purpose"/>: ログ分析、可観測性、依存関係エラー</agent>
+    <agent readonly="true"><cc:delegate agent="agent:explore"/>: エラー位置の発見、関連するコードパス</agent>
+    <agent readonly="true"><cc:delegate agent="agent:fact-check"/>: ライブラリ、ドキュメント、標準を参照する主張の外部ソース検証</agent>
+  </agents>
+  <execution_graph>
+    <parallel_group id="error_analysis" depends_on="none">
+      <agent><cc:delegate agent="agent:quality-assurance"/></agent>
+      <agent><cc:delegate agent="agent:explore"/></agent>
+      <agent><cc:delegate agent="agent:fact-check"/></agent>
+    </parallel_group>
+    <parallel_group id="context_gathering" depends_on="none">
+      <agent><cc:delegate agent="agent:general-purpose"/></agent>
+    </parallel_group>
+    <sequential_phase id="synthesis" depends_on="error_analysis,context_gathering">
+      <agent><cc:delegate agent="agent:quality-assurance"/></agent>
+      <reason>エラー分析とコンテキスト収集の両方からの発見が必要</reason>
+    </sequential_phase>
+  </execution_graph>
+  <delegation>
+    <requirement>完全なエラーメッセージ/スタックトレース</requirement>
+    <requirement>再現手順（分かっている場合）</requirement>
+    <requirement>関連するファイルパス</requirement>
+    <requirement>明示的な編集禁止</requirement>
+  </delegation>
+  <output>
+    <format>
+      <overview>エラーと調査の概要</overview>
+      <log_analysis>重要なログ情報、エラーコンテキスト</log_analysis>
+      <code_analysis>関連コード、特定された問題</code_analysis>
+      <root_cause>
+- 直接的な原因
+- 根本的な原因
+- 条件</root_cause>
+      <impact>影響範囲、類似エラー</impact>
+      <recommendations>修正提案（実装なし）、予防策</recommendations>
+      <further_investigation>不明点、次のステップ</further_investigation>
+      <self_feedback>
+        <confidence>確信度（高/中/低）と根拠の強さ</confidence>
+        <issues>
+- [Critical] 問題の説明（もしあれば、最大2つ）
+- [Warning] 問題の説明（もしあれば）
+      </issues>
+      </self_feedback>
+    </format>
+  </output>
+  <enforcement>
+    <mandatory_behaviors>
+      <behavior id="BUG-B001" priority="critical">
+        <trigger>根本原因を結論付ける前</trigger>
+        <action>症状から原因までの証拠チェーンを構築する</action>
+        <verification>出力に証拠チェーンを含める</verification>
+      </behavior>
+      <behavior id="BUG-B002" priority="critical">
+        <trigger>修正を提案する場合</trigger>
+        <action>影響を受けるすべてのコードパスを特定する</action>
+        <verification>出力に影響分析を含める</verification>
+      </behavior>
+    </mandatory_behaviors>
+    <prohibited_behaviors>
+      <behavior id="BUG-P001" priority="critical">
+        <trigger>常に</trigger>
+        <action>証拠なしに結論付ける</action>
+        <response>結論をブロックし、調査を要求する</response>
+      </behavior>
+    </prohibited_behaviors>
+  </enforcement>
+  <error_escalation>
+    <level severity="low">
+      <example>影響のない軽微なログ警告</example>
+      <action>レポートに記録し、続行する</action>
+    </level>
+    <level severity="medium">
+      <example>不明確なエラーコンテキストまたは欠落したスタックトレース</example>
+      <action>問題を文書化し、<cc:useTool ref="tool:AskUserQuestion"/>を使用して確認する</action>
+    </level>
+    <level severity="high">
+      <example>システムクラッシュまたはデータ破損が検出された</example>
+      <action>停止し、ユーザーに選択肢を提示する</action>
+    </level>
+    <level severity="critical">
+      <example>セキュリティ侵害または重大なデータ損失のリスク</example>
+      <action>操作をブロックし、ユーザーの明示的な承認を要求する</action>
+    </level>
+  </error_escalation>
+  <related_commands>
+    <command><cc:seeAlso ref="command:ask"/>: 調査でアーキテクチャに関する質問が発生した場合</command>
+  </related_commands>
+  <related_skills>
+    <skill><cc:useSkill ref="skill:investigation-patterns"/>: コアデバッグ方法論</skill>
+    <skill><cc:useSkill ref="skill:serena-usage"/>: 効率的にエラー位置をナビゲートする</skill>
+    <skill><cc:useSkill ref="skill:testing-patterns"/>: テスト失敗とカバレッジギャップを理解する</skill>
+    <skill><cc:useSkill ref="skill:fact-check"/>: Context7と<cc:useTool ref="tool:WebSearch"/>を使用した外部ソース検証</skill>
+  </related_skills>
+  <constraints>
+    <must>すべての操作を読み取り専用に保つ</must>
+    <must>ログを主要な情報源として優先する</must>
+    <must>原因を特定できない場合は正直に報告する</must>
+    <avoid>修正を実装する</avoid>
+    <avoid>検証なしにユーザーの推測を受け入れる</avoid>
+    <avoid>証拠が不十分な場合に無理やり原因を作り上げる</avoid>
+  </constraints>
+</command>
+</cc:prompt>
+</cc:command>

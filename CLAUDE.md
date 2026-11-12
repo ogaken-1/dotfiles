@@ -41,7 +41,7 @@ WSL uses `cli.nix`, macOS uses `gui.nix`.
 
 Key programs:
 - `programs/neovim/` - Neovim configuration (Lua-based, in `config.d/`)
-- `programs/claude-code/` - Claude Code agents, commands, and skills (XML format)
+- `programs/claude-code/` - Claude Code settings; prompts are generated and checked by eunomia (`pkgs/eunomia/`)
 
 ### Neovim Configuration Structure
 
@@ -60,7 +60,28 @@ programs/neovim/config.d/
 
 ### Claude Code Configuration
 
-Agents, commands, and skills are defined as XML files in `programs/claude-code/` and composed using `lib.nix`. The configuration uses Serena and Context7 MCP servers.
+Skills, agents, commands, and the user CLAUDE.md are written as eunomia origin XML under `programs/claude-code/src/`:
+
+```
+programs/claude-code/
+├── src/
+│   ├── skills/<name>.xml     # -> ~/.claude/skills/<name>/SKILL.md
+│   ├── agents/<name>.xml     # -> ~/.claude/agents/<name>.md
+│   ├── commands/<name>.xml   # -> ~/.claude/commands/<name>.md
+│   └── memory/user.xml       # -> ~/.claude/CLAUDE.md
+├── eunomia.nix               # mkClaudeConfig: platform profile, MCP tools, extra front-matter (hooks)
+├── settings.nix              # settings.json (permissions, hooks)
+├── mcp-servers.nix           # MCP servers (serena, context7, playwright)
+├── hooks/                    # hook scripts
+└── skills/slide-generating/  # external skill, deployed as-is via `extra`
+```
+
+- The name and kind of each entity come from its path; do not write `key` or `cc:name`.
+- Never edit `~/.claude/` directly; it is a build output.
+- References to tools, skills, agents, and commands must be marked (`cc:useTool`, `cc:useSkill`, `cc:delegate`, `cc:seeAlso`) so that eunomia can check them. Unmarked tool/skill/agent/command names are reported as errors.
+- Claude Code version-specific facts (available tools, removed tools, built-in skills and agents) live in the platform profile `pkgs/eunomia/platforms/claude-code-<version>.nix`. When Claude Code is updated, add or update a profile and run `nix flake check` to see what breaks.
+- `nix flake check` runs the checks (`claude-code-schema`, `claude-code-refs`, `claude-code-prompts`). Deployment also depends on them, so `rake switch` fails while any check fails.
+- See `pkgs/eunomia/README.md` for the vocabulary and the full list of checks.
 
 ## Code Style
 

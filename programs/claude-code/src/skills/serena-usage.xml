@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cc:skill xmlns:cc="urn:eunomia:claude-code:v1">
+  <cc:frontMatter>
+    <cc:description>This skill should be used when the user asks to "use serena", "semantic search", "symbol analysis", "find references", "code navigation", or needs Serena MCP guidance. Provides Serena tool usage patterns.</cc:description>
+  </cc:frontMatter>
+  <cc:prompt><skill>
+  <purpose>Serena MCPツールを使用したセマンティックコード操作の効果的な使用パターンを提供する。</purpose>
+  <tools>
+    <tool><cc:useTool ref="tool:mcp__plugin_hm_serena__get_symbols_overview"/>: 
+      <description>ファイル内のシンボルの高レベルビューを取得</description>
+      <param name="relative_path">ファイルへのパス（必須）</param>
+      <param name="depth">子孫の深さ、0はトップレベルのみ</param>
+      <use_case>新しいファイルを探索する最初のステップ</use_case>
+    </tool>
+    <tool><cc:useTool ref="tool:mcp__plugin_hm_serena__find_symbol"/>: 
+      <description>名前パスパターンでシンボルを検索</description>
+      <param name="name_path_pattern">シンボル名またはパス（例: "MyClass/myMethod"）</param>
+      <param name="relative_path">ファイルまたはディレクトリに制限</param>
+      <param name="include_body">ソースコードを含める</param>
+      <param name="depth">子孫を含める</param>
+      <param name="substring_matching">部分一致で検索</param>
+      <use_case>特定の関数、クラス、メソッドを特定</use_case>
+    </tool>
+    <tool><cc:useTool ref="tool:mcp__plugin_hm_serena__find_referencing_symbols"/>: 
+      <description>シンボルへのすべての参照を検索</description>
+      <param name="name_path">参照を検索するシンボル</param>
+      <param name="relative_path">シンボルを含むファイル</param>
+      <use_case>依存関係分析、影響評価</use_case>
+    </tool>
+    <tool><cc:useTool ref="tool:Bash"/>: 
+      <description>コードベース全体での正規表現検索</description>
+      <param name="substring_pattern">正規表現パターン</param>
+      <param name="relative_path">検索範囲を制限</param>
+      <param name="context_lines_before">マッチ前の行数</param>
+      <param name="context_lines_after">マッチ後の行数</param>
+      <param name="restrict_search_to_code_files">コードファイルのみ検索するか全ファイルを検索するか</param>
+      <param name="paths_include_glob">含めるファイルのglobパターン</param>
+      <param name="paths_exclude_glob">除外するファイルのglobパターン</param>
+      <use_case>パターン検索、非コードファイル、複雑な検索</use_case>
+    </tool>
+    <tool><cc:useTool ref="tool:mcp__plugin_hm_serena__replace_symbol_body"/>: 
+      <description>シンボル定義全体を置換</description>
+      <param name="name_path">置換するシンボル</param>
+      <param name="relative_path">シンボルを含むファイル</param>
+      <param name="body">新しいシンボル本体</param>
+      <use_case>関数やクラス全体のリファクタリング</use_case>
+    </tool>
+    <tool><cc:useTool ref="tool:mcp__plugin_hm_serena__insert_before_symbol"/>: 
+      <description>シンボルの前にコンテンツを挿入</description>
+      <param name="name_path">挿入対象のシンボル</param>
+      <param name="relative_path">シンボルを含むファイル</param>
+      <param name="body">挿入するコンテンツ</param>
+      <use_case>インポート、デコレータ、コメントの追加</use_case>
+    </tool>
+    <tool><cc:useTool ref="tool:mcp__plugin_hm_serena__insert_after_symbol"/>: 
+      <description>シンボルの後にコンテンツを挿入</description>
+      <param name="name_path">挿入対象のシンボル</param>
+      <param name="relative_path">シンボルを含むファイル</param>
+      <param name="body">挿入するコンテンツ</param>
+      <use_case>新しい関数、クラスの追加</use_case>
+    </tool>
+    <tool><cc:useTool ref="tool:mcp__plugin_hm_serena__rename_symbol"/>: 
+      <description>コードベース全体でシンボルをリネーム</description>
+      <param name="name_path">リネームするシンボル</param>
+      <param name="relative_path">シンボルを含むファイル</param>
+      <param name="new_name">新しいシンボル名</param>
+      <use_case>参照更新を伴う一貫したリネーム</use_case>
+    </tool>
+  </tools>
+  <concepts>
+    <concept name="symbol_path">
+      <description>ファイル内のシンボルへのパス（例: MyClass/myMethod）</description>
+      <example scenario="シンボルパスの使用パターン">
+        <step order="1" description="特定のメソッドを検索">
+          <call><cc:useTool ref="tool:mcp__plugin_hm_serena__find_symbol"/>: 
+            <param name="name_path_pattern">MyClass/myMethod</param>
+          </call>
+        </step>
+        <step order="2" description="すべてのgetterメソッドを検索">
+          <call><cc:useTool ref="tool:mcp__plugin_hm_serena__find_symbol"/>: 
+            <param name="name_path_pattern">get*</param>
+            <param name="substring_matching">true</param>
+          </call>
+        </step>
+      </example>
+    </concept>
+    <concept name="reflection_tools">
+      <description>検索品質とタスク整合性を確保するためのメタ認知ツール</description>
+      <example scenario="適切なチェックポイントでリフレクションツールを使用">
+        <step order="1" description="複数ファイル検索後">
+        </step>
+        <step order="2" description="変更を行う前">
+        </step>
+        <step order="3" description="タスクが完了したと思われるとき">
+        </step>
+      </example>
+    </concept>
+  </concepts>
+  <patterns>
+    <pattern name="explore_file">
+      <description>高レベルから詳細まで体系的にファイル構造を探索</description>
+      <example scenario="ファイル構造を段階的に探索">
+        <step order="1" description="トップレベルの概要を取得">
+          <call><cc:useTool ref="tool:mcp__plugin_hm_serena__get_symbols_overview"/>: 
+            <param name="relative_path">src/main.ts</param>
+            <param name="depth">0</param>
+          </call>
+        </step>
+        <step order="2" description="クラスメンバーを探索">
+          <call><cc:useTool ref="tool:mcp__plugin_hm_serena__get_symbols_overview"/>: 
+            <param name="relative_path">src/main.ts</param>
+            <param name="depth">1</param>
+          </call>
+        </step>
+        <step order="3" description="特定の実装を取得">
+          <call><cc:useTool ref="tool:mcp__plugin_hm_serena__find_symbol"/>: 
+            <param name="name_path_pattern">MyClass/myMethod</param>
+            <param name="include_body">true</param>
+          </call>
+        </step>
+      </example>
+    </pattern>
+    <pattern name="trace_dependencies">
+      <description>シンボルの依存関係と呼び出し元を追跡</description>
+      <example scenario="シンボルの依存関係と呼び出し元を追跡">
+        <step order="1" description="シンボルを特定">
+          <call><cc:useTool ref="tool:mcp__plugin_hm_serena__find_symbol"/>: 
+            <param name="name_path_pattern">processData</param>
+            <param name="relative_path">src/processor.ts</param>
+          </call>
+        </step>
+        <step order="2" description="すべての呼び出し元を検索">
+          <call><cc:useTool ref="tool:mcp__plugin_hm_serena__find_referencing_symbols"/>: 
+            <param name="name_path">processData</param>
+            <param name="relative_path">src/processor.ts</param>
+          </call>
+        </step>
+        <step order="3" description="完全な依存関係グラフを構築するために再帰的に追跡">
+          <note>各呼び出し元に対してステップ1-2を繰り返し、完全な依存関係ツリーを構築</note>
+        </step>
+      </example>
+    </pattern>
+    <pattern name="safe_refactoring">
+      <description>完全な影響分析を伴うリファクタリング</description>
+      <example scenario="完全な影響分析を伴う安全なリファクタリング">
+        <step order="1" description="現在の実装を理解">
+          <call><cc:useTool ref="tool:mcp__plugin_hm_serena__find_symbol"/>: 
+            <param name="name_path_pattern">MyClass/oldMethod</param>
+            <param name="include_body">true</param>
+          </call>
+        </step>
+        <step order="2" description="すべての使用箇所を特定">
+          <call><cc:useTool ref="tool:mcp__plugin_hm_serena__find_referencing_symbols"/>: 
+            <param name="name_path">MyClass/oldMethod</param>
+            <param name="relative_path">src/myclass.ts</param>
+          </call>
+        </step>
+        <step order="3" description="変更を実行">
+          <call><cc:useTool ref="tool:mcp__plugin_hm_serena__replace_symbol_body"/>: 
+            <param name="name_path">MyClass/oldMethod</param>
+            <param name="relative_path">src/myclass.ts</param>
+            <param name="body">...</param>
+          </call>
+        </step>
+        <step order="4" description="インターフェースが変更された場合は参照を更新">
+          <note>メソッドシグネチャが変更された場合、ステップ2で特定したすべての呼び出し箇所を更新</note>
+        </step>
+      </example>
+    </pattern>
+    <pattern name="pattern_search">
+      <description>適切なスコープでパターンを検索</description>
+      <example scenario="異なるスコープでのパターン検索">
+        <step order="1" description="コードファイルのみを検索">
+          <call><cc:useTool ref="tool:Bash"/>: 
+            <param name="substring_pattern">TODO:</param>
+            <param name="restrict_search_to_code_files">true</param>
+          </call>
+        </step>
+        <step order="2" description="設定を含むすべてのファイルを検索">
+          <call><cc:useTool ref="tool:Bash"/>: 
+            <param name="substring_pattern">api-key</param>
+            <param name="restrict_search_to_code_files">false</param>
+          </call>
+        </step>
+        <step order="3" description="マッチ周辺のコンテキストを含める">
+          <call><cc:useTool ref="tool:Bash"/>: 
+            <param name="substring_pattern">function.*async</param>
+            <param name="context_lines_before">2</param>
+            <param name="context_lines_after">3</param>
+          </call>
+        </step>
+      </example>
+    </pattern>
+    <decision_tree name="tool_selection">
+      <question>どのような操作が必要ですか？</question>
+      <branch condition="シンボル検索">name_path_patternを使用して<cc:useTool ref="tool:mcp__plugin_hm_serena__find_symbol"/>を使用</branch>
+      <branch condition="ファイル構造の概要">適切なdepthを使用して<cc:useTool ref="tool:mcp__plugin_hm_serena__get_symbols_overview"/>を使用</branch>
+      <branch condition="参照を検索"><cc:useTool ref="tool:mcp__plugin_hm_serena__find_referencing_symbols"/>を使用</branch>
+      <branch condition="パターン検索">正規表現を使用して<cc:useTool ref="tool:Bash"/>を使用</branch>
+      <branch condition="シンボルをリファクタリング"><cc:useTool ref="tool:mcp__plugin_hm_serena__replace_symbol_body"/>を使用</branch>
+      <branch condition="シンボルをリネーム">一貫した更新のために<cc:useTool ref="tool:mcp__plugin_hm_serena__rename_symbol"/>を使用</branch>
+      <branch condition="コードを追加"><cc:useTool ref="tool:mcp__plugin_hm_serena__insert_before_symbol"/>または<cc:useTool ref="tool:mcp__plugin_hm_serena__insert_after_symbol"/>を使用</branch>
+    </decision_tree>
+  </patterns>
+  <anti_patterns>
+    <avoid name="reading_entire_files">
+      <description>特定のシンボルのみが必要な場合にファイル全体を読み取る</description>
+      <instead>ファイル構造には<cc:useTool ref="tool:mcp__plugin_hm_serena__get_symbols_overview"/>、特定の実装にはinclude_body付きの<cc:useTool ref="tool:mcp__plugin_hm_serena__find_symbol"/>を使用</instead>
+    </avoid>
+    <avoid name="unscoped_searches">
+      <description>スコープが分かっている場合にコードベース全体を検索</description>
+      <instead>relative_pathパラメータを使用して検索を既知のファイルまたはディレクトリに制限</instead>
+    </avoid>
+    <avoid name="manual_refactoring">
+      <description>ファイル間でシンボル参照を手動で更新</description>
+      <instead>自動参照更新を伴う一貫したリネームのために<cc:useTool ref="tool:mcp__plugin_hm_serena__rename_symbol"/>を使用</instead>
+    </avoid>
+    <avoid name="excessive_depth">
+      <description><cc:useTool ref="tool:mcp__plugin_hm_serena__get_symbols_overview"/>で不必要に高いdepth値を使用</description>
+      <instead>depth=0から始め、必要に応じて段階的に増やす</instead>
+    </avoid>
+  </anti_patterns>
+  <workflow>
+    <phase name="prepare">
+      <objective>効果的なSerenaツール使用のための準備</objective>
+      <step>1. ターゲットのシンボルまたはファイルを特定</step>
+      <step>2. decision_treeに基づいて適切なツールを選択</step>
+    </phase>
+    <phase name="execute">
+      <objective>Serena操作を効率的に実行</objective>
+      <step>1. ファイル構造のために<cc:useTool ref="tool:mcp__plugin_hm_serena__get_symbols_overview"/>から開始</step>
+      <step>2. 詳細のためにinclude_body付きで<cc:useTool ref="tool:mcp__plugin_hm_serena__find_symbol"/>を使用</step>
+      <step>3. 依存関係のために<cc:useTool ref="tool:mcp__plugin_hm_serena__find_referencing_symbols"/>を使用</step>
+    </phase>
+    <phase name="verify">
+      <objective>結果を検証する</objective>
+    </phase>
+  </workflow>
+  <best_practices>
+    <practice priority="critical">ファイル全体を読み取る代わりにシンボル操作（<cc:useTool ref="tool:mcp__plugin_hm_serena__get_symbols_overview"/>、<cc:useTool ref="tool:mcp__plugin_hm_serena__find_symbol"/>）を使用</practice>
+    <practice priority="high">パフォーマンス向上のため、スコープが分かっている場合はrelative_pathで検索を制限</practice>
+    <practice priority="high">不確実なシンボル名には検索結果を広げるためにsubstring_matchingを使用</practice>
+    <practice priority="medium">周囲のコードを理解するために<cc:useTool ref="tool:Bash"/>でcontext_linesパラメータを使用</practice>
+    <practice priority="medium">リファクタリング前に<cc:useTool ref="tool:mcp__plugin_hm_serena__find_referencing_symbols"/>でシンボル変更を確認</practice>
+  </best_practices>
+  <rules priority="critical">
+    <rule>ファイル全体を読み取る代わりにシンボル操作を使用</rule>
+  </rules>
+  <rules priority="standard">
+    <rule>スコープが分かっている場合はrelative_pathで検索を制限</rule>
+    <rule>不確実なシンボル名にはsubstring_matchingを使用</rule>
+  </rules>
+  <related_agents>
+    <agent><cc:delegate agent="agent:design"/>: アーキテクチャ分析とパターン発見にSerenaを使用</agent>
+    <agent><cc:delegate agent="agent:code-quality"/>: 複雑性分析とリファクタリングにSerenaを使用</agent>
+    <agent><cc:seeAlso ref="command:bug"/>: 依存関係追跡と影響分析にSerenaを使用</agent>
+    <agent><cc:useSkill ref="skill:impl-workflow"/>: シンボルレベル操作にSerenaを使用</agent>
+    <agent><cc:delegate agent="agent:security"/>: 脆弱性検出とセキュリティパターン分析にSerenaを使用</agent>
+    <agent><cc:delegate agent="agent:database"/>: スキーマ分析とクエリ最適化にSerenaを使用</agent>
+    <agent><cc:delegate agent="agent:performance"/>: パフォーマンスボトルネック特定と最適化にSerenaを使用</agent>
+    <agent><cc:delegate agent="agent:test"/>: テストカバレッジ分析とテスト生成にSerenaを使用</agent>
+  </related_agents>
+  <error_escalation>
+    <level severity="low">
+      <example>完全一致でシンボルが見つからない</example>
+      <action>レポートに記載し、続行</action>
+    </level>
+    <level severity="medium">
+      <example>メモリファイルが見つからない</example>
+      <action>問題を文書化し、<cc:useTool ref="tool:AskUserQuestion"/>で明確化を求める</action>
+    </level>
+    <level severity="high">
+      <example>メモリ内の情報が矛盾している</example>
+      <action>停止し、ユーザーに選択肢を提示</action>
+    </level>
+    <level severity="critical">
+      <example>メモリ破損または無効な状態</example>
+      <action>操作をブロックし、明示的なユーザー確認を要求</action>
+    </level>
+  </error_escalation>
+  <related_skills>
+    <skill><cc:useSkill ref="skill:investigation-patterns"/>: Serenaツールを使用した調査方法論</skill>
+  </related_skills>
+  <constraints>
+    <must>ファイル全体を読み取る代わりにシンボル操作を使用</must>
+    <must>スコープが分かっている場合はrelative_pathで検索を制限</must>
+    <avoid>シンボル操作で十分な場合にファイル全体を読み取る</avoid>
+    <avoid>コードベース全体での範囲指定なしの検索</avoid>
+  </constraints>
+</skill>
+</cc:prompt>
+</cc:skill>

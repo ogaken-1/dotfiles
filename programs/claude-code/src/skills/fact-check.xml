@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cc:skill xmlns:cc="urn:eunomia:claude-code:v1">
+  <cc:frontMatter>
+    <cc:description>This skill should be used when the user asks to "verify claims", "fact check", "validate documentation", "check sources", or needs verification of external source references. Provides patterns for systematic fact verification using Context7 and WebSearch.</cc:description>
+  </cc:frontMatter>
+  <cc:prompt><skill>
+  <purpose>Context7 MCPと<cc:useTool ref="tool:WebSearch"/>ツールを使用して、権威ある外部ソースに対する主張の体系的なファクトチェックパターンを提供する。</purpose>
+  <tools>
+    <tool><cc:useTool ref="tool:mcp__plugin_hm_context7__resolve-library-id"/>: 
+      <description>パッケージ名をContext7互換のライブラリIDに解決</description>
+      <param name="libraryName">検索するライブラリ名</param>
+      <use_case>ライブラリドキュメントの主張に対して<cc:useTool ref="tool:mcp__plugin_hm_context7__query-docs"/>の前に必ず呼び出す</use_case>
+    </tool>
+    <tool><cc:useTool ref="tool:mcp__plugin_hm_context7__query-docs"/>: 
+      <description>主張を検証するために特定のライブラリのドキュメントを取得</description>
+      <param name="context7CompatibleLibraryID"><cc:useTool ref="tool:mcp__plugin_hm_context7__resolve-library-id"/>から取得したライブラリID</param>
+      <param name="topic">検証する特定のトピック</param>
+      <param name="tokens">取得する最大トークン数（デフォルト: 5000）</param>
+      <use_case>ライブラリAPI、動作、ベストプラクティスに関する主張を検証</use_case>
+    </tool>
+    <tool><cc:useTool ref="tool:WebSearch"/>: 
+      <description>一般的な主張の検証のためにウェブを検索</description>
+      <param name="query">検証用の検索クエリ</param>
+      <use_case>標準、仕様、一般的な技術的事実に関する主張を検証</use_case>
+    </tool>
+    <tool><cc:useTool ref="tool:WebFetch"/>: 
+      <description>検証のために特定のURLコンテンツを取得</description>
+      <param name="url">取得するURL</param>
+      <param name="prompt">関連コンテンツの抽出プロンプト</param>
+      <use_case>特定のドキュメントページまたは仕様に対して主張を検証</use_case>
+    </tool>
+  </tools>
+  <workflow>
+    <phase name="extract">
+      <objective>コンテンツから検証可能な主張を特定</objective>
+      <step>1. 外部ソースを参照する主張をコンテンツからスキャン</step>
+      <step>2. タイプ別に主張を分類（ライブラリAPI、ドキュメント、標準、仕様）</step>
+      <step>3. 影響度と検証可能性で主張を優先順位付け</step>
+    </phase>
+    <phase name="verify">
+      <objective>各主張を権威あるソースに対して検証</objective>
+      <step>1. 適切な検証ソースを選択（ライブラリにはContext7、一般には<cc:useTool ref="tool:WebSearch"/>）</step>
+      <step>2. 関連情報についてソースに問い合わせ</step>
+      <step>3. 主張を取得した証拠と比較</step>
+      <step>4. 検証信頼度を計算（0-100）</step>
+    </phase>
+    <phase name="synthesize">
+      <objective>検証レポートを生成</objective>
+      <step>1. 検証済み主張を証拠とともにまとめる</step>
+      <step>2. 信頼度80未満の主張にフラグを付ける</step>
+      <step>3. 検証不可能な主張を文書化</step>
+    </phase>
+  </workflow>
+  <error_escalation>
+    <level severity="low">
+      <example>ドキュメント不足により主張を検証できない</example>
+      <action>検証不可能としてレポートに記載し、続行</action>
+    </level>
+    <level severity="medium">
+      <example>異なるソースから矛盾する情報</example>
+      <action>不一致を文書化し、<cc:useTool ref="tool:AskUserQuestion"/>で明確化を求める</action>
+    </level>
+    <level severity="high">
+      <example>主張が権威あるソースと直接矛盾</example>
+      <action>停止し、証拠とともに不一致をユーザーにフラグ</action>
+    </level>
+    <level severity="critical">
+      <example>セキュリティ関連の主張が不正確</example>
+      <action>操作をブロックし、明示的なユーザー確認を要求</action>
+    </level>
+  </error_escalation>
+  <patterns>
+    <pattern name="claim_extraction">
+      <description>検証のために外部ソースを参照する主張を特定</description>
+      <decision_tree name="when_to_use">
+        <question>コンテンツは外部ドキュメントまたは標準を参照していますか？</question>
+        <if_yes>検証可能な主張を特定するために主張抽出を適用</if_yes>
+        <if_no>このコンテンツにはファクトチェック不要</if_no>
+      </decision_tree>
+      <example>
+      抽出する主張タイプ:
+      ライブラリAPI主張: "useStateはタプルを返す"
+      ドキュメント参照: "Reactドキュメントによると"
+      標準準拠: "WCAG 2.1 AAに従う"
+      バージョン固有の動作: "React 18では、Suspense..."
+      パフォーマンス主張: "MDNによるとO(log n)の計算量"
+
+      バージョン固有の例:
+      主張: "React 18はすべての更新に対して自動バッチ処理を導入"
+      検証: React 18ドキュメントに対してtopic="batching"でContext7に問い合わせ
+      結果: 確認 - React 18はpromise、setTimeout、ネイティブイベントハンドラ内の状態更新を自動的にバッチ処理
+    </example>
+    </pattern>
+    <pattern name="source_selection">
+      <description>主張タイプに基づいて適切な検証ソースを選択</description>
+      <decision_tree name="when_to_use">
+        <question>どのタイプの主張を検証する必要がありますか？</question>
+        <branch condition="ライブラリ/フレームワークAPI"><cc:useTool ref="tool:mcp__plugin_hm_context7__resolve-library-id"/>を使用し、次に<cc:useTool ref="tool:mcp__plugin_hm_context7__query-docs"/>でContext7を使用</branch>
+        <branch condition="Web標準/仕様">公式仕様のために<cc:useTool ref="tool:WebSearch"/>を使用</branch>
+        <branch condition="一般的な技術的事実">権威あるドメインフィルター付きで<cc:useTool ref="tool:WebSearch"/>を使用</branch>
+        <branch condition="特定のドキュメントURL"><cc:useTool ref="tool:WebFetch"/>を使用して取得し検証</branch>
+      </decision_tree>
+      <example>
+      ソース優先順位:
+      ライブラリドキュメントにはContext7（信頼スコア7以上）
+      主張で引用された特定のURLには<cc:useTool ref="tool:WebFetch"/>
+      一般的な技術的主張には<cc:useTool ref="tool:WebSearch"/>
+      ソースが利用できない場合は検証不可能としてマーク
+    </example>
+    </pattern>
+    <pattern name="confidence_assessment">
+      <description>証拠品質に基づいて検証信頼度を計算</description>
+      <decision_tree name="when_to_use">
+        <question>検証証拠が収集されましたか？</question>
+        <if_yes>検証品質を評価するために信頼度評価を適用</if_yes>
+        <if_no>評価前に証拠収集を続行</if_no>
+      </decision_tree>
+      <example>
+      信頼度レベル:
+      90-100: 権威あるソースとの完全一致
+      80-89: 軽微な表現の違いを伴う強い一致
+      70-79: 部分一致、一部の詳細が未検証
+      60-69: 弱い一致、重大な不確実性
+      0-59: 一致なしまたは矛盾する証拠
+
+      閾値: 信頼度80未満の主張にフラグを付ける
+    </example>
+    </pattern>
+    <pattern name="discrepancy_reporting">
+      <description>検証失敗を証拠とともにフォーマットしレポート</description>
+      <decision_tree name="when_to_use">
+        <question>検証信頼度が80未満ですか？</question>
+        <if_yes>問題を文書化するために不一致レポートを適用</if_yes>
+        <if_no>主張を検証済みとしてマーク</if_no>
+      </decision_tree>
+      <example>
+      不一致レポートフォーマット:
+      主張: なされた元の主張
+      ソース: 主張がなされた場所
+      検証ソース: Context7/<cc:useTool ref="tool:WebSearch"/>の結果
+      証拠: ソースからの実際の情報
+      信頼度: 0-100スコア
+      推奨事項: 提案される修正または注記
+    </example>
+    </pattern>
+  </patterns>
+  <concepts>
+    <concept name="verification_sources">
+      <description>異なる主張タイプの権威あるソース</description>
+      <example>
+      ライブラリドキュメント: Context7 MCP
+      React: /facebook/react
+      Next.js: /vercel/next.js
+      TypeScript: /microsoft/typescript
+      NixOS: /nixos/nixpkgs
+
+      Web標準: ドメインフィルター付き<cc:useTool ref="tool:WebSearch"/>
+      MDN Web Docs: developer.mozilla.org
+      W3C: w3.org
+      WHATWG: html.spec.whatwg.org
+      OWASP: owasp.org
+    </example>
+    </concept>
+    <concept name="claim_types">
+      <description>検証可能な主張のカテゴリ</description>
+      <example>
+      API動作: 関数シグネチャ、戻り値の型、パラメータ
+      設定: 設定オプション、デフォルト値、有効な設定
+      ベストプラクティス: 公式ドキュメントからの推奨パターン
+      非推奨: API非推奨ステータスと代替
+      互換性: バージョン互換性と要件
+      パフォーマンス: 計算量の主張、ベンチマーク参照
+      セキュリティ: セキュリティ推奨事項と脆弱性情報
+    </example>
+    </concept>
+    <concept name="confidence_thresholds">
+      <description>信頼度スコアの解釈</description>
+      <example>
+      80以上: 検証済み - 主張が権威あるソースと一致
+      60-79: 不確実 - 部分検証、レビュー推奨
+      60未満: 異議あり - 主張がソースと矛盾またはサポートされない
+      検証不可能: 権威あるソースが利用不可
+    </example>
+    </concept>
+  </concepts>
+  <best_practices>
+    <practice priority="critical">ライブラリドキュメント主張の主要ソースとしてContext7を使用</practice>
+    <practice priority="critical">検証信頼度80未満のすべての主張にフラグを付ける</practice>
+    <practice priority="critical">各検証の証拠ソースを文書化</practice>
+    <practice priority="high">より良いドキュメント品質のためにContext7信頼スコア7以上のライブラリを優先</practice>
+    <practice priority="high">Context7が利用できない場合は<cc:useTool ref="tool:WebSearch"/>フォールバックを使用</practice>
+    <practice priority="medium">証拠としてソースからの直接引用を含める</practice>
+    <practice priority="medium">検証ソースにバージョンの不一致がある場合は注記</practice>
+  </best_practices>
+  <anti_patterns>
+    <avoid name="assumption_verification">
+      <description>実際のソース確認なしに主張を検証済みとしてマーク</description>
+      <instead>検証済みとしてマークする前に常にContext7または<cc:useTool ref="tool:WebSearch"/>で証拠を問い合わせる</instead>
+    </avoid>
+    <avoid name="single_source_reliance">
+      <description>異議のある主張に対して1つのソースのみに依存</description>
+      <instead>信頼度がボーダーライン（70-85）の場合は複数のソースでクロスリファレンス</instead>
+    </avoid>
+    <avoid name="ignoring_version_context">
+      <description>バージョンの違いを考慮せずに主張を検証</description>
+      <instead>バージョンコンテキストを記載し、適切なドキュメントバージョンに対して検証</instead>
+    </avoid>
+    <avoid name="over_verification">
+      <description>明らかな事実を含むすべてのステートメントを検証しようとする</description>
+      <instead>外部ソース、API、仕様を参照する主張に焦点を当てる</instead>
+    </avoid>
+  </anti_patterns>
+  <rules priority="critical">
+    <rule>フラグを付ける前に常に権威あるソースに対して主張を検証</rule>
+    <rule>ライブラリとフレームワークの主張の主要ソースとしてContext7を使用</rule>
+    <rule>ファクトチェック結果で信頼度80未満の主張にフラグを付ける</rule>
+    <rule>すべての検証の証拠ソースを文書化</rule>
+  </rules>
+  <rules priority="standard">
+    <rule><cc:obligation key="n1" invoke="tool:WebSearch">Context7が利用できない場合は<cc:useTool ref="tool:WebSearch"/>をフォールバックとして使用</cc:obligation></rule>
+    <rule>サードパーティソースより公式ドキュメントを優先</rule>
+    <rule>バージョン固有の主張を検証する際はバージョンコンテキストを記載</rule>
+    <rule>異議のある主張は複数のソースでクロスリファレンス</rule>
+  </rules>
+  <constraints>
+    <must>検証前に権威あるソースに問い合わせ</must>
+    <must>すべての検証結果の証拠を文書化</must>
+    <must>信頼度スコアで不一致にフラグを付ける</must>
+    <avoid>ソース確認なしに主張を検証済みとしてマーク</avoid>
+    <avoid>仮定や記憶に基づいて主張を検証</avoid>
+    <avoid>検証時にバージョンコンテキストを無視</avoid>
+  </constraints>
+  <related_agents>
+    <agent><cc:delegate agent="agent:fact-check"/>: 検証のためにこのスキルを使用する主要エージェント</agent>
+    <agent><cc:delegate agent="agent:quality-assurance"/>: ドキュメント精度のためにfact-checkを使用</agent>
+    <agent><cc:delegate agent="agent:docs"/>: ドキュメント主張を検証するためにfact-checkを使用</agent>
+  </related_agents>
+  <related_skills>
+    <skill><cc:useSkill ref="skill:context7-usage"/>: ライブラリドキュメント検証のコアツール</skill>
+    <skill><cc:useSkill ref="skill:investigation-patterns"/>: 証拠収集方法論</skill>
+  </related_skills>
+</skill>
+</cc:prompt>
+</cc:skill>
