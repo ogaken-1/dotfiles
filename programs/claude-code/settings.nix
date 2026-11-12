@@ -66,9 +66,10 @@ in
         "mcp__claude_ai_Microsoft_Docs__*"
         # Web search (read-only)
         "WebSearch"
-        # Bash: read-only file/dir inspection (find/grep/cat are blocked by PreToolUse hooks)
+        # Bash: read-only file/dir inspection (find asks for confirmation only with side-effect actions like -exec/-delete; cat is blocked by PreToolUse hooks)
         "Bash(ls *)"
         "Bash(fd *)"
+        "Bash(find *)"
         "Bash(rg *)"
         "Bash(grep *)"
         "Bash(wc *)"
@@ -76,6 +77,7 @@ in
         "Bash(tail *)"
         "Bash(tree *)"
         "Bash(make -n *)"
+        "Bash(echo *)"
         # Bash: git read-only subcommands
         "Bash(git status *)"
         "Bash(git log *)"
@@ -94,9 +96,6 @@ in
         "Skill(fact-check)"
         "Skill(investigation-patterns)"
         "Skill(markdown)"
-      ];
-      deny = [
-        "Read(.envrc)"
       ];
     };
     statusLine = {
@@ -130,10 +129,10 @@ in
         {
           matcher = "Bash";
           hooks = [
-            (denyCommand {
-              pattern = "find";
-              message = "findコマンドは使用禁止です。代わりにfdを使ってください。";
-            })
+            {
+              type = "command";
+              command = "${./hooks/guard-find.sh}";
+            }
             (denyCommand {
               pattern = "cat";
               message = "catコマンドは使用禁止です。ファイルの読み取りにはReadツール、書き込みにはWriteツールを使ってください。";
