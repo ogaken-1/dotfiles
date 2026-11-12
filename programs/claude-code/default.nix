@@ -6,6 +6,13 @@
 }:
 let
   slide-to-pdf = pkgs.callPackage ../../pkgs/slide-to-pdf/package.nix { };
+  # pstack (Lauren Tan) from cursor/plugins; the Claude Code build lives under harness/pstack/claude-code.
+  pstack-src = pkgs.fetchFromGitHub {
+    owner = "cursor";
+    repo = "plugins";
+    rev = "0dda7b576f7bc64af8285d29e6367c33b88c887b";
+    hash = "sha256-eZeqDhextYIkNYd1DnD9a0Jtbr/JKTj3yx6ccSyutIY=";
+  };
 in
 {
   # homeManagerModule is a module function, so it must go through `imports`, not mkMerge.
@@ -16,6 +23,7 @@ in
     {
       nixpkgs.config.allowUnfree = true;
       programs.claude-code.enable = true;
+      programs.claude-code.plugins.pstack = "${pstack-src}/harness/pstack/claude-code";
       home.sessionVariables.CLAUDE_CODE_DISABLE_BACKGROUND_TASKS = "1";
       # claudeが起動時にマーケットプレイス更新のためにssh git@github.comすることを禁止したい。
       # sshキーによるアクセスだと非公開リポジトリにもアクセスできてしまうこと、sshキー指定してないので
