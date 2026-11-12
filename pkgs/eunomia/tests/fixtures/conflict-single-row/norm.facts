@@ -1,0 +1,2 @@
+memory:user#no-webfetch	F	agent:main	cc:invoke	tool:WebFetch	scope:memory:user
+skill:fetcher#use-webfetch	O	agent:main	cc:invoke	tool:WebFetch	scope:memory:user

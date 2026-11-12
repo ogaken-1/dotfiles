@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cc:agent xmlns:cc="urn:eunomia:claude-code:v1">
+  <cc:frontMatter>
+    <cc:description>A defined agent.</cc:description>
+  </cc:frontMatter>
+  <cc:prompt>
+    <note>Do the work.</note>
+  </cc:prompt>
+</cc:agent>

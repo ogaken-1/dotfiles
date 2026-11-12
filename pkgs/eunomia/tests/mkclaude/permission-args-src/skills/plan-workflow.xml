@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cc:skill xmlns:cc="urn:eunomia:claude-code:v1">
+  <cc:frontMatter>
+    <cc:description>A defined skill that permissions can name.</cc:description>
+  </cc:frontMatter>
+  <cc:prompt>
+    <note>Plan the work.</note>
+  </cc:prompt>
+</cc:skill>

@@ -1,0 +1,3 @@
+skill	skill:unannotated	skills/unannotated.xml
+scope	scope:skill:unannotated	skills/unannotated.xml
+norm	skill:unannotated#no-grep	skills/unannotated.xml

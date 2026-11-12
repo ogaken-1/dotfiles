@@ -1,0 +1,9 @@
+skill:unannotated	tool:mcp__x__y	skills/unannotated.xml
+skill:unannotated	tool:Write	skills/unannotated.xml
+skill:unannotated	tool:Edit	skills/unannotated.xml
+skill:unannotated	tool:Glob	skills/unannotated.xml
+skill:unannotated	tool:Read	skills/unannotated.xml
+skill:unannotated	tool:WebFetch	skills/unannotated.xml
+skill:unannotated	tool:Grep	skills/unannotated.xml
+skill:unannotated	tool:TodoWrite	skills/unannotated.xml
+skill:unannotated	tool:TaskOutput	skills/unannotated.xml

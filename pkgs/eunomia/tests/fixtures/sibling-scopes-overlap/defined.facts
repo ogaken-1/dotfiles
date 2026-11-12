@@ -1,0 +1,4 @@
+memory	memory:user	memory/user.xml
+memory	memory:project	memory/project.xml
+agent	agent:main	profile
+tool	tool:WebFetch	profile

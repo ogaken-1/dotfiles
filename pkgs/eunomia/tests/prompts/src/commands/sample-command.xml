@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cc:command xmlns:cc="urn:eunomia:claude-code:v1" key="command:sample-command">
+  <cc:frontMatter>
+    <cc:name>sample-command</cc:name>
+    <cc:description>Sample command.</cc:description>
+  </cc:frontMatter>
+  <cc:prompt>
+    <purpose>Run it.</purpose>
+  </cc:prompt>
+</cc:command>

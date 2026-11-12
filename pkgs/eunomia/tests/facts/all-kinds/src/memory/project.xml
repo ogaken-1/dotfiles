@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cc:memory xmlns:cc="urn:eunomia:claude-code:v1" key="memory:project" level="project">
+  <cc:prompt>
+    <cc:prohibition key="m1" invoke="tool:EnterPlanMode">No plan mode.</cc:prohibition>
+  </cc:prompt>
+</cc:memory>

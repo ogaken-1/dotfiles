@@ -1,0 +1,3 @@
+memory	memory:user	memory/user.xml
+agent	agent:reviewer	agents/reviewer.xml
+tool	tool:WebFetch	profile

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cc:skill xmlns:cc="urn:eunomia:claude-code:v1">
+  <cc:frontMatter>
+    <!-- Front matter is not scanned. -->
+    <cc:description>The feedbackスキル and the ghost-front skill are not mentions here.</cc:description>
+  </cc:frontMatter>
+  <cc:prompt>
+    <!-- Detected: Japanese suffixes, skill / agent (any name) and command (a hyphenated or defined name, as in English) -->
+    <note>feedbackスキルを使う。</note>
+    <note>exploreエージェントに委任する。</note>
+    <note>ask-userコマンドを実行する。</note>
+    <note>xfeedbackスキル (a longer name; the whole alphanumeric run is the name)</note>
+    <note>askコマンドを実行する。(a defined command: detected)</note>
+    <note>lintコマンドとcatコマンドを実行する。(undefined, no hyphen: not detected)</note>
+    <note>yyyスキルとzzzエージェント (undefined names: detected)</note>
+    <!-- Not detected: a name with an uppercase letter or a leading digit is not a conventional name -->
+    <note>CLIコマンド, Gitコマンド, 2エージェント and Feedbackスキル. Run the Explore Agent.</note>
+    <!-- Detected: attribute value -->
+    <step name="impl-workflowスキル"/>
+    <!-- Detected: English, a hyphenated name, a defined name (src / profile), case-insensitive -->
+    <note>Load the plan-workflow skill first.</note>
+    <note>Delegate to the code-reviewer agent.</note>
+    <note>Ask the worker agent. Try the simplify SKILL.</note>
+    <note>Use the ask command.</note>
+    <!-- Detected: slash commands that are defined (a src command; a skill, as commandsAreSkills holds) -->
+    <note>Run /ask now, or (/code-review).</note>
+
+    <!-- Not detected: generic words before skill / agent / command -->
+    <note>the skill, a skill, this agent, each command, sub agent, manager agent.</note>
+    <!-- Not detected: a plural or a longer word, and a sentence end before the keyword -->
+    <note>ghost skills and ghost agents; see the docs. Skill is a word.</note>
+    <!-- Not detected: slash paths and undefined slash names -->
+    <note>Write to /tmp and read /usr/bin/ask or src/ask/x and /ask/tree. Run /nothing.</note>
+    <!-- Not detected: a name that follows "_" or "-" -->
+    <note>_hiddenスキル and -hiddenスキル</note>
+    <!-- Not detected: annotated references, literals and comments -->
+    <note>Use <cc:useSkill ref="skill:feedback"/>スキル, <cc:delegate agent="agent:Explore"/>エージェント and <cc:seeAlso ref="command:ask"/>コマンド.</note>
+    <note><cc:literal>feedbackスキル, plan-workflow skill and /ask as plain words.</cc:literal></note>
+    <!-- feedbackスキル, plan-workflow skill and /ask in a comment. -->
+  </cc:prompt>
+</cc:skill>

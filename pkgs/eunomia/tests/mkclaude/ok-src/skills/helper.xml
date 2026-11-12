@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cc:skill xmlns:cc="urn:eunomia:claude-code:v1" key="skill:helper">
+  <cc:frontMatter>
+    <cc:name>helper</cc:name>
+    <cc:description>Helper skill.</cc:description>
+  </cc:frontMatter>
+  <cc:prompt>
+    <purpose>Use <cc:useSkill ref="skill:slide-generating"/> and <cc:useTool ref="tool:Read"/>.</purpose>
+  </cc:prompt>
+</cc:skill>

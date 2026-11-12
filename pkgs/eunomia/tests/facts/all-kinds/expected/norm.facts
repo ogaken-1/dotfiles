@@ -1,0 +1,6 @@
+skill:full#o1	O	agent:*	cc:invoke	tool:ExitPlanMode	scope:skill:full
+skill:full#f1	F	agent:helper	cc:invoke	tool:Bash	scope:skill:full/phase:x
+skill:full#p1	P	agent:*	cc:invoke	skill:other	scope:skill:full
+agent:helper#a1	O	agent:helper	cc:invoke	tool:Read	scope:agent:helper
+command:cmd#c1	F	agent:*	cc:invoke	tool:Write	scope:command:cmd
+memory:project#m1	F	agent:*	cc:invoke	tool:EnterPlanMode	scope:memory:project

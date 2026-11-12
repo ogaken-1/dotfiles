@@ -1,0 +1,2 @@
+memory:user#no-enter-plan-mode	F	agent:main	cc:invoke	tool:EnterPlanMode	scope:memory:user
+skill:plan-workflow#exit-via-exitplanmode	O	agent:main	cc:invoke	tool:ExitPlanMode	scope:skill:plan-workflow

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cc:skill xmlns:cc="urn:eunomia:claude-code:v1">
+  <cc:frontMatter>
+    <cc:description>Another skill.</cc:description>
+  </cc:frontMatter>
+  <cc:prompt>Body.</cc:prompt>
+</cc:skill>

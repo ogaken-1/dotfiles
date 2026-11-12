@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cc:memory xmlns:cc="urn:eunomia:claude-code:v1" key="memory:user" level="user">
+  <cc:prompt>
+    <instructions>
+      <planning>
+        <cc:prohibition key="no-enter-plan-mode" actor="agent:main" invoke="tool:EnterPlanMode">EnterPlanModeは使用禁止</cc:prohibition>
+      </planning>
+      <rules>
+        <cc:obligation key="use-symbol-ops" actor="agent:main">シンボルレベルの操作を使用</cc:obligation>
+      </rules>
+    </instructions>
+  </cc:prompt>
+</cc:memory>

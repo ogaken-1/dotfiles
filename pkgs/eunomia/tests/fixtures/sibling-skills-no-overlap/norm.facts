@@ -1,0 +1,2 @@
+skill:a#no-webfetch	F	agent:main	cc:invoke	tool:WebFetch	scope:skill:a
+skill:b#use-webfetch	O	agent:main	cc:invoke	tool:WebFetch	scope:skill:b

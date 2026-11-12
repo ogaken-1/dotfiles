@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cc:skill xmlns:cc="urn:eunomia:claude-code:v1" key="skill:unannotated">
+  <cc:frontMatter>
+    <cc:name>unannotated</cc:name>
+    <!-- Front matter is not scanned: Glob and mcp__fm__ignored here are not mentions. -->
+    <cc:description>Searches with Glob and mcp__fm__ignored.</cc:description>
+  </cc:frontMatter>
+  <cc:prompt>
+    <!-- Detected: an attribute value, parts of an attribute value, plain text and text inside a cc element. -->
+    <tool name="mcp__x__y">An MCP tool.</tool>
+    <tool name="Write/Edit"/>
+    <tool name="TodoWrite"/>
+    <note>TaskOutput</note>
+    <note>Use Glob to find files.</note>
+    <note>Open it with `Read` first.</note>
+    <note>Multi-line
+      text mentions
+      WebFetch on the third line.</note>
+    <cc:obligation key="no-grep">Never use Grep here.</cc:obligation>
+
+    <!-- Not detected: ambiguous names without backticks (text) and inside other words. -->
+    <note>Read the docs, then Edit and Write the Agent Skill notes. Run Bash in a Monitor Workflow.</note>
+    <note>GlobalConfig, MyGlob, Glob_x, Globs and xGrep are other words.</note>
+
+    <!-- Not detected: annotated references, literals and comments. -->
+    <note>See <cc:useTool ref="tool:Bash"/> docs.</note>
+    <note><cc:literal>Glob, mcp__a__b and `Read` as plain words.</cc:literal></note>
+    <cc:literal><lit name="Glob/mcp__lit__attr"/></cc:literal>
+    <!-- Glob mcp__c__d `Read` in a comment. -->
+  </cc:prompt>
+</cc:skill>

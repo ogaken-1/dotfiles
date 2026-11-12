@@ -1,0 +1,4 @@
+agent	agent:Explore	claude-code-9.9.9
+skill	skill:code-review	claude-code-9.9.9
+skill	skill:simplify	claude-code-9.9.9
+flag	commandsAreSkills	claude-code-9.9.9

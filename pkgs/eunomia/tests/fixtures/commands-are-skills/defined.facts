@@ -1,0 +1,3 @@
+command	command:ask	commands/ask.xml
+skill	skill:caller	skills/caller.xml
+flag	commandsAreSkills	claude-code-9.9.9

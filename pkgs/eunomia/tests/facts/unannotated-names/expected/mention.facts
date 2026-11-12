@@ -1,0 +1,13 @@
+skill:names	agent:code-reviewer	skills/names.xml
+skill:names	agent:explore	skills/names.xml
+skill:names	agent:worker	skills/names.xml
+skill:names	agent:zzz	skills/names.xml
+skill:names	command:ask	skills/names.xml
+skill:names	command:ask-user	skills/names.xml
+skill:names	skill:code-review	skills/names.xml
+skill:names	skill:feedback	skills/names.xml
+skill:names	skill:impl-workflow	skills/names.xml
+skill:names	skill:plan-workflow	skills/names.xml
+skill:names	skill:simplify	skills/names.xml
+skill:names	skill:xfeedback	skills/names.xml
+skill:names	skill:yyy	skills/names.xml

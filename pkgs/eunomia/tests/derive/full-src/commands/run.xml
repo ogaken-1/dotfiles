@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cc:command xmlns:cc="urn:eunomia:claude-code:v1" key="command:run">
+  <cc:frontMatter>
+    <cc:name>run</cc:name>
+    <cc:description>Runs it.</cc:description>
+  </cc:frontMatter>
+  <cc:prompt>Use <cc:useSkill ref="skill:greet"/>.</cc:prompt>
+</cc:command>

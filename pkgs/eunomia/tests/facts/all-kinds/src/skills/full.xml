@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cc:skill xmlns:cc="urn:eunomia:claude-code:v1" key="skill:full">
+  <cc:frontMatter>
+    <cc:name>full</cc:name>
+    <cc:description>Exercises every fact relation.</cc:description>
+    <cc:skills><cc:item ref="skill:other"/></cc:skills>
+    <cc:tools><cc:item ref="tool:Read"/></cc:tools>
+    <cc:disallowedTools><cc:item ref="tool:Bash"/></cc:disallowedTools>
+  </cc:frontMatter>
+  <cc:prompt>
+    <workflow>
+      <phase name="x">
+        <step>
+          <cc:delegate agent="agent:helper"/>
+          <cc:useSkill ref="skill:other"/>
+          <cc:useTool ref="tool:Grep"/>
+          <cc:seeAlso ref="command:cmd"/>
+          <cc:seeAlso ref="tool:Edit"/>
+          <cc:obligation key="o1" invoke="tool:ExitPlanMode">Hand off. Ask via <cc:useTool ref="tool:AskUserQuestion"/>.</cc:obligation>
+          <cc:prohibition key="f1" actor="agent:helper" invoke="tool:Bash" scope="scope:skill:full/phase:x">No shell.</cc:prohibition>
+        </step>
+      </phase>
+    </workflow>
+    <cc:permission key="p1" invoke="skill:other">May use the other skill.</cc:permission>
+    <cc:obligation key="no-invoke">Has no invoke, so no norm fact.</cc:obligation>
+    <cc:override over="skill:full#o1" under="memory:project#m1"/>
+  </cc:prompt>
+</cc:skill>

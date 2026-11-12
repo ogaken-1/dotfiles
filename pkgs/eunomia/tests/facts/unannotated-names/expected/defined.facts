@@ -1,0 +1,10 @@
+agent	agent:Explore	claude-code-9.9.9
+agent	agent:worker	agents/worker.xml
+command	command:ask	commands/ask.xml
+flag	commandsAreSkills	claude-code-9.9.9
+scope	scope:agent:worker	agents/worker.xml
+scope	scope:command:ask	commands/ask.xml
+scope	scope:skill:names	skills/names.xml
+skill	skill:code-review	claude-code-9.9.9
+skill	skill:names	skills/names.xml
+skill	skill:simplify	claude-code-9.9.9

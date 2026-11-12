@@ -1,0 +1,2 @@
+command	command:ask	commands/ask.xml
+skill	skill:caller	skills/caller.xml

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cc:memory xmlns:cc="urn:eunomia:claude-code:v1" key="memory:user" level="user">
+  <cc:prompt>
+    <instructions>
+      <rule><cc:prohibition key="no-enter-plan-mode" actor="agent:main" invoke="tool:EnterPlanMode">EnterPlanModeは使用禁止</cc:prohibition></rule>
+    </instructions>
+  </cc:prompt>
+</cc:memory>

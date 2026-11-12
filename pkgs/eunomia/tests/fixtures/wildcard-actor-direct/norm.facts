@@ -1,0 +1,2 @@
+memory:user#no-webfetch	F	agent:*	cc:invoke	tool:WebFetch	scope:memory:user
+agent:reviewer#fetch-docs	O	agent:reviewer	cc:invoke	tool:WebFetch	scope:agent:reviewer

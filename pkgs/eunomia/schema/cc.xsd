@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Source schema for eunomia Claude Code entities (namespace urn:eunomia:claude-code:v1).
+
+  Notes:
+  - Free-form prompt content lives in cc:prompt as elements without a namespace
+    (xs:any ##local, lax). The cc: elements that may appear anywhere inside are
+    declared globally, so lax assessment validates them even at depth.
+  - Cross-file references (override targets, delegate targets, ...) are only
+    format-checked here; resolution is done by the Datalog checks.
+  - The kind and the name of an entity come from the file path (src/<kinddir>/<name>.xml).
+    The root `key`, cc:name and the memory `level` are optional; when written, they must agree
+    with the path (checked by xslt/check-origin.xsl, not expressible in XSD).
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:cc="urn:eunomia:claude-code:v1"
+           targetNamespace="urn:eunomia:claude-code:v1"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+  <!-- ===== Simple types ===== -->
+
+  <xs:simpleType name="Name">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[A-Za-z0-9_.\-]+"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="SkillRef">
+    <xs:restriction base="xs:string"><xs:pattern value="skill:[A-Za-z0-9_.\-]+"/></xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="AgentRef">
+    <xs:restriction base="xs:string"><xs:pattern value="agent:[A-Za-z0-9_.\-]+"/></xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="ToolRef">
+    <xs:restriction base="xs:string"><xs:pattern value="tool:[A-Za-z0-9_.\-]+"/></xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="AnyRef">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="(skill|agent|command|tool):[A-Za-z0-9_.\-]+"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="ScopeRef">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="scope:[A-Za-z0-9_.:/\-]+"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="NormKey">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-z0-9][a-z0-9\-]*"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Global norm key: <entity key>#<norm key> -->
+  <xs:simpleType name="GlobalNormKey">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="((skill|agent|command):[A-Za-z0-9_.\-]+|memory:(user|project))#[a-z0-9][a-z0-9\-]*"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="SkillKey">
+    <xs:restriction base="xs:string"><xs:pattern value="skill:[A-Za-z0-9_.\-]+"/></xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="AgentKey">
+    <xs:restriction base="xs:string"><xs:pattern value="agent:[A-Za-z0-9_.\-]+"/></xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="CommandKey">
+    <xs:restriction base="xs:string"><xs:pattern value="command:[A-Za-z0-9_.\-]+"/></xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="MemoryKey">
+    <xs:restriction base="xs:string"><xs:pattern value="memory:(user|project)"/></xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="MemoryLevel">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="user"/>
+      <xs:enumeration value="project"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Non-empty single-line string (front-matter values). -->
+  <xs:simpleType name="SingleLine">
+    <xs:restriction base="xs:string">
+      <xs:whiteSpace value="preserve"/>
+      <xs:pattern value="[^\r\n]+"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- ===== Reference elements (empty) ===== -->
+
+  <xs:element name="delegate">
+    <xs:complexType>
+      <xs:attribute name="agent" type="cc:AgentRef" use="required"/>
+      <xs:attribute name="role" type="cc:SingleLine"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="useSkill">
+    <xs:complexType>
+      <xs:attribute name="ref" type="cc:SkillRef" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="useTool">
+    <xs:complexType>
+      <xs:attribute name="ref" type="cc:ToolRef" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="seeAlso">
+    <xs:complexType>
+      <xs:attribute name="ref" type="cc:AnyRef" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- cc:literal: content that is printed as it is and that the unannotated-reference check skips.
+       Plain (namespace-less) elements and text only; reference elements inside would be unchecked. -->
+  <xs:element name="literal">
+    <xs:complexType mixed="true">
+      <xs:sequence>
+        <xs:any namespace="##local" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- ===== Norm elements (mixed text, may embed reference elements) ===== -->
+
+  <xs:complexType name="Norm" mixed="true">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element ref="cc:literal"/>
+      <xs:element ref="cc:delegate"/>
+      <xs:element ref="cc:useSkill"/>
+      <xs:element ref="cc:useTool"/>
+      <xs:element ref="cc:seeAlso"/>
+    </xs:choice>
+    <xs:attribute name="key" type="cc:NormKey" use="required"/>
+    <xs:attribute name="actor" type="cc:AgentRef"/>
+    <xs:attribute name="invoke" type="cc:AnyRef"/>
+    <xs:attribute name="scope" type="cc:ScopeRef"/>
+  </xs:complexType>
+
+  <xs:element name="obligation" type="cc:Norm"/>
+  <xs:element name="prohibition" type="cc:Norm"/>
+  <xs:element name="permission" type="cc:Norm"/>
+
+  <xs:element name="override">
+    <xs:complexType>
+      <xs:attribute name="over" type="cc:GlobalNormKey" use="required"/>
+      <xs:attribute name="under" type="cc:GlobalNormKey" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- ===== Prompt body ===== -->
+
+  <xs:complexType name="Prompt" mixed="true">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:any namespace="##local" processContents="lax"/>
+      <xs:element ref="cc:literal"/>
+      <xs:element ref="cc:delegate"/>
+      <xs:element ref="cc:useSkill"/>
+      <xs:element ref="cc:useTool"/>
+      <xs:element ref="cc:seeAlso"/>
+      <xs:element ref="cc:obligation"/>
+      <xs:element ref="cc:prohibition"/>
+      <xs:element ref="cc:permission"/>
+      <xs:element ref="cc:override"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <!-- ===== Front matter ===== -->
+
+  <xs:complexType name="SkillItems">
+    <xs:sequence>
+      <xs:element name="item" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType><xs:attribute name="ref" type="cc:SkillRef" use="required"/></xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ToolItems">
+    <xs:sequence>
+      <xs:element name="item" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType><xs:attribute name="ref" type="cc:ToolRef" use="required"/></xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="FrontMatter">
+    <xs:sequence>
+      <xs:element name="name" type="cc:SingleLine" minOccurs="0"/>
+      <xs:element name="description" type="cc:SingleLine"/>
+      <xs:element name="model" type="cc:SingleLine" minOccurs="0"/>
+      <xs:element name="memory" type="cc:SingleLine" minOccurs="0"/>
+      <xs:element name="skills" type="cc:SkillItems" minOccurs="0"/>
+      <xs:element name="tools" type="cc:ToolItems" minOccurs="0"/>
+      <xs:element name="disallowedTools" type="cc:ToolItems" minOccurs="0"/>
+      <xs:element name="field" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="cc:SingleLine">
+              <xs:attribute name="name" type="cc:Name" use="required"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ===== Entities ===== -->
+
+  <xs:complexType name="SkillType">
+    <xs:sequence>
+      <xs:element name="frontMatter" type="cc:FrontMatter"/>
+      <xs:element name="prompt" type="cc:Prompt"/>
+    </xs:sequence>
+    <xs:attribute name="key" type="cc:SkillKey"/>
+  </xs:complexType>
+
+  <xs:complexType name="AgentType">
+    <xs:sequence>
+      <xs:element name="frontMatter" type="cc:FrontMatter"/>
+      <xs:element name="prompt" type="cc:Prompt"/>
+    </xs:sequence>
+    <xs:attribute name="key" type="cc:AgentKey"/>
+  </xs:complexType>
+
+  <xs:complexType name="CommandType">
+    <xs:sequence>
+      <xs:element name="frontMatter" type="cc:FrontMatter"/>
+      <xs:element name="prompt" type="cc:Prompt"/>
+    </xs:sequence>
+    <xs:attribute name="key" type="cc:CommandKey"/>
+  </xs:complexType>
+
+  <xs:complexType name="MemoryType">
+    <xs:sequence>
+      <xs:element name="prompt" type="cc:Prompt"/>
+    </xs:sequence>
+    <xs:attribute name="key" type="cc:MemoryKey"/>
+    <xs:attribute name="level" type="cc:MemoryLevel"/>
+  </xs:complexType>
+
+  <!-- Norm keys are unique within a file. -->
+  <xs:element name="skill" type="cc:SkillType">
+    <xs:unique name="skillNormKey">
+      <xs:selector xpath=".//cc:obligation | .//cc:prohibition | .//cc:permission"/>
+      <xs:field xpath="@key"/>
+    </xs:unique>
+  </xs:element>
+  <xs:element name="agent" type="cc:AgentType">
+    <xs:unique name="agentNormKey">
+      <xs:selector xpath=".//cc:obligation | .//cc:prohibition | .//cc:permission"/>
+      <xs:field xpath="@key"/>
+    </xs:unique>
+  </xs:element>
+  <xs:element name="command" type="cc:CommandType">
+    <xs:unique name="commandNormKey">
+      <xs:selector xpath=".//cc:obligation | .//cc:prohibition | .//cc:permission"/>
+      <xs:field xpath="@key"/>
+    </xs:unique>
+  </xs:element>
+  <xs:element name="memory" type="cc:MemoryType">
+    <xs:unique name="memoryNormKey">
+      <xs:selector xpath=".//cc:obligation | .//cc:prohibition | .//cc:permission"/>
+      <xs:field xpath="@key"/>
+    </xs:unique>
+  </xs:element>
+</xs:schema>

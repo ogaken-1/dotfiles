@@ -1,0 +1,2 @@
+memory:user#no-enter-plan-mode	F	agent:*	cc:invoke	tool:EnterPlanMode	scope:memory:user
+agent:reviewer#exit-plan	O	agent:reviewer	cc:invoke	tool:ExitPlanMode	scope:agent:reviewer

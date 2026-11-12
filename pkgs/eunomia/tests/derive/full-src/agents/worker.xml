@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cc:agent xmlns:cc="urn:eunomia:claude-code:v1" key="agent:worker">
+  <cc:frontMatter>
+    <cc:name>worker</cc:name>
+    <cc:description>Does the work.</cc:description>
+    <cc:model>opus</cc:model>
+    <cc:tools><cc:item ref="tool:Read"/></cc:tools>
+    <cc:field name="color">blue</cc:field>
+  </cc:frontMatter>
+  <cc:prompt>
+    <purpose>Delegated by <cc:delegate agent="agent:worker"/>.</purpose>
+    <cc:obligation key="read-first" invoke="tool:Read">Read first.</cc:obligation>
+  </cc:prompt>
+</cc:agent>

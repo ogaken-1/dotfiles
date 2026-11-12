@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cc:skill xmlns:cc="urn:eunomia:claude-code:v1" key="skill:plan-workflow">
+  <cc:frontMatter>
+    <cc:name>plan-workflow</cc:name>
+    <cc:description>Use when the user needs requirements definition.</cc:description>
+  </cc:frontMatter>
+  <cc:prompt>
+    <purpose>Plan mode workflow. See <cc:seeAlso ref="command:bug"/> and <cc:seeAlso ref="tool:ExitPlanMode"/>.</purpose>
+    <workflow>
+      <phase name="investigate">
+        <step order="1">
+          <action>調査を委任する</action>
+          <cc:delegate agent="agent:explore"/>
+          <cc:delegate role="memory" agent="agent:general-purpose"/>
+          <cc:useSkill ref="skill:serena-usage"/>
+          <cc:useTool ref="tool:mcp__plugin_hm_serena__find_symbol"/>
+          <deeper>
+            <deepest>
+              <cc:delegate agent="agent:validator" role="check"/>
+              <cc:obligation key="deep-must-ask" actor="agent:main" invoke="tool:AskUserQuestion" scope="scope:skill:plan-workflow/phase:investigate">質問は <cc:useTool ref="tool:AskUserQuestion"/> で行う</cc:obligation>
+            </deepest>
+          </deeper>
+        </step>
+      </phase>
+    </workflow>
+    <rules>
+      <rule>
+        <cc:prohibition key="no-edit" actor="agent:main" invoke="tool:Edit">ファイルを編集しない</cc:prohibition>
+        <cc:permission key="may-read">読み取りは可</cc:permission>
+        <cc:obligation key="exit-via-exitplanmode" actor="agent:main" invoke="tool:ExitPlanMode">ExitPlanModeでハンドオフする</cc:obligation>
+      </rule>
+    </rules>
+    <cc:override over="skill:plan-workflow#exit-via-exitplanmode" under="memory:user#no-enter-plan-mode"/>
+  </cc:prompt>
+</cc:skill>

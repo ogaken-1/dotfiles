@@ -1,0 +1,3 @@
+tool	tool:EnterPlanMode	profile
+tool	tool:ExitPlanMode	profile
+agent	agent:main	profile

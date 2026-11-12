@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cc:command xmlns:cc="urn:eunomia:claude-code:v1">
+  <cc:frontMatter>
+    <cc:description>A defined command.</cc:description>
+  </cc:frontMatter>
+  <cc:prompt>
+    <note>Answer questions.</note>
+  </cc:prompt>
+</cc:command>

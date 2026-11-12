@@ -1,0 +1,11 @@
+memory	memory:user	memory/user.xml
+norm	memory:user#no-webfetch	memory/user.xml
+scope	scope:memory:user	memory/user.xml
+skill	skill:s	skills/s.xml
+norm	skill:s#typo-scope	skills/s.xml
+norm	skill:s#ok-scope	skills/s.xml
+norm	skill:s#ghost-target	skills/s.xml
+scope	scope:skill:s	skills/s.xml
+agent	agent:main	profile
+tool	tool:WebFetch	profile
+tool	tool:Read	profile

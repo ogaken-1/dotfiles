@@ -1,0 +1,16 @@
+tool	tool:Read	claude-code-9.9.9
+tool	tool:Bash	claude-code-9.9.9
+tool	tool:EnterPlanMode	claude-code-9.9.9
+tool	tool:ExitPlanMode	claude-code-9.9.9
+tool	tool:Agent	claude-code-9.9.9
+tool	tool:mcp__plugin_hm_serena__find_symbol	claude-code-9.9.9
+tool	tool:mcp__claude_ai_Notion__notion-search	claude-code-9.9.9
+tool	tool:mcp__fs__read	claude-code-9.9.9
+agent	agent:Explore	claude-code-9.9.9
+agent	agent:general-purpose	claude-code-9.9.9
+agent	agent:Plan	claude-code-9.9.9
+agent	agent:main	claude-code-9.9.9
+skill	skill:slide-generating	extra
+skill	skill:code-review	claude-code-9.9.9
+skill	skill:simplify	claude-code-9.9.9
+flag	commandsAreSkills	claude-code-9.9.9

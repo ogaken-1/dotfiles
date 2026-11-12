@@ -1,0 +1,3 @@
+skill:names	agent	agent:Explore	skills/names.xml
+skill:names	command	command:ask	skills/names.xml
+skill:names	skill	skill:feedback	skills/names.xml

@@ -1,0 +1,10 @@
+参照切れ: skill:plan-workflow -> memory:user#no-such-norm (skills/plan-workflow.xml, 種別: norm)
+参照切れ: skill:plan-workflow -> skill:ghost (skills/plan-workflow.xml, 種別: skill)
+参照切れ: skill:plan-workflow#read-first -> scope:sesion (skills/plan-workflow.xml, 種別: scope)
+削除済み（後継: tool:Agent）: agent:bad -> tool:Task
+削除済み（後継なし）: agent:bad -> tool:TodoWrite
+削除済み（後継なし）: settings:hooks -> tool:TaskOutput
+削除済み（後継なし）: settings:permissions.allow -> tool:TaskOutput
+規範の衝突: memory:user#no-enter-plan-mode <-> skill:plan-workflow#exit-via-exitplanmode
+要約: 参照切れ 3 件、削除済み 4 件、規範の衝突 1 件、未注釈の参照 0 件（合計 8 件）
+全文は nix log <drv> か、mkClaudeConfig の refsReport をビルドして見る

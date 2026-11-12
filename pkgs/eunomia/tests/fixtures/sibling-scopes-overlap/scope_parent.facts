@@ -1,0 +1,2 @@
+scope:session	scope:memory:user
+scope:session	scope:memory:project

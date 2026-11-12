@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cc:skill xmlns:cc="urn:eunomia:claude-code:v1" key="skill:user-skill">
+  <cc:frontMatter>
+    <cc:name>user-skill</cc:name>
+    <cc:description>Refers to skills that only exist as extra entries.</cc:description>
+  </cc:frontMatter>
+  <cc:prompt>
+    <purpose>Use <cc:useSkill ref="skill:foo"/> and <cc:useSkill ref="skill:bar"/> and <cc:delegate agent="agent:ghost-agent"/>.</purpose>
+  </cc:prompt>
+</cc:skill>

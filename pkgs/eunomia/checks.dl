@@ -1,0 +1,107 @@
+// eunomia checks (Souffle). Inputs are tab-separated facts/<relation>.facts.
+// All identifiers are full "kind:name" forms; global norm keys are "<entity key>#<norm key>".
+
+.decl defined(kind:symbol, name:symbol, file:symbol)
+.decl ref(src:symbol, kind:symbol, name:symbol, file:symbol)
+.decl scope_parent(child:symbol, parent:symbol)      // parent's norms also apply to child
+.decl norm(key:symbol, modality:symbol, actor:symbol, action:symbol, target:symbol, scope:symbol)
+.decl override(over:symbol, under:symbol)
+.decl requires(act:symbol, pre:symbol)               // platform profile: act presupposes pre
+.decl removed(name:symbol, successor:symbol)         // platform profile: "-" means no successor
+.decl mention(src:symbol, name:symbol, file:symbol)   // tool name written in an origin without cc:useTool
+.input defined
+.input mention
+.input ref
+.input scope_parent
+.input norm
+.input override
+.input requires
+.input removed
+
+// Scopes that scope_parent mentions (child or parent) are known scopes. Entity default scopes
+// are emitted as defined("scope", ...) by to-facts.xsl.
+defined("scope", s, "scope_parent") :- scope_parent(s, _).
+defined("scope", s, "scope_parent") :- scope_parent(_, s).
+
+// When the platform treats custom commands as skills (flag emitted by the profile), every defined
+// command "command:<n>" is also the skill "skill:<n>". Command names are only known after src has
+// been processed, so the skill is derived here. "command:" is 8 characters long.
+defined("skill", cat("skill:", substr(c, 8, strlen(c) - 8)), f) :-
+  defined("command", c, f), defined("flag", "commandsAreSkills", _).
+
+// Dangling references. Names known to be removed are reported by removed_ref instead.
+// Kinds: skill/agent/command/tool for ordinary references, "norm" for an override pointing at a
+// norm key, "scope" for a norm's explicit scope, "target" for a norm's invoke target and "actor"
+// for a norm's actor.
+.decl broken_ref(src:symbol, kind:symbol, name:symbol, file:symbol)
+broken_ref(s, k, n, f) :- ref(s, k, n, f), !defined(k, n, _), !removed(n, _).
+broken_ref(s, "target", t, "-") :- norm(s, _, _, _, t, _), !defined(_, t, _), !removed(t, _).
+broken_ref(s, "actor", w, "-") :- norm(s, _, w, _, _, _), w != "agent:*", !defined("agent", w, _).
+.output broken_ref
+
+// References to removed names, with the successor so that typos and spec removals can be told apart.
+.decl removed_ref(src:symbol, name:symbol, successor:symbol)
+removed_ref(s, n, x) :- ref(s, _, n, _), removed(n, x).
+removed_ref(s, t, x) :- norm(s, _, _, _, t, _), removed(t, x).
+.output removed_ref
+
+// Tool names that an origin writes as plain text or in an attribute value, with no cc:useTool.
+// to-facts.xsl / facts.nix emit every candidate; whether the name still exists is not asked here:
+// an unannotated name is never checked against the profile, so it can silently be stale. The fix
+// is cc:useTool (checked) or cc:literal (deliberately plain).
+.decl unannotated_ref(src:symbol, name:symbol, file:symbol)
+unannotated_ref(s, n, f) :- mention(s, n, f).
+.output unannotated_ref
+
+// Scope containment (reflexive transitive closure of scope_parent). Reflexivity covers every scope
+// used by a norm and every scope mentioned in scope_parent (e.g. scope:session, which has no norms
+// of its own but is a common place where sibling scopes apply together).
+.decl within(child:symbol, ancestor:symbol)
+within(x, x) :- norm(_, _, _, _, _, x).
+within(x, x) :- scope_parent(x, _).
+within(x, x) :- scope_parent(_, x).
+within(c, p) :- scope_parent(c, p).
+within(c, p) :- within(c, m), scope_parent(m, p).
+
+// Two scopes overlap when some scope c exists where both apply (within is reflexive, so
+// ancestor/descendant pairs are included). Siblings with no common descendant do not overlap.
+.decl overlaps(a:symbol, b:symbol)
+overlaps(a, b) :- within(c, a), within(c, b).
+
+.decl opposite(m1:symbol, m2:symbol)
+opposite("O", "F").
+opposite("F", "O").
+opposite("P", "F").
+opposite("F", "P").
+
+// Explicit precedence only; no transitive closure.
+.decl resolved(a:symbol, b:symbol)
+resolved(a, b) :- override(a, b).
+resolved(a, b) :- override(b, a).
+
+// An obligation also implies the obligation of every prerequisite action.
+.decl implied(key:symbol, modality:symbol, actor:symbol, target:symbol, scope:symbol)
+implied(k, "O", w, t, s) :- norm(k, "O", w, _, t, s).
+implied(k, "O", w, p, s) :- implied(k, "O", w, t, s), requires(t, p).
+
+// Two actors are the same party when equal, or when either is the wildcard "agent:*"
+// (a norm that names no actor applies to everyone in its scope).
+.decl actor_match(a:symbol, b:symbol)
+actor_match(w, w) :- norm(_, _, w, _, _, _).
+actor_match("agent:*", w) :- norm(_, _, w, _, _, _).
+actor_match(w, "agent:*") :- norm(_, _, w, _, _, _).
+
+// Conflicts are derived in whatever direction each route finds them, then normalised to a < b
+// so that the same pair is reported once regardless of the route.
+.decl conflict_raw(a:symbol, b:symbol)
+conflict_raw(a, b) :-
+  norm(a, m1, w1, act, t, s1), norm(b, m2, w2, act, t, s2),
+  actor_match(w1, w2), opposite(m1, m2), overlaps(s1, s2), !resolved(a, b).
+conflict_raw(a, b) :-
+  implied(a, "O", w1, t, s1), norm(b, "F", w2, _, t, s2),
+  actor_match(w1, w2), a != b, overlaps(s1, s2), !resolved(a, b).
+
+.decl conflict(a:symbol, b:symbol)
+conflict(a, b) :- conflict_raw(a, b), a < b.
+conflict(a, b) :- conflict_raw(b, a), a < b.
+.output conflict

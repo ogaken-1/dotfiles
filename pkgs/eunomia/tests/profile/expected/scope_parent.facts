@@ -1,0 +1,5 @@
+scope:session	scope:memory:user
+scope:session	scope:memory:project
+scope:agent:general-purpose	scope:memory:user
+scope:agent:Plan	scope:memory:user
+scope:agent:Plan	scope:memory:project

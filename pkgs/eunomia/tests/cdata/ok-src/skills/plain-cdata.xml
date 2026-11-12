@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cc:skill xmlns:cc="urn:eunomia:claude-code:v1" key="skill:plain-cdata">
+  <cc:frontMatter>
+    <cc:name>plain-cdata</cc:name>
+    <cc:description>Has a CDATA section without markup characters (the output is the same as the origin text); a later section with &lt; is fine outside CDATA.</cc:description>
+  </cc:frontMatter>
+  <cc:prompt>
+    <example><![CDATA[plain text only]]></example>
+    <note>a &lt; b is escaped markup, not CDATA</note>
+  </cc:prompt>
+</cc:skill>

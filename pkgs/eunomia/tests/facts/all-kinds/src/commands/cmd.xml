@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cc:command xmlns:cc="urn:eunomia:claude-code:v1" key="command:cmd">
+  <cc:frontMatter>
+    <cc:name>cmd</cc:name>
+    <cc:description>A command.</cc:description>
+  </cc:frontMatter>
+  <cc:prompt>
+    <cc:prohibition key="c1" invoke="tool:Write">No writing.</cc:prohibition>
+  </cc:prompt>
+</cc:command>

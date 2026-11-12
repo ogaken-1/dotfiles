@@ -1,0 +1,3 @@
+skill	skill:plan-workflow	skills/plan-workflow.xml
+memory	memory:user	memory/user.xml
+agent	agent:main	profile

@@ -95,6 +95,16 @@
       perSystem =
         { pkgs, ... }:
         {
+          checks =
+            (
+              import ./pkgs/eunomia/tests { inherit pkgs inputs; }
+              |> (tests: removeAttrs tests [ "perCase" ])
+              |> pkgs.lib.mapAttrs' (name: drv: pkgs.lib.nameValuePair "eunomia-${name}" drv)
+            )
+            // (
+              (import ./programs/claude-code/eunomia.nix { inherit pkgs; }).checks
+              |> pkgs.lib.mapAttrs' (name: drv: pkgs.lib.nameValuePair "claude-code-${name}" drv)
+            );
           devShells.default = pkgs.mkShellNoCC {
             packages = with pkgs; [
               ruby_3_4

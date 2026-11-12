@@ -1,0 +1,4 @@
+memory	memory:user	memory/user.xml
+skill	skill:s	skills/s.xml
+agent	agent:main	profile
+tool	tool:WebFetch	profile

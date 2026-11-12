@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cc:skill xmlns:cc="urn:eunomia:claude-code:v1" key="skill:greet">
+  <cc:frontMatter>
+    <cc:name>greet</cc:name>
+    <cc:description>Greets the user.</cc:description>
+    <cc:skills><cc:item ref="skill:other"/></cc:skills>
+  </cc:frontMatter>
+  <cc:prompt>
+    <rules>
+      <rule><cc:prohibition key="no-bash" invoke="tool:Bash">No shell.</cc:prohibition></rule>
+      <rule>See <cc:seeAlso ref="agent:worker"/> and <cc:seeAlso ref="command:run"/>.</rule>
+    </rules>
+  </cc:prompt>
+</cc:skill>

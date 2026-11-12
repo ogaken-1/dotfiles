@@ -1,0 +1,4 @@
+skill	skill:a	skills/a.xml
+skill	skill:b	skills/b.xml
+agent	agent:main	profile
+tool	tool:WebFetch	profile

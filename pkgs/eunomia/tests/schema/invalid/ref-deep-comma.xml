@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cc:skill xmlns:cc="urn:eunomia:claude-code:v1" key="skill:x"><cc:frontMatter><cc:name>x</cc:name><cc:description>desc</cc:description></cc:frontMatter><cc:prompt><workflow><phase><step><a><b><cc:delegate agent="agent:a,agent:b"/></b></a></step></phase></workflow></cc:prompt></cc:skill>

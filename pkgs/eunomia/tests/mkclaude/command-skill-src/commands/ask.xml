@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cc:command xmlns:cc="urn:eunomia:claude-code:v1" key="command:ask">
+  <cc:frontMatter>
+    <cc:name>ask</cc:name>
+    <cc:description>Question command.</cc:description>
+  </cc:frontMatter>
+  <cc:prompt>
+    <purpose>Answer the question.</purpose>
+  </cc:prompt>
+</cc:command>

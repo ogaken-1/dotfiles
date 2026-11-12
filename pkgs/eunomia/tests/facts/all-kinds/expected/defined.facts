@@ -1,0 +1,15 @@
+skill	skill:full	skills/full.xml
+agent	agent:helper	agents/helper.xml
+command	command:cmd	commands/cmd.xml
+memory	memory:project	memory/project.xml
+norm	skill:full#o1	skills/full.xml
+norm	skill:full#f1	skills/full.xml
+norm	skill:full#p1	skills/full.xml
+norm	skill:full#no-invoke	skills/full.xml
+norm	agent:helper#a1	agents/helper.xml
+norm	command:cmd#c1	commands/cmd.xml
+norm	memory:project#m1	memory/project.xml
+scope	scope:skill:full	skills/full.xml
+scope	scope:agent:helper	agents/helper.xml
+scope	scope:command:cmd	commands/cmd.xml
+scope	scope:memory:project	memory/project.xml

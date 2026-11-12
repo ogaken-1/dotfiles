@@ -1,0 +1,4 @@
+skill:s#typo-scope	scope	scope:sesion	skills/s.xml
+skill:s#ok-scope	scope	scope:session	skills/s.xml
+skill:s	norm	memory:user#no-such	skills/s.xml
+skill:s	norm	memory:user#no-webfetch	skills/s.xml

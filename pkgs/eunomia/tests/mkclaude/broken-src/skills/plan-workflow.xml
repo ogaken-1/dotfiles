@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cc:skill xmlns:cc="urn:eunomia:claude-code:v1" key="skill:plan-workflow">
+  <cc:frontMatter>
+    <cc:name>plan-workflow</cc:name>
+    <cc:description>Plan workflow.</cc:description>
+  </cc:frontMatter>
+  <cc:prompt>
+    <workflow>
+      <phase name="handoff">
+        <cc:useSkill ref="skill:ghost"/>
+        <cc:obligation key="exit-via-exitplanmode" actor="agent:main" invoke="tool:ExitPlanMode">Hand off with <cc:useTool ref="tool:ExitPlanMode"/>.</cc:obligation>
+      </phase>
+    </workflow>
+    <cc:obligation key="read-first" scope="scope:sesion" invoke="tool:Read">Read before editing.</cc:obligation>
+    <cc:override over="skill:plan-workflow#read-first" under="memory:user#no-such-norm"/>
+  </cc:prompt>
+</cc:skill>

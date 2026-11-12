@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cc:skill xmlns:cc="urn:eunomia:claude-code:v1" key="skill:deep-skill">
+  <cc:frontMatter>
+    <cc:name>deep-skill</cc:name>
+    <cc:description>Use when the user says "quoted" text or a back\slash path.</cc:description>
+  </cc:frontMatter>
+  <cc:prompt>
+    <purpose id="p1">Deep nesting &amp; refs. Use <cc:useSkill ref="skill:serena-usage"/> then ask <cc:delegate agent="agent:explore" role="searcher"/>, see <cc:seeAlso ref="command:bug"/> or <cc:useTool ref="tool:mcp__x__y"/>.</purpose>
+    <!-- a comment -->
+    <l1 a="1"><l2><l3><l4 flag="x &lt; y"><l5>Type &lt;hash&gt; here</l5><empty/></l4></l3></l2></l1>
+    <cc:override over="skill:deep-skill#use-serena" under="memory:user#no-enter-plan-mode"/>
+    <rules>
+      <rule><cc:obligation key="use-serena" actor="agent:main">Use <cc:useSkill ref="skill:serena-usage"/> for symbols</cc:obligation></rule>
+      <rule><cc:prohibition key="no-plan" invoke="tool:EnterPlanMode">EnterPlanModeは使用禁止</cc:prohibition></rule>
+      <rule><cc:permission key="may-read">Reading is fine</cc:permission></rule>
+    </rules>
+  </cc:prompt>
+</cc:skill>
