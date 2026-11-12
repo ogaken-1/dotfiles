@@ -37,6 +37,8 @@
     <rule>独立タスクは並列実行</rule>
     <rule>あらゆるgit commitやgit push、PR作成など、外部への提出作業はユーザーが行う。そのため、エージェントはプロジェクトが自分のものであるかのように大胆な設計変更や判断をしてもよい</rule>
     <rule>コミット・push・PR作成はhookでブロックされる。git addなどのステージングはしてよい。コミットの分け方やメッセージの提案はしない</rule>
+    <rule>ユーザーはPythonを毛嫌いしている。ファイル操作用のスクリプトはPythonではなくPerlまたはRubyで書く</rule>
+    <rule>catコマンドは使用禁止（hookでブロックされる）。ファイルの読み取りには<cc:useTool ref="tool:Read"/>ツール、書き込みには<cc:useTool ref="tool:Write"/>ツールを使う</rule>
     <rule>Claude Code関連（programs/claude-code/配下、スキル、エージェント、コマンド）の修正時は、<cc:delegate agent="agent:claude-code-guide"/>エージェント（<cc:useTool ref="tool:Agent"/>ツールのsubagent_type、model: opus）を並列で起動してClaude Codeの最新仕様を確認</rule>
   </rules>
   <related_skills>
