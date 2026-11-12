@@ -63,7 +63,37 @@ in
     };
   };
 
-  programs.nix-ld.enable = true;
+  programs.nix-ld = {
+    enable = true;
+    libraries =
+      with pkgs;
+      let
+        vscode-deps = [
+          alsa-lib
+          at-spi2-core
+          cairo
+          cups
+          dbus
+          expat
+          glib
+          gtk3
+          libXcomposite
+          libXdamage
+          libXext
+          libXfixes
+          libXrandr
+          libgbm
+          libxcb
+          libxkbcommon
+          nspr
+          nss
+          pango
+          systemdLibs
+          xorg.libX11
+        ];
+      in
+      [ ] ++ vscode-deps;
+  };
 
   time.timeZone = "Asia/Tokyo";
 
