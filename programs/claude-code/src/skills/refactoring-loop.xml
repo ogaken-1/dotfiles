@@ -14,7 +14,7 @@
     <concept name="single_refactoring">1回のイテレーションで1つのリファクタリングのみ行う。小さなステップで確実に進め、各ステップ後にテストがパスすることを確認する</concept>
     <concept name="convergence">改善点がなくなったら終了する。無限ループ防止のため最大イテレーション数（10回）を設ける</concept>
     <concept name="behavior_preservation">外部から観測可能な振る舞いを変えない。テストがパスし続けることで振る舞いの保持を保証する</concept>
-    <concept name="parent_owns_commits">Git操作（コミット、ステージング）は親エージェント（オーケストレーター）のみが実行する。サブエージェントにはGit操作を禁止する</concept>
+    <concept name="git_by_user">コミット、push、PR作成はすべてユーザーが行う（hookでブロックされる）。ステージングはしてよい</concept>
   </concepts>
   <patterns>
     <pattern name="test_coverage_check">
@@ -31,7 +31,7 @@
       3. テストが現在の振る舞いを十分にカバーしているか評価
 
       テストが不十分な場合:
-      - <cc:delegate agent="agent:characterization"/>エージェントに委任: 「対象ファイル: src/foo.ts の現在の振る舞いを仕様化テストとして記録してください。Git操作は行わないでください」
+      - <cc:delegate agent="agent:characterization"/>エージェントに委任: 「対象ファイル: src/foo.ts の現在の振る舞いを仕様化テストとして記録してください」
       - テスト追加後にすべてのテストがパスすることを確認
       </example>
     </pattern>
@@ -64,7 +64,7 @@
       - 1件のリファクタリング内容（具体的なシンボルと改善方法）
       - 対象ファイルパス
       - テスト実行コマンド
-      - 「リファクタリング後にテストがパスすることを確認してください。Git操作は行わないでください」
+      - 「リファクタリング後にテストがパスすることを確認してください」
 
       リファクタリング完了後:
       - テストがパスしていることを確認
@@ -121,7 +121,7 @@
       <description>対象コードにテストがあるか確認し、なければ追加する</description>
       <step>対象ファイルに対応するテストファイルの存在を確認する</step>
       <step>テストが現在の振る舞いを十分にカバーしているか評価する</step>
-      <step>テストが不十分な場合: <cc:delegate agent="agent:characterization"/>エージェントに委任してテストを追加する（Git操作禁止を明示）</step>
+      <step>テストが不十分な場合: <cc:delegate agent="agent:characterization"/>エージェントに委任してテストを追加する</step>
       <step>テスト追加後、すべてのテストがパスすることを確認する</step>
     </phase>
     <phase name="analyze">
@@ -133,7 +133,7 @@
     </phase>
     <phase name="refactor">
       <description><cc:delegate agent="agent:coding"/>エージェントに1つのリファクタリングを委任する</description>
-      <step><cc:delegate agent="agent:coding"/>エージェントに1件のリファクタリングを委任する（Git操作禁止、テスト実行確認を明示）</step>
+      <step><cc:delegate agent="agent:coding"/>エージェントに1件のリファクタリングを委任する（テスト実行確認を明示）</step>
       <step>リファクタリング完了後、テストがパスすることを確認する</step>
       <step>analyzeフェーズに戻る（ループ継続）</step>
     </phase>
@@ -141,7 +141,7 @@
       <description>ループ終了後の後処理を行う</description>
       <step>実施したリファクタリングの一覧をユーザーに報告する</step>
       <step>上限到達で終了した場合は残りの改善候補も報告する</step>
-      <step>Git操作ポリシーに従って変更をコミットする（delegate: <cc:useSkill ref="skill:create-git-commit"/>スキルに従う、manual: 変更ファイル一覧と推奨コミットメッセージを提示）</step>
+      <step>変更ファイル一覧をユーザーに報告する（コミットの分け方やメッセージは提案しない）</step>
     </phase>
     <phase name="failure_handling">
       <description>エラーと問題を適切に処理する</description>
@@ -169,8 +169,8 @@
       </behavior>
       <behavior id="REFACTOR-B003" priority="critical">
         <trigger><cc:delegate agent="agent:coding"/>エージェントに委任する際</trigger>
-        <action>1件のリファクタリングのみを委任し、Git操作禁止を明示する</action>
-        <verification>委任内容が単一のリファクタリングであり、Git操作禁止の指示が含まれていること</verification>
+        <action>1件のリファクタリングのみを委任する</action>
+        <verification>委任内容が単一のリファクタリングであること</verification>
       </behavior>
       <behavior id="REFACTOR-B004" priority="critical">
         <trigger>イテレーション数が10に達した場合</trigger>
@@ -194,8 +194,8 @@
       </behavior>
       <behavior id="REFACTOR-P003" priority="critical">
         <trigger>常に</trigger>
-        <action>サブエージェントがgit add、git commit等のGit操作を実行する</action>
-        <response>サブエージェントにはコード変更のみを委任し、Git操作は親エージェントが実行する</response>
+        <action>親エージェント・サブエージェントがコミット、push、PR作成を実行する</action>
+        <response>ファイルの変更（とステージング）までにとどめ、コミット以降はユーザーに任せる</response>
       </behavior>
       <behavior id="REFACTOR-P004" priority="critical">
         <trigger>常に</trigger>
@@ -214,13 +214,11 @@
     <avoid>複数のリファクタリングを一度に行う</avoid>
     <avoid>振る舞いの変更を含むリファクタリングを行う</avoid>
     <avoid>イテレーション上限を無視してループを継続する</avoid>
-    <avoid>サブエージェントにGit操作を実行させる</avoid>
+    <avoid>コミット、push、PR作成を実行する（親エージェント・サブエージェントとも）</avoid>
   </constraints>
   <related_skills>
     <skill><cc:useSkill ref="skill:impl-workflow"/>: feat/fix実装後にこのスキルを使用する</skill>
-    <skill><cc:useSkill ref="skill:testing-patterns"/>: テスト追加時の参照</skill>
-    <skill><cc:useSkill ref="skill:create-git-commit"/>: コミット作成時の手順</skill>
-    <skill><cc:useSkill ref="skill:execution-workflow"/>: サブエージェント委任のコアパターン</skill>
+    <skill><cc:useSkill ref="skill:testing-patterns"/>: テスト追加時の参照</skill>    <skill><cc:useSkill ref="skill:execution-workflow"/>: サブエージェント委任のコアパターン</skill>
   </related_skills>
 </skill>
 <!-- vim:set ft=xml: -->

@@ -6,23 +6,6 @@ let
   # settings.nix is a home-manager module that only needs `pkgs`, so evaluate it directly and
   # reuse its values instead of copying them.
   settings = (import ./settings.nix { inherit pkgs; }).programs.claude-code.settings;
-
-  # Same hook that the old agents.nix attached to the coding and characterization agents.
-  validateNoGitWriteHooks = {
-    hooks = {
-      PreToolUse = [
-        {
-          matcher = "Bash";
-          hooks = [
-            {
-              type = "command";
-              command = "${./hooks/validate-no-git-write.sh}";
-            }
-          ];
-        }
-      ];
-    };
-  };
 in
 eunomia.mkClaudeConfig {
   src = ./src;
@@ -101,9 +84,4 @@ eunomia.mkClaudeConfig {
   inherit (settings) hooks;
 
   extra.skills.slide-generating = ./skills/slide-generating;
-
-  extraFrontMatter = {
-    "agent:coding" = validateNoGitWriteHooks;
-    "agent:characterization" = validateNoGitWriteHooks;
-  };
 }

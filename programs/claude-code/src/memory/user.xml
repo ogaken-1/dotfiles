@@ -34,17 +34,16 @@
   <rules>
     <rule>ファイル全体ではなくシンボルレベルの操作を使用</rule>
     <rule>ライブラリドキュメントはContext7で確認</rule>
-    <rule>コミット作成時は<cc:useSkill ref="skill:create-git-commit"/>スキルに従う</rule>
     <rule>独立タスクは並列実行</rule>
+    <rule>あらゆるgit commitやgit push、PR作成など、外部への提出作業はユーザーが行う。そのため、エージェントはプロジェクトが自分のものであるかのように大胆な設計変更や判断をしてもよい</rule>
+    <rule>コミット・push・PR作成はhookでブロックされる。git addなどのステージングはしてよい。コミットの分け方やメッセージの提案はしない</rule>
     <rule>Claude Code関連（programs/claude-code/配下、スキル、エージェント、コマンド）の修正時は、<cc:delegate agent="agent:claude-code-guide"/>エージェント（<cc:useTool ref="tool:Agent"/>ツールのsubagent_type、model: opus）を並列で起動してClaude Codeの最新仕様を確認</rule>
   </rules>
   <related_skills>
     <skill><cc:useSkill ref="skill:plan-workflow"/>: 要件定義・計画ワークフロー</skill>
     <skill><cc:useSkill ref="skill:impl-workflow"/>: 実装ワークフロー（TDD、サブエージェント委任）</skill>
     <skill><cc:useSkill ref="skill:serena-usage"/>: Serena MCPツールの使用パターン</skill>
-    <skill><cc:useSkill ref="skill:context7-usage"/>: Context7 MCPツールの使用パターン</skill>
-    <skill><cc:useSkill ref="skill:create-git-commit"/>: コミット作成の手順とルール</skill>
-  </related_skills>
+    <skill><cc:useSkill ref="skill:context7-usage"/>: Context7 MCPツールの使用パターン</skill>  </related_skills>
 </instructions>
 <!-- vim:set ft=xml: -->
 </cc:prompt>

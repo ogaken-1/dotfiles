@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cc:skill xmlns:cc="urn:eunomia:claude-code:v1">
   <cc:frontMatter>
-    <cc:description>Use for any code implementation task, from simple edits to complex features. Scales workflow to task complexity — handles sub-agent delegation, testing strategy, and git policy.</cc:description>
+    <cc:description>Use for any code implementation task, from simple edits to complex features. Scales workflow to task complexity — handles sub-agent delegation and testing strategy. Git operations are left to the user.</cc:description>
   </cc:frontMatter>
   <cc:prompt><skill>
   <purpose>コード実装ワークフロー。タスクの複雑さに応じてスケーリングし、シンプルな変更からPlan承認後の本格的な実装まで対応する。ポリシー決定とオーケストレーションに集中しながら、詳細な作業をサブエージェントに委任する。</purpose>
@@ -17,42 +17,13 @@
     <concept name="parallel_execution">独立したタスクを並行実行、quality+securityは並列実行可能、test+docsは独立している場合は並列実行可能</concept>
     <concept name="sequential_dependencies">データ依存関係のあるタスクは順序通りに実行、依存タスク開始前に出力を検証</concept>
     <concept name="delegation_context">サブエージェントには以下が必要: 具体的なスコープ、ファイルパス、ツール使用指示、リファレンス実装</concept>
-    <concept name="git_policy">
-      <description>Git操作はユーザーの明示的な要求がある場合のみ実行する。セッション開始時にdelegateモード（エージェントがローカルコミットを作成、push不可）またはmanualモード（Git操作なし、変更内容を提示）を選択する。コミット作成時は<cc:useSkill ref="skill:create-git-commit"/>スキルに従う。</description>
+    <concept name="git_by_user">
+      <description>git commit、git push、PR作成などの提出作業はすべてユーザーが行い、hookでブロックされる（サブエージェントにも効く）。ステージング（git add等）はしてよい。コミットの分け方やメッセージの提案もしない（ユーザーが考える）。</description>
     </concept>
-    <concept name="feedback_integration">TDDサイクル完了後に<cc:useSkill ref="skill:code-review"/>スキルでレビュー。指摘事項はすべてTODO登録。<cc:useSkill ref="skill:code-review"/>のverifyフェーズでverifiedとなった不具合は直接修正、unverifiedはユーザーに報告し判断を仰ぐ。Test Coverageは<cc:delegate agent="agent:characterization"/>エージェントに委任。git commit --fixupで既存コミットにfixup</concept>
+    <concept name="feedback_integration">TDDサイクル完了後に<cc:useSkill ref="skill:code-review"/>スキルでレビュー。指摘事項はすべてTODO登録。<cc:useSkill ref="skill:code-review"/>のverifyフェーズでverifiedとなった不具合は直接修正、unverifiedはユーザーに報告し判断を仰ぐ。Test Coverageは<cc:delegate agent="agent:characterization"/>エージェントに委任</concept>
     <concept name="feedback_bug_verification">不具合の指摘は<cc:useSkill ref="skill:code-review"/>コマンドのverifyフェーズでPOCテストが作成・実行される。verifiedステータスの不具合は直接修正、unverifiedステータスの不具合はユーザーに報告して判断を仰ぐ</concept>
-    <concept name="parent_owns_commits">
-      <description>Git操作（コミット、ステージング）は親エージェント（オーケストレーター）のみが実行する。サブエージェント（coding、characterization等）にはGit操作を禁止し、コード変更のみを委任する。コミットのタイミングと単位は親が判断する。</description>
-    </concept>
   </concepts>
   <patterns>
-    <pattern name="git_policy_check">
-      <description>セッション開始時にGit操作ポリシー（delegate/manual）を確認する</description>
-      <decision_tree name="when_to_use">
-        <question>セッション内で既にポリシーが確定していますか？</question>
-        <if_yes>スキップして次のフェーズに進む</if_yes>
-        <if_no><cc:useTool ref="tool:AskUserQuestion"/>でdelegate/manualを確認する</if_no>
-      </decision_tree>
-      <example>
-    <cc:useTool ref="tool:AskUserQuestion"/>の例:
-    "Git操作のモードを選択してください：
-    1. delegate: エージェントがconventional commits形式でローカルコミットを作成（push不可）
-    2. manual: エージェントはファイル変更のみ行い、Git操作は手動で実行
-
-    推奨: delegate（自動的にlint/format check、論理的コミット分離を実施）"
-
-    delegateモード選択時:
-    - 保護ブランチ（main, master, develop, release/*, production）ではtopic branchを作成
-    - コミット作成時は<cc:useSkill ref="skill:create-git-commit"/>スキルに従う
-    - git pushは実行しない（ローカルコミットのみ）
-
-    manualモード選択時:
-    - ファイルの変更・作成のみ実行
-    - git操作は一切行わない
-    - フェーズ完了時に変更ファイル一覧と推奨コミットメッセージを提示
-      </example>
-    </pattern>
     <pattern name="test_list_creation">
       <decision_tree name="when_to_use">
         <question>Plan modeで承認された計画から実装項目がありますか？</question>
@@ -86,10 +57,6 @@
          - discoveries → 通常のテスト項目としてリストに追加
          - legacy_code_detected → characterization_testタイプとしてリストに追加
          - refactoring_candidates → refactoringタイプとしてリストに追加
-
-      フェーズ完了時のGit操作（親エージェントが実行）:
-      - delegate: 親が<cc:useSkill ref="skill:create-git-commit"/>スキルに従いコミット（サブエージェントはコミットしない）
-      - manual: 「必要であればコミットを作成してください」と表示
       </example>
     </pattern>
     <pattern name="completion_and_feedback">
@@ -107,30 +74,7 @@
          b. unverifiedステータスの不具合 → 指摘事項と現状の理解をユーザーに報告し、判断を仰ぐ
       5. Test Coverageの指摘があった場合 → <cc:delegate agent="agent:characterization"/>エージェントに委任して対応
       6. その他の指摘事項を順次消化
-      7. <cc:useSkill ref="skill:code-review"/>対応の変更をコミット:
-         - delegate: git commit --fixup で既存コミットに統合
-         - manual: 「<cc:useSkill ref="skill:code-review"/>対応が完了しました。必要であればコミットを作成してください」と表示
-      </example>
-    </pattern>
-    <pattern name="feedback_fixup">
-      <description><cc:useSkill ref="skill:code-review"/>対応の変更をgit commit --fixupで既存コミットに統合する</description>
-      <decision_tree name="when_to_use">
-        <question>delegateモードで<cc:useSkill ref="skill:code-review"/>に対応した修正をコミットしますか？</question>
-        <if_yes>git commit --fixupで対象コミットにfixupする</if_yes>
-        <if_no>通常の<cc:useSkill ref="skill:create-git-commit"/>スキルを使用</if_no>
-      </decision_tree>
-      <example>
-    1. <cc:useSkill ref="skill:code-review"/>に対応した変更をステージング:
-       git add src/auth.ts
-
-    2. 対象コミットのハッシュを確認:
-       git log --oneline -n 5
-
-    3. fixupコミットを作成:
-       git commit --fixup=a1b2c3d
-
-    4. fixup後、コミットメッセージがまだ正確か確認:
-       - 不正確 → git commit --fixup=reword:&lt;hash&gt; でreword
+      7. 変更ファイル一覧をユーザーに報告する（コミットの分け方やメッセージは提案しない）
       </example>
     </pattern>
     <pattern name="code_review_phases">
@@ -200,13 +144,6 @@
     </avoid>
   </anti_patterns>
   <workflow>
-    <phase name="git_policy_check">
-      <description>Git操作ポリシーを確認し、セッション中の動作を決定する</description>
-      <note><cc:useTool ref="tool:AskUserQuestion"/>での確認はCLAUDE.mdの「Git操作はユーザーの明示的な要求がある場合のみ」を満たす明示的な要求とみなす</note>
-      <skip_condition>セッション内で既にポリシーが確定している場合はスキップ</skip_condition>
-      <step><cc:useTool ref="tool:AskUserQuestion"/>ツールでGit操作ポリシーを確認する（delegate / manual）</step>
-      <step>delegateモードの場合: 保護ブランチではtopic branchを作成</step>
-    </phase>
     <phase name="analyze">
       <description>Plan modeで承認された計画を受け取り、タスクの範囲を理解する</description>
       <step>承認された計画から実装タスクを特定</step>
@@ -234,7 +171,6 @@
       <description>リストが空になるまでRed-Green-Refactorを繰り返す</description>
       <step>タイプに応じてルーティング（characterization_test / refactoring / default）</step>
       <step>エージェント出力の処理（discoveries, legacy_code_detected, refactoring_candidates を重複チェック後にリスト追加）</step>
-      <step>フェーズ完了時にGit操作（ポリシーに基づく）</step>
     </phase>
     <phase name="assign">
       <description>明確な指示とともにタスクを適切なサブエージェントに委任する</description>
@@ -253,7 +189,7 @@
       <step><cc:useSkill ref="skill:code-review"/>のverifyフェーズでverifiedとなった不具合は直接修正（POCテストは作成済み）、unverifiedはユーザーに報告</step>
       <step>Test Coverageの指摘は<cc:delegate agent="agent:characterization"/>エージェントに委任</step>
       <step>その他の指摘事項を順次消化</step>
-      <step><cc:useSkill ref="skill:code-review"/>対応の変更をコミット（delegate: git commit --fixup、manual: ユーザー入力待ち）</step>
+      <step>変更ファイル一覧をユーザーに報告する（コミットの分け方やメッセージは提案しない）</step>
     </phase>
     <phase name="failure_handling">
       <description>エラーとエッジケースを適切に処理する</description>
@@ -285,10 +221,7 @@
     <agent readonly="true"><cc:delegate agent="agent:validator"/>: クロスバリデーションとコンセンサス検証</agent>
   </agents>
   <execution_graph>
-    <sequential_phase id="git_policy_phase" depends_on="none">
-      <step>git_policy_check</step>
-    </sequential_phase>
-    <sequential_phase id="analysis_phase" depends_on="git_policy_phase">
+    <sequential_phase id="analysis_phase" depends_on="none">
       <step>analyze</step>
       <step>test_list_creation</step>
     </sequential_phase>
@@ -309,7 +242,6 @@
     <requirement>具体的な範囲と期待される成果物</requirement>
     <requirement>対象ファイルパス</requirement>
     <requirement>参照実装（具体的なパス）</requirement>
-    <requirement>サブエージェントにGit操作（git add, git commit等）を禁止する旨を明記すること</requirement>
   </delegation>
   <parallelization>
     <capability>
@@ -358,11 +290,6 @@
         <action><cc:delegate agent="agent:characterization"/>エージェントに委任して対応する</action>
         <verification><cc:delegate agent="agent:characterization"/>エージェントが起動されていること</verification>
       </behavior>
-      <behavior id="IMPL-B008" priority="critical">
-        <trigger>サブエージェントに作業を委任する際</trigger>
-        <action>Git操作（git add, git commit等）を行わないよう明示的に指示すること</action>
-        <verification>委任メッセージにGit操作禁止の指示が含まれていること</verification>
-      </behavior>
     </mandatory_behaviors>
     <prohibited_behaviors>
       <behavior id="IMPL-P001" priority="critical">
@@ -377,13 +304,8 @@
       </behavior>
       <behavior id="IMPL-P003" priority="critical">
         <trigger>常に</trigger>
-        <action><cc:useSkill ref="skill:create-git-commit"/>スキルのルールに違反すること</action>
-        <response><cc:useSkill ref="skill:create-git-commit"/>スキルのenforcement参照</response>
-      </behavior>
-      <behavior id="IMPL-P004" priority="critical">
-        <trigger>サブエージェントに作業を委任する場合</trigger>
-        <action>サブエージェントがgit add、git commit等のGit操作を実行すること</action>
-        <response>サブエージェントにはコード変更のみを委任し、Git操作は親エージェントが実行する</response>
+        <action>親エージェント・サブエージェントがコミット、push、PR作成を実行すること</action>
+        <response>ファイルの変更（とステージング）までにとどめ、コミット以降はユーザーに任せる</response>
       </behavior>
     </prohibited_behaviors>
   </enforcement>
@@ -415,7 +337,7 @@
     <practice priority="medium">実装タスクを委任する前に既存のパターンを確認</practice>
   </best_practices>
   <rules priority="critical">
-    <rule>サブエージェントにGit操作を実行させないこと。コミットは親エージェントのみが<cc:useSkill ref="skill:create-git-commit"/>スキルに従って実行する</rule>
+    <rule>コミット、push、PR作成は親エージェント・サブエージェントともに行わない（hookでブロックされる）。ステージングはしてよい</rule>
     <rule>テストファーストワークフローを適用するために<cc:delegate agent="agent:coding"/>エージェントを使用する</rule>
     <rule>詳細な作業を専門のサブエージェントに委任する</rule>
     <rule>オーケストレーションとポリシー決定に集中する</rule>
@@ -429,7 +351,6 @@
     <rule><cc:useSkill ref="skill:code-review"/>のverifiedステータスの不具合はPOCテストを活用して直接修正すること</rule>
     <rule><cc:useSkill ref="skill:code-review"/>のunverifiedステータスの不具合は、指摘事項と検証結果をユーザーに報告し判断を仰ぐこと</rule>
     <rule>Test Coverageの指摘は<cc:delegate agent="agent:characterization"/>エージェントに委任すること</rule>
-    <rule>コミット作成時は<cc:useSkill ref="skill:create-git-commit"/>スキルに従うこと</rule>
   </rules>
   <rules priority="standard">
     <rule>委任パターンには<cc:useSkill ref="skill:execution-workflow"/>スキルを使用する</rule>
@@ -443,7 +364,6 @@
     <skill><cc:useSkill ref="skill:serena-usage"/>: シンボルレベルのコードナビゲーション</skill>
     <skill><cc:useSkill ref="skill:testing-patterns"/>: 適切なテストカバレッジを確保する</skill>
     <skill><cc:useSkill ref="skill:investigation-patterns"/>: 不明確な実装詳細が明らかになった場合に使用</skill>
-    <skill><cc:useSkill ref="skill:create-git-commit"/>: コミット作成の手順とルール</skill>
   </related_skills>
   <related_agents>
     <agent><cc:useSkill ref="skill:plan-workflow"/>: 実装で不明確な要件が判明した場合、計画の再検討</agent>

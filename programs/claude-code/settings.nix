@@ -140,16 +140,8 @@ in
             }
             {
               type = "command";
-              command = "${./hooks/require-git-commit-skill.sh}";
-            }
-          ];
-        }
-        {
-          matcher = "Skill";
-          hooks = [
-            {
-              type = "command";
-              command = "${./hooks/mark-git-commit-skill.sh}";
+              # Commits, pushes and PRs are the user's job (also applies inside sub-agents).
+              command = "${./hooks/block-git-submit.sh}";
             }
           ];
         }
